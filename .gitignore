@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# google mock (local dev only)
+.google-mock/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

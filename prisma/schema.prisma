@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  MANAGER
+  VA
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TaskStatus {
+  BACKLOG
+  TODO
+  IN_PROGRESS
+  REVIEW
+  DONE
+  CANCELLED
+}
+
+model User {
+  id         String   @id @default(cuid())
+  email      String   @unique
+  name       String?
+  role       UserRole
+  department String?
+  avatarUrl  String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  assignedTasks Task[]     @relation("TaskAssigner")
+  vaProfile     VAProfile?
+
+  @@map("users")
+}
+
+model VAProfile {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  phone      String?
+  hourlyRate Decimal? @map("hourly_rate")
+  notes      String?
+  isActive   Boolean  @default(true) @map("is_active")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  tasks Task[] @relation("VATasks")
+
+  @@map("va_profiles")
+}
+
+model Task {
+  id                String       @id @default(cuid())
+  title             String
+  description       String?
+  priority          TaskPriority @default(MEDIUM)
+  status            TaskStatus   @default(TODO)
+  dueDate           DateTime?    @map("due_date")
+  googleDriveFolder String?      @map("google_drive_folder_url")
+  department        String?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  assignedToId String    @map("assigned_to_id")
+  assignedTo   VAProfile @relation("VATasks", fields: [assignedToId], references: [id])
+
+  assignedById String @map("assigned_by_id")
+  assignedBy   User   @relation("TaskAssigner", fields: [assignedById], references: [id])
+
+  @@index([assignedToId])
+  @@index([assignedById])
+  @@index([department])
+  @@map("tasks")
+}
