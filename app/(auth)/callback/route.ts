@@ -34,6 +34,12 @@ export async function GET(request: NextRequest) {
       if (user?.email) {
         const dbUser = await prisma.user.findUnique({ where: { email: user.email } })
         if (!dbUser) {
+          const admin = createServerClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY!,
+            { cookies: { getAll: () => cookieStore.getAll(), setAll: () => {} } }
+          )
+          await admin.auth.admin.deleteUser(user.id)
           await supabase.auth.signOut()
           return NextResponse.redirect(`${origin}/login?error=unauthorized`)
         }
