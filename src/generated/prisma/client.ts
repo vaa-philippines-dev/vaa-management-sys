@@ -52,7 +52,22 @@ export type User = Prisma.UserModel
  */
 export type VAProfile = Prisma.VAProfileModel
 /**
- * Model Task
+ * Model Skill
  * 
  */
-export type Task = Prisma.TaskModel
+export type Skill = Prisma.SkillModel
+/**
+ * Model Client
+ * 
+ */
+export type Client = Prisma.ClientModel
+/**
+ * Model Assignment
+ * 
+ */
+export type Assignment = Prisma.AssignmentModel
+/**
+ * Model WorkLog
+ * 
+ */
+export type WorkLog = Prisma.WorkLogModel

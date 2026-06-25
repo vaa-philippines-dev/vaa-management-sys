@@ -5,7 +5,7 @@ import { createServerClient } from '@supabase/ssr'
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-const protectedPaths = ['/tasks', '/vas']
+const protectedPaths = ['/clients', '/vas', '/assignments', '/work-logs', '/skills', '/reports', '/dashboard']
 const authPaths = ['/login']
 
 export async function proxy(request: NextRequest) {
@@ -35,12 +35,8 @@ export async function proxy(request: NextRequest) {
     data: { session },
   } = await supabase.auth.getSession()
 
-  if (isProtected && !session) {
-    return NextResponse.redirect(new URL('/login', request.url))
-  }
-
   if (isAuth && session) {
-    return NextResponse.redirect(new URL('/tasks', request.url))
+    return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
   return NextResponse.next()

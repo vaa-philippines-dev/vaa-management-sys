@@ -53,7 +53,10 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   VAProfile: 'VAProfile',
-  Task: 'Task'
+  Skill: 'Skill',
+  Client: 'Client',
+  Assignment: 'Assignment',
+  WorkLog: 'WorkLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -100,22 +103,64 @@ export const VAProfileScalarFieldEnum = {
 export type VAProfileScalarFieldEnum = (typeof VAProfileScalarFieldEnum)[keyof typeof VAProfileScalarFieldEnum]
 
 
-export const TaskScalarFieldEnum = {
+export const SkillScalarFieldEnum = {
   id: 'id',
-  title: 'title',
-  description: 'description',
-  priority: 'priority',
-  status: 'status',
-  dueDate: 'dueDate',
-  googleDriveFolder: 'googleDriveFolder',
-  department: 'department',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  assignedToId: 'assignedToId',
-  assignedById: 'assignedById'
+  name: 'name',
+  category: 'category',
+  createdAt: 'createdAt'
 } as const
 
-export type TaskScalarFieldEnum = (typeof TaskScalarFieldEnum)[keyof typeof TaskScalarFieldEnum]
+export type SkillScalarFieldEnum = (typeof SkillScalarFieldEnum)[keyof typeof SkillScalarFieldEnum]
+
+
+export const ClientScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  contactName: 'contactName',
+  contactEmail: 'contactEmail',
+  platform: 'platform',
+  industry: 'industry',
+  notes: 'notes',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  managerId: 'managerId',
+  requiredSkills: 'requiredSkills'
+} as const
+
+export type ClientScalarFieldEnum = (typeof ClientScalarFieldEnum)[keyof typeof ClientScalarFieldEnum]
+
+
+export const AssignmentScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  status: 'status',
+  agreedHours: 'agreedHours',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  monthlyHours: 'monthlyHours',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  vaProfileId: 'vaProfileId',
+  clientId: 'clientId'
+} as const
+
+export type AssignmentScalarFieldEnum = (typeof AssignmentScalarFieldEnum)[keyof typeof AssignmentScalarFieldEnum]
+
+
+export const WorkLogScalarFieldEnum = {
+  id: 'id',
+  workDate: 'workDate',
+  hours: 'hours',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  vaProfileId: 'vaProfileId',
+  assignmentId: 'assignmentId'
+} as const
+
+export type WorkLogScalarFieldEnum = (typeof WorkLogScalarFieldEnum)[keyof typeof WorkLogScalarFieldEnum]
 
 
 export const SortOrder = {

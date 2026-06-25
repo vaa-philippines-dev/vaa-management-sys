@@ -206,8 +206,8 @@ export type UserWhereInput = {
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  assignedTasks?: Prisma.TaskListRelationFilter
   vaProfile?: Prisma.XOR<Prisma.VAProfileNullableScalarRelationFilter, Prisma.VAProfileWhereInput> | null
+  managedClients?: Prisma.ClientListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -219,8 +219,8 @@ export type UserOrderByWithRelationInput = {
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  assignedTasks?: Prisma.TaskOrderByRelationAggregateInput
   vaProfile?: Prisma.VAProfileOrderByWithRelationInput
+  managedClients?: Prisma.ClientOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -235,8 +235,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  assignedTasks?: Prisma.TaskListRelationFilter
   vaProfile?: Prisma.XOR<Prisma.VAProfileNullableScalarRelationFilter, Prisma.VAProfileWhereInput> | null
+  managedClients?: Prisma.ClientListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -276,8 +276,8 @@ export type UserCreateInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  assignedTasks?: Prisma.TaskCreateNestedManyWithoutAssignedByInput
   vaProfile?: Prisma.VAProfileCreateNestedOneWithoutUserInput
+  managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -289,8 +289,8 @@ export type UserUncheckedCreateInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  assignedTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssignedByInput
   vaProfile?: Prisma.VAProfileUncheckedCreateNestedOneWithoutUserInput
+  managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
 }
 
 export type UserUpdateInput = {
@@ -302,8 +302,8 @@ export type UserUpdateInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  assignedTasks?: Prisma.TaskUpdateManyWithoutAssignedByNestedInput
   vaProfile?: Prisma.VAProfileUpdateOneWithoutUserNestedInput
+  managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -315,8 +315,8 @@ export type UserUncheckedUpdateInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  assignedTasks?: Prisma.TaskUncheckedUpdateManyWithoutAssignedByNestedInput
   vaProfile?: Prisma.VAProfileUncheckedUpdateOneWithoutUserNestedInput
+  managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -390,6 +390,11 @@ export type UserScalarRelationFilter = {
   isNot?: Prisma.UserWhereInput
 }
 
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.UserWhereInput | null
+  isNot?: Prisma.UserWhereInput | null
+}
+
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
@@ -420,18 +425,20 @@ export type UserUpdateOneRequiredWithoutVaProfileNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVaProfileInput, Prisma.UserUpdateWithoutVaProfileInput>, Prisma.UserUncheckedUpdateWithoutVaProfileInput>
 }
 
-export type UserCreateNestedOneWithoutAssignedTasksInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutAssignedTasksInput, Prisma.UserUncheckedCreateWithoutAssignedTasksInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAssignedTasksInput
+export type UserCreateNestedOneWithoutManagedClientsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutManagedClientsInput, Prisma.UserUncheckedCreateWithoutManagedClientsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutManagedClientsInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutAssignedTasksNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutAssignedTasksInput, Prisma.UserUncheckedCreateWithoutAssignedTasksInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAssignedTasksInput
-  upsert?: Prisma.UserUpsertWithoutAssignedTasksInput
+export type UserUpdateOneWithoutManagedClientsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutManagedClientsInput, Prisma.UserUncheckedCreateWithoutManagedClientsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutManagedClientsInput
+  upsert?: Prisma.UserUpsertWithoutManagedClientsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAssignedTasksInput, Prisma.UserUpdateWithoutAssignedTasksInput>, Prisma.UserUncheckedUpdateWithoutAssignedTasksInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutManagedClientsInput, Prisma.UserUpdateWithoutManagedClientsInput>, Prisma.UserUncheckedUpdateWithoutManagedClientsInput>
 }
 
 export type UserCreateWithoutVaProfileInput = {
@@ -443,7 +450,7 @@ export type UserCreateWithoutVaProfileInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  assignedTasks?: Prisma.TaskCreateNestedManyWithoutAssignedByInput
+  managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
 }
 
 export type UserUncheckedCreateWithoutVaProfileInput = {
@@ -455,7 +462,7 @@ export type UserUncheckedCreateWithoutVaProfileInput = {
   avatarUrl?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  assignedTasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAssignedByInput
+  managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
 }
 
 export type UserCreateOrConnectWithoutVaProfileInput = {
@@ -483,7 +490,7 @@ export type UserUpdateWithoutVaProfileInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  assignedTasks?: Prisma.TaskUpdateManyWithoutAssignedByNestedInput
+  managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVaProfileInput = {
@@ -495,10 +502,10 @@ export type UserUncheckedUpdateWithoutVaProfileInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  assignedTasks?: Prisma.TaskUncheckedUpdateManyWithoutAssignedByNestedInput
+  managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
 }
 
-export type UserCreateWithoutAssignedTasksInput = {
+export type UserCreateWithoutManagedClientsInput = {
   id?: string
   email: string
   name?: string | null
@@ -510,7 +517,7 @@ export type UserCreateWithoutAssignedTasksInput = {
   vaProfile?: Prisma.VAProfileCreateNestedOneWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutAssignedTasksInput = {
+export type UserUncheckedCreateWithoutManagedClientsInput = {
   id?: string
   email: string
   name?: string | null
@@ -522,23 +529,23 @@ export type UserUncheckedCreateWithoutAssignedTasksInput = {
   vaProfile?: Prisma.VAProfileUncheckedCreateNestedOneWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutAssignedTasksInput = {
+export type UserCreateOrConnectWithoutManagedClientsInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutAssignedTasksInput, Prisma.UserUncheckedCreateWithoutAssignedTasksInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutManagedClientsInput, Prisma.UserUncheckedCreateWithoutManagedClientsInput>
 }
 
-export type UserUpsertWithoutAssignedTasksInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutAssignedTasksInput, Prisma.UserUncheckedUpdateWithoutAssignedTasksInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutAssignedTasksInput, Prisma.UserUncheckedCreateWithoutAssignedTasksInput>
+export type UserUpsertWithoutManagedClientsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutManagedClientsInput, Prisma.UserUncheckedUpdateWithoutManagedClientsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutManagedClientsInput, Prisma.UserUncheckedCreateWithoutManagedClientsInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutAssignedTasksInput = {
+export type UserUpdateToOneWithWhereWithoutManagedClientsInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutAssignedTasksInput, Prisma.UserUncheckedUpdateWithoutAssignedTasksInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutManagedClientsInput, Prisma.UserUncheckedUpdateWithoutManagedClientsInput>
 }
 
-export type UserUpdateWithoutAssignedTasksInput = {
+export type UserUpdateWithoutManagedClientsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -550,7 +557,7 @@ export type UserUpdateWithoutAssignedTasksInput = {
   vaProfile?: Prisma.VAProfileUpdateOneWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutAssignedTasksInput = {
+export type UserUncheckedUpdateWithoutManagedClientsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -568,11 +575,11 @@ export type UserUncheckedUpdateWithoutAssignedTasksInput = {
  */
 
 export type UserCountOutputType = {
-  assignedTasks: number
+  managedClients: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  assignedTasks?: boolean | UserCountOutputTypeCountAssignedTasksArgs
+  managedClients?: boolean | UserCountOutputTypeCountManagedClientsArgs
 }
 
 /**
@@ -588,8 +595,8 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountAssignedTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.TaskWhereInput
+export type UserCountOutputTypeCountManagedClientsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ClientWhereInput
 }
 
 
@@ -602,8 +609,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   avatarUrl?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  assignedTasks?: boolean | Prisma.User$assignedTasksArgs<ExtArgs>
   vaProfile?: boolean | Prisma.User$vaProfileArgs<ExtArgs>
+  managedClients?: boolean | Prisma.User$managedClientsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -642,8 +649,8 @@ export type UserSelectScalar = {
 
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "role" | "department" | "avatarUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  assignedTasks?: boolean | Prisma.User$assignedTasksArgs<ExtArgs>
   vaProfile?: boolean | Prisma.User$vaProfileArgs<ExtArgs>
+  managedClients?: boolean | Prisma.User$managedClientsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -652,8 +659,8 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
-    assignedTasks: Prisma.$TaskPayload<ExtArgs>[]
     vaProfile: Prisma.$VAProfilePayload<ExtArgs> | null
+    managedClients: Prisma.$ClientPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1058,8 +1065,8 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  assignedTasks<T extends Prisma.User$assignedTasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$assignedTasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   vaProfile<T extends Prisma.User$vaProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vaProfileArgs<ExtArgs>>): Prisma.Prisma__VAProfileClient<runtime.Types.Result.GetResult<Prisma.$VAProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  managedClients<T extends Prisma.User$managedClientsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$managedClientsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1490,30 +1497,6 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * User.assignedTasks
- */
-export type User$assignedTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Task
-   */
-  select?: Prisma.TaskSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Task
-   */
-  omit?: Prisma.TaskOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.TaskInclude<ExtArgs> | null
-  where?: Prisma.TaskWhereInput
-  orderBy?: Prisma.TaskOrderByWithRelationInput | Prisma.TaskOrderByWithRelationInput[]
-  cursor?: Prisma.TaskWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.TaskScalarFieldEnum | Prisma.TaskScalarFieldEnum[]
-}
-
-/**
  * User.vaProfile
  */
 export type User$vaProfileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1530,6 +1513,30 @@ export type User$vaProfileArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   include?: Prisma.VAProfileInclude<ExtArgs> | null
   where?: Prisma.VAProfileWhereInput
+}
+
+/**
+ * User.managedClients
+ */
+export type User$managedClientsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Client
+   */
+  select?: Prisma.ClientSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Client
+   */
+  omit?: Prisma.ClientOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ClientInclude<ExtArgs> | null
+  where?: Prisma.ClientWhereInput
+  orderBy?: Prisma.ClientOrderByWithRelationInput | Prisma.ClientOrderByWithRelationInput[]
+  cursor?: Prisma.ClientWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ClientScalarFieldEnum | Prisma.ClientScalarFieldEnum[]
 }
 
 /**

@@ -17,23 +17,41 @@ export const UserRole = {
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 
 
-export const TaskPriority = {
-  LOW: 'LOW',
-  MEDIUM: 'MEDIUM',
-  HIGH: 'HIGH',
-  URGENT: 'URGENT'
+export const AssignmentType = {
+  REGULAR: 'REGULAR',
+  PROJECT: 'PROJECT'
 } as const
 
-export type TaskPriority = (typeof TaskPriority)[keyof typeof TaskPriority]
+export type AssignmentType = (typeof AssignmentType)[keyof typeof AssignmentType]
 
 
-export const TaskStatus = {
-  BACKLOG: 'BACKLOG',
-  TODO: 'TODO',
-  IN_PROGRESS: 'IN_PROGRESS',
-  REVIEW: 'REVIEW',
-  DONE: 'DONE',
+export const AssignmentStatus = {
+  ACTIVE: 'ACTIVE',
+  PAUSED: 'PAUSED',
+  COMPLETED: 'COMPLETED',
   CANCELLED: 'CANCELLED'
 } as const
 
-export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus]
+export type AssignmentStatus = (typeof AssignmentStatus)[keyof typeof AssignmentStatus]
+
+
+export const SkillCategory = {
+  AMAZON: 'AMAZON',
+  WALMART: 'WALMART',
+  TIKTOK_SHOP: 'TIKTOK_SHOP',
+  SHOPIFY: 'SHOPIFY',
+  GENERAL: 'GENERAL'
+} as const
+
+export type SkillCategory = (typeof SkillCategory)[keyof typeof SkillCategory]
+
+
+export const ClientPlatform = {
+  AMAZON: 'AMAZON',
+  WALMART: 'WALMART',
+  TIKTOK_SHOP: 'TIKTOK_SHOP',
+  SHOPIFY: 'SHOPIFY',
+  MULTI: 'MULTI'
+} as const
+
+export type ClientPlatform = (typeof ClientPlatform)[keyof typeof ClientPlatform]

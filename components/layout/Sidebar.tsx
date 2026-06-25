@@ -5,16 +5,39 @@ import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { LayoutDashboard, ListTodo, Users, LogOut } from 'lucide-react'
+import {
+  LogOut,
+  LayoutDashboard,
+  Building2,
+  Users,
+  Briefcase,
+  Clock,
+  UserCog,
+  BarChart3,
+  ListTodo,
+} from 'lucide-react'
+import Image from 'next/image'
 
-const routes = [
-  { label: 'Tasks', href: '/tasks', icon: ListTodo },
+const managerRoutes = [
+  { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { label: 'Clients', href: '/clients', icon: Building2 },
   { label: 'VAs', href: '/vas', icon: Users },
+  { label: 'Assignments', href: '/assignments', icon: Briefcase },
+  { label: 'Work Logs', href: '/work-logs', icon: ListTodo },
+  { label: 'Services', href: '/skills', icon: UserCog },
+  { label: 'Monthly Report', href: '/reports', icon: BarChart3 },
 ]
 
-export function Sidebar() {
+const vaRoutes = [
+  { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { label: 'My Work Logs', href: '/work-logs', icon: Clock },
+  { label: 'My Assignments', href: '/assignments', icon: Briefcase },
+]
+
+export function Sidebar({ role = 'MANAGER' }: { role?: 'MANAGER' | 'VA' }) {
   const pathname = usePathname()
   const router = useRouter()
+  const routes = role === 'VA' ? vaRoutes : managerRoutes
 
   const handleLogout = async () => {
     try {
@@ -28,26 +51,39 @@ export function Sidebar() {
   }
 
   return (
-    <div className="flex h-full w-56 flex-col border-r bg-sidebar">
-      <div className="flex h-14 items-center border-b px-4 font-semibold">
-        <LayoutDashboard className="mr-2 h-5 w-5" />
-        VA Manager
+    <div className="flex h-full w-60 flex-col border-r bg-sidebar">
+      <div className="flex h-16 items-center gap-3 border-b px-5">
+        <Image
+          src="/vaalogo.svg"
+          alt="VAA Philippines"
+          width={32}
+          height={32}
+          className="shrink-0"
+        />
+        <span className="text-sm font-semibold tracking-tight text-sidebar-foreground">
+          VAA Philippines
+        </span>
       </div>
-      <ScrollArea className="flex-1 p-2">
+      <ScrollArea className="flex-1 px-3 py-4">
         <nav className="flex flex-col gap-1">
           {routes.map((route) => {
             const Icon = route.icon
-            const isActive = pathname.startsWith(route.href)
+            const isActive =
+              route.href === '/dashboard'
+                ? pathname === '/dashboard'
+                : pathname.startsWith(route.href)
             return (
               <Link key={route.href} href={route.href}>
                 <Button
                   variant="ghost"
                   className={cn(
-                    'w-full justify-start gap-2',
-                    isActive && 'bg-sidebar-accent text-sidebar-accent-foreground'
+                    'w-full justify-start gap-3 rounded-lg text-sm font-medium transition-colors',
+                    isActive
+                      ? 'bg-sidebar-accent text-sidebar-accent-foreground'
+                      : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
                   )}
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon className="h-4 w-4 shrink-0" />
                   {route.label}
                 </Button>
               </Link>
@@ -55,13 +91,13 @@ export function Sidebar() {
           })}
         </nav>
       </ScrollArea>
-      <div className="border-t p-2">
+      <div className="border-t p-3">
         <Button
           variant="ghost"
-          className="w-full justify-start gap-2 text-muted-foreground"
+          className="w-full justify-start gap-3 rounded-lg text-sm font-medium text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-destructive transition-colors"
           onClick={handleLogout}
         >
-          <LogOut className="h-4 w-4" />
+          <LogOut className="h-4 w-4 shrink-0" />
           Sign Out
         </Button>
       </div>

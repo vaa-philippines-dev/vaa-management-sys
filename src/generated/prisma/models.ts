@@ -10,5 +10,8 @@
  */
 export type * from './models/User'
 export type * from './models/VAProfile'
-export type * from './models/Task'
+export type * from './models/Skill'
+export type * from './models/Client'
+export type * from './models/Assignment'
+export type * from './models/WorkLog'
 export type * from './commonInputTypes'

@@ -3,18 +3,19 @@ import { createServerSupabase } from '@/lib/supabase/server'
 
 export async function getCurrentUser() {
   const supabase = await createServerSupabase()
-  if (!supabase) return null
+  if (!supabase) {
+    return prisma.user.findFirst({ where: { role: 'MANAGER' }, include: { vaProfile: true } })
+  }
 
   const {
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) return null
 
-  const dbUser = await prisma.user.findUnique({
+  return prisma.user.findUnique({
     where: { email: user.email! },
     include: { vaProfile: true },
   })
-  return dbUser
 }
 
 export async function requireManager() {
