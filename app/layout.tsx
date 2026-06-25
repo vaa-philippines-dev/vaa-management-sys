@@ -11,6 +11,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "VA Management System",
   description: "Manage virtual assistants, tasks, and deadlines",
+  icons: { icon: "/icon.png" },
 };
 
 export default function RootLayout({
