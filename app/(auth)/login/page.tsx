@@ -51,7 +51,7 @@ export default function LoginPage() {
             Sign in to your VAA account
           </h2>
           <p className="mt-2 text-base text-gray-700">
-            Use your provided Google account or credentials to continue
+            Use your provided Google account
           </p>
         </div>
 
@@ -101,7 +101,7 @@ export default function LoginPage() {
         )}
 
         <p className="text-center text-sm text-gray-900">
-          Account credentials are provided by your manager.
+          Note: Account credentials are provided by your manager.
         </p>
       </div>
     </div>
