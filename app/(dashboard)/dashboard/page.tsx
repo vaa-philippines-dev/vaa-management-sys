@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import {
   Building2,
   Users,
@@ -27,6 +28,10 @@ export default async function DashboardPage() {
         <p className="text-sm text-muted-foreground">Not authenticated.</p>
       </div>
     )
+  }
+
+  if (['SUPER_ADMIN', 'SYSTEM_ADMIN'].includes(user.systemRole)) {
+    redirect('/departments')
   }
 
   if (user.userType === 'VIRTUAL_ASSISTANT') return <VADashboard userId={user.id} vaProfileId={user.vaProfile!.id} />
