@@ -54,7 +54,7 @@ export default async function AssignmentDetailPage({
             Assigned to {assignment.vaProfile.user.firstName || assignment.vaProfile.user.email}
           </p>
         </div>
-        {['SUPER_ADMIN','SYSTEM_ADMIN','EXECUTIVE','DEPT_MANAGER','STAFF'].includes(user?.systemRole) && <AssignmentStatusButtons id={assignment.id} current={assignment.status} />}
+        {['SUPER_ADMIN','SYSTEM_ADMIN','EXECUTIVE','DEPT_MANAGER','STAFF'].includes(user?.systemRole ?? '') && <AssignmentStatusButtons id={assignment.id} current={assignment.status} />}
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
@@ -93,7 +93,7 @@ export default async function AssignmentDetailPage({
       <Card>
         <CardHeader className="pb-3 flex flex-row items-center justify-between">
           <CardTitle className="text-base">Work Logs</CardTitle>
-          {['SUPER_ADMIN','SYSTEM_ADMIN','EXECUTIVE','DEPT_MANAGER','STAFF'].includes(user?.systemRole) && (
+          {['SUPER_ADMIN','SYSTEM_ADMIN','EXECUTIVE','DEPT_MANAGER','STAFF'].includes(user?.systemRole ?? '') && (
             <Link href={`/work-logs/new?assignmentId=${assignment.id}`}>
               <Button size="sm">Log Hours</Button>
             </Link>
