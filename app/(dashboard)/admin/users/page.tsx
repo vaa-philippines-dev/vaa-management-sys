@@ -134,7 +134,7 @@ export default async function AdminUsersPage() {
                   {/* System Role */}
                   <div>
                     <label className="text-xs font-medium text-muted-foreground mb-1 block">System Role</label>
-                    <form action={async (formData: FormData) => {
+                    <form key={`role-${u.id}-${u.systemRole}`} action={async (formData: FormData) => {
                       'use server'
                       const role = formData.get('role') as string
                       await updateUserRole(u.id, role)
@@ -153,7 +153,7 @@ export default async function AdminUsersPage() {
                   {/* User Type */}
                   <div>
                     <label className="text-xs font-medium text-muted-foreground mb-1 block">User Type</label>
-                    <form action={async (formData: FormData) => {
+                    <form key={`type-${u.id}-${u.userType}`} action={async (formData: FormData) => {
                       'use server'
                       const type = formData.get('type') as string
                       await updateUserType(u.id, type)
