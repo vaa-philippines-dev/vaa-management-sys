@@ -6,38 +6,29 @@ import { requireSuperAdmin } from '@/lib/auth'
 
 export async function updateUserRole(userId: string, systemRole: string) {
   await requireSuperAdmin()
-
-  const user = await prisma.user.update({
+  await prisma.user.update({
     where: { id: userId },
     data: { systemRole: systemRole as any },
   })
-
   revalidatePath('/admin/users')
-  return { success: true, user }
 }
 
 export async function updateUserType(userId: string, userType: string) {
   await requireSuperAdmin()
-
-  const user = await prisma.user.update({
+  await prisma.user.update({
     where: { id: userId },
     data: { userType: userType as any },
   })
-
   revalidatePath('/admin/users')
-  return { success: true, user }
 }
 
 export async function toggleUserActive(userId: string, isActive: boolean) {
   await requireSuperAdmin()
-
   await prisma.user.update({
     where: { id: userId },
     data: { isActive },
   })
-
   revalidatePath('/admin/users')
-  return { success: true }
 }
 
 export async function assignDepartmentMembership(
@@ -70,18 +61,14 @@ export async function assignDepartmentMembership(
   }
 
   revalidatePath('/admin/users')
-  return { success: true }
 }
 
 export async function removeDepartmentMembership(membershipId: string) {
   await requireSuperAdmin()
-
   await prisma.departmentMembership.delete({
     where: { id: membershipId },
   })
-
   revalidatePath('/admin/users')
-  return { success: true }
 }
 
 export async function assignTemporaryRole(
@@ -103,28 +90,21 @@ export async function assignTemporaryRole(
   })
 
   revalidatePath('/admin/users')
-  return { success: true }
 }
 
 export async function revokeTemporaryRole(assignmentId: string) {
   await requireSuperAdmin()
-
   await prisma.roleAssignment.update({
     where: { id: assignmentId },
     data: { isActive: false },
   })
-
   revalidatePath('/admin/users')
-  return { success: true }
 }
 
 export async function createDepartment(name: string, description: string | null, isParent: boolean, parentId: string | null) {
   await requireSuperAdmin()
-
   await prisma.department.create({
     data: { name, description: description ?? null, isParent, parentId },
   })
-
   revalidatePath('/admin/users')
-  return { success: true }
 }
