@@ -7,6 +7,9 @@ import Image from 'next/image'
 const errorMessages: Record<string, string> = {
   unauthorized: "This Google account isn't registered in the system. Please use the account your manager provided.",
   auth_failed: "Sign in failed. Please try again.",
+  access_denied: "You declined the Google sign-in. Please try again.",
+  redirect_uri_mismatch: "OAuth redirect URL not configured. Contact your administrator.",
+  account_disabled: "Your account has been disabled. Please contact your administrator.",
 }
 
 export default function LoginPage() {
@@ -15,8 +18,18 @@ export default function LoginPage() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
-    const code = params.get('error')
-    if (code && errorMessages[code]) setError(errorMessages[code])
+    const errorCode = params.get('error')
+    const errorDesc = params.get('error_description')
+    if (errorCode) {
+      const mapped = errorMessages[errorCode]
+      if (mapped) {
+        setError(mapped)
+      } else if (errorDesc) {
+        setError(errorDesc)
+      } else {
+        setError(`Sign in failed (${errorCode}). Please try again.`)
+      }
+    }
   }, [])
 
   const handleGoogleLogin = async () => {
