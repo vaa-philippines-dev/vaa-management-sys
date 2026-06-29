@@ -4,15 +4,14 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Plus, Users, Search, ArrowUpDown } from 'lucide-react'
-
-const CATEGORY_COLORS: Record<string, string> = {
-  AMAZON: 'bg-orange-500/15 text-orange-700 border-orange-500/20',
-  WALMART: 'bg-blue-500/15 text-blue-700 border-blue-500/20',
-  TIKTOK_SHOP: 'bg-pink-500/15 text-pink-700 border-pink-500/20',
-  SHOPIFY: 'bg-green-500/15 text-green-700 border-green-500/20',
-  GENERAL: 'bg-gray-500/15 text-gray-700 border-gray-500/20',
-}
+import { getPrimaryDepartment, hasModuleAccess } from '@/lib/auth'
+import {
+  Users,
+  UserCog,
+  Briefcase,
+  DollarSign,
+  Clock,
+} from 'lucide-react'
 
 const AVAILABILITY_COLORS: Record<string, string> = {
   AVAILABLE: 'bg-green-500/15 text-green-700 border-green-500/20',
@@ -22,18 +21,34 @@ const AVAILABILITY_COLORS: Record<string, string> = {
   UNAVAILABLE: 'bg-red-500/15 text-red-700 border-red-500/20',
 }
 
+const EMPLOYMENT_COLORS: Record<string, string> = {
+  EMPLOYED: 'bg-green-500/15 text-green-700 border-green-500/20',
+  ENGAGED: 'bg-blue-500/15 text-blue-700 border-blue-500/20',
+  CONTRACTED: 'bg-purple-500/15 text-purple-700 border-purple-500/20',
+  END_OF_CONTRACT: 'bg-orange-500/15 text-orange-700 border-orange-500/20',
+  TRANSFERRED: 'bg-yellow-500/15 text-yellow-700 border-yellow-500/20',
+  RESIGNED: 'bg-red-500/15 text-red-700 border-red-500/20',
+  TERMINATED: 'bg-red-500/15 text-red-700 border-red-500/20',
+  BLACKLISTED: 'bg-gray-500/15 text-gray-700 border-gray-500/20',
+}
+
+const hrgRoles = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'EXECUTIVE']
+
 export default async function VAPage() {
-  const user = await getCurrentUser()
-  const isDevMode = !process.env.NEXT_PUBLIC_SUPABASE_URL
+  const currentUser = await getCurrentUser()
+  const isHRE = currentUser ? hrgRoles.includes(currentUser.systemRole) : false
 
   const vas = await prisma.vAProfile.findMany({
+    where: { user: { userType: 'VIRTUAL_ASSISTANT' } },
     include: {
       user: {
         include: {
+          profile: true,
           memberships: {
-            where: { endedAt: null, isPrimary: true },
-            include: { department: true },
+            where: { endedAt: null },
+            include: { department: true, position: true },
           },
+          employmentRecords: { where: { isCurrent: true }, take: 1 },
         },
       },
       vaSkills: { include: { skill: true } },
@@ -55,170 +70,177 @@ export default async function VAPage() {
         <div>
           <h2 className="text-2xl font-bold tracking-tight">VA Master List</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Complete roster of all Virtual Assistants with assignments and skills
+            {isHRE ? 'HR View — full read & write access' : 'Read-only view'} — {vas.length} VAs
           </p>
-        </div>
-        <div className="flex gap-2">
-          {isDevMode && (
-            <Link href="/vas/new">
-              <Button size="sm">
-                <Plus className="h-4 w-4 mr-2" />
-                Add VA
-              </Button>
-            </Link>
-          )}
         </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
-        <Card className="card-hover">
-          <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total VAs</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{vas.length}</p>
-          </CardContent>
-        </Card>
-        <Card className="card-hover">
-          <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Active</CardTitle>
-            <div className="h-2 w-2 rounded-full bg-green-500" />
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{activeCount}</p>
-          </CardContent>
-        </Card>
-        <Card className="card-hover">
-          <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Available</CardTitle>
-            <div className="h-2 w-2 rounded-full bg-green-500" />
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{availableCount}</p>
-          </CardContent>
-        </Card>
-        <Card className="card-hover">
-          <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Active Assignments</CardTitle>
-            <div className="h-2 w-2 rounded-full bg-blue-500" />
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{totalAssignments}</p>
-          </CardContent>
-        </Card>
+        <StatCard icon={Users} label="Total VAs" value={vas.length} />
+        <StatCard icon={UserCog} label="Active" value={activeCount} />
+        <StatCard icon={Clock} label="Available" value={availableCount} />
+        <StatCard icon={Briefcase} label="Assignments" value={totalAssignments} />
       </div>
 
       <Card>
-        <CardHeader className="pb-3">
+        <CardHeader className="pb-2">
           <CardTitle className="text-base flex items-center gap-2">
             <Users className="h-4 w-4" />
-            Master List ({vas.length})
+            VA Roster
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          {vas.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <Users className="h-10 w-10 text-muted-foreground/50 mb-3" />
-              <p className="text-sm text-muted-foreground">No VAs in the system yet.</p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b bg-muted/30">
-                    <th className="text-left px-4 py-3 font-medium text-muted-foreground">Name</th>
-                    <th className="text-left px-4 py-3 font-medium text-muted-foreground hidden md:table-cell">Email</th>
-                    <th className="text-left px-4 py-3 font-medium text-muted-foreground hidden lg:table-cell">Rate</th>
-                    <th className="text-left px-4 py-3 font-medium text-muted-foreground">Availability</th>
-                    <th className="text-left px-4 py-3 font-medium text-muted-foreground hidden lg:table-cell">Department</th>
-                    <th className="text-left px-4 py-3 font-medium text-muted-foreground">Assignments</th>
-                    <th className="text-left px-4 py-3 font-medium text-muted-foreground hidden xl:table-cell">Skills</th>
-                    <th className="text-left px-4 py-3 font-medium text-muted-foreground">Status</th>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b bg-muted/40">
+                  <th className="text-left p-3 font-medium text-muted-foreground sticky left-0 bg-muted/40 z-10">Name</th>
+                  <th className="text-left p-3 font-medium text-muted-foreground hidden md:table-cell">Email</th>
+                  <th className="text-left p-3 font-medium text-muted-foreground hidden lg:table-cell">Dept / Position</th>
+                  <th className="text-left p-3 font-medium text-muted-foreground hidden lg:table-cell">Contract</th>
+                  <th className="text-left p-3 font-medium text-muted-foreground">Availability</th>
+                  <th className="text-left p-3 font-medium text-muted-foreground hidden xl:table-cell">Rate</th>
+                  <th className="text-left p-3 font-medium text-muted-foreground">Assignments</th>
+                  <th className="text-left p-3 font-medium text-muted-foreground">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {vas.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} className="p-8 text-center text-muted-foreground">
+                      No VAs found.
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {vas.map((va) => {
-                    const primaryDept = va.user.memberships?.[0]?.department
+                ) : (
+                  vas.map((va) => {
+                    const emp = va.user.employmentRecords?.[0]
+                    const primaryMem = va.user.memberships?.find((m) => m.isPrimary) ?? va.user.memberships?.[0]
+
                     return (
-                      <tr
-                        key={va.id}
-                        className="border-b hover:bg-muted/30 transition-colors cursor-pointer"
-                        onClick={(e) => {
-                          const target = e.target as HTMLElement
-                          if (target.tagName === 'A' || target.closest('a')) return
-                          window.location.href = `/vas/${va.id}`
-                        }}
-                      >
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-3">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-xs font-medium text-primary shrink-0">
+                      <tr key={va.id} className="border-b hover:bg-muted/30 transition-colors">
+                        <td className="p-3 sticky left-0 bg-background z-10">
+                          <Link href={`/vas/${va.id}`} className="flex items-center gap-2 hover:text-primary transition-colors">
+                            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-xs font-medium text-primary shrink-0">
                               {(va.user.firstName || 'V')[0].toUpperCase()}
                             </div>
-                            <Link href={`/vas/${va.id}`} className="font-medium hover:text-primary transition-colors">
-                              {va.user.firstName} {va.user.lastName}
-                            </Link>
+                            <div>
+                              <p className="font-medium">{va.user.firstName} {va.user.lastName}</p>
+                              {isHRE && va.user.profile?.gender && (
+                                <p className="text-[10px] text-muted-foreground">{va.user.profile.gender}</p>
+                              )}
+                            </div>
+                          </Link>
+                        </td>
+                        <td className="p-3 text-muted-foreground hidden md:table-cell">
+                          <div>
+                            <p>{va.user.email}</p>
+                            {isHRE && va.user.profile?.whatsappNumber && (
+                              <p className="text-[10px]">WA: {va.user.profile.whatsappNumber}</p>
+                            )}
                           </div>
                         </td>
-                        <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">{va.user.email}</td>
-                        <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">
-                          {va.hourlyRate ? `$${Number(va.hourlyRate).toFixed(2)}/hr` : '—'}
-                        </td>
-                        <td className="px-4 py-3">
-                          <Badge variant="outline" className={`text-xs ${AVAILABILITY_COLORS[va.availabilityStatus] || ''}`}>
-                            {va.availabilityStatus.replace(/_/g, ' ')}
-                          </Badge>
-                        </td>
-                        <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">
-                          {primaryDept ? (
-                            <Badge variant="outline" className="text-xs">
-                              {primaryDept.name}
-                            </Badge>
+                        <td className="p-3 hidden lg:table-cell">
+                          {primaryMem ? (
+                            <div>
+                              <Badge variant="outline" className="text-[10px]">{primaryMem.department.name}</Badge>
+                              {primaryMem.position && (
+                                <p className="text-[10px] text-muted-foreground mt-0.5">{primaryMem.position.title}</p>
+                              )}
+                              {va.vaaPosition && (
+                                <p className="text-[10px] text-muted-foreground">{va.vaaPosition}</p>
+                              )}
+                            </div>
                           ) : (
-                            '—'
+                            <span className="text-muted-foreground">—</span>
                           )}
                         </td>
-                        <td className="px-4 py-3">
+                        <td className="p-3 hidden lg:table-cell">
+                          {emp ? (
+                            <div>
+                              <Badge variant="outline" className={`text-[10px] ${EMPLOYMENT_COLORS[emp.employmentStatus] || ''}`}>
+                                {emp.contractType.replace(/_/g, ' ')}
+                              </Badge>
+                              <p className="text-[10px] text-muted-foreground mt-0.5">
+                                Since {new Date(emp.startDate).toLocaleDateString()}
+                              </p>
+                            </div>
+                          ) : (
+                            <span className="text-muted-foreground">—</span>
+                          )}
+                        </td>
+                        <td className="p-3">
+                          <Badge variant="outline" className={`text-[10px] ${AVAILABILITY_COLORS[va.availabilityStatus] || ''}`}>
+                            {va.availabilityStatus.replace(/_/g, ' ')}
+                          </Badge>
+                          {va.hybrid && (
+                            <Badge variant="outline" className="text-[10px] ml-1 bg-purple-500/15 text-purple-700 border-purple-500/20">Hybrid</Badge>
+                          )}
+                        </td>
+                        <td className="p-3 hidden xl:table-cell">
+                          {va.baseRate ? (
+                            <p className="font-mono text-[10px]">₱{Number(va.baseRate).toLocaleString()}/hr</p>
+                          ) : va.hourlyRate ? (
+                            <p className="font-mono text-[10px]">${Number(va.hourlyRate).toFixed(2)}/hr</p>
+                          ) : (
+                            <span className="text-muted-foreground">—</span>
+                          )}
+                          {va.level && (
+                            <p className="text-[10px] text-muted-foreground mt-0.5">Lvl: {va.level}</p>
+                          )}
+                        </td>
+                        <td className="p-3">
                           {va.assignments.length > 0 ? (
                             <div className="flex flex-wrap gap-1">
                               {va.assignments.map((a) => (
                                 <Link key={a.id} href={`/assignments/${a.id}`}>
-                                  <Badge variant="secondary" className="text-xs cursor-pointer hover:bg-secondary/80">
+                                  <Badge variant="secondary" className="text-[10px] cursor-pointer hover:bg-secondary/80 max-w-[100px] truncate">
                                     {a.client.name}
                                   </Badge>
                                 </Link>
                               ))}
                             </div>
                           ) : (
-                            <span className="text-muted-foreground text-xs">None</span>
+                            <span className="text-muted-foreground text-[10px]">None</span>
                           )}
                         </td>
-                        <td className="px-4 py-3 hidden xl:table-cell">
-                          <div className="flex flex-wrap gap-1 max-w-[200px]">
-                            {va.vaSkills.slice(0, 3).map((s) => (
-                              <Badge key={s.id} variant="outline" className={`text-xs ${CATEGORY_COLORS[s.skill.category] || ''}`}>
-                                {s.skill.name}
-                              </Badge>
-                            ))}
-                            {va.vaSkills.length > 3 && (
-                              <span className="text-xs text-muted-foreground">+{va.vaSkills.length - 3}</span>
-                            )}
-                          </div>
-                        </td>
-                        <td className="px-4 py-3">
-                          <Badge variant={va.isActive ? 'default' : 'secondary'} className="text-xs">
-                            {va.isActive ? 'Active' : 'Inactive'}
-                          </Badge>
+                        <td className="p-3">
+                          <Link href={`/vas/${va.id}`}>
+                            <Button variant="ghost" size="sm" className="text-xs h-7">
+                              {isHRE ? 'View / Edit' : 'View'}
+                            </Button>
+                          </Link>
                         </td>
                       </tr>
                     )
-                  })}
-                </tbody>
-              </table>
-            </div>
-          )}
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
         </CardContent>
       </Card>
     </div>
+  )
+}
+
+function StatCard({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: React.ComponentType<{ className?: string }>
+  label: string
+  value: number
+}) {
+  return (
+    <Card className="card-hover">
+      <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
+        <CardTitle className="text-sm font-medium text-muted-foreground">{label}</CardTitle>
+        <Icon className="h-4 w-4 text-muted-foreground" />
+      </CardHeader>
+      <CardContent>
+        <p className="text-2xl font-bold">{value}</p>
+      </CardContent>
+    </Card>
   )
 }

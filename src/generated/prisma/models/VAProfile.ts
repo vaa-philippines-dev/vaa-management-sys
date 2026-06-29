@@ -28,22 +28,40 @@ export type AggregateVAProfile = {
 
 export type VAProfileAvgAggregateOutputType = {
   hourlyRate: runtime.Decimal | null
+  baseRate: runtime.Decimal | null
   totalCapacityHours: runtime.Decimal | null
+  preferredWorkHours: runtime.Decimal | null
 }
 
 export type VAProfileSumAggregateOutputType = {
   hourlyRate: runtime.Decimal | null
+  baseRate: runtime.Decimal | null
   totalCapacityHours: runtime.Decimal | null
+  preferredWorkHours: runtime.Decimal | null
 }
 
 export type VAProfileMinAggregateOutputType = {
   id: string | null
   userId: string | null
   hourlyRate: runtime.Decimal | null
+  baseRate: runtime.Decimal | null
+  vaaPosition: string | null
+  level: string | null
   availabilityStatus: $Enums.Availability | null
   totalCapacityHours: runtime.Decimal | null
+  preferredWorkHours: runtime.Decimal | null
+  availableSchedule: string | null
+  hybrid: boolean | null
   onboardingFolderUrl: string | null
   portfolioUrl: string | null
+  contractLink: string | null
+  folder201Link: string | null
+  file201Link: string | null
+  vaClientFileLink: string | null
+  healthCheckFileLink: string | null
+  vaProfileLink: string | null
+  payoutSummaryLink: string | null
+  dept201FolderLink: string | null
   notes: string | null
   isActive: boolean | null
   createdAt: Date | null
@@ -54,10 +72,24 @@ export type VAProfileMaxAggregateOutputType = {
   id: string | null
   userId: string | null
   hourlyRate: runtime.Decimal | null
+  baseRate: runtime.Decimal | null
+  vaaPosition: string | null
+  level: string | null
   availabilityStatus: $Enums.Availability | null
   totalCapacityHours: runtime.Decimal | null
+  preferredWorkHours: runtime.Decimal | null
+  availableSchedule: string | null
+  hybrid: boolean | null
   onboardingFolderUrl: string | null
   portfolioUrl: string | null
+  contractLink: string | null
+  folder201Link: string | null
+  file201Link: string | null
+  vaClientFileLink: string | null
+  healthCheckFileLink: string | null
+  vaProfileLink: string | null
+  payoutSummaryLink: string | null
+  dept201FolderLink: string | null
   notes: string | null
   isActive: boolean | null
   createdAt: Date | null
@@ -68,10 +100,24 @@ export type VAProfileCountAggregateOutputType = {
   id: number
   userId: number
   hourlyRate: number
+  baseRate: number
+  vaaPosition: number
+  level: number
   availabilityStatus: number
   totalCapacityHours: number
+  preferredWorkHours: number
+  availableSchedule: number
+  hybrid: number
   onboardingFolderUrl: number
   portfolioUrl: number
+  contractLink: number
+  folder201Link: number
+  file201Link: number
+  vaClientFileLink: number
+  healthCheckFileLink: number
+  vaProfileLink: number
+  payoutSummaryLink: number
+  dept201FolderLink: number
   notes: number
   isActive: number
   createdAt: number
@@ -82,22 +128,40 @@ export type VAProfileCountAggregateOutputType = {
 
 export type VAProfileAvgAggregateInputType = {
   hourlyRate?: true
+  baseRate?: true
   totalCapacityHours?: true
+  preferredWorkHours?: true
 }
 
 export type VAProfileSumAggregateInputType = {
   hourlyRate?: true
+  baseRate?: true
   totalCapacityHours?: true
+  preferredWorkHours?: true
 }
 
 export type VAProfileMinAggregateInputType = {
   id?: true
   userId?: true
   hourlyRate?: true
+  baseRate?: true
+  vaaPosition?: true
+  level?: true
   availabilityStatus?: true
   totalCapacityHours?: true
+  preferredWorkHours?: true
+  availableSchedule?: true
+  hybrid?: true
   onboardingFolderUrl?: true
   portfolioUrl?: true
+  contractLink?: true
+  folder201Link?: true
+  file201Link?: true
+  vaClientFileLink?: true
+  healthCheckFileLink?: true
+  vaProfileLink?: true
+  payoutSummaryLink?: true
+  dept201FolderLink?: true
   notes?: true
   isActive?: true
   createdAt?: true
@@ -108,10 +172,24 @@ export type VAProfileMaxAggregateInputType = {
   id?: true
   userId?: true
   hourlyRate?: true
+  baseRate?: true
+  vaaPosition?: true
+  level?: true
   availabilityStatus?: true
   totalCapacityHours?: true
+  preferredWorkHours?: true
+  availableSchedule?: true
+  hybrid?: true
   onboardingFolderUrl?: true
   portfolioUrl?: true
+  contractLink?: true
+  folder201Link?: true
+  file201Link?: true
+  vaClientFileLink?: true
+  healthCheckFileLink?: true
+  vaProfileLink?: true
+  payoutSummaryLink?: true
+  dept201FolderLink?: true
   notes?: true
   isActive?: true
   createdAt?: true
@@ -122,10 +200,24 @@ export type VAProfileCountAggregateInputType = {
   id?: true
   userId?: true
   hourlyRate?: true
+  baseRate?: true
+  vaaPosition?: true
+  level?: true
   availabilityStatus?: true
   totalCapacityHours?: true
+  preferredWorkHours?: true
+  availableSchedule?: true
+  hybrid?: true
   onboardingFolderUrl?: true
   portfolioUrl?: true
+  contractLink?: true
+  folder201Link?: true
+  file201Link?: true
+  vaClientFileLink?: true
+  healthCheckFileLink?: true
+  vaProfileLink?: true
+  payoutSummaryLink?: true
+  dept201FolderLink?: true
   notes?: true
   isActive?: true
   createdAt?: true
@@ -223,10 +315,24 @@ export type VAProfileGroupByOutputType = {
   id: string
   userId: string
   hourlyRate: runtime.Decimal | null
+  baseRate: runtime.Decimal | null
+  vaaPosition: string | null
+  level: string | null
   availabilityStatus: $Enums.Availability
   totalCapacityHours: runtime.Decimal | null
+  preferredWorkHours: runtime.Decimal | null
+  availableSchedule: string | null
+  hybrid: boolean
   onboardingFolderUrl: string | null
   portfolioUrl: string | null
+  contractLink: string | null
+  folder201Link: string | null
+  file201Link: string | null
+  vaClientFileLink: string | null
+  healthCheckFileLink: string | null
+  vaProfileLink: string | null
+  payoutSummaryLink: string | null
+  dept201FolderLink: string | null
   notes: string | null
   isActive: boolean
   createdAt: Date
@@ -260,10 +366,24 @@ export type VAProfileWhereInput = {
   id?: Prisma.StringFilter<"VAProfile"> | string
   userId?: Prisma.StringFilter<"VAProfile"> | string
   hourlyRate?: Prisma.DecimalNullableFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.DecimalNullableFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  level?: Prisma.StringNullableFilter<"VAProfile"> | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFilter<"VAProfile"> | $Enums.Availability
   totalCapacityHours?: Prisma.DecimalNullableFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: Prisma.DecimalNullableFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  hybrid?: Prisma.BoolFilter<"VAProfile"> | boolean
   onboardingFolderUrl?: Prisma.StringNullableFilter<"VAProfile"> | string | null
   portfolioUrl?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  contractLink?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  folder201Link?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  file201Link?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  vaClientFileLink?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  healthCheckFileLink?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  vaProfileLink?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  payoutSummaryLink?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  dept201FolderLink?: Prisma.StringNullableFilter<"VAProfile"> | string | null
   notes?: Prisma.StringNullableFilter<"VAProfile"> | string | null
   isActive?: Prisma.BoolFilter<"VAProfile"> | boolean
   createdAt?: Prisma.DateTimeFilter<"VAProfile"> | Date | string
@@ -279,10 +399,24 @@ export type VAProfileOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   hourlyRate?: Prisma.SortOrderInput | Prisma.SortOrder
+  baseRate?: Prisma.SortOrderInput | Prisma.SortOrder
+  vaaPosition?: Prisma.SortOrderInput | Prisma.SortOrder
+  level?: Prisma.SortOrderInput | Prisma.SortOrder
   availabilityStatus?: Prisma.SortOrder
   totalCapacityHours?: Prisma.SortOrderInput | Prisma.SortOrder
+  preferredWorkHours?: Prisma.SortOrderInput | Prisma.SortOrder
+  availableSchedule?: Prisma.SortOrderInput | Prisma.SortOrder
+  hybrid?: Prisma.SortOrder
   onboardingFolderUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   portfolioUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  contractLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  folder201Link?: Prisma.SortOrderInput | Prisma.SortOrder
+  file201Link?: Prisma.SortOrderInput | Prisma.SortOrder
+  vaClientFileLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  healthCheckFileLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  vaProfileLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  payoutSummaryLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  dept201FolderLink?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -301,10 +435,24 @@ export type VAProfileWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.VAProfileWhereInput[]
   NOT?: Prisma.VAProfileWhereInput | Prisma.VAProfileWhereInput[]
   hourlyRate?: Prisma.DecimalNullableFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.DecimalNullableFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  level?: Prisma.StringNullableFilter<"VAProfile"> | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFilter<"VAProfile"> | $Enums.Availability
   totalCapacityHours?: Prisma.DecimalNullableFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: Prisma.DecimalNullableFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  hybrid?: Prisma.BoolFilter<"VAProfile"> | boolean
   onboardingFolderUrl?: Prisma.StringNullableFilter<"VAProfile"> | string | null
   portfolioUrl?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  contractLink?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  folder201Link?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  file201Link?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  vaClientFileLink?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  healthCheckFileLink?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  vaProfileLink?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  payoutSummaryLink?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  dept201FolderLink?: Prisma.StringNullableFilter<"VAProfile"> | string | null
   notes?: Prisma.StringNullableFilter<"VAProfile"> | string | null
   isActive?: Prisma.BoolFilter<"VAProfile"> | boolean
   createdAt?: Prisma.DateTimeFilter<"VAProfile"> | Date | string
@@ -320,10 +468,24 @@ export type VAProfileOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   hourlyRate?: Prisma.SortOrderInput | Prisma.SortOrder
+  baseRate?: Prisma.SortOrderInput | Prisma.SortOrder
+  vaaPosition?: Prisma.SortOrderInput | Prisma.SortOrder
+  level?: Prisma.SortOrderInput | Prisma.SortOrder
   availabilityStatus?: Prisma.SortOrder
   totalCapacityHours?: Prisma.SortOrderInput | Prisma.SortOrder
+  preferredWorkHours?: Prisma.SortOrderInput | Prisma.SortOrder
+  availableSchedule?: Prisma.SortOrderInput | Prisma.SortOrder
+  hybrid?: Prisma.SortOrder
   onboardingFolderUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   portfolioUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  contractLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  folder201Link?: Prisma.SortOrderInput | Prisma.SortOrder
+  file201Link?: Prisma.SortOrderInput | Prisma.SortOrder
+  vaClientFileLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  healthCheckFileLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  vaProfileLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  payoutSummaryLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  dept201FolderLink?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -342,10 +504,24 @@ export type VAProfileScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"VAProfile"> | string
   userId?: Prisma.StringWithAggregatesFilter<"VAProfile"> | string
   hourlyRate?: Prisma.DecimalNullableWithAggregatesFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.DecimalNullableWithAggregatesFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
+  level?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
   availabilityStatus?: Prisma.EnumAvailabilityWithAggregatesFilter<"VAProfile"> | $Enums.Availability
   totalCapacityHours?: Prisma.DecimalNullableWithAggregatesFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: Prisma.DecimalNullableWithAggregatesFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
+  hybrid?: Prisma.BoolWithAggregatesFilter<"VAProfile"> | boolean
   onboardingFolderUrl?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
   portfolioUrl?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
+  contractLink?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
+  folder201Link?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
+  file201Link?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
+  vaClientFileLink?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
+  healthCheckFileLink?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
+  vaProfileLink?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
+  payoutSummaryLink?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
+  dept201FolderLink?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
   isActive?: Prisma.BoolWithAggregatesFilter<"VAProfile"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"VAProfile"> | Date | string
@@ -355,10 +531,24 @@ export type VAProfileScalarWhereWithAggregatesInput = {
 export type VAProfileCreateInput = {
   id?: string
   hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: string | null
+  level?: string | null
   availabilityStatus?: $Enums.Availability
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: string | null
+  hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
+  contractLink?: string | null
+  folder201Link?: string | null
+  file201Link?: string | null
+  vaClientFileLink?: string | null
+  healthCheckFileLink?: string | null
+  vaProfileLink?: string | null
+  payoutSummaryLink?: string | null
+  dept201FolderLink?: string | null
   notes?: string | null
   isActive?: boolean
   createdAt?: Date | string
@@ -374,10 +564,24 @@ export type VAProfileUncheckedCreateInput = {
   id?: string
   userId: string
   hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: string | null
+  level?: string | null
   availabilityStatus?: $Enums.Availability
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: string | null
+  hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
+  contractLink?: string | null
+  folder201Link?: string | null
+  file201Link?: string | null
+  vaClientFileLink?: string | null
+  healthCheckFileLink?: string | null
+  vaProfileLink?: string | null
+  payoutSummaryLink?: string | null
+  dept201FolderLink?: string | null
   notes?: string | null
   isActive?: boolean
   createdAt?: Date | string
@@ -391,10 +595,24 @@ export type VAProfileUncheckedCreateInput = {
 export type VAProfileUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  folder201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  file201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaClientFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  healthCheckFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaProfileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -410,10 +628,24 @@ export type VAProfileUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  folder201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  file201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaClientFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  healthCheckFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaProfileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -428,10 +660,24 @@ export type VAProfileCreateManyInput = {
   id?: string
   userId: string
   hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: string | null
+  level?: string | null
   availabilityStatus?: $Enums.Availability
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: string | null
+  hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
+  contractLink?: string | null
+  folder201Link?: string | null
+  file201Link?: string | null
+  vaClientFileLink?: string | null
+  healthCheckFileLink?: string | null
+  vaProfileLink?: string | null
+  payoutSummaryLink?: string | null
+  dept201FolderLink?: string | null
   notes?: string | null
   isActive?: boolean
   createdAt?: Date | string
@@ -441,10 +687,24 @@ export type VAProfileCreateManyInput = {
 export type VAProfileUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  folder201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  file201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaClientFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  healthCheckFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaProfileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -455,10 +715,24 @@ export type VAProfileUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  folder201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  file201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaClientFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  healthCheckFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaProfileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -474,10 +748,24 @@ export type VAProfileCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   hourlyRate?: Prisma.SortOrder
+  baseRate?: Prisma.SortOrder
+  vaaPosition?: Prisma.SortOrder
+  level?: Prisma.SortOrder
   availabilityStatus?: Prisma.SortOrder
   totalCapacityHours?: Prisma.SortOrder
+  preferredWorkHours?: Prisma.SortOrder
+  availableSchedule?: Prisma.SortOrder
+  hybrid?: Prisma.SortOrder
   onboardingFolderUrl?: Prisma.SortOrder
   portfolioUrl?: Prisma.SortOrder
+  contractLink?: Prisma.SortOrder
+  folder201Link?: Prisma.SortOrder
+  file201Link?: Prisma.SortOrder
+  vaClientFileLink?: Prisma.SortOrder
+  healthCheckFileLink?: Prisma.SortOrder
+  vaProfileLink?: Prisma.SortOrder
+  payoutSummaryLink?: Prisma.SortOrder
+  dept201FolderLink?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -486,17 +774,33 @@ export type VAProfileCountOrderByAggregateInput = {
 
 export type VAProfileAvgOrderByAggregateInput = {
   hourlyRate?: Prisma.SortOrder
+  baseRate?: Prisma.SortOrder
   totalCapacityHours?: Prisma.SortOrder
+  preferredWorkHours?: Prisma.SortOrder
 }
 
 export type VAProfileMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   hourlyRate?: Prisma.SortOrder
+  baseRate?: Prisma.SortOrder
+  vaaPosition?: Prisma.SortOrder
+  level?: Prisma.SortOrder
   availabilityStatus?: Prisma.SortOrder
   totalCapacityHours?: Prisma.SortOrder
+  preferredWorkHours?: Prisma.SortOrder
+  availableSchedule?: Prisma.SortOrder
+  hybrid?: Prisma.SortOrder
   onboardingFolderUrl?: Prisma.SortOrder
   portfolioUrl?: Prisma.SortOrder
+  contractLink?: Prisma.SortOrder
+  folder201Link?: Prisma.SortOrder
+  file201Link?: Prisma.SortOrder
+  vaClientFileLink?: Prisma.SortOrder
+  healthCheckFileLink?: Prisma.SortOrder
+  vaProfileLink?: Prisma.SortOrder
+  payoutSummaryLink?: Prisma.SortOrder
+  dept201FolderLink?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -507,10 +811,24 @@ export type VAProfileMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   hourlyRate?: Prisma.SortOrder
+  baseRate?: Prisma.SortOrder
+  vaaPosition?: Prisma.SortOrder
+  level?: Prisma.SortOrder
   availabilityStatus?: Prisma.SortOrder
   totalCapacityHours?: Prisma.SortOrder
+  preferredWorkHours?: Prisma.SortOrder
+  availableSchedule?: Prisma.SortOrder
+  hybrid?: Prisma.SortOrder
   onboardingFolderUrl?: Prisma.SortOrder
   portfolioUrl?: Prisma.SortOrder
+  contractLink?: Prisma.SortOrder
+  folder201Link?: Prisma.SortOrder
+  file201Link?: Prisma.SortOrder
+  vaClientFileLink?: Prisma.SortOrder
+  healthCheckFileLink?: Prisma.SortOrder
+  vaProfileLink?: Prisma.SortOrder
+  payoutSummaryLink?: Prisma.SortOrder
+  dept201FolderLink?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -519,7 +837,9 @@ export type VAProfileMinOrderByAggregateInput = {
 
 export type VAProfileSumOrderByAggregateInput = {
   hourlyRate?: Prisma.SortOrder
+  baseRate?: Prisma.SortOrder
   totalCapacityHours?: Prisma.SortOrder
+  preferredWorkHours?: Prisma.SortOrder
 }
 
 export type VAProfileScalarRelationFilter = {
@@ -630,10 +950,24 @@ export type VAProfileUpdateOneRequiredWithoutWorkLogsNestedInput = {
 export type VAProfileCreateWithoutUserInput = {
   id?: string
   hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: string | null
+  level?: string | null
   availabilityStatus?: $Enums.Availability
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: string | null
+  hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
+  contractLink?: string | null
+  folder201Link?: string | null
+  file201Link?: string | null
+  vaClientFileLink?: string | null
+  healthCheckFileLink?: string | null
+  vaProfileLink?: string | null
+  payoutSummaryLink?: string | null
+  dept201FolderLink?: string | null
   notes?: string | null
   isActive?: boolean
   createdAt?: Date | string
@@ -647,10 +981,24 @@ export type VAProfileCreateWithoutUserInput = {
 export type VAProfileUncheckedCreateWithoutUserInput = {
   id?: string
   hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: string | null
+  level?: string | null
   availabilityStatus?: $Enums.Availability
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: string | null
+  hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
+  contractLink?: string | null
+  folder201Link?: string | null
+  file201Link?: string | null
+  vaClientFileLink?: string | null
+  healthCheckFileLink?: string | null
+  vaProfileLink?: string | null
+  payoutSummaryLink?: string | null
+  dept201FolderLink?: string | null
   notes?: string | null
   isActive?: boolean
   createdAt?: Date | string
@@ -680,10 +1028,24 @@ export type VAProfileUpdateToOneWithWhereWithoutUserInput = {
 export type VAProfileUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  folder201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  file201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaClientFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  healthCheckFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaProfileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -697,10 +1059,24 @@ export type VAProfileUpdateWithoutUserInput = {
 export type VAProfileUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  folder201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  file201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaClientFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  healthCheckFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaProfileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -714,10 +1090,24 @@ export type VAProfileUncheckedUpdateWithoutUserInput = {
 export type VAProfileCreateWithoutVaSkillsInput = {
   id?: string
   hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: string | null
+  level?: string | null
   availabilityStatus?: $Enums.Availability
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: string | null
+  hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
+  contractLink?: string | null
+  folder201Link?: string | null
+  file201Link?: string | null
+  vaClientFileLink?: string | null
+  healthCheckFileLink?: string | null
+  vaProfileLink?: string | null
+  payoutSummaryLink?: string | null
+  dept201FolderLink?: string | null
   notes?: string | null
   isActive?: boolean
   createdAt?: Date | string
@@ -732,10 +1122,24 @@ export type VAProfileUncheckedCreateWithoutVaSkillsInput = {
   id?: string
   userId: string
   hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: string | null
+  level?: string | null
   availabilityStatus?: $Enums.Availability
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: string | null
+  hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
+  contractLink?: string | null
+  folder201Link?: string | null
+  file201Link?: string | null
+  vaClientFileLink?: string | null
+  healthCheckFileLink?: string | null
+  vaProfileLink?: string | null
+  payoutSummaryLink?: string | null
+  dept201FolderLink?: string | null
   notes?: string | null
   isActive?: boolean
   createdAt?: Date | string
@@ -764,10 +1168,24 @@ export type VAProfileUpdateToOneWithWhereWithoutVaSkillsInput = {
 export type VAProfileUpdateWithoutVaSkillsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  folder201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  file201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaClientFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  healthCheckFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaProfileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -782,10 +1200,24 @@ export type VAProfileUncheckedUpdateWithoutVaSkillsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  folder201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  file201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaClientFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  healthCheckFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaProfileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -798,10 +1230,24 @@ export type VAProfileUncheckedUpdateWithoutVaSkillsInput = {
 export type VAProfileCreateWithoutDocumentsInput = {
   id?: string
   hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: string | null
+  level?: string | null
   availabilityStatus?: $Enums.Availability
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: string | null
+  hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
+  contractLink?: string | null
+  folder201Link?: string | null
+  file201Link?: string | null
+  vaClientFileLink?: string | null
+  healthCheckFileLink?: string | null
+  vaProfileLink?: string | null
+  payoutSummaryLink?: string | null
+  dept201FolderLink?: string | null
   notes?: string | null
   isActive?: boolean
   createdAt?: Date | string
@@ -816,10 +1262,24 @@ export type VAProfileUncheckedCreateWithoutDocumentsInput = {
   id?: string
   userId: string
   hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: string | null
+  level?: string | null
   availabilityStatus?: $Enums.Availability
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: string | null
+  hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
+  contractLink?: string | null
+  folder201Link?: string | null
+  file201Link?: string | null
+  vaClientFileLink?: string | null
+  healthCheckFileLink?: string | null
+  vaProfileLink?: string | null
+  payoutSummaryLink?: string | null
+  dept201FolderLink?: string | null
   notes?: string | null
   isActive?: boolean
   createdAt?: Date | string
@@ -848,10 +1308,24 @@ export type VAProfileUpdateToOneWithWhereWithoutDocumentsInput = {
 export type VAProfileUpdateWithoutDocumentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  folder201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  file201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaClientFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  healthCheckFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaProfileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -866,10 +1340,24 @@ export type VAProfileUncheckedUpdateWithoutDocumentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  folder201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  file201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaClientFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  healthCheckFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaProfileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -882,10 +1370,24 @@ export type VAProfileUncheckedUpdateWithoutDocumentsInput = {
 export type VAProfileCreateWithoutAssignmentsInput = {
   id?: string
   hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: string | null
+  level?: string | null
   availabilityStatus?: $Enums.Availability
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: string | null
+  hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
+  contractLink?: string | null
+  folder201Link?: string | null
+  file201Link?: string | null
+  vaClientFileLink?: string | null
+  healthCheckFileLink?: string | null
+  vaProfileLink?: string | null
+  payoutSummaryLink?: string | null
+  dept201FolderLink?: string | null
   notes?: string | null
   isActive?: boolean
   createdAt?: Date | string
@@ -900,10 +1402,24 @@ export type VAProfileUncheckedCreateWithoutAssignmentsInput = {
   id?: string
   userId: string
   hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: string | null
+  level?: string | null
   availabilityStatus?: $Enums.Availability
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: string | null
+  hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
+  contractLink?: string | null
+  folder201Link?: string | null
+  file201Link?: string | null
+  vaClientFileLink?: string | null
+  healthCheckFileLink?: string | null
+  vaProfileLink?: string | null
+  payoutSummaryLink?: string | null
+  dept201FolderLink?: string | null
   notes?: string | null
   isActive?: boolean
   createdAt?: Date | string
@@ -932,10 +1448,24 @@ export type VAProfileUpdateToOneWithWhereWithoutAssignmentsInput = {
 export type VAProfileUpdateWithoutAssignmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  folder201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  file201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaClientFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  healthCheckFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaProfileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -950,10 +1480,24 @@ export type VAProfileUncheckedUpdateWithoutAssignmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  folder201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  file201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaClientFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  healthCheckFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaProfileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -966,10 +1510,24 @@ export type VAProfileUncheckedUpdateWithoutAssignmentsInput = {
 export type VAProfileCreateWithoutWorkLogsInput = {
   id?: string
   hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: string | null
+  level?: string | null
   availabilityStatus?: $Enums.Availability
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: string | null
+  hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
+  contractLink?: string | null
+  folder201Link?: string | null
+  file201Link?: string | null
+  vaClientFileLink?: string | null
+  healthCheckFileLink?: string | null
+  vaProfileLink?: string | null
+  payoutSummaryLink?: string | null
+  dept201FolderLink?: string | null
   notes?: string | null
   isActive?: boolean
   createdAt?: Date | string
@@ -984,10 +1542,24 @@ export type VAProfileUncheckedCreateWithoutWorkLogsInput = {
   id?: string
   userId: string
   hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: string | null
+  level?: string | null
   availabilityStatus?: $Enums.Availability
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: string | null
+  hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
+  contractLink?: string | null
+  folder201Link?: string | null
+  file201Link?: string | null
+  vaClientFileLink?: string | null
+  healthCheckFileLink?: string | null
+  vaProfileLink?: string | null
+  payoutSummaryLink?: string | null
+  dept201FolderLink?: string | null
   notes?: string | null
   isActive?: boolean
   createdAt?: Date | string
@@ -1016,10 +1588,24 @@ export type VAProfileUpdateToOneWithWhereWithoutWorkLogsInput = {
 export type VAProfileUpdateWithoutWorkLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  folder201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  file201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaClientFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  healthCheckFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaProfileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1034,10 +1620,24 @@ export type VAProfileUncheckedUpdateWithoutWorkLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  folder201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  file201Link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaClientFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  healthCheckFileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaProfileLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1109,10 +1709,24 @@ export type VAProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   id?: boolean
   userId?: boolean
   hourlyRate?: boolean
+  baseRate?: boolean
+  vaaPosition?: boolean
+  level?: boolean
   availabilityStatus?: boolean
   totalCapacityHours?: boolean
+  preferredWorkHours?: boolean
+  availableSchedule?: boolean
+  hybrid?: boolean
   onboardingFolderUrl?: boolean
   portfolioUrl?: boolean
+  contractLink?: boolean
+  folder201Link?: boolean
+  file201Link?: boolean
+  vaClientFileLink?: boolean
+  healthCheckFileLink?: boolean
+  vaProfileLink?: boolean
+  payoutSummaryLink?: boolean
+  dept201FolderLink?: boolean
   notes?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -1129,10 +1743,24 @@ export type VAProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   id?: boolean
   userId?: boolean
   hourlyRate?: boolean
+  baseRate?: boolean
+  vaaPosition?: boolean
+  level?: boolean
   availabilityStatus?: boolean
   totalCapacityHours?: boolean
+  preferredWorkHours?: boolean
+  availableSchedule?: boolean
+  hybrid?: boolean
   onboardingFolderUrl?: boolean
   portfolioUrl?: boolean
+  contractLink?: boolean
+  folder201Link?: boolean
+  file201Link?: boolean
+  vaClientFileLink?: boolean
+  healthCheckFileLink?: boolean
+  vaProfileLink?: boolean
+  payoutSummaryLink?: boolean
+  dept201FolderLink?: boolean
   notes?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -1144,10 +1772,24 @@ export type VAProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   id?: boolean
   userId?: boolean
   hourlyRate?: boolean
+  baseRate?: boolean
+  vaaPosition?: boolean
+  level?: boolean
   availabilityStatus?: boolean
   totalCapacityHours?: boolean
+  preferredWorkHours?: boolean
+  availableSchedule?: boolean
+  hybrid?: boolean
   onboardingFolderUrl?: boolean
   portfolioUrl?: boolean
+  contractLink?: boolean
+  folder201Link?: boolean
+  file201Link?: boolean
+  vaClientFileLink?: boolean
+  healthCheckFileLink?: boolean
+  vaProfileLink?: boolean
+  payoutSummaryLink?: boolean
+  dept201FolderLink?: boolean
   notes?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -1159,17 +1801,31 @@ export type VAProfileSelectScalar = {
   id?: boolean
   userId?: boolean
   hourlyRate?: boolean
+  baseRate?: boolean
+  vaaPosition?: boolean
+  level?: boolean
   availabilityStatus?: boolean
   totalCapacityHours?: boolean
+  preferredWorkHours?: boolean
+  availableSchedule?: boolean
+  hybrid?: boolean
   onboardingFolderUrl?: boolean
   portfolioUrl?: boolean
+  contractLink?: boolean
+  folder201Link?: boolean
+  file201Link?: boolean
+  vaClientFileLink?: boolean
+  healthCheckFileLink?: boolean
+  vaProfileLink?: boolean
+  payoutSummaryLink?: boolean
+  dept201FolderLink?: boolean
   notes?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type VAProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "hourlyRate" | "availabilityStatus" | "totalCapacityHours" | "onboardingFolderUrl" | "portfolioUrl" | "notes" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["vAProfile"]>
+export type VAProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "hourlyRate" | "baseRate" | "vaaPosition" | "level" | "availabilityStatus" | "totalCapacityHours" | "preferredWorkHours" | "availableSchedule" | "hybrid" | "onboardingFolderUrl" | "portfolioUrl" | "contractLink" | "folder201Link" | "file201Link" | "vaClientFileLink" | "healthCheckFileLink" | "vaProfileLink" | "payoutSummaryLink" | "dept201FolderLink" | "notes" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["vAProfile"]>
 export type VAProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   assignments?: boolean | Prisma.VAProfile$assignmentsArgs<ExtArgs>
@@ -1198,10 +1854,24 @@ export type $VAProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     id: string
     userId: string
     hourlyRate: runtime.Decimal | null
+    baseRate: runtime.Decimal | null
+    vaaPosition: string | null
+    level: string | null
     availabilityStatus: $Enums.Availability
     totalCapacityHours: runtime.Decimal | null
+    preferredWorkHours: runtime.Decimal | null
+    availableSchedule: string | null
+    hybrid: boolean
     onboardingFolderUrl: string | null
     portfolioUrl: string | null
+    contractLink: string | null
+    folder201Link: string | null
+    file201Link: string | null
+    vaClientFileLink: string | null
+    healthCheckFileLink: string | null
+    vaProfileLink: string | null
+    payoutSummaryLink: string | null
+    dept201FolderLink: string | null
     notes: string | null
     isActive: boolean
     createdAt: Date
@@ -1637,10 +2307,24 @@ export interface VAProfileFieldRefs {
   readonly id: Prisma.FieldRef<"VAProfile", 'String'>
   readonly userId: Prisma.FieldRef<"VAProfile", 'String'>
   readonly hourlyRate: Prisma.FieldRef<"VAProfile", 'Decimal'>
+  readonly baseRate: Prisma.FieldRef<"VAProfile", 'Decimal'>
+  readonly vaaPosition: Prisma.FieldRef<"VAProfile", 'String'>
+  readonly level: Prisma.FieldRef<"VAProfile", 'String'>
   readonly availabilityStatus: Prisma.FieldRef<"VAProfile", 'Availability'>
   readonly totalCapacityHours: Prisma.FieldRef<"VAProfile", 'Decimal'>
+  readonly preferredWorkHours: Prisma.FieldRef<"VAProfile", 'Decimal'>
+  readonly availableSchedule: Prisma.FieldRef<"VAProfile", 'String'>
+  readonly hybrid: Prisma.FieldRef<"VAProfile", 'Boolean'>
   readonly onboardingFolderUrl: Prisma.FieldRef<"VAProfile", 'String'>
   readonly portfolioUrl: Prisma.FieldRef<"VAProfile", 'String'>
+  readonly contractLink: Prisma.FieldRef<"VAProfile", 'String'>
+  readonly folder201Link: Prisma.FieldRef<"VAProfile", 'String'>
+  readonly file201Link: Prisma.FieldRef<"VAProfile", 'String'>
+  readonly vaClientFileLink: Prisma.FieldRef<"VAProfile", 'String'>
+  readonly healthCheckFileLink: Prisma.FieldRef<"VAProfile", 'String'>
+  readonly vaProfileLink: Prisma.FieldRef<"VAProfile", 'String'>
+  readonly payoutSummaryLink: Prisma.FieldRef<"VAProfile", 'String'>
+  readonly dept201FolderLink: Prisma.FieldRef<"VAProfile", 'String'>
   readonly notes: Prisma.FieldRef<"VAProfile", 'String'>
   readonly isActive: Prisma.FieldRef<"VAProfile", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"VAProfile", 'DateTime'>
