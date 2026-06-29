@@ -16,7 +16,7 @@ export default async function VADetailPage({
   const va = await prisma.vAProfile.findUnique({
     where: { id },
     include: {
-      user: true,
+      user: { include: { memberships: { include: { department: true } } } },
       vaSkills: { include: { skill: true } },
       assignments: { include: { client: true, workLogs: true } },
     },
@@ -42,7 +42,7 @@ export default async function VADetailPage({
             </Badge>
           </div>
           <p className="text-sm text-muted-foreground mt-1">
-            {va.user.email} • {va.user.department}
+            {va.user.email} • {va.user.memberships?.find(m => m.isPrimary)?.department.name ?? va.user.memberships?.[0]?.department.name ?? 'No department'}
           </p>
         </div>
       </div>
