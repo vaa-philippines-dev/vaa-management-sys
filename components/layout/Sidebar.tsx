@@ -108,7 +108,7 @@ export function Sidebar({ role = 'MANAGER', isAdmin = false }: { role?: 'MANAGER
                   Departments
                 </Button>
               </Link>
-              <Link href="/admin/users">
+              <Link href="/admin">
                 <Button
                   variant="ghost"
                   className={cn(
