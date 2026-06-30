@@ -71,13 +71,16 @@ export async function updateUserProfile(userId: string, formData: FormData) {
   await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER')
 
   const data: Record<string, any> = {}
+  const userData: Record<string, any> = {}
   const allowedFields = [
     'firstName', 'lastName', 'gender', 'birthDate', 'nonCelebrant',
     'whatsappNumber', 'gcashNumber', 'phone',
-    'barangay', 'cityMunicipality', 'province', 'zipCode', 'landmark',
+    'barangay', 'cityMunicipality', 'province', 'zipCode', 'landmark', 'address',
     'emergencyContactName', 'emergencyContactPhone', 'emergencyContactRelation',
-    'facebookUrl', 'linkedinUrl',
+    'facebookUrl', 'facebookName', 'linkedinUrl',
+    'payoneerAccount', 'personalEmail',
     'passportNumber', 'passportPhoto', 'philhealthNumber', 'philhealthPhoto',
+    'signedContract',
   ]
 
   for (const field of allowedFields) {
@@ -93,8 +96,6 @@ export async function updateUserProfile(userId: string, formData: FormData) {
     }
   }
 
-  // Update user fields
-  const userData: Record<string, any> = {}
   if ('firstName' in data) { userData.firstName = data.firstName; delete data.firstName }
   if ('lastName' in data) { userData.lastName = data.lastName; delete data.lastName }
 
@@ -102,7 +103,6 @@ export async function updateUserProfile(userId: string, formData: FormData) {
     await prisma.user.update({ where: { id: userId }, data: userData })
   }
 
-  // Update/upsert user profile fields
   if (Object.keys(data).length > 0) {
     await prisma.userProfile.upsert({
       where: { userId },

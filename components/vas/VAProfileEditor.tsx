@@ -1,26 +1,27 @@
 'use client'
 
-import { useState, useActionState } from 'react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Pencil,
   Check,
   X,
-  ExternalLink,
   FileText,
-  MapPin,
-  Shield,
-  Briefcase,
+  Mail,
   Phone,
-  User,
+  MapPin,
+  Briefcase,
   Users,
-  HardDrive,
+  User,
+  Cake,
+  Wallet,
+  Building2,
 } from 'lucide-react'
 import { updateVAProfile, updateUserProfile } from '@/app/(dashboard)/vas/actions'
+import { FileUploadField } from '@/components/vas/FileUploadField'
 import { format } from 'date-fns'
 import type { DriveFile } from '@/lib/google/drive'
 
@@ -58,8 +59,11 @@ type VAData = {
     whatsappNumber: string | null
     gcashNumber: string | null
     phone: string | null
+    personalEmail: string | null
+    payoneerAccount: string | null
     birthDate: string | null
     nonCelebrant: boolean
+    address: string | null
     barangay: string | null
     cityMunicipality: string | null
     province: string | null
@@ -68,12 +72,14 @@ type VAData = {
     emergencyContactName: string | null
     emergencyContactPhone: string | null
     emergencyContactRelation: string | null
+    facebookName: string | null
     facebookUrl: string | null
     linkedinUrl: string | null
     passportNumber: string | null
     passportPhoto: string | null
     philhealthNumber: string | null
     philhealthPhoto: string | null
+    signedContract: string | null
   } | null
   membership: { departmentName: string; positionTitle: string | null } | null
   employment: { contractType: string; employmentStatus: string; startDate: string; endDate: string | null } | null
@@ -81,9 +87,6 @@ type VAData = {
 
 export function VAProfileEditor({
   data,
-  skills,
-  assignments,
-  documents,
   driveFiles,
 }: {
   data: VAData
@@ -96,212 +99,166 @@ export function VAProfileEditor({
   const [saving, setSaving] = useState(false)
 
   const closeEdit = () => setEditSection(null)
+  const isEditing = (s: string) => editSection === s
 
   return (
     <div className="space-y-6">
       {/* Personal Information */}
-      <EditableSection
+      <SectionCard
         title="Personal Information"
         icon={User}
-        isEditing={editSection === 'personal'}
+        isEditing={isEditing('personal')}
         onEdit={() => setEditSection('personal')}
         onCancel={closeEdit}
         saving={saving}
       >
-        {editSection === 'personal' ? (
+        {isEditing('personal') ? (
           <PersonalForm data={data} onSaved={closeEdit} setSaving={setSaving} />
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 text-sm">
-            <F label="First Name" value={data.user.firstName} />
-            <F label="Last Name" value={data.user.lastName} />
-            <F label="Gender" value={data.profile?.gender} />
-            <F label="Birthday" value={data.profile?.birthDate ? format(new Date(data.profile.birthDate), 'MMM dd, yyyy') : null} />
-            <F label="Non-Celebrant" value={data.profile?.nonCelebrant ? 'Yes' : null} />
-            <F label="Work Email" value={data.user.email} />
-            <F label="WhatsApp" value={data.profile?.whatsappNumber} link={data.profile?.whatsappNumber ? `https://wa.me/${data.profile.whatsappNumber.replace(/\D/g, '')}` : null} />
-            <F label="GCASH" value={data.profile?.gcashNumber} />
+          <div className="grid gap-x-6 gap-y-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            <FV label="Assigned Email" value={data.user.email} icon={Mail} />
+            <FV label="Personal Email" value={data.profile?.personalEmail} icon={Mail} />
+            <FV label="WhatsApp" value={data.profile?.whatsappNumber} icon={Phone} />
+            <FV label="Emergency Contact" value={data.profile?.emergencyContactName || data.profile?.emergencyContactPhone ? `${data.profile?.emergencyContactName || ''}${data.profile?.emergencyContactPhone ? ` — ${data.profile.emergencyContactPhone}` : ''}` : null} />
           </div>
         )}
-      </EditableSection>
+      </SectionCard>
 
       {/* Address */}
-      <EditableSection
-        title="Address"
+      <SectionCard
+        title="Complete Address"
         icon={MapPin}
-        isEditing={editSection === 'address'}
+        isEditing={isEditing('address')}
         onEdit={() => setEditSection('address')}
         onCancel={closeEdit}
         saving={saving}
       >
-        {editSection === 'address' ? (
+        {isEditing('address') ? (
           <AddressForm data={data} onSaved={closeEdit} setSaving={setSaving} />
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 text-sm">
-            <F label="Barangay" value={data.profile?.barangay} />
-            <F label="City / Municipality" value={data.profile?.cityMunicipality} />
-            <F label="Province" value={data.profile?.province} />
-            <F label="Zip Code" value={data.profile?.zipCode} />
-            <F label="Landmark" value={data.profile?.landmark} />
+          <div className="grid gap-x-6 gap-y-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            <FV label="House #, Building & Street" value={data.profile?.address} />
+            <FV label="Province" value={data.profile?.province} />
+            <FV label="City / Municipality" value={data.profile?.cityMunicipality} />
+            <FV label="Barangay" value={data.profile?.barangay} />
+            <FV label="Zip Code" value={data.profile?.zipCode} />
+            <FV label="Landmark" value={data.profile?.landmark} />
           </div>
         )}
-      </EditableSection>
+      </SectionCard>
 
       {/* Employment */}
-      <EditableSection
+      <SectionCard
         title="Employment"
         icon={Briefcase}
-        isEditing={editSection === 'employment'}
+        isEditing={isEditing('employment')}
         onEdit={() => setEditSection('employment')}
         onCancel={closeEdit}
         saving={saving}
       >
-        {editSection === 'employment' ? (
+        {isEditing('employment') ? (
           <EmploymentForm data={data} onSaved={closeEdit} setSaving={setSaving} />
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 text-sm">
-            <F label="Contract Type" value={data.employment?.contractType?.replace(/_/g, ' ')} />
-            <F label="Employment Status" value={data.employment?.employmentStatus?.replace(/_/g, ' ')} />
-            <F label="Hire Date" value={data.employment?.startDate ? format(new Date(data.employment.startDate), 'MMM dd, yyyy') : null} />
-            <F label="EOC / End Date" value={data.employment?.endDate ? format(new Date(data.employment.endDate), 'MMM dd, yyyy') : 'N/A'} />
-            <F label="VAA Position" value={data.vaProfile.vaaPosition} />
-            <F label="Level" value={data.vaProfile.level} />
-            <F label="Base Rate (PHP)" value={data.vaProfile.baseRate ? `₱${Number(data.vaProfile.baseRate).toLocaleString()}/hr` : null} />
-            <F label="Hourly Rate (USD)" value={data.vaProfile.hourlyRate ? `$${Number(data.vaProfile.hourlyRate).toFixed(2)}/hr` : null} />
-            <F label="Preferred Hours" value={data.vaProfile.preferredWorkHours ? `${Number(data.vaProfile.preferredWorkHours)}h/week` : null} />
-            <F label="Available Schedule" value={data.vaProfile.availableSchedule} />
-            <F label="Availability" value={data.vaProfile.availabilityStatus?.replace(/_/g, ' ')} badge />
-            <F label="Hybrid" value={data.vaProfile.hybrid ? 'Yes' : 'No'} />
+          <div className="space-y-4">
+            <div className="grid gap-x-6 gap-y-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+              <FV label="Contract Type" value={data.employment?.contractType?.replace(/_/g, ' ')} />
+              <FV label="Employment Status" value={data.employment?.employmentStatus?.replace(/_/g, ' ')} badge />
+              <FV label="Hire Date" value={data.employment?.startDate ? format(new Date(data.employment.startDate), 'MMM dd, yyyy') : null} />
+              <FV label="Position" value={data.membership?.positionTitle || data.vaProfile.vaaPosition} />
+              <FV label="Base Rate (PHP)" value={data.vaProfile.baseRate ? `₱${Number(data.vaProfile.baseRate).toLocaleString()}/hr` : null} />
+              <FV label="Hourly Rate (USD)" value={data.vaProfile.hourlyRate ? `$${Number(data.vaProfile.hourlyRate).toFixed(2)}/hr` : null} />
+            </div>
+            <div className="border-t pt-4 mt-2">
+              <p className="text-xs font-medium text-muted-foreground mb-3">Payment Details</p>
+              <div className="grid gap-x-6 gap-y-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                <FV
+                  label="Birth Date"
+                  value={
+                    data.profile?.birthDate
+                      ? `${format(new Date(data.profile.birthDate), 'MMM dd, yyyy')}${data.profile.nonCelebrant ? ' (non-celebrant)' : ''}`
+                      : null
+                  }
+                  icon={Cake}
+                />
+                <FV label="GCash" value={data.profile?.gcashNumber} icon={Wallet} />
+                <FV label="Payoneer" value={data.profile?.payoneerAccount} icon={Building2} />
+              </div>
+            </div>
           </div>
         )}
-      </EditableSection>
-
-      {/* Emergency Contact */}
-      <EditableSection
-        title="Emergency Contact"
-        icon={Phone}
-        isEditing={editSection === 'emergency'}
-        onEdit={() => setEditSection('emergency')}
-        onCancel={closeEdit}
-        saving={saving}
-      >
-        {editSection === 'emergency' ? (
-          <EmergencyForm data={data} onSaved={closeEdit} setSaving={setSaving} />
-        ) : (
-          <div className="grid gap-4 md:grid-cols-3 text-sm">
-            <F label="Contact Name" value={data.profile?.emergencyContactName} />
-            <F label="Contact Number" value={data.profile?.emergencyContactPhone} />
-            <F label="Relationship" value={data.profile?.emergencyContactRelation} />
-          </div>
-        )}
-      </EditableSection>
+      </SectionCard>
 
       {/* Socials */}
-      <EditableSection
+      <SectionCard
         title="Socials"
         icon={Users}
-        isEditing={editSection === 'socials'}
+        isEditing={isEditing('socials')}
         onEdit={() => setEditSection('socials')}
         onCancel={closeEdit}
         saving={saving}
       >
-        {editSection === 'socials' ? (
+        {isEditing('socials') ? (
           <SocialsForm data={data} onSaved={closeEdit} setSaving={setSaving} />
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 text-sm">
-            <F label="Facebook" value={data.profile?.facebookUrl} link={data.profile?.facebookUrl} />
-            <F label="LinkedIn" value={data.profile?.linkedinUrl} link={data.profile?.linkedinUrl} />
+          <div className="grid gap-x-6 gap-y-3 grid-cols-1 sm:grid-cols-2">
+            <FV label="Facebook Name" value={data.profile?.facebookName} />
+            <FV label="Facebook URL" value={data.profile?.facebookUrl} link={data.profile?.facebookUrl} />
           </div>
         )}
-      </EditableSection>
+      </SectionCard>
 
-      {/* Identification */}
-      <EditableSection
-        title="Identification"
-        icon={Shield}
-        isEditing={editSection === 'identification'}
-        onEdit={() => setEditSection('identification')}
-        onCancel={closeEdit}
-        saving={saving}
-      >
-        {editSection === 'identification' ? (
-          <IDForm data={data} onSaved={closeEdit} setSaving={setSaving} />
-        ) : (
-          <div className="grid gap-4 md:grid-cols-2 text-sm">
-            <F label="Passport Number" value={data.profile?.passportNumber} />
-            <F label="Passport Photo" value={data.profile?.passportPhoto ? 'Uploaded' : null} link={data.profile?.passportPhoto} />
-            <F label="PhilHealth Number" value={data.profile?.philhealthNumber} />
-            <F label="PhilHealth Photo" value={data.profile?.philhealthPhoto ? 'Uploaded' : null} link={data.profile?.philhealthPhoto} />
-          </div>
-        )}
-      </EditableSection>
-
-      {/* Documents */}
-      <EditableSection
-        title="Documents"
+      {/* 201 Files (Identification + Documents merged) */}
+      <SectionCard
+        title="201 Files"
         icon={FileText}
-        isEditing={editSection === 'docs'}
-        onEdit={() => setEditSection('docs')}
+        isEditing={isEditing('201files')}
+        onEdit={() => setEditSection('201files')}
         onCancel={closeEdit}
         saving={saving}
       >
-        {editSection === 'docs' ? (
-          <DocsForm data={data} onSaved={closeEdit} setSaving={setSaving} />
+        {isEditing('201files') ? (
+          <Files201Form data={data} onSaved={closeEdit} setSaving={setSaving} />
         ) : (
-          <div className="space-y-2 text-sm">
-            {[
-              { label: 'Contract', link: data.vaProfile.contractLink },
-              { label: '201 Folder', link: data.vaProfile.folder201Link },
-              { label: '201 File', link: data.vaProfile.file201Link },
-              { label: 'VA-Client File', link: data.vaProfile.vaClientFileLink },
-              { label: 'Health Check File', link: data.vaProfile.healthCheckFileLink },
-              { label: 'VA Portfolio', link: data.vaProfile.portfolioUrl },
-              { label: 'VA Profile', link: data.vaProfile.vaProfileLink },
-              { label: 'Payout Summary', link: data.vaProfile.payoutSummaryLink },
-              { label: '201 Dept Folder', link: data.vaProfile.dept201FolderLink },
-            ].filter((d) => d.link).map((doc) => (
-              <div key={doc.label} className="flex items-center justify-between py-1">
-                <span>{doc.label}</span>
-                <a href={doc.link!} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
-                  <FileText className="h-3 w-3" /> View
-                </a>
+          <div className="space-y-4">
+            <div className="grid gap-x-6 gap-y-3 grid-cols-1 sm:grid-cols-2">
+              <FV label="Passport Number" value={data.profile?.passportNumber} />
+              <FV label="PhilHealth Number" value={data.profile?.philhealthNumber} />
+            </div>
+            <div className="border-t pt-3">
+              <p className="text-xs font-medium text-muted-foreground mb-2">Uploaded Documents</p>
+              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                <DocView label="Passport Photo" url={data.profile?.passportPhoto} />
+                <DocView label="PhilHealth Photo" url={data.profile?.philhealthPhoto} />
+                <DocView label="Signed Contract" url={data.profile?.signedContract} />
               </div>
-            ))}
-            {documents.length > 0 && (
-              <div className="mt-3 pt-3 border-t">
-                <p className="text-xs font-medium text-muted-foreground mb-2">Uploaded Files</p>
-                {documents.map((d) => (
-                  <div key={d.id} className="flex items-center justify-between py-1">
-                    <span className="text-sm">{d.documentType.replace(/_/g, ' ')} — {d.fileName}</span>
-                    <a href={d.googleDriveUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline">
-                      View
-                    </a>
-                  </div>
-                ))}
-              </div>
-            )}
+            </div>
             {driveFiles.length > 0 && (
-              <div className="mt-3 pt-3 border-t">
-                <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1">
-                  <HardDrive className="h-3 w-3" /> Google Drive
-                </p>
-                {driveFiles.map((f) => (
-                  <div key={f.id} className="flex items-center justify-between py-1">
-                    <span className="text-sm">{f.name}</span>
-                    <a href={f.webViewLink} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline">
-                      View
+              <div className="border-t pt-3">
+                <p className="text-xs font-medium text-muted-foreground mb-2">Google Drive Files</p>
+                <div className="grid gap-1">
+                  {driveFiles.map((f) => (
+                    <a
+                      key={f.id}
+                      href={f.webViewLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-xs text-primary hover:underline py-1"
+                    >
+                      <FileText className="h-3 w-3 shrink-0" />
+                      <span className="truncate">{f.name}</span>
                     </a>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             )}
           </div>
         )}
-      </EditableSection>
+      </SectionCard>
     </div>
   )
 }
 
-function EditableSection({
+function SectionCard({
   title,
   icon: Icon,
   isEditing,
@@ -319,57 +276,82 @@ function EditableSection({
   children: React.ReactNode
 }) {
   return (
-    <Card>
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Icon className="h-4 w-4 text-muted-foreground" />
-            <CardTitle className="text-base">{title}</CardTitle>
-          </div>
-          {isEditing ? (
-            <div className="flex gap-1">
-              <Button form={`form-${title.toLowerCase().replace(/\s+/g, '-')}`} type="submit" size="sm" className="text-xs h-7" disabled={saving}>
-                <Check className="h-3 w-3 mr-1" /> Save
-              </Button>
-              <Button variant="ghost" size="sm" className="text-xs h-7" onClick={onCancel} disabled={saving}>
-                <X className="h-3 w-3" />
-              </Button>
-            </div>
-          ) : (
-            <Button variant="ghost" size="sm" className="text-xs text-muted-foreground" onClick={onEdit}>
-              <Pencil className="h-3 w-3 mr-1" /> Edit
-            </Button>
-          )}
+    <div className="rounded-xl border bg-card shadow-sm">
+      <div className="flex items-center justify-between px-5 py-3 border-b bg-muted/30">
+        <div className="flex items-center gap-2">
+          <Icon className="h-4 w-4 text-muted-foreground" />
+          <h3 className="text-sm font-semibold">{title}</h3>
         </div>
-      </CardHeader>
-      <CardContent>{children}</CardContent>
-    </Card>
+        {isEditing ? (
+          <div className="flex gap-1">
+            <Button form={`form-${title.toLowerCase().replace(/\s+/g, '-')}`} type="submit" size="sm" className="text-xs h-7" disabled={saving}>
+              <Check className="h-3 w-3 mr-1" /> Save
+            </Button>
+            <Button variant="ghost" size="sm" className="text-xs h-7" onClick={onCancel} disabled={saving}>
+              <X className="h-3 w-3" />
+            </Button>
+          </div>
+        ) : (
+          <Button variant="ghost" size="sm" className="text-xs text-muted-foreground h-7" onClick={onEdit}>
+            <Pencil className="h-3 w-3 mr-1" /> Edit
+          </Button>
+        )}
+      </div>
+      <div className="px-5 py-4">{children}</div>
+    </div>
   )
 }
 
-function F({ label, value, link, badge }: { label: string; value: string | null | undefined; link?: string | null; badge?: boolean }) {
+function FV({
+  label,
+  value,
+  icon: Icon,
+  link,
+  badge,
+}: {
+  label: string
+  value: string | null | undefined
+  icon?: React.ComponentType<{ className?: string }>
+  link?: string | null
+  badge?: boolean
+}) {
   if (!value) return null
   return (
-    <div>
-      <p className="text-xs text-muted-foreground mb-0.5">{label}</p>
+    <div className="min-w-0">
+      <p className="text-[11px] text-muted-foreground mb-0.5 flex items-center gap-1">
+        {Icon && <Icon className="h-3 w-3 shrink-0" />}
+        {label}
+      </p>
       {badge ? (
         <Badge variant="outline" className="text-xs">{value}</Badge>
       ) : link ? (
-        <a href={link} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline flex items-center gap-1">
-          {value} <ExternalLink className="h-3 w-3" />
+        <a href={link} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline block truncate">
+          {value}
         </a>
       ) : (
-        <p className="text-sm">{value}</p>
+        <p className="text-sm truncate">{value}</p>
       )}
     </div>
   )
 }
 
-function I({ name, label, defaultValue, type = 'text' }: { name: string; label: string; defaultValue?: string | null; type?: string }) {
+function DocView({ label, url }: { label: string; url: string | null | undefined }) {
+  if (!url) return null
+  return (
+    <div className="flex items-center justify-between py-1 px-3 rounded-lg border bg-muted/20">
+      <span className="text-xs">{label}</span>
+      <a href={url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
+        <FileText className="h-3 w-3" /> View
+      </a>
+    </div>
+  )
+}
+
+function FI({ name, label, defaultValue, type = 'text', placeholder }: { name: string; label: string; defaultValue?: string | null; type?: string; placeholder?: string }) {
   return (
     <div className="space-y-1">
       <Label htmlFor={name} className="text-xs">{label}</Label>
-      <Input id={name} name={name} defaultValue={defaultValue ?? ''} type={type} className="h-8 text-xs" />
+      <Input id={name} name={name} defaultValue={defaultValue ?? ''} type={type} placeholder={placeholder} className="h-8 text-xs" />
     </div>
   )
 }
@@ -381,86 +363,117 @@ function PersonalForm({ data, onSaved, setSaving }: { data: VAData; onSaved: () 
       await updateUserProfile(data.user.id, fd)
       setSaving(false)
       onSaved()
-    }} className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-      <I name="firstName" label="First Name" defaultValue={data.user.firstName} />
-      <I name="lastName" label="Last Name" defaultValue={data.user.lastName} />
-      <I name="gender" label="Gender" defaultValue={data.profile?.gender} />
-      <I name="birthDate" label="Birthday" defaultValue={data.profile?.birthDate} type="date" />
-      <I name="whatsappNumber" label="WhatsApp" defaultValue={data.profile?.whatsappNumber} />
-      <I name="gcashNumber" label="GCASH" defaultValue={data.profile?.gcashNumber} />
-      <I name="phone" label="Phone" defaultValue={data.profile?.phone} />
+    }} className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      <FI name="firstName" label="First Name" defaultValue={data.user.firstName} />
+      <FI name="lastName" label="Last Name" defaultValue={data.user.lastName} />
+      <FI name="personalEmail" label="Personal Email" defaultValue={data.profile?.personalEmail} type="email" placeholder="personal@email.com" />
+      <FI name="whatsappNumber" label="WhatsApp Number" defaultValue={data.profile?.whatsappNumber} placeholder="09000000000" />
+      <FI name="emergencyContactName" label="Emergency Contact Name" defaultValue={data.profile?.emergencyContactName} />
+      <FI name="emergencyContactPhone" label="Emergency Contact Number" defaultValue={data.profile?.emergencyContactPhone} placeholder="09000000000" />
     </form>
   )
 }
 
 function AddressForm({ data, onSaved, setSaving }: { data: VAData; onSaved: () => void; setSaving: (v: boolean) => void }) {
   return (
-    <form id="form-address" action={async (fd) => { setSaving(true); await updateUserProfile(data.user.id, fd); setSaving(false); onSaved() }} className="grid gap-3 md:grid-cols-2">
-      <I name="barangay" label="Barangay" defaultValue={data.profile?.barangay} />
-      <I name="cityMunicipality" label="City / Municipality" defaultValue={data.profile?.cityMunicipality} />
-      <I name="province" label="Province" defaultValue={data.profile?.province} />
-      <I name="zipCode" label="Zip Code" defaultValue={data.profile?.zipCode} />
-      <I name="landmark" label="Landmark" defaultValue={data.profile?.landmark} />
+    <form id="form-complete-address" action={async (fd) => { setSaving(true); await updateUserProfile(data.user.id, fd); setSaving(false); onSaved() }} className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      <FI name="address" label="House #, Building & Street Name" defaultValue={data.profile?.address} placeholder="123 Main St, Building A" />
+      <FI name="province" label="Province" defaultValue={data.profile?.province} />
+      <FI name="cityMunicipality" label="City / Municipality" defaultValue={data.profile?.cityMunicipality} />
+      <FI name="barangay" label="Barangay" defaultValue={data.profile?.barangay} />
+      <FI name="zipCode" label="Zip Code" defaultValue={data.profile?.zipCode} placeholder="1000" />
+      <FI name="landmark" label="Landmark" defaultValue={data.profile?.landmark} />
     </form>
   )
 }
 
 function EmploymentForm({ data, onSaved, setSaving }: { data: VAData; onSaved: () => void; setSaving: (v: boolean) => void }) {
   return (
-    <form id="form-employment" action={async (fd) => { setSaving(true); await updateVAProfile(data.vaProfile.id, fd); setSaving(false); onSaved() }} className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-      <I name="vaaPosition" label="VAA Position" defaultValue={data.vaProfile.vaaPosition} />
-      <I name="level" label="Level" defaultValue={data.vaProfile.level} />
-      <I name="baseRate" label="Base Rate (PHP)" defaultValue={data.vaProfile.baseRate?.toString()} type="number" />
-      <I name="hourlyRate" label="Hourly Rate (USD)" defaultValue={data.vaProfile.hourlyRate?.toString()} type="number" />
-      <I name="preferredWorkHours" label="Preferred Hours" defaultValue={data.vaProfile.preferredWorkHours?.toString()} type="number" />
-      <I name="availableSchedule" label="Schedule" defaultValue={data.vaProfile.availableSchedule} />
-      <I name="notes" label="Notes" defaultValue={data.vaProfile.notes} />
-    </form>
-  )
-}
-
-function EmergencyForm({ data, onSaved, setSaving }: { data: VAData; onSaved: () => void; setSaving: (v: boolean) => void }) {
-  return (
-    <form id="form-emergency-contact" action={async (fd) => { setSaving(true); await updateUserProfile(data.user.id, fd); setSaving(false); onSaved() }} className="grid gap-3 md:grid-cols-3">
-      <I name="emergencyContactName" label="Contact Name" defaultValue={data.profile?.emergencyContactName} />
-      <I name="emergencyContactPhone" label="Contact Number" defaultValue={data.profile?.emergencyContactPhone} />
-      <I name="emergencyContactRelation" label="Relationship" defaultValue={data.profile?.emergencyContactRelation} />
+    <form id="form-employment" action={async (fd) => {
+      setSaving(true)
+      await updateVAProfile(data.vaProfile.id, fd)
+      await updateUserProfile(data.user.id, fd)
+      setSaving(false)
+      onSaved()
+    }} className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      <FI name="vaaPosition" label="VAA Position" defaultValue={data.vaProfile.vaaPosition} />
+      <FI name="level" label="Level" defaultValue={data.vaProfile.level} />
+      <FI name="baseRate" label="Base Rate (PHP)" defaultValue={data.vaProfile.baseRate?.toString()} type="number" />
+      <FI name="hourlyRate" label="Hourly Rate (USD)" defaultValue={data.vaProfile.hourlyRate?.toString()} type="number" />
+      <FI name="preferredWorkHours" label="Preferred Hours (Weekly)" defaultValue={data.vaProfile.preferredWorkHours?.toString()} type="number" />
+      <FI name="birthDate" label="Birth Date" defaultValue={data.profile?.birthDate} type="date" />
+      <div className="flex items-center gap-2 pt-5">
+        <input type="checkbox" id="nonCelebrant" name="nonCelebrant" value="true" defaultChecked={data.profile?.nonCelebrant} className="rounded" />
+        <Label htmlFor="nonCelebrant" className="text-xs cursor-pointer">I don&apos;t celebrate birthdays</Label>
+      </div>
+      <FI name="gcashNumber" label="GCash Number" defaultValue={data.profile?.gcashNumber} placeholder="09000000000" />
+      <FI name="payoneerAccount" label="Payoneer Account" defaultValue={data.profile?.payoneerAccount} type="email" placeholder="email@example.com" />
+      <FI name="notes" label="Notes" defaultValue={data.vaProfile.notes} />
     </form>
   )
 }
 
 function SocialsForm({ data, onSaved, setSaving }: { data: VAData; onSaved: () => void; setSaving: (v: boolean) => void }) {
   return (
-    <form id="form-socials" action={async (fd) => { setSaving(true); await updateUserProfile(data.user.id, fd); setSaving(false); onSaved() }} className="grid gap-3 md:grid-cols-2">
-      <I name="facebookUrl" label="Facebook URL" defaultValue={data.profile?.facebookUrl} />
-      <I name="linkedinUrl" label="LinkedIn URL" defaultValue={data.profile?.linkedinUrl} />
+    <form id="form-socials" action={async (fd) => { setSaving(true); await updateUserProfile(data.user.id, fd); setSaving(false); onSaved() }} className="grid gap-3 grid-cols-1 sm:grid-cols-2">
+      <FI name="facebookName" label="Facebook Name" defaultValue={data.profile?.facebookName} />
+      <FI name="facebookUrl" label="Facebook URL" defaultValue={data.profile?.facebookUrl} placeholder="https://facebook.com/..." />
     </form>
   )
 }
 
-function IDForm({ data, onSaved, setSaving }: { data: VAData; onSaved: () => void; setSaving: (v: boolean) => void }) {
-  return (
-    <form id="form-identification" action={async (fd) => { setSaving(true); await updateUserProfile(data.user.id, fd); setSaving(false); onSaved() }} className="grid gap-3 md:grid-cols-2">
-      <I name="passportNumber" label="Passport Number" defaultValue={data.profile?.passportNumber} />
-      <I name="passportPhoto" label="Passport Photo URL" defaultValue={data.profile?.passportPhoto} />
-      <I name="philhealthNumber" label="PhilHealth Number" defaultValue={data.profile?.philhealthNumber} />
-      <I name="philhealthPhoto" label="PhilHealth Photo URL" defaultValue={data.profile?.philhealthPhoto} />
-    </form>
-  )
-}
+function Files201Form({ data, onSaved, setSaving }: { data: VAData; onSaved: () => void; setSaving: (v: boolean) => void }) {
+  const vaName = `${data.user.firstName} ${data.user.lastName}`.trim()
+  const [passportPhoto, setPassportPhoto] = useState(data.profile?.passportPhoto ?? null)
+  const [philhealthPhoto, setPhilhealthPhoto] = useState(data.profile?.philhealthPhoto ?? null)
+  const [signedContract, setSignedContract] = useState(data.profile?.signedContract ?? null)
 
-function DocsForm({ data, onSaved, setSaving }: { data: VAData; onSaved: () => void; setSaving: (v: boolean) => void }) {
   return (
-    <form id="form-documents" action={async (fd) => { setSaving(true); await updateVAProfile(data.vaProfile.id, fd); setSaving(false); onSaved() }} className="grid gap-3 md:grid-cols-2">
-      <I name="contractLink" label="Contract Link" defaultValue={data.vaProfile.contractLink} />
-      <I name="folder201Link" label="201 Folder Link" defaultValue={data.vaProfile.folder201Link} />
-      <I name="file201Link" label="201 File Link" defaultValue={data.vaProfile.file201Link} />
-      <I name="vaClientFileLink" label="VA-Client File Link" defaultValue={data.vaProfile.vaClientFileLink} />
-      <I name="healthCheckFileLink" label="Health Check File Link" defaultValue={data.vaProfile.healthCheckFileLink} />
-      <I name="portfolioUrl" label="Portfolio URL" defaultValue={data.vaProfile.portfolioUrl} />
-      <I name="vaProfileLink" label="VA Profile Link" defaultValue={data.vaProfile.vaProfileLink} />
-      <I name="payoutSummaryLink" label="Payout Summary Link" defaultValue={data.vaProfile.payoutSummaryLink} />
-      <I name="dept201FolderLink" label="201 Dept Folder Link" defaultValue={data.vaProfile.dept201FolderLink} />
+    <form id="form-201-files" action={async (fd) => {
+      setSaving(true)
+      if (passportPhoto) fd.set('passportPhoto', passportPhoto)
+      if (philhealthPhoto) fd.set('philhealthPhoto', philhealthPhoto)
+      if (signedContract) fd.set('signedContract', signedContract)
+      await updateUserProfile(data.user.id, fd)
+      setSaving(false)
+      onSaved()
+    }} className="space-y-4">
+      <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
+        <FI name="passportNumber" label="Passport Number" defaultValue={data.profile?.passportNumber} />
+        <FI name="philhealthNumber" label="PhilHealth Number" defaultValue={data.profile?.philhealthNumber} />
+      </div>
+      <div className="border-t pt-4">
+        <p className="text-xs font-medium text-muted-foreground mb-3">Upload Documents to Google Drive</p>
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          <FileUploadField
+            label="Passport Photo"
+            currentUrl={passportPhoto}
+            fieldName="passport_photo"
+            vaName={vaName}
+            profileId={data.user.id}
+            onUploaded={setPassportPhoto}
+            accept="image/*,.pdf"
+          />
+          <FileUploadField
+            label="PhilHealth Photo"
+            currentUrl={philhealthPhoto}
+            fieldName="philhealth_photo"
+            vaName={vaName}
+            profileId={data.user.id}
+            onUploaded={setPhilhealthPhoto}
+            accept="image/*,.pdf"
+          />
+          <FileUploadField
+            label="Signed Contract"
+            currentUrl={signedContract}
+            fieldName="signed_contract"
+            vaName={vaName}
+            profileId={data.user.id}
+            onUploaded={setSignedContract}
+            accept="image/*,.pdf"
+          />
+        </div>
+      </div>
     </form>
   )
 }
