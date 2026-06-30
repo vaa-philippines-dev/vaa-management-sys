@@ -16,6 +16,7 @@ import {
   Building2,
   Plus,
   Trash2,
+  UserPlus,
 } from 'lucide-react'
 import {
   updateUserRole,
@@ -26,6 +27,7 @@ import {
   assignTemporaryRole,
   revokeTemporaryRole,
   createDepartment,
+  createUser,
 } from './actions'
 import { redirect } from 'next/navigation'
 
@@ -93,6 +95,80 @@ export default async function AdminUsersPage() {
           </Button>
         </form>
       </div>
+
+      {/* Create User */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <UserPlus className="h-4 w-4" />
+            Add User
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form
+            action={async (formData: FormData) => {
+              'use server'
+              try {
+                await createUser(formData)
+              } catch (e: any) {
+                console.error('[createUser]', e?.message)
+              }
+            }}
+            className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5"
+          >
+            <input
+              name="email"
+              type="email"
+              placeholder="email@company.com"
+              className="px-3 py-1.5 text-sm border rounded-md bg-background lg:col-span-2"
+              required
+            />
+            <input
+              name="firstName"
+              placeholder="First name"
+              className="px-3 py-1.5 text-sm border rounded-md bg-background"
+              required
+            />
+            <input
+              name="lastName"
+              placeholder="Last name"
+              className="px-3 py-1.5 text-sm border rounded-md bg-background"
+              required
+            />
+            <select
+              name="systemRole"
+              className="px-3 py-1.5 text-sm border rounded-md bg-background"
+              defaultValue=""
+              required
+            >
+              <option value="" disabled>Select role...</option>
+              <option value="SUPER_ADMIN">Super Admin</option>
+              <option value="SYSTEM_ADMIN">System Admin</option>
+              <option value="EXECUTIVE">Executive</option>
+              <option value="DEPT_MANAGER">Dept Manager</option>
+              <option value="STAFF">Staff</option>
+              <option value="VA">VA</option>
+            </select>
+            <select
+              name="userType"
+              className="px-3 py-1.5 text-sm border rounded-md bg-background lg:col-span-2"
+              defaultValue="INTERNAL_STAFF"
+            >
+              <option value="INTERNAL_STAFF">Internal Staff</option>
+              <option value="VIRTUAL_ASSISTANT">Virtual Assistant</option>
+            </select>
+            <div className="lg:col-span-3 flex items-center justify-end gap-2">
+              <p className="text-[11px] text-muted-foreground italic">
+                After creating, the user signs in with their matching Google account.
+              </p>
+              <Button type="submit" size="sm">
+                <Plus className="h-4 w-4 mr-1" />
+                Add User
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
 
       {/* Users */}
       <Card>

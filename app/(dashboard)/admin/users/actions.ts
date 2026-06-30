@@ -134,3 +134,38 @@ export async function toggleDepartmentActive(id: string) {
   revalidatePath('/admin')
   revalidatePath('/departments')
 }
+
+export async function createUser(formData: FormData) {
+  await requireSuperAdmin()
+
+  const email = (formData.get('email') as string)?.trim().toLowerCase()
+  const firstName = (formData.get('firstName') as string)?.trim()
+  const lastName = (formData.get('lastName') as string)?.trim()
+  const systemRole = (formData.get('systemRole') as string)?.trim()
+  const userType = (formData.get('userType') as string)?.trim()
+
+  if (!email) throw new Error('Email is required')
+  if (!firstName || !lastName) throw new Error('First and last name are required')
+  if (!systemRole || !userType) throw new Error('System role and user type are required')
+
+  const existing = await prisma.user.findUnique({ where: { email } })
+  if (existing) throw new Error('A user with this email already exists')
+
+  const created = await prisma.user.create({
+    data: {
+      email,
+      firstName,
+      lastName,
+      systemRole: systemRole as any,
+      userType: userType as any,
+      isActive: true,
+      ...(userType === 'VIRTUAL_ASSISTANT' && {
+        vaProfile: { create: { hourlyRate: null } },
+      }),
+    },
+  })
+
+  revalidatePath('/admin/users')
+  revalidatePath('/admin')
+  return { id: created.id, email: created.email }
+}
