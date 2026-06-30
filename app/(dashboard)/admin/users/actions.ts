@@ -135,6 +135,26 @@ export async function toggleDepartmentActive(id: string) {
   revalidatePath('/departments')
 }
 
+export async function editDepartment(id: string, formData: FormData) {
+  await requireSuperAdmin()
+  const name = (formData.get('name') as string)?.trim()
+  const description = (formData.get('description') as string)?.trim()
+
+  if (!id || !name) return
+
+  await prisma.department.update({
+    where: { id },
+    data: {
+      name,
+      description: description || null,
+    },
+  })
+
+  revalidatePath('/admin/users')
+  revalidatePath('/admin')
+  revalidatePath('/departments')
+}
+
 export async function createUser(formData: FormData) {
   await requireSuperAdmin()
 

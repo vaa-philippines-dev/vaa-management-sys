@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { updateDepartment, toggleDepartmentActive } from '@/app/(dashboard)/admin/users/actions'
+import { editDepartment, toggleDepartmentActive } from '@/app/(dashboard)/admin/users/actions'
 import { Pencil, Check, X, ToggleLeft, ToggleRight } from 'lucide-react'
 
 export function DepartmentCard({
@@ -18,20 +18,13 @@ export function DepartmentCard({
   const [name, setName] = useState(dept.name)
   const [description, setDescription] = useState(dept.description ?? '')
 
+  const editAction = editDepartment.bind(null, dept.id)
+  const toggleAction = toggleDepartmentActive.bind(null, dept.id)
+
   return (
     <div className="p-4 rounded-lg border bg-card group">
       {editing ? (
-        <form
-          action={async (formData: FormData) => {
-            const newName = formData.get('name') as string
-            const newDesc = formData.get('description') as string
-            if (newName) {
-              await updateDepartment(dept.id, { name: newName, description: newDesc || null })
-            }
-            setEditing(false)
-          }}
-          className="space-y-2"
-        >
+        <form action={editAction} className="space-y-2">
           <input
             name="name"
             value={name}
@@ -75,7 +68,7 @@ export function DepartmentCard({
               >
                 <Pencil className="h-3 w-3 text-muted-foreground" />
               </button>
-              <form action={toggleDepartmentActive.bind(null, dept.id)}>
+              <form action={toggleAction}>
                 <button
                   type="submit"
                   className="p-1 hover:bg-accent rounded transition-colors"
