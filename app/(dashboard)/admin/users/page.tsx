@@ -4,13 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import {
   Users,
   Shield,
   Building2,
@@ -19,15 +12,15 @@ import {
   UserPlus,
 } from 'lucide-react'
 import {
-  updateUserRole,
-  updateUserType,
   toggleUserActive,
-  assignDepartmentMembership,
   removeDepartmentMembership,
-  assignTemporaryRole,
   revokeTemporaryRole,
   createDepartmentInline,
   createUser,
+  updateUserRoleByForm,
+  updateUserTypeByForm,
+  assignDeptByForm,
+  assignTempRoleByForm,
 } from './actions'
 import { redirect } from 'next/navigation'
 
@@ -192,11 +185,7 @@ export default async function AdminUsersPage() {
                   {/* System Role */}
                   <div>
                     <label className="text-xs font-medium text-muted-foreground mb-1 block">System Role</label>
-                    <form key={`role-${u.id}-${u.systemRole}`} action={async (formData: FormData) => {
-                      'use server'
-                      const role = formData.get('role') as string
-                      await updateUserRole(u.id, role)
-                    }}>
+                    <form key={`role-${u.id}-${u.systemRole}`} action={updateUserRoleByForm.bind(null, u.id)}>
                       <div className="flex gap-2">
                         <select name="role" defaultValue={u.systemRole} className="px-2 py-1 text-xs border rounded-md bg-background flex-1">
                           {systemRoles.map((r) => (
@@ -211,11 +200,7 @@ export default async function AdminUsersPage() {
                   {/* User Type */}
                   <div>
                     <label className="text-xs font-medium text-muted-foreground mb-1 block">User Type</label>
-                    <form key={`type-${u.id}-${u.userType}`} action={async (formData: FormData) => {
-                      'use server'
-                      const type = formData.get('type') as string
-                      await updateUserType(u.id, type)
-                    }}>
+                    <form key={`type-${u.id}-${u.userType}`} action={updateUserTypeByForm.bind(null, u.id)}>
                       <div className="flex gap-2">
                         <select name="type" defaultValue={u.userType} className="px-2 py-1 text-xs border rounded-md bg-background flex-1">
                           {userTypes.map((t) => (
@@ -245,14 +230,7 @@ export default async function AdminUsersPage() {
                       </Badge>
                     ))}
                   </div>
-                  <form
-                    action={async (formData: FormData) => {
-                      'use server'
-                      const deptId = formData.get('departmentId') as string
-                      const posId = formData.get('positionId') as string
-                      const isPrimary = formData.get('isPrimary') === 'true'
-                      if (deptId) await assignDepartmentMembership(u.id, deptId, posId || null, isPrimary)
-                    }}
+                  <form action={assignDeptByForm.bind(null, u.id)}
                     className="flex gap-2 flex-wrap"
                   >
                     <select name="departmentId" className="px-2 py-1 text-xs border rounded-md bg-background" required>
@@ -298,14 +276,7 @@ export default async function AdminUsersPage() {
                       </Badge>
                     ))}
                   </div>
-                  <form
-                    action={async (formData: FormData) => {
-                      'use server'
-                      const role = formData.get('role') as string
-                      const module = formData.get('module') as string
-                      const deptId = formData.get('tempDeptId') as string
-                      if (role && module) await assignTemporaryRole(u.id, role, module, deptId || null)
-                    }}
+                  <form action={assignTempRoleByForm.bind(null, u.id)}
                     className="flex gap-2 flex-wrap"
                   >
                     <select name="module" className="px-2 py-1 text-xs border rounded-md bg-background" required>

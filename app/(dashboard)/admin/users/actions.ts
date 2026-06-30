@@ -202,3 +202,27 @@ export async function createUser(formData: FormData) {
   revalidatePath('/admin/users')
   revalidatePath('/admin')
 }
+
+export async function updateUserRoleByForm(id: string, formData: FormData) {
+  const role = formData.get('role') as string
+  if (role) await updateUserRole(id, role)
+}
+
+export async function updateUserTypeByForm(id: string, formData: FormData) {
+  const type = formData.get('type') as string
+  if (type) await updateUserType(id, type)
+}
+
+export async function assignDeptByForm(id: string, formData: FormData) {
+  const deptId = formData.get('departmentId') as string
+  const posId = formData.get('positionId') as string
+  const isPrimary = formData.get('isPrimary') === 'true'
+  if (deptId) await assignDepartmentMembership(id, deptId, posId || null, isPrimary)
+}
+
+export async function assignTempRoleByForm(id: string, formData: FormData) {
+  const role = formData.get('role') as string
+  const module = formData.get('module') as string
+  const deptId = formData.get('tempDeptId') as string
+  if (role && module) await assignTemporaryRole(id, role, module, deptId || null)
+}
