@@ -520,7 +520,7 @@ function Files201Dialog({ data, vaName }: { data: VAData; vaName: string }) {
                   label="Passport Photo"
                   icon={IdCard}
                   currentUrl={passportPhoto}
-                  fieldName="passport_photo"
+                  fieldName="passportPhoto"
                   vaName={vaName}
                   profileId={data.user.id}
                   onUploaded={setPassportPhoto}
@@ -529,7 +529,7 @@ function Files201Dialog({ data, vaName }: { data: VAData; vaName: string }) {
                   label="PhilHealth Photo"
                   icon={Camera}
                   currentUrl={philhealthPhoto}
-                  fieldName="philhealth_photo"
+                  fieldName="philhealthPhoto"
                   vaName={vaName}
                   profileId={data.user.id}
                   onUploaded={setPhilhealthPhoto}
@@ -538,7 +538,7 @@ function Files201Dialog({ data, vaName }: { data: VAData; vaName: string }) {
                   label="Signed Contract"
                   icon={FileText}
                   currentUrl={signedContract}
-                  fieldName="signed_contract"
+                  fieldName="signedContract"
                   vaName={vaName}
                   profileId={data.user.id}
                   onUploaded={setSignedContract}
