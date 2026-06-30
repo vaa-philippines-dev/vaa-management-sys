@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { editDepartment, toggleDepartmentActive } from '@/app/(dashboard)/admin/users/actions'
 import { Pencil, Check, X, ToggleLeft, ToggleRight } from 'lucide-react'
 
@@ -38,12 +40,12 @@ export function DepartmentCard({
             className="w-full px-2 py-1 text-sm border rounded-md bg-background"
           />
           <div className="flex gap-1 justify-end">
-            <button type="submit" className="inline-flex items-center justify-center rounded-md text-xs font-medium px-2 py-1 hover:bg-muted transition-colors">
+            <Button type="submit" size="sm" variant="ghost" className="text-xs h-7">
               <Check className="h-3 w-3" />
-            </button>
-            <button type="button" className="inline-flex items-center justify-center rounded-md text-xs font-medium px-2 py-1 hover:bg-muted transition-colors" onClick={() => setEditing(false)}>
+            </Button>
+            <Button type="button" size="sm" variant="ghost" className="text-xs h-7" onClick={() => setEditing(false)}>
               <X className="h-3 w-3" />
-            </button>
+            </Button>
           </div>
         </form>
       ) : (
@@ -55,7 +57,7 @@ export function DepartmentCard({
                 {dept.name}
               </Link>
               {!dept.isActive && (
-                <span className="inline-flex h-5 items-center rounded-4xl border px-2 py-0.5 text-xs font-medium bg-red-500/10 text-red-600 border-red-500/20">Inactive</span>
+                <Badge variant="outline" className="text-xs bg-red-500/10 text-red-600 border-red-500/20">Inactive</Badge>
               )}
             </div>
             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
