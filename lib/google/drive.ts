@@ -71,6 +71,8 @@ export async function listDriveFiles(): Promise<DriveFile[]> {
     fields: 'files(id, name, mimeType, webViewLink, size, createdTime)',
     orderBy: 'name',
     pageSize: 100,
+    supportsAllDrives: true,
+    includeItemsFromAllDrives: true,
   })
 
   return (res.data.files || []).map((f) => ({

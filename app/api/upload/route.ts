@@ -68,6 +68,7 @@ async function findOrCreateFolder(
     q: `'${parentId}' in parents and name = '${folderName.replace(/'/g, "\\'")}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false`,
     fields: 'files(id)',
     pageSize: 1,
+    supportsAllDrives: true,
   })
 
   if (existing.data.files?.length) {
@@ -81,6 +82,7 @@ async function findOrCreateFolder(
       parents: [parentId],
     },
     fields: 'id',
+    supportsAllDrives: true,
   })
 
   if (!created.data.id) throw new Error('Failed to create folder')
@@ -119,6 +121,7 @@ export async function POST(req: NextRequest) {
         body: Readable.from(buffer),
       },
       fields: 'id, webViewLink',
+      supportsAllDrives: true,
     })
 
     if (!res.data.webViewLink) throw new Error('Upload failed')
