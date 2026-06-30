@@ -111,6 +111,20 @@ export async function createDepartment(name: string, description: string | null,
   revalidatePath('/departments')
 }
 
+export async function createDepartmentInline(formData: FormData) {
+  await requireSuperAdmin()
+  const name = formData.get('name') as string
+  const description = formData.get('description') as string
+  if (name) {
+    await prisma.department.create({
+      data: { name, description: description || null, isParent: true, parentId: null },
+    })
+  }
+  revalidatePath('/admin/users')
+  revalidatePath('/admin')
+  revalidatePath('/departments')
+}
+
 export async function updateDepartment(id: string, data: { name?: string; description?: string | null; isParent?: boolean; parentId?: string | null; isActive?: boolean }) {
   await requireSuperAdmin()
   await prisma.department.update({
@@ -171,7 +185,7 @@ export async function createUser(formData: FormData) {
   const existing = await prisma.user.findUnique({ where: { email } })
   if (existing) throw new Error('A user with this email already exists')
 
-  const created = await prisma.user.create({
+  await prisma.user.create({
     data: {
       email,
       firstName,
@@ -187,5 +201,4 @@ export async function createUser(formData: FormData) {
 
   revalidatePath('/admin/users')
   revalidatePath('/admin')
-  return { id: created.id, email: created.email }
 }

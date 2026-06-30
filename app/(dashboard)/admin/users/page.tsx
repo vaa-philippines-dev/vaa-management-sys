@@ -26,7 +26,7 @@ import {
   removeDepartmentMembership,
   assignTemporaryRole,
   revokeTemporaryRole,
-  createDepartment,
+  createDepartmentInline,
   createUser,
 } from './actions'
 import { redirect } from 'next/navigation'
@@ -69,15 +69,7 @@ export default async function AdminUsersPage() {
           <h2 className="text-2xl font-bold tracking-tight">Admin Panel</h2>
           <p className="text-sm text-muted-foreground mt-1">Manage users, roles, and department assignments</p>
         </div>
-        <form
-          action={async (formData: FormData) => {
-            'use server'
-            const name = formData.get('name') as string
-            const description = formData.get('description') as string
-            if (name) await createDepartment(name, description || null, true, null)
-          }}
-          className="flex gap-2"
-        >
+        <form action={createDepartmentInline} className="flex gap-2">
           <input
             name="name"
             placeholder="New department name..."
@@ -105,17 +97,7 @@ export default async function AdminUsersPage() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <form
-            action={async (formData: FormData) => {
-              'use server'
-              try {
-                await createUser(formData)
-              } catch (e: any) {
-                console.error('[createUser]', e?.message)
-              }
-            }}
-            className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5"
-          >
+          <form action={createUser} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             <input
               name="email"
               type="email"

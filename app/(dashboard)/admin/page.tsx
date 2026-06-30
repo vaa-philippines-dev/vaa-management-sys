@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import {
-  createDepartment,
+  createDepartmentInline,
 } from './users/actions'
 import {
   Shield,
@@ -178,17 +178,7 @@ export default async function AdminPage() {
                 </div>
               )}
               <div className="mt-4 pt-4 border-t">
-                <form
-                  action={async (formData: FormData) => {
-                    'use server'
-                    const name = formData.get('name') as string
-                    const description = formData.get('description') as string
-                    if (name) {
-                      await createDepartment(name, description || null, true, null)
-                    }
-                  }}
-                  className="flex gap-2"
-                >
+                <form action={createDepartmentInline} className="flex gap-2">
                   <input
                     name="name"
                     placeholder="New department name..."
