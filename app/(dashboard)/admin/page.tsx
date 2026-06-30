@@ -1,8 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import {
@@ -81,16 +79,16 @@ export default async function AdminPage() {
         </div>
         <div className="flex gap-2">
           <Link href="/admin/users">
-            <Button variant="outline" size="sm">
+            <span className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-7 px-2.5 transition-colors">
               <UserPlus className="h-4 w-4 mr-2" />
               Manage Users
-            </Button>
+            </span>
           </Link>
           <Link href="/departments">
-            <Button variant="outline" size="sm">
+            <span className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-7 px-2.5 transition-colors">
               <Building2 className="h-4 w-4 mr-2" />
               All Departments
-            </Button>
+            </span>
           </Link>
         </div>
       </div>
@@ -190,10 +188,10 @@ export default async function AdminPage() {
                     placeholder="Description (optional)"
                     className="flex-1 px-3 py-1.5 text-sm border rounded-md bg-background hidden sm:block"
                   />
-                  <Button type="submit" size="sm" variant="outline">
+                  <button type="submit" className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-7 px-2.5 transition-colors">
                     <Plus className="h-4 w-4 mr-1" />
                     Add
-                  </Button>
+                  </button>
                 </form>
               </div>
             </CardContent>
@@ -241,7 +239,7 @@ export default async function AdminPage() {
                         }}
                       />
                     </div>
-                    <Badge variant="secondary" className="text-xs w-10 justify-center">{count}</Badge>
+                    <span className="inline-flex h-5 w-10 items-center justify-center rounded-4xl px-2 py-0.5 text-xs font-medium bg-secondary text-secondary-foreground">{count}</span>
                   </div>
                 </div>
               ))}
@@ -278,20 +276,19 @@ export default async function AdminPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   {u.memberships.length > 0 && (
-                    <Badge variant="outline" className="text-xs">
+                    <span className="inline-flex h-5 items-center rounded-4xl border px-2 py-0.5 text-xs font-medium text-foreground">
                       {u.memberships[0].department.name}
-                    </Badge>
+                    </span>
                   )}
-                  <Badge
-                    variant="secondary"
-                    className="text-xs"
+                  <span
+                    className="inline-flex h-5 items-center rounded-4xl border-transparent px-2 py-0.5 text-xs font-medium bg-secondary text-secondary-foreground"
                     style={{
                       background: u.systemRole === 'SUPER_ADMIN' ? '#dc262620' : u.systemRole === 'SYSTEM_ADMIN' ? '#ea580c20' : undefined,
                       color: u.systemRole === 'SUPER_ADMIN' ? '#dc2626' : u.systemRole === 'SYSTEM_ADMIN' ? '#ea580c' : undefined,
                     }}
                   >
                     {u.systemRole.replace(/_/g, ' ')}
-                  </Badge>
+                  </span>
                 </div>
               </div>
             ))}
@@ -330,16 +327,16 @@ function QuickAction({
   desc: string
 }) {
   return (
-    <Link href={href}>
-      <Button variant="outline" className="w-full h-auto justify-start gap-3 p-4 card-hover">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-          <Icon className="h-5 w-5 text-primary" />
-        </div>
-        <div className="text-left">
-          <p className="text-sm font-medium">{label}</p>
-          <p className="text-xs text-muted-foreground">{desc}</p>
-        </div>
-      </Button>
-    </Link>
+      <Link href={href}>
+        <span className="w-full h-auto justify-start gap-3 p-4 card-hover inline-flex items-center rounded-lg border bg-background hover:bg-muted text-sm font-medium whitespace-nowrap transition-all">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+            <Icon className="h-5 w-5 text-primary" />
+          </div>
+          <div className="text-left">
+            <p className="text-sm font-medium">{label}</p>
+            <p className="text-xs text-muted-foreground">{desc}</p>
+          </div>
+        </span>
+      </Link>
   )
 }
