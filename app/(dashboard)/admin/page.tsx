@@ -172,7 +172,7 @@ export default async function AdminPage() {
                   {departments.map((dept) => {
                     const Icon = departmentIconMap[dept.name] ?? departmentIconMap.default
                     return (
-                      <DepartmentCard key={dept.id} dept={dept} icon={Icon} />
+                      <DepartmentCard key={dept.id} dept={dept} icon={<Icon className="h-4 w-4 text-muted-foreground" />} />
                     )
                   })}
                 </div>

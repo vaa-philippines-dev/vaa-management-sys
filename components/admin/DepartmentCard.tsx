@@ -9,10 +9,10 @@ import { Pencil, Check, X, ToggleLeft, ToggleRight } from 'lucide-react'
 
 export function DepartmentCard({
   dept,
-  icon: Icon,
+  icon,
 }: {
   dept: { id: string; name: string; description: string | null; isActive: boolean; _count: { memberships: number; clients: number } }
-  icon: React.ComponentType<{ className?: string }>
+  icon: React.ReactNode
 }) {
   const [editing, setEditing] = useState(false)
   const [name, setName] = useState(dept.name)
@@ -52,7 +52,7 @@ export function DepartmentCard({
         <>
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <Icon className="h-4 w-4 text-muted-foreground" />
+              {icon}
               <Link href={`/dashboard?dept=${dept.id}`} className="text-sm font-medium hover:text-primary transition-colors">
                 {dept.name}
               </Link>
