@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -15,6 +15,7 @@ import {
   DialogFooter,
   DialogClose,
 } from '@/components/ui/dialog'
+import { toast } from 'sonner'
 import {
   Upload,
   FileText,
@@ -82,6 +83,12 @@ export function VAProfileEditor({
   driveFiles: DriveFile[]
 }) {
   const vaName = `${data.user.firstName} ${data.user.lastName}`.trim()
+  const [recentUpload, setRecentUpload] = useState<string | null>(null)
+
+  const handleRecentUpload = (field: string) => {
+    setRecentUpload(field)
+    setTimeout(() => setRecentUpload(null), 8000)
+  }
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
@@ -176,7 +183,7 @@ export function VAProfileEditor({
           icon={Shield}
           label="201 Files"
           onClickTrigger={
-            <Files201Dialog data={data} vaName={vaName} />
+            <Files201Dialog data={data} vaName={vaName} onJustUploaded={handleRecentUpload} />
           }
           preview={
             <div className="space-y-3">
@@ -185,9 +192,9 @@ export function VAProfileEditor({
                 <Mini label="PhilHealth Number" value={data.profile?.philhealthNumber} />
               </div>
               <div className="flex flex-wrap gap-2">
-                <DocBadge icon={IdCard} label="Passport" url={data.profile?.passportPhoto} />
-                <DocBadge icon={Camera} label="PhilHealth" url={data.profile?.philhealthPhoto} />
-                <DocBadge icon={FileText} label="Contract" url={data.profile?.signedContract} />
+                <DocBadge icon={IdCard} label="Passport" url={data.profile?.passportPhoto} highlighted={recentUpload === 'passportPhoto'} />
+                <DocBadge icon={Camera} label="PhilHealth" url={data.profile?.philhealthPhoto} highlighted={recentUpload === 'philhealthPhoto'} />
+                <DocBadge icon={FileText} label="Contract" url={data.profile?.signedContract} highlighted={recentUpload === 'signedContract'} />
               </div>
             </div>
           }
@@ -315,10 +322,12 @@ function DocBadge({
   icon: Icon,
   label,
   url,
+  highlighted,
 }: {
   icon: React.ComponentType<{ className?: string }>
   label: string
   url: string | null | undefined
+  highlighted?: boolean
 }) {
   if (!url) {
     return (
@@ -333,11 +342,19 @@ function DocBadge({
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-xs text-green-700 hover:bg-green-500/20 transition-colors"
+      className={cn(
+        'flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs transition-all',
+        highlighted
+          ? 'bg-green-500/20 border-green-500/50 text-green-800 ring-2 ring-green-500/30 shadow-sm shadow-green-500/20'
+          : 'bg-green-500/10 border-green-500/20 text-green-700 hover:bg-green-500/20'
+      )}
     >
       <Check className="h-3 w-3" />
       <Icon className="h-3 w-3" />
       {label}
+      {highlighted && (
+        <span className="text-[9px] font-semibold uppercase tracking-wider mr-0.5">New</span>
+      )}
       <ExternalLink className="h-2.5 w-2.5" />
     </a>
   )
@@ -482,11 +499,23 @@ function SocialsDialog({ data }: { data: VAData }) {
   )
 }
 
-function Files201Dialog({ data, vaName }: { data: VAData; vaName: string }) {
+function Files201Dialog({
+  data,
+  vaName,
+  onJustUploaded,
+}: {
+  data: VAData
+  vaName: string
+  onJustUploaded?: (field: string) => void
+}) {
   const [passportPhoto, setPassportPhoto] = useState(data.profile?.passportPhoto ?? null)
   const [philhealthPhoto, setPhilhealthPhoto] = useState(data.profile?.philhealthPhoto ?? null)
   const [signedContract, setSignedContract] = useState(data.profile?.signedContract ?? null)
   const [saving, setSaving] = useState(false)
+
+  const handleJustUploaded = (field: string) => {
+    onJustUploaded?.(field)
+  }
 
   return (
     <DialogContentLarge>
@@ -524,6 +553,7 @@ function Files201Dialog({ data, vaName }: { data: VAData; vaName: string }) {
                   vaName={vaName}
                   profileId={data.user.id}
                   onUploaded={setPassportPhoto}
+                  onJustUploaded={handleJustUploaded}
                 />
                 <UploadRow
                   label="PhilHealth Photo"
@@ -533,6 +563,7 @@ function Files201Dialog({ data, vaName }: { data: VAData; vaName: string }) {
                   vaName={vaName}
                   profileId={data.user.id}
                   onUploaded={setPhilhealthPhoto}
+                  onJustUploaded={handleJustUploaded}
                 />
                 <UploadRow
                   label="Signed Contract"
@@ -542,6 +573,7 @@ function Files201Dialog({ data, vaName }: { data: VAData; vaName: string }) {
                   vaName={vaName}
                   profileId={data.user.id}
                   onUploaded={setSignedContract}
+                  onJustUploaded={handleJustUploaded}
                 />
               </div>
             </div>
@@ -566,6 +598,7 @@ function UploadRow({
   vaName,
   profileId,
   onUploaded,
+  onJustUploaded,
 }: {
   label: string
   icon: React.ComponentType<{ className?: string }>
@@ -574,12 +607,20 @@ function UploadRow({
   vaName: string
   profileId: string
   onUploaded: (url: string) => void
+  onJustUploaded?: (fieldName: string) => void
 }) {
   const [uploading, setUploading] = useState(false)
   const [progress, setProgress] = useState(0)
   const [fileName, setFileName] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [uploadedUrl, setUploadedUrl] = useState(currentUrl)
+  const [justUploaded, setJustUploaded] = useState(false)
+
+  useEffect(() => {
+    if (!justUploaded) return
+    const t = setTimeout(() => setJustUploaded(false), 8000)
+    return () => clearTimeout(t)
+  }, [justUploaded])
 
   const handleFile = (file: File) => {
     setFileName(file.name)
@@ -601,22 +642,60 @@ function UploadRow({
       setUploading(false)
       if (xhr.status >= 200 && xhr.status < 300) {
         const res = JSON.parse(xhr.responseText)
-        if (res.success) { setUploadedUrl(res.url); onUploaded(res.url); setProgress(100) }
-        else { setError(res.error || 'Upload failed') }
-      } else { setError('Upload failed') }
+        if (res.success) {
+          setUploadedUrl(res.url)
+          onUploaded(res.url)
+          setJustUploaded(true)
+          onJustUploaded?.(fieldName)
+          setProgress(100)
+          toast.success(`${label} uploaded successfully!`, {
+            description: `Saved to Drive: ${res.fullPath || fieldName}`,
+            duration: 6000,
+            action: {
+              label: 'View Document here',
+              onClick: () => window.open(res.url, '_blank'),
+            },
+          })
+        } else {
+          const message = res.error || 'Upload failed'
+          setError(message)
+          toast.error('Upload failed', { description: message })
+        }
+      } else {
+        setError('Upload failed')
+        toast.error('Upload failed', { description: `Server returned ${xhr.status}` })
+      }
     })
-    xhr.addEventListener('error', () => { setUploading(false); setError('Network error') })
+    xhr.addEventListener('error', () => {
+      setUploading(false)
+      setError('Network error')
+      toast.error('Network error', { description: 'Could not reach the upload server.' })
+    })
     xhr.open('POST', '/api/upload')
     xhr.send(formData)
   }
 
   return (
-    <div className="flex items-center gap-3 p-3 rounded-xl border bg-muted/10 hover:bg-muted/20 transition-colors">
+    <div
+      className={cn(
+        'flex items-center gap-3 p-3 rounded-xl border transition-all duration-300',
+        justUploaded
+          ? 'border-green-500/50 bg-green-500/5 ring-2 ring-green-500/20'
+          : 'border bg-muted/10 hover:bg-muted/20'
+      )}
+    >
       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
         <Icon className="h-4 w-4 text-primary" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-medium">{label}</p>
+        <div className="flex items-center gap-1.5">
+          <p className="text-xs font-medium">{label}</p>
+          {justUploaded && (
+            <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-green-600 bg-green-500/15 px-1.5 py-0.5 rounded-full">
+              <span className="h-1 w-1 rounded-full bg-green-600 animate-pulse" /> Just uploaded
+            </span>
+          )}
+        </div>
         {uploading ? (
           <div className="mt-1">
             <div className="flex items-center gap-2 mb-1">
@@ -655,4 +734,8 @@ function UploadRow({
       </label>
     </div>
   )
+}
+
+function cn(...classes: (string | false | null | undefined)[]) {
+  return classes.filter(Boolean).join(' ')
 }

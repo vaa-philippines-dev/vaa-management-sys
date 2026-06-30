@@ -64,6 +64,12 @@ async function findOrCreateFolder(
   return created.data.id
 }
 
+const DOC_TYPE_FOLDERS: Record<string, string> = {
+  passportPhoto: 'Passport',
+  philhealthPhoto: 'Philhealth',
+  signedContract: 'Profile Picture',
+}
+
 export async function POST(req: NextRequest) {
   try {
     const auth = getDriveAuth()
@@ -80,16 +86,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    const folderName = `201 VA | ${vaName} - /Proof of Documents`
-    const proofFolderId = await findOrCreateFolder(drive, rootId, folderName)
+    const vaFolderId = await findOrCreateFolder(drive, rootId, `201 VA | ${vaName}`)
+    const docFolderName = DOC_TYPE_FOLDERS[fieldName] || 'Other'
+    const docFolderId = await findOrCreateFolder(drive, vaFolderId, docFolderName)
 
     const buffer = Buffer.from(await file.arrayBuffer())
     const cleanFileName = file.name.replace(/[^\w.-]/g, '_')
 
     const res = await drive.files.create({
       requestBody: {
-        name: `${fieldName}_${cleanFileName}`,
-        parents: [proofFolderId],
+        name: cleanFileName,
+        parents: [docFolderId],
       },
       media: {
         mimeType: file.type || 'application/octet-stream',
@@ -111,6 +118,8 @@ export async function POST(req: NextRequest) {
       success: true,
       url: res.data.webViewLink,
       field: fieldName,
+      folder: docFolderName,
+      fullPath: `201 VA | ${vaName}/${docFolderName}`,
     })
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Upload failed'
