@@ -20,43 +20,18 @@ async function getRootFolderId(drive: ReturnType<typeof google.drive>): Promise<
 
   const configuredId = process.env.GOOGLE_DRIVE_PARENT_FOLDER_ID
 
-  if (configuredId) {
-    try {
-      await drive.files.get({
-        fileId: configuredId,
-        fields: 'id',
-        supportsAllDrives: true,
-      })
-      _rootFolderId = configuredId
-      return configuredId
-    } catch {
-      console.warn('[Upload] Configured folder not accessible, falling back to service account root')
-    }
+  if (!configuredId) {
+    throw new Error('GOOGLE_DRIVE_PARENT_FOLDER_ID not configured — must point to a Shared Drive folder')
   }
 
-  const rootFolderName = 'VAA Philippines - VA Documents'
-  const existing = await drive.files.list({
-    q: `'root' in parents and name = '${rootFolderName.replace(/'/g, "\\'")}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false`,
-    fields: 'files(id)',
-    pageSize: 1,
-  })
-
-  if (existing.data.files?.length) {
-    _rootFolderId = existing.data.files[0].id!
-    return _rootFolderId
-  }
-
-  const created = await drive.files.create({
-    requestBody: {
-      name: rootFolderName,
-      mimeType: 'application/vnd.google-apps.folder',
-    },
+  await drive.files.get({
+    fileId: configuredId,
     fields: 'id',
+    supportsAllDrives: true,
   })
 
-  if (!created.data.id) throw new Error('Failed to create root folder')
-  _rootFolderId = created.data.id
-  return _rootFolderId
+  _rootFolderId = configuredId
+  return configuredId
 }
 
 async function findOrCreateFolder(

@@ -33,29 +33,19 @@ async function getListRootId(drive: ReturnType<typeof google.drive>): Promise<st
   if (_listRootId) return _listRootId
 
   const configuredId = process.env.GOOGLE_DRIVE_PARENT_FOLDER_ID
-  if (configuredId) {
-    try {
-      await drive.files.get({ fileId: configuredId, fields: 'id', supportsAllDrives: true })
-      _listRootId = configuredId
-      return configuredId
-    } catch {
-      console.warn('[Drive] Configured folder not accessible, falling back to service account root')
-    }
+  if (!configuredId) {
+    console.warn('[Drive] GOOGLE_DRIVE_PARENT_FOLDER_ID not set')
+    return null
   }
 
-  const folderName = 'VAA Philippines - VA Documents'
-  const existing = await drive.files.list({
-    q: `'root' in parents and name = '${folderName.replace(/'/g, "\\'")}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false`,
-    fields: 'files(id)',
-    pageSize: 1,
-  })
-
-  if (existing.data.files?.length) {
-    _listRootId = existing.data.files[0].id!
-    return _listRootId
+  try {
+    await drive.files.get({ fileId: configuredId, fields: 'id', supportsAllDrives: true })
+    _listRootId = configuredId
+    return configuredId
+  } catch {
+    console.warn('[Drive] Configured folder not accessible')
+    return null
   }
-
-  return null
 }
 
 export async function listDriveFiles(): Promise<DriveFile[]> {
