@@ -18,10 +18,6 @@ function getAuth() {
   })
 }
 
-function getParentFolderId(): string | null {
-  return process.env.GOOGLE_DRIVE_PARENT_FOLDER_ID || null
-}
-
 export type DriveFile = {
   id: string
   name: string
@@ -31,21 +27,44 @@ export type DriveFile = {
   createdTime: string | null
 }
 
-export async function listDriveFiles(folderId?: string): Promise<DriveFile[]> {
+let _listRootId: string | null = null
+
+async function getListRootId(drive: ReturnType<typeof google.drive>): Promise<string | null> {
+  if (_listRootId) return _listRootId
+
+  const configuredId = process.env.GOOGLE_DRIVE_PARENT_FOLDER_ID
+  if (configuredId) {
+    try {
+      await drive.files.get({ fileId: configuredId, fields: 'id', supportsAllDrives: true })
+      _listRootId = configuredId
+      return configuredId
+    } catch {
+      console.warn('[Drive] Configured folder not accessible, falling back to service account root')
+    }
+  }
+
+  const folderName = 'VAA Philippines - VA Documents'
+  const existing = await drive.files.list({
+    q: `'root' in parents and name = '${folderName.replace(/'/g, "\\'")}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false`,
+    fields: 'files(id)',
+    pageSize: 1,
+  })
+
+  if (existing.data.files?.length) {
+    _listRootId = existing.data.files[0].id!
+    return _listRootId
+  }
+
+  return null
+}
+
+export async function listDriveFiles(): Promise<DriveFile[]> {
   const auth = getAuth()
-  const parentId = folderId || getParentFolderId()
-
-  if (!auth) {
-    console.warn('[Drive] Google credentials not configured — returning empty list')
-    return []
-  }
-
-  if (!parentId) {
-    console.warn('[Drive] GOOGLE_DRIVE_PARENT_FOLDER_ID not set — returning empty list')
-    return []
-  }
+  if (!auth) return []
 
   const drive = google.drive({ version: 'v3', auth })
+  const parentId = await getListRootId(drive)
+  if (!parentId) return []
 
   const res = await drive.files.list({
     q: `'${parentId}' in parents and trashed = false`,
@@ -68,8 +87,8 @@ export async function createDriveFolder(title: string): Promise<string> {
   const auth = getAuth()
   if (!auth) throw new Error('Google credentials not configured')
 
-  const parentId = getParentFolderId()
   const drive = google.drive({ version: 'v3', auth })
+  const parentId = await getListRootId(drive)
 
   const res = await drive.files.create({
     requestBody: {
@@ -94,8 +113,7 @@ export async function uploadFileToDrive(
   if (!auth) throw new Error('Google credentials not configured')
 
   const drive = google.drive({ version: 'v3', auth })
-  const folderId = folderUrl?.split('/').pop() ?? undefined
-  const parentId = folderId || getParentFolderId()
+  const parentId = await getListRootId(drive)
 
   const res = await drive.files.create({
     requestBody: {
