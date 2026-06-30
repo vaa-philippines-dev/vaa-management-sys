@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogContentLarge,
   DialogHeader,
@@ -98,9 +97,7 @@ export function VAProfileEditor({
         <EditRow
           icon={User}
           label="Personal Information"
-          onClickTrigger={
-            <PersonalDialog data={data} />
-          }
+          dialogContent={<PersonalDialog data={data} />}
           preview={
             <div className="grid grid-cols-2 gap-x-8 gap-y-1.5">
               <Mini label="Assigned Email" value={data.user.email} />
@@ -121,9 +118,7 @@ export function VAProfileEditor({
         <EditRow
           icon={MapPin}
           label="Complete Address"
-          onClickTrigger={
-            <AddressDialog data={data} />
-          }
+          dialogContent={<AddressDialog data={data} />}
           preview={
             <div className="grid grid-cols-3 gap-x-4 gap-y-1.5">
               <Mini label="#, Building & Street" value={data.profile?.address} />
@@ -142,9 +137,7 @@ export function VAProfileEditor({
         <EditRow
           icon={Briefcase}
           label="Employment & Payment"
-          onClickTrigger={
-            <EmploymentDialog data={data} />
-          }
+          dialogContent={<EmploymentDialog data={data} />}
           preview={
             <div className="grid grid-cols-3 gap-x-4 gap-y-1.5">
               <Mini label="Position" value={data.membership?.positionTitle || data.vaProfile.vaaPosition} />
@@ -165,9 +158,7 @@ export function VAProfileEditor({
         <EditRow
           icon={Globe}
           label="Socials"
-          onClickTrigger={
-            <SocialsDialog data={data} />
-          }
+          dialogContent={<SocialsDialog data={data} />}
           preview={
             <div className="grid grid-cols-2 gap-x-8 gap-y-1.5">
               <Mini label="Facebook Profile" value={data.profile?.facebookName} />
@@ -182,9 +173,7 @@ export function VAProfileEditor({
         <EditRow
           icon={Shield}
           label="201 Files"
-          onClickTrigger={
-            <Files201Dialog data={data} vaName={vaName} onJustUploaded={handleRecentUpload} />
-          }
+          dialogContent={<Files201Dialog data={data} vaName={vaName} onJustUploaded={handleRecentUpload} />}
           preview={
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-x-8 gap-y-1.5">
@@ -270,34 +259,36 @@ function EditRow({
   icon: Icon,
   label,
   preview,
-  onClickTrigger,
+  dialogContent,
 }: {
   icon: React.ComponentType<{ className?: string }>
   label: string
   preview: React.ReactNode
-  onClickTrigger: React.ReactNode
+  dialogContent: React.ReactNode
 }) {
+  const [open, setOpen] = useState(false)
+
   return (
-    <Dialog>
-      <DialogTrigger
-        render={
-          <button className="w-full text-left px-5 py-4 hover:bg-muted/30 transition-colors group cursor-pointer">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-center gap-3 shrink-0 min-w-[160px]">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 group-hover:bg-primary/15 transition-colors">
-                  <Icon className="h-4 w-4 text-primary" />
-                </div>
-                <p className="text-sm font-semibold">{label}</p>
-              </div>
-              <div className="flex-1 min-w-0 flex items-center justify-end gap-3">
-                <div className="flex-1 min-w-0">{preview}</div>
-                <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />
-              </div>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="w-full text-left px-5 py-4 hover:bg-muted/30 transition-colors group cursor-pointer"
+      >
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-center gap-3 shrink-0 min-w-[160px]">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 group-hover:bg-primary/15 transition-colors">
+              <Icon className="h-4 w-4 text-primary" />
             </div>
-          </button>
-        }
-      />
-      {onClickTrigger}
+            <p className="text-sm font-semibold">{label}</p>
+          </div>
+          <div className="flex-1 min-w-0 flex items-center justify-end gap-3">
+            <div className="flex-1 min-w-0">{preview}</div>
+            <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />
+          </div>
+        </div>
+      </button>
+      {dialogContent}
     </Dialog>
   )
 }
