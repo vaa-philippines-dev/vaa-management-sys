@@ -399,11 +399,11 @@ function DialogForm({ id, action, children }: { id: string; action: (fd: FormDat
     >
       <DialogHeader>
         <DialogTitle>{id.replace(/^form-/, '').replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}</DialogTitle>
-        <DialogClose><X className="h-4 w-4" /></DialogClose>
+        <DialogClose className="rounded-lg p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"><X className="h-4 w-4" /></DialogClose>
       </DialogHeader>
       <DialogBody>{children}</DialogBody>
       <DialogFooter>
-        <DialogClose render={<Button variant="outline" size="sm" className="text-xs h-8">Cancel</Button>} />
+        <DialogClose className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors">Cancel</DialogClose>
         <Button type="submit" size="sm" className="text-xs h-8" disabled={saving}>
           {saving ? 'Saving...' : 'Save Changes'}
         </Button>
@@ -571,7 +571,7 @@ function Files201Dialog({
           </div>
         </DialogBody>
         <DialogFooter>
-          <DialogClose render={<Button variant="outline" size="sm" className="text-xs h-8">Cancel</Button>} />
+          <DialogClose className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors">Cancel</DialogClose>
           <Button type="submit" size="sm" className="text-xs h-8" disabled={saving}>
             {saving ? 'Saving...' : 'Save Changes'}
           </Button>
