@@ -7,10 +7,7 @@ function getDriveAuth() {
   if (!email || !key) throw new Error('Google credentials not configured')
   return new google.auth.GoogleAuth({
     credentials: { client_email: email, private_key: key },
-    scopes: [
-      'https://www.googleapis.com/auth/drive',
-      'https://www.googleapis.com/auth/drive.file',
-    ],
+    scopes: ['https://www.googleapis.com/auth/drive'],
   })
 }
 
@@ -22,28 +19,46 @@ export async function GET() {
     const sharedDrives = await drive.drives.list({ pageSize: 50 })
     const targetId = process.env.GOOGLE_DRIVE_PARENT_FOLDER_ID
 
-    let targetCheck: any = { tried: targetId, error: null }
+    let parentContents: any = { tried: targetId, items: [] }
+    let parentMeta: any = null
     if (targetId) {
       try {
         const r = await drive.files.get({
           fileId: targetId,
-          fields: 'id, name, mimeType, driveId, parents, owners',
+          fields: 'id, name, mimeType, driveId, parents, owners, webViewLink',
           supportsAllDrives: true,
         })
-        targetCheck.success = true
-        targetCheck.file = r.data
+        parentMeta = r.data
+        const list = await drive.files.list({
+          q: `'${targetId}' in parents and mimeType = 'application/vnd.google-apps.folder' and trashed = false`,
+          fields: 'files(id, name, createdTime, webViewLink)',
+          pageSize: 50,
+          supportsAllDrives: true,
+          includeItemsFromAllDrives: true,
+        })
+        parentContents.items = list.data.files || []
+        parentContents.count = parentContents.items.length
       } catch (e) {
-        targetCheck.error = e instanceof Error ? e.message : String(e)
+        parentContents.error = e instanceof Error ? e.message : String(e)
       }
-    } else {
-      targetCheck.error = 'GOOGLE_DRIVE_PARENT_FOLDER_ID not set'
     }
+
+    const duplicatesByName: Record<string, number> = {}
+    for (const f of parentContents.items) {
+      const n = (f.name || '').trim()
+      duplicatesByName[n] = (duplicatesByName[n] || 0) + 1
+    }
+    const duplicates = Object.entries(duplicatesByName)
+      .filter(([, c]) => c > 1)
+      .map(([name, count]) => ({ name, count }))
 
     return NextResponse.json({
       serviceAccount: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
       sharedDrives: sharedDrives.data.drives?.map((d) => ({ id: d.id, name: d.name })) || [],
-      sharedDrivesCount: sharedDrives.data.drives?.length || 0,
-      targetCheck,
+      parentFolder: parentMeta,
+      parentFolderChildren: parentContents.items,
+      childCount: parentContents.count,
+      duplicateFolderNames: duplicates,
     })
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : String(e) }, { status: 500 })
