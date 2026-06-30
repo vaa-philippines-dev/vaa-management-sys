@@ -18,9 +18,11 @@ import {
   Phone,
   User,
   Users,
+  HardDrive,
 } from 'lucide-react'
 import { updateVAProfile, updateUserProfile } from '@/app/(dashboard)/vas/actions'
 import { format } from 'date-fns'
+import type { DriveFile } from '@/lib/google/drive'
 
 type VAData = {
   vaProfile: {
@@ -82,11 +84,13 @@ export function VAProfileEditor({
   skills,
   assignments,
   documents,
+  driveFiles,
 }: {
   data: VAData
   skills: { id: string; name: string; proficiency: string | null }[]
   assignments: { id: string; clientName: string; type: string; agreedHours: number; startDate: string; endDate: string | null; status: string }[]
   documents: { id: string; documentType: string; fileName: string; googleDriveUrl: string }[]
+  driveFiles: DriveFile[]
 }) {
   const [editSection, setEditSection] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
@@ -269,6 +273,21 @@ export function VAProfileEditor({
                   <div key={d.id} className="flex items-center justify-between py-1">
                     <span className="text-sm">{d.documentType.replace(/_/g, ' ')} — {d.fileName}</span>
                     <a href={d.googleDriveUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline">
+                      View
+                    </a>
+                  </div>
+                ))}
+              </div>
+            )}
+            {driveFiles.length > 0 && (
+              <div className="mt-3 pt-3 border-t">
+                <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1">
+                  <HardDrive className="h-3 w-3" /> Google Drive
+                </p>
+                {driveFiles.map((f) => (
+                  <div key={f.id} className="flex items-center justify-between py-1">
+                    <span className="text-sm">{f.name}</span>
+                    <a href={f.webViewLink} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline">
                       View
                     </a>
                   </div>

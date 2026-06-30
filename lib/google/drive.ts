@@ -1,79 +1,87 @@
-/**
- * Google Drive mock — stores folders and files locally on disk.
- * Replace this file with the real `lib/google/drive.ts` (using googleapis SDK)
- * when your company grants Google API access.
- *
- * Folder structure:
- *   .google-mock/
- *     folders.json          — mapping of folder IDs → metadata
- *     files.json            — mapping of file IDs → metadata
- *     storage/              — uploaded file binaries
- */
-import * as fs from 'node:fs'
-import * as path from 'node:path'
-import { randomUUID } from 'node:crypto'
+import { google } from 'googleapis'
+import { Readable } from 'stream'
 
-const MOCK_ROOT = path.join(process.cwd(), '.google-mock')
-const FOLDERS_DB = path.join(MOCK_ROOT, 'folders.json')
-const FILES_DB = path.join(MOCK_ROOT, 'files.json')
-const STORAGE_DIR = path.join(MOCK_ROOT, 'storage')
+function getAuth() {
+  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL
+  const key = (process.env.GOOGLE_PRIVATE_KEY || '').replace(/\\n/g, '\n')
 
-type MockFolder = {
-  id: string
-  name: string
-  webViewLink: string
-  createdAt: string
+  if (!email || !key) {
+    return null
+  }
+
+  return new google.auth.GoogleAuth({
+    credentials: {
+      client_email: email,
+      private_key: key,
+    },
+    scopes: ['https://www.googleapis.com/auth/drive.readonly'],
+  })
 }
 
-type MockFile = {
+function getParentFolderId(): string | null {
+  return process.env.GOOGLE_DRIVE_PARENT_FOLDER_ID || null
+}
+
+export type DriveFile = {
   id: string
   name: string
-  folderId: string | null
-  webViewLink: string
-  localPath: string
   mimeType: string
-  size: number
-  createdAt: string
+  webViewLink: string
+  size: string | null
+  createdTime: string | null
 }
 
-function ensureDb() {
-  if (!fs.existsSync(MOCK_ROOT)) fs.mkdirSync(MOCK_ROOT, { recursive: true })
-  if (!fs.existsSync(STORAGE_DIR)) fs.mkdirSync(STORAGE_DIR, { recursive: true })
-  if (!fs.existsSync(FOLDERS_DB)) fs.writeFileSync(FOLDERS_DB, '[]', 'utf-8')
-  if (!fs.existsSync(FILES_DB)) fs.writeFileSync(FILES_DB, '[]', 'utf-8')
-}
+export async function listDriveFiles(folderId?: string): Promise<DriveFile[]> {
+  const auth = getAuth()
+  const parentId = folderId || getParentFolderId()
 
-function readFolders(): MockFolder[] {
-  ensureDb()
-  return JSON.parse(fs.readFileSync(FOLDERS_DB, 'utf-8'))
-}
+  if (!auth) {
+    console.warn('[Drive] Google credentials not configured — returning empty list')
+    return []
+  }
 
-function writeFolders(folders: MockFolder[]) {
-  fs.writeFileSync(FOLDERS_DB, JSON.stringify(folders, null, 2))
-}
+  if (!parentId) {
+    console.warn('[Drive] GOOGLE_DRIVE_PARENT_FOLDER_ID not set — returning empty list')
+    return []
+  }
 
-function readFiles(): MockFile[] {
-  ensureDb()
-  return JSON.parse(fs.readFileSync(FILES_DB, 'utf-8'))
-}
+  const drive = google.drive({ version: 'v3', auth })
 
-function writeFiles(files: MockFile[]) {
-  fs.writeFileSync(FILES_DB, JSON.stringify(files, null, 2))
+  const res = await drive.files.list({
+    q: `'${parentId}' in parents and trashed = false`,
+    fields: 'files(id, name, mimeType, webViewLink, size, createdTime)',
+    orderBy: 'name',
+    pageSize: 100,
+  })
+
+  return (res.data.files || []).map((f) => ({
+    id: f.id!,
+    name: f.name!,
+    mimeType: f.mimeType!,
+    webViewLink: f.webViewLink!,
+    size: f.size || null,
+    createdTime: f.createdTime || null,
+  }))
 }
 
 export async function createDriveFolder(title: string): Promise<string> {
-  const folders = readFolders()
-  const id = `mock-folder-${randomUUID().slice(0, 8)}`
-  const folder: MockFolder = {
-    id,
-    name: title,
-    webViewLink: `https://drive.google.com/drive/folders/${id}`,
-    createdAt: new Date().toISOString(),
-  }
-  folders.push(folder)
-  writeFolders(folders)
-  console.log(`[Mock Drive] Created folder: "${title}" -> ${folder.webViewLink}`)
-  return folder.webViewLink
+  const auth = getAuth()
+  if (!auth) throw new Error('Google credentials not configured')
+
+  const parentId = getParentFolderId()
+  const drive = google.drive({ version: 'v3', auth })
+
+  const res = await drive.files.create({
+    requestBody: {
+      name: title,
+      mimeType: 'application/vnd.google-apps.folder',
+      parents: parentId ? [parentId] : undefined,
+    },
+    fields: 'id, webViewLink',
+  })
+
+  if (!res.data.webViewLink) throw new Error('Failed to create folder')
+  return res.data.webViewLink
 }
 
 export async function uploadFileToDrive(
@@ -82,36 +90,25 @@ export async function uploadFileToDrive(
   fileBuffer: Buffer,
   mimeType: string
 ): Promise<string> {
-  ensureDb()
-  const folderId = folderUrl?.split('/').pop() ?? null
-  const id = `mock-file-${randomUUID().slice(0, 8)}`
-  const localFileName = `${id}-${fileName}`
-  const localPath = path.join(STORAGE_DIR, localFileName)
+  const auth = getAuth()
+  if (!auth) throw new Error('Google credentials not configured')
 
-  fs.writeFileSync(localPath, fileBuffer)
+  const drive = google.drive({ version: 'v3', auth })
+  const folderId = folderUrl?.split('/').pop() ?? undefined
+  const parentId = folderId || getParentFolderId()
 
-  const files = readFiles()
-  const file: MockFile = {
-    id,
-    name: fileName,
-    folderId,
-    webViewLink: `https://drive.google.com/file/d/${id}/view`,
-    localPath,
-    mimeType,
-    size: fileBuffer.length,
-    createdAt: new Date().toISOString(),
-  }
-  files.push(file)
-  writeFiles(files)
+  const res = await drive.files.create({
+    requestBody: {
+      name: fileName,
+      parents: parentId ? [parentId] : undefined,
+    },
+    media: {
+      mimeType,
+      body: Readable.from(fileBuffer),
+    },
+    fields: 'id, webViewLink',
+  })
 
-  console.log(`[Mock Drive] Uploaded: "${fileName}" (${(fileBuffer.length / 1024).toFixed(1)} KB) -> ${file.webViewLink}`)
-  return file.webViewLink
-}
-
-export function listMockFolders(): MockFolder[] {
-  return readFolders()
-}
-
-export function listMockFiles(): MockFile[] {
-  return readFiles()
+  if (!res.data.webViewLink) throw new Error('Failed to upload file')
+  return res.data.webViewLink
 }

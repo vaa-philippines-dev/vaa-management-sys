@@ -107,4 +107,30 @@ export async function createDepartment(name: string, description: string | null,
     data: { name, description: description ?? null, isParent, parentId },
   })
   revalidatePath('/admin/users')
+  revalidatePath('/admin')
+  revalidatePath('/departments')
+}
+
+export async function updateDepartment(id: string, data: { name?: string; description?: string | null; isParent?: boolean; parentId?: string | null; isActive?: boolean }) {
+  await requireSuperAdmin()
+  await prisma.department.update({
+    where: { id },
+    data,
+  })
+  revalidatePath('/admin/users')
+  revalidatePath('/admin')
+  revalidatePath('/departments')
+}
+
+export async function toggleDepartmentActive(id: string) {
+  await requireSuperAdmin()
+  const dept = await prisma.department.findUnique({ where: { id } })
+  if (!dept) return
+  await prisma.department.update({
+    where: { id },
+    data: { isActive: !dept.isActive },
+  })
+  revalidatePath('/admin/users')
+  revalidatePath('/admin')
+  revalidatePath('/departments')
 }

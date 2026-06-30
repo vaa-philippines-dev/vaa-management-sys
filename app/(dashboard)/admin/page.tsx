@@ -6,6 +6,9 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import {
+  createDepartment,
+} from './users/actions'
+import {
   Shield,
   Users,
   Building2,
@@ -16,7 +19,9 @@ import {
   UserPlus,
   Settings,
   Layers,
+  Plus,
 } from 'lucide-react'
+import { DepartmentCard } from '@/components/admin/DepartmentCard'
 
 export default async function AdminPage() {
   const currentUser = await getCurrentUser()
@@ -151,41 +156,56 @@ export default async function AdminPage() {
                 <Building2 className="h-4 w-4" />
                 Department Overview
               </CardTitle>
-              <Link href="/departments" className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1">
-                View all <ArrowRight className="h-3 w-3" />
-              </Link>
+              <div className="flex items-center gap-2">
+                <Link href="/departments" className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1">
+                  View all <ArrowRight className="h-3 w-3" />
+                </Link>
+              </div>
             </CardHeader>
             <CardContent>
               {departments.length === 0 ? (
                 <p className="text-sm text-muted-foreground py-6 text-center">
-                  No departments yet. Create one from the Manage Users page.
+                  No departments yet. Create one below.
                 </p>
               ) : (
                 <div className="grid gap-3 sm:grid-cols-2">
                   {departments.map((dept) => {
                     const Icon = departmentIconMap[dept.name] ?? departmentIconMap.default
                     return (
-                      <Link key={dept.id} href={`/dashboard?dept=${dept.id}`}>
-                        <div className="p-4 rounded-lg border bg-card hover:bg-accent/30 transition-all cursor-pointer group">
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-2">
-                              <Icon className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                              <span className="text-sm font-medium group-hover:text-primary transition-colors">
-                                {dept.name}
-                              </span>
-                            </div>
-                            <ArrowRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                          </div>
-                          <div className="flex gap-3 text-xs text-muted-foreground">
-                            <span>{dept._count.memberships} members</span>
-                            <span>{dept._count.clients} clients</span>
-                          </div>
-                        </div>
-                      </Link>
+                      <DepartmentCard key={dept.id} dept={dept} icon={Icon} />
                     )
                   })}
                 </div>
               )}
+              <div className="mt-4 pt-4 border-t">
+                <form
+                  action={async (formData: FormData) => {
+                    'use server'
+                    const name = formData.get('name') as string
+                    const description = formData.get('description') as string
+                    if (name) {
+                      await createDepartment(name, description || null, true, null)
+                    }
+                  }}
+                  className="flex gap-2"
+                >
+                  <input
+                    name="name"
+                    placeholder="New department name..."
+                    className="flex-1 px-3 py-1.5 text-sm border rounded-md bg-background"
+                    required
+                  />
+                  <input
+                    name="description"
+                    placeholder="Description (optional)"
+                    className="flex-1 px-3 py-1.5 text-sm border rounded-md bg-background hidden sm:block"
+                  />
+                  <Button type="submit" size="sm" variant="outline">
+                    <Plus className="h-4 w-4 mr-1" />
+                    Add
+                  </Button>
+                </form>
+              </div>
             </CardContent>
           </Card>
         </div>

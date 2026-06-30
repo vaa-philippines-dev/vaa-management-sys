@@ -39,6 +39,9 @@ yarn-error.log*
 # google mock (local dev only)
 .google-mock/
 
+# google service account keys
+vaa-philippines-*.json
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
+import { listDriveFiles } from '@/lib/google/drive'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -46,6 +47,8 @@ export default async function VADetailPage({
   const profile = va.user.profile
   const emp = va.user.employmentRecords?.[0]
   const primaryMem = va.user.memberships?.find((m) => m.isPrimary) ?? va.user.memberships?.[0]
+
+  const driveFiles = await listDriveFiles().catch(() => [])
 
   const editorData = {
     vaProfile: {
@@ -165,6 +168,7 @@ export default async function VADetailPage({
           skills={skillsData}
           assignments={assignmentData}
           documents={docData}
+          driveFiles={driveFiles}
         />
       ) : (
         <>
@@ -173,6 +177,7 @@ export default async function VADetailPage({
             skills={skillsData}
             assignments={assignmentData}
             documents={docData}
+            driveFiles={driveFiles}
           />
 
           {/* Non-HR just sees read-only; edit buttons are hidden via component props */}
