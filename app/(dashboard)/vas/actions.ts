@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { requireRole } from '@/lib/auth'
+import { logAudit } from '@/lib/audit'
 
 export async function createVA(formData: FormData) {
   await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER')
@@ -39,7 +40,7 @@ export async function createVA(formData: FormData) {
 }
 
 export async function updateVAProfile(vaProfileId: string, formData: FormData) {
-  await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER')
+  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER')
 
   const data: Record<string, any> = {}
   const allowedFields = [
@@ -62,13 +63,29 @@ export async function updateVAProfile(vaProfileId: string, formData: FormData) {
     }
   }
 
+  const before = await prisma.vAProfile.findUnique({
+    where: { id: vaProfileId },
+    select: { vaaPosition: true, level: true, baseRate: true, hourlyRate: true, preferredWorkHours: true, availabilityStatus: true, hybrid: true, isActive: true },
+  })
+
   await prisma.vAProfile.update({ where: { id: vaProfileId }, data })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'UPDATE',
+    entityType: 'VAProfile',
+    entityId: vaProfileId,
+    before: before ? { ...before } : undefined,
+    after: data,
+    metadata: { fields: Object.keys(data) },
+  })
+
   revalidatePath(`/vas/${vaProfileId}`)
   revalidatePath('/vas')
 }
 
 export async function updateUserProfile(userId: string, formData: FormData) {
-  await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER')
+  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER')
 
   const data: Record<string, any> = {}
   const userData: Record<string, any> = {}
@@ -99,15 +116,38 @@ export async function updateUserProfile(userId: string, formData: FormData) {
   if ('firstName' in data) { userData.firstName = data.firstName; delete data.firstName }
   if ('lastName' in data) { userData.lastName = data.lastName; delete data.lastName }
 
+  const changedFields: string[] = []
+
   if (Object.keys(userData).length > 0) {
+    const beforeUser = await prisma.user.findUnique({ where: { id: userId }, select: { firstName: true, lastName: true } })
     await prisma.user.update({ where: { id: userId }, data: userData })
+    changedFields.push(...Object.keys(userData))
+    await logAudit({
+      actorId: actor.id,
+      action: 'UPDATE',
+      entityType: 'User',
+      entityId: userId,
+      before: beforeUser ? { ...beforeUser } : undefined,
+      after: userData,
+    })
   }
 
   if (Object.keys(data).length > 0) {
+    const beforeProfile = await prisma.userProfile.findUnique({ where: { userId }, select: Object.fromEntries(Object.keys(data).map(k => [k, true])) })
     await prisma.userProfile.upsert({
       where: { userId },
       create: { userId, ...data },
       update: data,
+    })
+    changedFields.push(...Object.keys(data))
+    await logAudit({
+      actorId: actor.id,
+      action: 'UPDATE',
+      entityType: 'UserProfile',
+      entityId: userId,
+      before: beforeProfile ? { ...beforeProfile } : undefined,
+      after: data,
+      metadata: { fields: Object.keys(data) },
     })
   }
 
@@ -117,6 +157,8 @@ export async function updateUserProfile(userId: string, formData: FormData) {
 
 export async function updateEmployment(vaProfileId: string, userId: string, formData: FormData) {
   await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER')
+
+  const before = { ...formData }
   await updateVAProfile(vaProfileId, formData)
   await updateUserProfile(userId, formData)
 }

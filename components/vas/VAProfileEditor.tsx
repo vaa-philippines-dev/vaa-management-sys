@@ -1,11 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { useFormStatus } from 'react-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Modal } from '@/components/ui/modal'
 import { toast } from 'sonner'
+import { Loader2 } from 'lucide-react'
 import {
   Upload,
   FileText,
@@ -367,11 +369,65 @@ function FI({ name, label, defaultValue, type = 'text', placeholder }: { name: s
   )
 }
 
-function ModalFormSubmitBtn({ saving }: { saving: boolean }) {
+function SavingButton({ label }: { label?: string }) {
+  const { pending } = useFormStatus()
   return (
-    <Button type="submit" size="sm" className="text-xs h-8" disabled={saving}>
-      {saving ? 'Saving...' : 'Save Changes'}
+    <Button type="submit" size="sm" className="text-xs h-8" disabled={pending}>
+      {pending ? (
+        <><Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> Saving...</>
+      ) : (
+        label ?? 'Save Changes'
+      )}
     </Button>
+  )
+}
+
+function FormSpy({ onSubmitted, label, saving }: { onSubmitted: () => void; label?: string; saving?: boolean }) {
+  const { pending: formPending } = useFormStatus()
+  const pending = saving ?? formPending
+
+  useEffect(() => {
+    if (formPending) return
+  }, [formPending])
+
+  return (
+    <Button type="submit" size="sm" className="text-xs h-8" disabled={pending}>
+      {pending ? (
+        <><Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> Saving...</>
+      ) : (
+        label ?? 'Save Changes'
+      )}
+    </Button>
+  )
+}
+
+function SaveForm({ action, onClose, className, children, toastLabel }: {
+  action: (formData: FormData) => Promise<void>
+  onClose: () => void
+  className?: string
+  children: (saving: boolean) => React.ReactNode
+  toastLabel?: string
+}) {
+  const [saving, setSaving] = useState(false)
+
+  const handleSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setSaving(true)
+    const fd = new FormData(e.currentTarget)
+    try {
+      await action(fd)
+    } catch (err) {
+      console.error(err)
+    }
+    setSaving(false)
+    if (toastLabel) toast.success(toastLabel)
+    setTimeout(() => onClose(), 400)
+  }, [action, onClose, toastLabel])
+
+  return (
+    <form onSubmit={handleSubmit} className={className}>
+      {children(saving)}
+    </form>
   )
 }
 
@@ -389,104 +445,108 @@ function ModalCancelBtn({ onCancel }: { onCancel: () => void }) {
 
 function PersonalFormContent({ data, onClose }: { data: VAData; onClose: () => void }) {
   return (
-    <form
-      action={updateUserProfileAction.bind(null, data.user.id)}
-      className="flex flex-col gap-4 h-full"
-    >
-      <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 flex-1">
-        <FI name="firstName" label="First Name" defaultValue={data.user.firstName} />
-        <FI name="lastName" label="Last Name" defaultValue={data.user.lastName} />
-        <FI name="personalEmail" label="Personal Email" defaultValue={data.profile?.personalEmail} type="email" placeholder="personal@email.com" />
-        <FI name="whatsappNumber" label="WhatsApp Number" defaultValue={data.profile?.whatsappNumber} placeholder="09000000000" />
-        <FI name="emergencyContactName" label="Emergency Contact Name" defaultValue={data.profile?.emergencyContactName} />
-        <FI name="emergencyContactPhone" label="Emergency Contact Number" defaultValue={data.profile?.emergencyContactPhone} placeholder="09000000000" />
-      </div>
-      <div className="flex items-center justify-end gap-2 pt-2 border-t">
-        <button type="button" onClick={onClose}
-          className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors">
-          Cancel
-        </button>
-        <Button type="submit" size="sm" className="text-xs h-8">Save Changes</Button>
-      </div>
-    </form>
+    <SaveForm action={(fd) => updateUserProfileAction(data.user.id, fd)} onClose={onClose} toastLabel="Personal info saved" className="flex flex-col gap-4 h-full">
+      {(saving) => (<>
+        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 flex-1">
+          <FI name="firstName" label="First Name" defaultValue={data.user.firstName} />
+          <FI name="lastName" label="Last Name" defaultValue={data.user.lastName} />
+          <FI name="personalEmail" label="Personal Email" defaultValue={data.profile?.personalEmail} type="email" placeholder="personal@email.com" />
+          <FI name="whatsappNumber" label="WhatsApp Number" defaultValue={data.profile?.whatsappNumber} placeholder="09000000000" />
+          <FI name="emergencyContactName" label="Emergency Contact Name" defaultValue={data.profile?.emergencyContactName} />
+          <FI name="emergencyContactPhone" label="Emergency Contact Number" defaultValue={data.profile?.emergencyContactPhone} placeholder="09000000000" />
+        </div>
+        <div className="flex items-center justify-end gap-2 pt-2 border-t">
+          <button type="button" onClick={onClose}
+            className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors">
+            Cancel
+          </button>
+          <Button type="submit" size="sm" className="text-xs h-8" disabled={saving}>
+            {saving ? <><Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> Saving...</> : 'Save Changes'}
+          </Button>
+        </div>
+      </>)}
+    </SaveForm>
   )
 }
 
 function AddressFormContent({ data, onClose }: { data: VAData; onClose: () => void }) {
   return (
-    <form
-      action={updateUserProfileAction.bind(null, data.user.id)}
-      className="flex flex-col gap-4 h-full"
-    >
-      <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 flex-1">
-        <FI name="address" label="House #, Building & Street Name" defaultValue={data.profile?.address} placeholder="123 Main St, Building A" />
-        <FI name="province" label="Province" defaultValue={data.profile?.province} />
-        <FI name="cityMunicipality" label="City / Municipality" defaultValue={data.profile?.cityMunicipality} />
-        <FI name="barangay" label="Barangay" defaultValue={data.profile?.barangay} />
-        <FI name="zipCode" label="Zip Code" defaultValue={data.profile?.zipCode} placeholder="1000" />
-        <FI name="landmark" label="Landmark" defaultValue={data.profile?.landmark} />
-      </div>
-      <div className="flex items-center justify-end gap-2 pt-2 border-t">
-        <button type="button" onClick={onClose}
-          className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors">
-          Cancel
-        </button>
-        <Button type="submit" size="sm" className="text-xs h-8">Save Changes</Button>
-      </div>
-    </form>
+    <SaveForm action={(fd) => updateUserProfileAction(data.user.id, fd)} onClose={onClose} toastLabel="Address saved" className="flex flex-col gap-4 h-full">
+      {(saving) => (<>
+        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 flex-1">
+          <FI name="address" label="House #, Building & Street Name" defaultValue={data.profile?.address} placeholder="123 Main St, Building A" />
+          <FI name="province" label="Province" defaultValue={data.profile?.province} />
+          <FI name="cityMunicipality" label="City / Municipality" defaultValue={data.profile?.cityMunicipality} />
+          <FI name="barangay" label="Barangay" defaultValue={data.profile?.barangay} />
+          <FI name="zipCode" label="Zip Code" defaultValue={data.profile?.zipCode} placeholder="1000" />
+          <FI name="landmark" label="Landmark" defaultValue={data.profile?.landmark} />
+        </div>
+        <div className="flex items-center justify-end gap-2 pt-2 border-t">
+          <button type="button" onClick={onClose}
+            className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors">
+            Cancel
+          </button>
+          <Button type="submit" size="sm" className="text-xs h-8" disabled={saving}>
+            {saving ? <><Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> Saving...</> : 'Save Changes'}
+          </Button>
+        </div>
+      </>)}
+    </SaveForm>
   )
 }
 
 function EmploymentFormContent({ data, onClose }: { data: VAData; onClose: () => void }) {
   return (
-    <form
-      action={updateEmployment.bind(null, data.vaProfile.id, data.user.id)}
-      className="flex flex-col gap-4 h-full"
-    >
-      <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 flex-1">
-        <FI name="vaaPosition" label="VAA Position" defaultValue={data.vaProfile.vaaPosition} />
-        <FI name="level" label="Level" defaultValue={data.vaProfile.level} />
-        <FI name="baseRate" label="Base Rate (PHP)" defaultValue={data.vaProfile.baseRate?.toString()} type="number" />
-        <FI name="hourlyRate" label="Hourly Rate (USD)" defaultValue={data.vaProfile.hourlyRate?.toString()} type="number" />
-        <FI name="preferredWorkHours" label="Preferred Hours (Weekly)" defaultValue={data.vaProfile.preferredWorkHours?.toString()} type="number" />
-        <FI name="birthDate" label="Birth Date" defaultValue={data.profile?.birthDate} type="date" />
-        <div className="flex items-center gap-2 col-span-1 sm:col-span-2">
-          <input type="checkbox" id="nonCelebrant" name="nonCelebrant" value="true" defaultChecked={data.profile?.nonCelebrant} className="rounded" />
-          <Label htmlFor="nonCelebrant" className="text-xs cursor-pointer">I don&apos;t celebrate birthdays</Label>
+    <SaveForm action={(fd) => updateEmployment(data.vaProfile.id, data.user.id, fd)} onClose={onClose} toastLabel="Employment & pay saved" className="flex flex-col gap-4 h-full">
+      {(saving) => (<>
+        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 flex-1">
+          <FI name="vaaPosition" label="VAA Position" defaultValue={data.vaProfile.vaaPosition} />
+          <FI name="level" label="Level" defaultValue={data.vaProfile.level} />
+          <FI name="baseRate" label="Base Rate (PHP)" defaultValue={data.vaProfile.baseRate?.toString()} type="number" />
+          <FI name="hourlyRate" label="Hourly Rate (USD)" defaultValue={data.vaProfile.hourlyRate?.toString()} type="number" />
+          <FI name="preferredWorkHours" label="Preferred Hours (Weekly)" defaultValue={data.vaProfile.preferredWorkHours?.toString()} type="number" />
+          <FI name="birthDate" label="Birth Date" defaultValue={data.profile?.birthDate} type="date" />
+          <div className="flex items-center gap-2 col-span-1 sm:col-span-2">
+            <input type="checkbox" id="nonCelebrant" name="nonCelebrant" value="true" defaultChecked={data.profile?.nonCelebrant} className="rounded" />
+            <Label htmlFor="nonCelebrant" className="text-xs cursor-pointer">I don&apos;t celebrate birthdays</Label>
+          </div>
+          <FI name="gcashNumber" label="GCash Number" defaultValue={data.profile?.gcashNumber} placeholder="09000000000" />
+          <FI name="payoneerAccount" label="Payoneer Account" defaultValue={data.profile?.payoneerAccount} type="email" placeholder="email@example.com" />
+          <FI name="notes" label="Notes" defaultValue={data.vaProfile.notes} />
         </div>
-        <FI name="gcashNumber" label="GCash Number" defaultValue={data.profile?.gcashNumber} placeholder="09000000000" />
-        <FI name="payoneerAccount" label="Payoneer Account" defaultValue={data.profile?.payoneerAccount} type="email" placeholder="email@example.com" />
-        <FI name="notes" label="Notes" defaultValue={data.vaProfile.notes} />
-      </div>
-      <div className="flex items-center justify-end gap-2 pt-2 border-t">
-        <button type="button" onClick={onClose}
-          className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors">
-          Cancel
-        </button>
-        <Button type="submit" size="sm" className="text-xs h-8">Save Changes</Button>
-      </div>
-    </form>
+        <div className="flex items-center justify-end gap-2 pt-2 border-t">
+          <button type="button" onClick={onClose}
+            className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors">
+            Cancel
+          </button>
+          <Button type="submit" size="sm" className="text-xs h-8" disabled={saving}>
+            {saving ? <><Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> Saving...</> : 'Save Changes'}
+          </Button>
+        </div>
+      </>)}
+    </SaveForm>
   )
 }
 
 function SocialsFormContent({ data, onClose }: { data: VAData; onClose: () => void }) {
   return (
-    <form
-      action={updateUserProfileAction.bind(null, data.user.id)}
-      className="flex flex-col gap-4 h-full"
-    >
-      <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 flex-1">
-        <FI name="facebookName" label="Facebook Name" defaultValue={data.profile?.facebookName} />
-        <FI name="facebookUrl" label="Facebook URL" defaultValue={data.profile?.facebookUrl} placeholder="https://facebook.com/..." />
-      </div>
-      <div className="flex items-center justify-end gap-2 pt-2 border-t">
-        <button type="button" onClick={onClose}
-          className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors">
-          Cancel
-        </button>
-        <Button type="submit" size="sm" className="text-xs h-8">Save Changes</Button>
-      </div>
-    </form>
+    <SaveForm action={(fd) => updateUserProfileAction(data.user.id, fd)} onClose={onClose} toastLabel="Socials saved" className="flex flex-col gap-4 h-full">
+      {(saving) => (<>
+        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 flex-1">
+          <FI name="facebookName" label="Facebook Name" defaultValue={data.profile?.facebookName} />
+          <FI name="facebookUrl" label="Facebook URL" defaultValue={data.profile?.facebookUrl} placeholder="https://facebook.com/..." />
+        </div>
+        <div className="flex items-center justify-end gap-2 pt-2 border-t">
+          <button type="button" onClick={onClose}
+            className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors">
+            Cancel
+          </button>
+          <Button type="submit" size="sm" className="text-xs h-8" disabled={saving}>
+            {saving ? <><Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> Saving...</> : 'Save Changes'}
+          </Button>
+        </div>
+      </>)}
+    </SaveForm>
   )
 }
 
@@ -544,7 +604,7 @@ function Files201Content({
           Cancel
         </button>
         <Button onClick={handleSave} type="button" size="sm" className="text-xs h-8" disabled={saving}>
-          {saving ? 'Saving...' : 'Save Changes'}
+          {saving ? <><Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> Saving...</> : 'Save Changes'}
         </Button>
       </div>
     </div>
