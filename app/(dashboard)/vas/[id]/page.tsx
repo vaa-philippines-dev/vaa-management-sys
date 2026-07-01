@@ -13,6 +13,12 @@ import { VAProfileEditor } from '@/components/vas/VAProfileEditor'
 
 const hrgRoles = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'EXECUTIVE']
 
+function toDateString(value: Date | string | null | undefined): string | null {
+  if (!value) return null
+  if (typeof value === 'string') return value
+  return value.toISOString()
+}
+
 export default async function VADetailPage({
   params,
 }: {
@@ -89,7 +95,7 @@ export default async function VADetailPage({
       phone: profile.phone ?? null,
       personalEmail: profile.personalEmail ?? null,
       payoneerAccount: profile.payoneerAccount ?? null,
-      birthDate: profile.birthDate ? profile.birthDate.toISOString() : null,
+      birthDate: toDateString(profile.birthDate),
       nonCelebrant: profile.nonCelebrant,
       address: profile.address ?? null,
       barangay: profile.barangay ?? null,
@@ -116,8 +122,8 @@ export default async function VADetailPage({
     employment: emp ? {
       contractType: emp.contractType,
       employmentStatus: emp.employmentStatus,
-      startDate: emp.startDate.toISOString(),
-      endDate: emp.endDate ? emp.endDate.toISOString() : null,
+      startDate: toDateString(emp.startDate)!,
+      endDate: toDateString(emp.endDate),
     } : null,
   }
 
@@ -132,8 +138,8 @@ export default async function VADetailPage({
     clientName: a.client.name,
     type: a.type,
     agreedHours: Number(a.agreedHours),
-    startDate: a.startDate.toISOString(),
-    endDate: a.endDate ? a.endDate.toISOString() : null,
+    startDate: toDateString(a.startDate)!,
+    endDate: toDateString(a.endDate),
     status: a.status,
   }))
 
