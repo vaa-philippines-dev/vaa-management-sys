@@ -172,6 +172,13 @@ enum AuditAction {
   TRANSFER
   APPROVE
   REJECT
+  FILE_UPLOAD
+  SIGN_IN
+  SIGN_OUT
+  MEMBER_ADD
+  MEMBER_REMOVE
+  ROLE_CHANGE
+  LOGIN_FAILED
 }
 
 // ──────────────────────────────────────────────────────────────────

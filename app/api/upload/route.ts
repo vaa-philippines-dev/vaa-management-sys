@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { google } from 'googleapis'
 import { prisma } from '@/lib/prisma'
 import { Readable } from 'stream'
+import { logAudit } from '@/lib/audit'
 
 let _rootFolderId: string | null = null
 
@@ -86,6 +87,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
+    const uploadedBy = formData.get('uploadedBy') as string | null
+
     const vaFolderId = await findOrCreateFolder(drive, rootId, `201 VA | ${vaName}`)
     const docFolderName = DOC_TYPE_FOLDERS[fieldName] || 'Other'
     const docFolderId = await findOrCreateFolder(drive, vaFolderId, docFolderName)
@@ -113,6 +116,17 @@ export async function POST(req: NextRequest) {
       create: { userId: profileId, [fieldName]: res.data.webViewLink },
       update: { [fieldName]: res.data.webViewLink },
     })
+
+    if (uploadedBy) {
+      await logAudit({
+        actorId: uploadedBy,
+        action: 'FILE_UPLOAD',
+        entityType: 'UserProfile',
+        entityId: profileId,
+        after: { fieldName, url: res.data.webViewLink, fileName: cleanFileName },
+        metadata: { vaName, folder: docFolderName, fullPath: `201 VA | ${vaName}/${docFolderName}` },
+      }).catch(() => {})
+    }
 
     return NextResponse.json({
       success: true,

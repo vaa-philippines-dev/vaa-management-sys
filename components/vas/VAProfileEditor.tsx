@@ -65,12 +65,14 @@ type VAData = {
 export function VAProfileEditor({
   data,
   driveFiles,
+  currentUserId,
 }: {
   data: VAData
   skills: { id: string; name: string; proficiency: string | null }[]
   assignments: { id: string; clientName: string; type: string; agreedHours: number; startDate: string; endDate: string | null; status: string }[]
   documents: { id: string; documentType: string; fileName: string; googleDriveUrl: string }[]
   driveFiles: DriveFile[]
+  currentUserId?: string
 }) {
   const vaName = `${data.user.firstName} ${data.user.lastName}`.trim()
   const [recentUpload, setRecentUpload] = useState<string | null>(null)
@@ -164,7 +166,7 @@ export function VAProfileEditor({
           icon={Shield}
           label="201 Files"
           dialogTitle="201 Files"
-          renderDialog={(close) => <Files201Content data={data} vaName={vaName} onJustUploaded={handleRecentUpload} onClose={close} />}
+          renderDialog={(close) => <Files201Content data={data} vaName={vaName} onJustUploaded={handleRecentUpload} onClose={close} currentUserId={currentUserId} />}
           size="lg"
           preview={
             <div className="space-y-3">
@@ -493,11 +495,13 @@ function Files201Content({
   vaName,
   onJustUploaded,
   onClose,
+  currentUserId,
 }: {
   data: VAData
   vaName: string
   onJustUploaded?: (field: string) => void
   onClose: () => void
+  currentUserId?: string
 }) {
   const [passportPhoto, setPassportPhoto] = useState(data.profile?.passportPhoto ?? null)
   const [philhealthPhoto, setPhilhealthPhoto] = useState(data.profile?.philhealthPhoto ?? null)
@@ -526,9 +530,9 @@ function Files201Content({
           <Upload className="h-3 w-3" /> Upload Documents
         </p>
         <div className="space-y-4">
-          <UploadRow label="Passport Photo" icon={IdCard} currentUrl={passportPhoto} fieldName="passportPhoto" vaName={vaName} profileId={data.user.id} onUploaded={setPassportPhoto} onJustUploaded={handleJustUploaded} />
-          <UploadRow label="PhilHealth Photo" icon={Camera} currentUrl={philhealthPhoto} fieldName="philhealthPhoto" vaName={vaName} profileId={data.user.id} onUploaded={setPhilhealthPhoto} onJustUploaded={handleJustUploaded} />
-          <UploadRow label="Signed Contract" icon={FileText} currentUrl={signedContract} fieldName="signedContract" vaName={vaName} profileId={data.user.id} onUploaded={setSignedContract} onJustUploaded={handleJustUploaded} />
+          <UploadRow label="Passport Photo" icon={IdCard} currentUrl={passportPhoto} fieldName="passportPhoto" vaName={vaName} profileId={data.user.id} uploadedBy={currentUserId} onUploaded={setPassportPhoto} onJustUploaded={handleJustUploaded} />
+          <UploadRow label="PhilHealth Photo" icon={Camera} currentUrl={philhealthPhoto} fieldName="philhealthPhoto" vaName={vaName} profileId={data.user.id} uploadedBy={currentUserId} onUploaded={setPhilhealthPhoto} onJustUploaded={handleJustUploaded} />
+          <UploadRow label="Signed Contract" icon={FileText} currentUrl={signedContract} fieldName="signedContract" vaName={vaName} profileId={data.user.id} uploadedBy={currentUserId} onUploaded={setSignedContract} onJustUploaded={handleJustUploaded} />
         </div>
       </div>
       <div className="flex items-center justify-end gap-2 pt-2 border-t">
@@ -556,6 +560,7 @@ function UploadRow({
   profileId,
   onUploaded,
   onJustUploaded,
+  uploadedBy,
 }: {
   label: string
   icon: React.ComponentType<{ className?: string }>
@@ -565,6 +570,7 @@ function UploadRow({
   profileId: string
   onUploaded: (url: string) => void
   onJustUploaded?: (fieldName: string) => void
+  uploadedBy?: string
 }) {
   const [uploading, setUploading] = useState(false)
   const [progress, setProgress] = useState(0)
@@ -584,6 +590,7 @@ function UploadRow({
     formData.append('vaName', vaName)
     formData.append('fieldName', fieldName)
     formData.append('profileId', profileId)
+    if (uploadedBy) formData.append('uploadedBy', uploadedBy)
 
     const xhr = new XMLHttpRequest()
     xhr.upload.addEventListener('progress', (e) => {

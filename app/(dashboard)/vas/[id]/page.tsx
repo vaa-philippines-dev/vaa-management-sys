@@ -174,6 +174,7 @@ export default async function VADetailPage({
           assignments={assignmentData}
           documents={docData}
           driveFiles={driveFiles}
+          currentUserId={currentUser?.id ?? ''}
         />
       ) : (
         <>
@@ -183,6 +184,7 @@ export default async function VADetailPage({
             assignments={assignmentData}
             documents={docData}
             driveFiles={driveFiles}
+            currentUserId={currentUser?.id ?? ''}
           />
 
           {/* Non-HR just sees read-only; edit buttons are hidden via component props */}
