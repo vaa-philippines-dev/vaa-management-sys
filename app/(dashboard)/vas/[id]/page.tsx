@@ -22,7 +22,7 @@ export default async function VADetailPage({
   const currentUser = await getCurrentUser()
   const isHRE = currentUser ? hrgRoles.includes(currentUser.systemRole) : false
 
-  const va = await cached('vas:detail', [CACHE_TAGS.vas], 30, () =>
+  const va = await cached(`vas:detail:${id}`, [CACHE_TAGS.vas], 30, () =>
     prisma.vAProfile.findUnique({
       where: { id },
       include: {
