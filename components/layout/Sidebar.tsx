@@ -16,6 +16,7 @@ import {
   BarChart3,
   ListTodo,
   Shield,
+  ClipboardList,
 } from 'lucide-react'
 import Image from 'next/image'
 
@@ -120,6 +121,20 @@ export function Sidebar({ role = 'MANAGER', isAdmin = false }: { role?: 'MANAGER
                 >
                   <Shield className="h-4 w-4 shrink-0" />
                   Admin Panel
+                </Button>
+              </Link>
+              <Link href="/admin/audit">
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    'w-full justify-start gap-3 rounded-lg text-sm font-medium transition-colors',
+                    pathname.startsWith('/admin/audit')
+                      ? 'bg-sidebar-accent text-sidebar-accent-foreground'
+                      : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
+                  )}
+                >
+                  <ClipboardList className="h-4 w-4 shrink-0" />
+                  Audit Log
                 </Button>
               </Link>
             </>
