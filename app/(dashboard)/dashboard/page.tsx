@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
+import { cached, CACHE_TAGS } from '@/lib/cache'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -44,7 +45,9 @@ export default async function DashboardPage({
   if (user.userType === 'VIRTUAL_ASSISTANT') return <VADashboard userId={user.id} vaProfileId={user.vaProfile!.id} />
 
   const department = deptId
-    ? await prisma.department.findUnique({ where: { id: deptId } })
+    ? await cached('dashboard:department', [CACHE_TAGS.departments, CACHE_TAGS.dashboard], 30, () =>
+        prisma.department.findUnique({ where: { id: deptId } })
+      )
     : null
 
   return (
@@ -83,44 +86,56 @@ async function ManagerDashboard({
     : { isActive: true }
 
   const [clientCount, vaCount, activeAssignments, monthLogs, recentAssignments] = await Promise.all([
-    prisma.client.count({ where: clientWhere }),
+    cached('dashboard:clientCount', [CACHE_TAGS.clients, CACHE_TAGS.dashboard], 30, () =>
+      prisma.client.count({ where: clientWhere })
+    ),
     deptId
-      ? prisma.vAProfile.count({
-          where: {
-            isActive: true,
-            user: {
-              memberships: { some: { departmentId: deptId, endedAt: null } },
+      ? cached('dashboard:vaCount:dept', [CACHE_TAGS.vas, CACHE_TAGS.dashboard], 30, () =>
+          prisma.vAProfile.count({
+            where: {
+              isActive: true,
+              user: {
+                memberships: { some: { departmentId: deptId, endedAt: null } },
+              },
             },
-          },
-        })
-      : prisma.vAProfile.count({ where: { isActive: true } }),
-    prisma.assignment.findMany({
-      where: {
-        status: 'ACTIVE',
-        ...(deptId ? { client: { departmentId: deptId } } : {}),
-      },
-      include: {
-        vaProfile: { include: { user: true } },
-        client: true,
-        workLogs: { where: { workDate: { gte: periodStart, lte: periodEnd } } },
-      },
-    }),
-    deptId
-      ? prisma.workLog.findMany({
-          where: {
-            workDate: { gte: periodStart, lte: periodEnd },
-            assignment: { client: { departmentId: deptId } },
-          },
-        })
-      : prisma.workLog.findMany({
-          where: { workDate: { gte: periodStart, lte: periodEnd } },
-        }),
-    prisma.assignment.findMany({
-      orderBy: { createdAt: 'desc' },
-      take: 5,
-      ...(deptId ? { where: { client: { departmentId: deptId } } } : {}),
-      include: { client: true, vaProfile: { include: { user: true } } },
-    }),
+          })
+        )
+      : cached('dashboard:vaCount', [CACHE_TAGS.vas, CACHE_TAGS.dashboard], 30, () =>
+          prisma.vAProfile.count({ where: { isActive: true } })
+        ),
+    cached('dashboard:activeAssignments', [CACHE_TAGS.assignments, CACHE_TAGS.dashboard], 30, () =>
+      prisma.assignment.findMany({
+        where: {
+          status: 'ACTIVE',
+          ...(deptId ? { client: { departmentId: deptId } } : {}),
+        },
+        include: {
+          vaProfile: { include: { user: true } },
+          client: true,
+          workLogs: { where: { workDate: { gte: periodStart, lte: periodEnd } } },
+        },
+      })
+    ),
+    cached('dashboard:monthLogs', [CACHE_TAGS.worklogs, CACHE_TAGS.dashboard], 30, () =>
+      deptId
+        ? prisma.workLog.findMany({
+            where: {
+              workDate: { gte: periodStart, lte: periodEnd },
+              assignment: { client: { departmentId: deptId } },
+            },
+          })
+        : prisma.workLog.findMany({
+            where: { workDate: { gte: periodStart, lte: periodEnd } },
+          })
+    ),
+    cached('dashboard:recentAssignments', [CACHE_TAGS.assignments, CACHE_TAGS.dashboard], 30, () =>
+      prisma.assignment.findMany({
+        orderBy: { createdAt: 'desc' },
+        take: 5,
+        ...(deptId ? { where: { client: { departmentId: deptId } } } : {}),
+        include: { client: true, vaProfile: { include: { user: true } } },
+      })
+    ),
   ])
 
   const totalMonthHours = monthLogs.reduce((s, l) => s + Number(l.hours), 0)
@@ -311,31 +326,39 @@ async function VADashboard({
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate())
 
   const [va, assignments, monthLogs, todayLogs] = await Promise.all([
-    prisma.vAProfile.findUnique({
-      where: { id: vaProfileId },
-      include: { user: true, vaSkills: true },
-    }),
-    prisma.assignment.findMany({
-      where: { vaProfileId, status: 'ACTIVE' },
-      include: {
-        client: true,
-        workLogs: {
-          where: { workDate: { gte: periodStart, lte: periodEnd } },
+    cached('dashboard:vaProfile', [CACHE_TAGS.vas, CACHE_TAGS.dashboard], 30, () =>
+      prisma.vAProfile.findUnique({
+        where: { id: vaProfileId },
+        include: { user: true, vaSkills: true },
+      })
+    ),
+    cached('dashboard:vaAssignments', [CACHE_TAGS.assignments, CACHE_TAGS.dashboard], 30, () =>
+      prisma.assignment.findMany({
+        where: { vaProfileId, status: 'ACTIVE' },
+        include: {
+          client: true,
+          workLogs: {
+            where: { workDate: { gte: periodStart, lte: periodEnd } },
+          },
         },
-      },
-    }),
-    prisma.workLog.findMany({
-      where: {
-        vaProfileId,
-        workDate: { gte: periodStart, lte: periodEnd },
-      },
-    }),
-    prisma.workLog.findMany({
-      where: {
-        vaProfileId,
-        workDate: { gte: todayStart, lt: new Date(todayStart.getTime() + 86400000) },
-      },
-    }),
+      })
+    ),
+    cached('dashboard:vaMonthLogs', [CACHE_TAGS.worklogs, CACHE_TAGS.dashboard], 30, () =>
+      prisma.workLog.findMany({
+        where: {
+          vaProfileId,
+          workDate: { gte: periodStart, lte: periodEnd },
+        },
+      })
+    ),
+    cached('dashboard:vaTodayLogs', [CACHE_TAGS.worklogs, CACHE_TAGS.dashboard], 30, () =>
+      prisma.workLog.findMany({
+        where: {
+          vaProfileId,
+          workDate: { gte: todayStart, lt: new Date(todayStart.getTime() + 86400000) },
+        },
+      })
+    ),
   ])
 
   if (!va) return null

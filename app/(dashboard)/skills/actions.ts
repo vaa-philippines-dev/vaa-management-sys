@@ -1,7 +1,8 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
+import { CACHE_TAGS } from '@/lib/cache'
 
 export async function createSkill(formData: FormData) {
   const name = (formData.get('name') as string).trim()
@@ -13,9 +14,11 @@ export async function createSkill(formData: FormData) {
     create: { name, category: category as any },
   })
   revalidatePath('/skills')
+  revalidateTag(CACHE_TAGS.skills, 'default')
 }
 
 export async function deleteSkill(id: string) {
   await prisma.skill.delete({ where: { id } })
   revalidatePath('/skills')
+  revalidateTag(CACHE_TAGS.skills, 'default')
 }

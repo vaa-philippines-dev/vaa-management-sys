@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
+import { cached, CACHE_TAGS } from '@/lib/cache'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -19,19 +20,23 @@ export default async function ClientsPage() {
   const isDevMode = !process.env.NEXT_PUBLIC_SUPABASE_URL
 
   const clients = user
-    ? await prisma.client.findMany({
-        where: ['SUPER_ADMIN','SYSTEM_ADMIN','EXECUTIVE','DEPT_MANAGER','STAFF'].includes(user.systemRole) ? { managerId: user.id } : undefined,
-        include: {
-          assignments: { include: { vaProfile: { include: { user: true } } } },
-        },
-        orderBy: { createdAt: 'desc' },
-      })
-    : await prisma.client.findMany({
-        include: {
-          assignments: { include: { vaProfile: { include: { user: true } } } },
-        },
-        orderBy: { createdAt: 'desc' },
-      })
+    ? await cached('clients:list:user', [CACHE_TAGS.clients], 30, () =>
+        prisma.client.findMany({
+          where: ['SUPER_ADMIN','SYSTEM_ADMIN','EXECUTIVE','DEPT_MANAGER','STAFF'].includes(user.systemRole) ? { managerId: user.id } : undefined,
+          include: {
+            assignments: { include: { vaProfile: { include: { user: true } } } },
+          },
+          orderBy: { createdAt: 'desc' },
+        })
+      )
+    : await cached('clients:list', [CACHE_TAGS.clients], 30, () =>
+        prisma.client.findMany({
+          include: {
+            assignments: { include: { vaProfile: { include: { user: true } } } },
+          },
+          orderBy: { createdAt: 'desc' },
+        })
+      )
 
   return (
     <div className="space-y-6">

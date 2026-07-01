@@ -1,7 +1,8 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
+import { CACHE_TAGS } from '@/lib/cache'
 import { requireSuperAdmin } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
 
@@ -34,6 +35,7 @@ export async function updateUserRole(userId: string, systemRole: string) {
   })
 
   revalidatePath('/admin/users')
+  revalidateTag(CACHE_TAGS.users, 'default')
 }
 
 export async function updateUserType(userId: string, userType: string) {
@@ -56,6 +58,7 @@ export async function updateUserType(userId: string, userType: string) {
   })
 
   revalidatePath('/admin/users')
+  revalidateTag(CACHE_TAGS.users, 'default')
 }
 
 export async function toggleUserActive(userId: string, isActive: boolean) {
@@ -78,6 +81,7 @@ export async function toggleUserActive(userId: string, isActive: boolean) {
   })
 
   revalidatePath('/admin/users')
+  revalidateTag(CACHE_TAGS.users, 'default')
 }
 
 export async function assignDepartmentMembership(
@@ -127,6 +131,8 @@ export async function assignDepartmentMembership(
   })
 
   revalidatePath('/admin/users')
+  revalidateTag(CACHE_TAGS.users, 'default')
+  revalidateTag(CACHE_TAGS.departments, 'default')
 }
 
 export async function removeDepartmentMembership(membershipId: string) {
@@ -154,6 +160,8 @@ export async function removeDepartmentMembership(membershipId: string) {
   }
 
   revalidatePath('/admin/users')
+  revalidateTag(CACHE_TAGS.users, 'default')
+  revalidateTag(CACHE_TAGS.departments, 'default')
 }
 
 export async function assignTemporaryRole(
@@ -184,6 +192,8 @@ export async function assignTemporaryRole(
   })
 
   revalidatePath('/admin/users')
+  revalidateTag(CACHE_TAGS.users, 'default')
+  revalidateTag(CACHE_TAGS.admin, 'default')
 }
 
 export async function revokeTemporaryRole(assignmentId: string) {
@@ -211,6 +221,8 @@ export async function revokeTemporaryRole(assignmentId: string) {
   }
 
   revalidatePath('/admin/users')
+  revalidateTag(CACHE_TAGS.users, 'default')
+  revalidateTag(CACHE_TAGS.admin, 'default')
 }
 
 export async function createDepartment(name: string, description: string | null, isParent: boolean, parentId: string | null) {
@@ -230,8 +242,11 @@ export async function createDepartment(name: string, description: string | null,
   })
 
   revalidatePath('/admin/users')
+  revalidateTag(CACHE_TAGS.users, 'default')
   revalidatePath('/admin')
+  revalidateTag(CACHE_TAGS.admin, 'default')
   revalidatePath('/departments')
+  revalidateTag(CACHE_TAGS.departments, 'default')
 }
 
 export async function createDepartmentInline(formData: FormData) {
@@ -254,8 +269,11 @@ export async function createDepartmentInline(formData: FormData) {
   })
 
   revalidatePath('/admin/users')
+  revalidateTag(CACHE_TAGS.users, 'default')
   revalidatePath('/admin')
+  revalidateTag(CACHE_TAGS.admin, 'default')
   revalidatePath('/departments')
+  revalidateTag(CACHE_TAGS.departments, 'default')
 }
 
 export async function updateDepartment(id: string, data: { name?: string; description?: string | null; isParent?: boolean; parentId?: string | null; isActive?: boolean }) {
@@ -278,8 +296,11 @@ export async function updateDepartment(id: string, data: { name?: string; descri
   })
 
   revalidatePath('/admin/users')
+  revalidateTag(CACHE_TAGS.users, 'default')
   revalidatePath('/admin')
+  revalidateTag(CACHE_TAGS.admin, 'default')
   revalidatePath('/departments')
+  revalidateTag(CACHE_TAGS.departments, 'default')
 }
 
 export async function toggleDepartmentActive(id: string) {
@@ -333,8 +354,11 @@ export async function editDepartment(id: string, formData: FormData) {
   })
 
   revalidatePath('/admin/users')
+  revalidateTag(CACHE_TAGS.users, 'default')
   revalidatePath('/admin')
+  revalidateTag(CACHE_TAGS.admin, 'default')
   revalidatePath('/departments')
+  revalidateTag(CACHE_TAGS.departments, 'default')
 }
 
 export async function createUser(formData: FormData) {
@@ -377,7 +401,9 @@ export async function createUser(formData: FormData) {
   })
 
   revalidatePath('/admin/users')
+  revalidateTag(CACHE_TAGS.users, 'default')
   revalidatePath('/admin')
+  revalidateTag(CACHE_TAGS.admin, 'default')
 }
 
 export async function updateUserRoleByForm(id: string, formData: FormData) {

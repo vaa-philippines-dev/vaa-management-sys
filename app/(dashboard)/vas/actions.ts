@@ -1,7 +1,8 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
+import { CACHE_TAGS } from '@/lib/cache'
 import { redirect } from 'next/navigation'
 import { requireRole } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
@@ -36,6 +37,8 @@ export async function createVA(formData: FormData) {
   })
 
   revalidatePath('/vas')
+  revalidateTag(CACHE_TAGS.vas, 'default')
+  revalidateTag(CACHE_TAGS.users, 'default')
   redirect(`/vas/${user.vaProfile!.id}`)
 }
 
@@ -81,7 +84,9 @@ export async function updateVAProfile(vaProfileId: string, formData: FormData) {
   })
 
   revalidatePath(`/vas/${vaProfileId}`)
+  revalidateTag(CACHE_TAGS.vas, 'default')
   revalidatePath('/vas')
+  revalidateTag(CACHE_TAGS.vas, 'default')
 }
 
 export async function updateUserProfile(userId: string, formData: FormData) {
@@ -152,18 +157,18 @@ export async function updateUserProfile(userId: string, formData: FormData) {
   }
 
   revalidatePath(`/vas/${userId}`)
+  revalidateTag(CACHE_TAGS.users, 'default')
   revalidatePath('/vas')
-}
-
-export async function updateEmployment(vaProfileId: string, userId: string, formData: FormData) {
-  await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER')
-
-  const before = { ...formData }
-  await updateVAProfile(vaProfileId, formData)
-  await updateUserProfile(userId, formData)
+  revalidateTag(CACHE_TAGS.users, 'default')
 }
 
 export { updateUserProfile as updateUserProfileAction }
+
+export async function updateEmployment(vaProfileId: string, userId: string, formData: FormData) {
+  await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER')
+  await updateVAProfile(vaProfileId, formData)
+  await updateUserProfile(userId, formData)
+}
 
 export async function updateUserProfileFiles(
   userId: string,
@@ -189,5 +194,7 @@ export async function updateUserProfileFiles(
   })
 
   revalidatePath(`/vas/${userId}`)
+  revalidateTag(CACHE_TAGS.users, 'default')
   revalidatePath('/vas')
+  revalidateTag(CACHE_TAGS.users, 'default')
 }

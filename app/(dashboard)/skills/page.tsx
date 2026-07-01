@@ -1,11 +1,14 @@
 import { prisma } from '@/lib/prisma'
+import { cached, CACHE_TAGS } from '@/lib/cache'
 import { SkillManager } from '@/components/skills/SkillManager'
 
 export default async function SkillsPage() {
-  const skills = await prisma.skill.findMany({
-    include: { _count: { select: { vaSkills: true } } },
-    orderBy: [{ category: 'asc' }, { name: 'asc' }],
-  })
+  const skills = await cached('skills:list', [CACHE_TAGS.skills], 30, () =>
+    prisma.skill.findMany({
+      include: { _count: { select: { vaSkills: true } } },
+      orderBy: [{ category: 'asc' }, { name: 'asc' }],
+    })
+  )
 
   return (
     <div className="space-y-6 max-w-4xl">

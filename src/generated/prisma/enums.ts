@@ -217,7 +217,14 @@ export const AuditAction = {
   STATUS_CHANGE: 'STATUS_CHANGE',
   TRANSFER: 'TRANSFER',
   APPROVE: 'APPROVE',
-  REJECT: 'REJECT'
+  REJECT: 'REJECT',
+  FILE_UPLOAD: 'FILE_UPLOAD',
+  SIGN_IN: 'SIGN_IN',
+  SIGN_OUT: 'SIGN_OUT',
+  MEMBER_ADD: 'MEMBER_ADD',
+  MEMBER_REMOVE: 'MEMBER_REMOVE',
+  ROLE_CHANGE: 'ROLE_CHANGE',
+  LOGIN_FAILED: 'LOGIN_FAILED'
 } as const
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction]

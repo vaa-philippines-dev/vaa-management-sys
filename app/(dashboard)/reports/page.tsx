@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import { cached, CACHE_TAGS } from '@/lib/cache'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -16,21 +17,23 @@ export default async function ReportsPage({
   const periodStart = startOfMonth(refDate)
   const periodEnd = endOfMonth(refDate)
 
-  const assignments = await prisma.assignment.findMany({
-    where: {
-      status: { in: ['ACTIVE', 'COMPLETED'] },
-    },
-    include: {
-      client: true,
-      vaProfile: { include: { user: true } },
-      workLogs: {
-        where: {
-          workDate: { gte: periodStart, lte: periodEnd },
+  const assignments = await cached('reports:assignments', [CACHE_TAGS.reports], 30, () =>
+    prisma.assignment.findMany({
+      where: {
+        status: { in: ['ACTIVE', 'COMPLETED'] },
+      },
+      include: {
+        client: true,
+        vaProfile: { include: { user: true } },
+        workLogs: {
+          where: {
+            workDate: { gte: periodStart, lte: periodEnd },
+          },
         },
       },
-    },
-    orderBy: [{ client: { name: 'asc' } }, { vaProfile: { user: { firstName: 'asc' } } }],
-  })
+      orderBy: [{ client: { name: 'asc' } }, { vaProfile: { user: { firstName: 'asc' } } }],
+    })
+  )
 
   const rows = assignments.map((a) => {
     const logged = a.workLogs.reduce((s, l) => s + Number(l.hours), 0)

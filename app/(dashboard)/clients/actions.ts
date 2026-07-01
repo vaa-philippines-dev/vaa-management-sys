@@ -1,7 +1,8 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
+import { CACHE_TAGS } from '@/lib/cache'
 import { redirect } from 'next/navigation'
 
 export async function createClient(formData: FormData) {
@@ -28,6 +29,7 @@ export async function createClient(formData: FormData) {
   })
 
   revalidatePath('/clients')
+  revalidateTag(CACHE_TAGS.clients, 'default')
   redirect(`/clients/${client.id}`)
 }
 
@@ -56,11 +58,14 @@ export async function updateClient(id: string, formData: FormData) {
   })
 
   revalidatePath('/clients')
+  revalidateTag(CACHE_TAGS.clients, 'default')
   revalidatePath(`/clients/${id}`)
+  revalidateTag(CACHE_TAGS.clients, 'default')
 }
 
 export async function deleteClient(id: string) {
   await prisma.client.delete({ where: { id } })
   revalidatePath('/clients')
+  revalidateTag(CACHE_TAGS.clients, 'default')
   redirect('/clients')
 }

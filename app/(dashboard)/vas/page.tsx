@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
+import { cached, CACHE_TAGS } from '@/lib/cache'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -72,35 +73,41 @@ export default async function VAPage({
     { firstName: 'asc' }
 
   const [vas, departments, allVAs] = await Promise.all([
-    prisma.vAProfile.findMany({
-      where: {
-        user: { userType: 'VIRTUAL_ASSISTANT', ...userWhere },
-        ...vaWhere,
-      },
-      include: {
-        user: {
-          include: {
-            profile: true,
-            memberships: {
-              where: { endedAt: null },
-              include: { department: true, position: true },
+    cached('vas:list', [CACHE_TAGS.vas], 30, () =>
+      prisma.vAProfile.findMany({
+        where: {
+          user: { userType: 'VIRTUAL_ASSISTANT', ...userWhere },
+          ...vaWhere,
+        },
+        include: {
+          user: {
+            include: {
+              profile: true,
+              memberships: {
+                where: { endedAt: null },
+                include: { department: true, position: true },
+              },
+              employmentRecords: { where: { isCurrent: true }, take: 1 },
             },
-            employmentRecords: { where: { isCurrent: true }, take: 1 },
+          },
+          vaSkills: { include: { skill: true } },
+          assignments: {
+            where: { status: 'ACTIVE' },
+            include: { client: true },
           },
         },
-        vaSkills: { include: { skill: true } },
-        assignments: {
-          where: { status: 'ACTIVE' },
-          include: { client: true },
-        },
-      },
-      orderBy: { user: orderBy },
-    }),
-    prisma.department.findMany({
-      where: { isActive: true },
-      orderBy: { sortOrder: 'asc' },
-    }),
-    prisma.vAProfile.count({ where: { user: { userType: 'VIRTUAL_ASSISTANT' } } }),
+        orderBy: { user: orderBy },
+      })
+    ),
+    cached('vas:departments', [CACHE_TAGS.departments], 30, () =>
+      prisma.department.findMany({
+        where: { isActive: true },
+        orderBy: { sortOrder: 'asc' },
+      })
+    ),
+    cached('vas:count', [CACHE_TAGS.vas], 30, () =>
+      prisma.vAProfile.count({ where: { user: { userType: 'VIRTUAL_ASSISTANT' } } })
+    ),
   ])
 
   const filteredVAs = empStatus

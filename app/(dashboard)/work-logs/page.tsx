@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
+import { cached, CACHE_TAGS } from '@/lib/cache'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -19,15 +20,17 @@ export default async function WorkLogsPage({
   if (assignmentId) where.assignmentId = assignmentId
   if (user?.userType === 'VIRTUAL_ASSISTANT') where.vaProfileId = user.vaProfile?.id
 
-  const logs = await prisma.workLog.findMany({
-    where,
-    include: {
-      vaProfile: { include: { user: true } },
-      assignment: { include: { client: true } },
-    },
-    orderBy: { workDate: 'desc' },
-    take: 100,
-  })
+  const logs = await cached('worklogs:list', [CACHE_TAGS.worklogs], 30, () =>
+    prisma.workLog.findMany({
+      where,
+      include: {
+        vaProfile: { include: { user: true } },
+        assignment: { include: { client: true } },
+      },
+      orderBy: { workDate: 'desc' },
+      take: 100,
+    })
+  )
 
   const total = logs.reduce((s, l) => s + Number(l.hours), 0)
 

@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import { cached, CACHE_TAGS } from '@/lib/cache'
 import {
   createDepartmentInline,
 } from './users/actions'
@@ -29,37 +30,32 @@ export default async function AdminPage() {
     redirect('/dashboard')
   }
 
-  const [
-    totalUsers,
-    activeVAs,
-    totalDepartments,
-    roleCounts,
-    departments,
-    recentUsers,
-  ] = await Promise.all([
-    prisma.user.count(),
-    prisma.vAProfile.count({ where: { isActive: true } }),
-    prisma.department.count({ where: { isActive: true } }),
-    Promise.all(
-      ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'STAFF', 'VA'].map(async (role) => ({
-        role,
-        count: await prisma.user.count({ where: { systemRole: role as any } }),
-      }))
+  const [totalUsers, activeVAs, totalDepartments, roleCounts, departments, recentUsers] = await Promise.all([
+    cached('admin:totalUsers', [CACHE_TAGS.users], 30, () => prisma.user.count()),
+    cached('admin:activeVAs', [CACHE_TAGS.vas], 30, () => prisma.vAProfile.count({ where: { isActive: true } })),
+    cached('admin:totalDepts', [CACHE_TAGS.departments], 30, () => prisma.department.count({ where: { isActive: true } })),
+    cached('admin:roleCounts', [CACHE_TAGS.users], 30, () =>
+      prisma.user.groupBy({ by: ['systemRole'], _count: true }).then((rows) =>
+        ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'STAFF', 'VA'].map((role) => ({
+          role,
+          count: rows.find((r) => r.systemRole === role)?._count ?? 0,
+        }))
+      )
     ),
-    prisma.department.findMany({
-      where: { isActive: true },
-      orderBy: { sortOrder: 'asc' },
-      include: {
-        _count: { select: { memberships: true, clients: true } },
-      },
-    }),
-    prisma.user.findMany({
-      orderBy: { createdAt: 'desc' },
-      take: 8,
-      include: {
-        memberships: { include: { department: true } },
-      },
-    }),
+    cached('admin:departments', [CACHE_TAGS.departments], 30, () =>
+      prisma.department.findMany({
+        where: { isActive: true },
+        orderBy: { sortOrder: 'asc' },
+        include: { _count: { select: { memberships: true, clients: true } } },
+      })
+    ),
+    cached('admin:recentUsers', [CACHE_TAGS.users], 30, () =>
+      prisma.user.findMany({
+        orderBy: { createdAt: 'desc' },
+        take: 8,
+        include: { memberships: { include: { department: true } } },
+      })
+    ),
   ])
 
   const departmentIconMap: Record<string, React.ComponentType<{ className?: string }>> = {

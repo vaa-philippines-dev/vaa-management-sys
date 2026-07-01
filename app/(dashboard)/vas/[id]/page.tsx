@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
+import { cached, CACHE_TAGS } from '@/lib/cache'
 import { listDriveFiles } from '@/lib/google/drive'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
@@ -21,27 +22,29 @@ export default async function VADetailPage({
   const currentUser = await getCurrentUser()
   const isHRE = currentUser ? hrgRoles.includes(currentUser.systemRole) : false
 
-  const va = await prisma.vAProfile.findUnique({
-    where: { id },
-    include: {
-      user: {
-        include: {
-          profile: true,
-          memberships: {
-            where: { endedAt: null },
-            include: { department: true, position: true },
+  const va = await cached('vas:detail', [CACHE_TAGS.vas], 30, () =>
+    prisma.vAProfile.findUnique({
+      where: { id },
+      include: {
+        user: {
+          include: {
+            profile: true,
+            memberships: {
+              where: { endedAt: null },
+              include: { department: true, position: true },
+            },
+            employmentRecords: { where: { isCurrent: true }, take: 1 },
           },
-          employmentRecords: { where: { isCurrent: true }, take: 1 },
         },
+        vaSkills: { include: { skill: true } },
+        assignments: {
+          include: { client: true, workLogs: true },
+          orderBy: { startDate: 'desc' },
+        },
+        documents: { orderBy: { createdAt: 'desc' } },
       },
-      vaSkills: { include: { skill: true } },
-      assignments: {
-        include: { client: true, workLogs: true },
-        orderBy: { startDate: 'desc' },
-      },
-      documents: { orderBy: { createdAt: 'desc' } },
-    },
-  })
+    })
+  )
 
   if (!va) notFound()
   const profile = va.user.profile

@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
+import { cached, CACHE_TAGS } from '@/lib/cache'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -13,15 +14,17 @@ export default async function AssignmentsPage() {
   const where: Record<string, unknown> = {}
   if (user?.userType === 'VIRTUAL_ASSISTANT') where.vaProfileId = user.vaProfile?.id
 
-  const assignments = await prisma.assignment.findMany({
-    where: where as any,
-    include: {
-      client: true,
-      vaProfile: { include: { user: true, vaSkills: { include: { skill: true } } } },
-      workLogs: true,
-    },
-    orderBy: [{ status: 'asc' }, { createdAt: 'desc' }],
-  })
+  const assignments = await cached('assignments:list', [CACHE_TAGS.assignments], 30, () =>
+    prisma.assignment.findMany({
+      where: where as any,
+      include: {
+        client: true,
+        vaProfile: { include: { user: true, vaSkills: { include: { skill: true } } } },
+        workLogs: true,
+      },
+      orderBy: [{ status: 'asc' }, { createdAt: 'desc' }],
+    })
+  )
 
   const regular = assignments.filter((a) => a.type === 'REGULAR')
   const projects = assignments.filter((a) => a.type === 'PROJECT')

@@ -1,7 +1,8 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
+import { CACHE_TAGS } from '@/lib/cache'
 import { redirect } from 'next/navigation'
 
 export async function createWorkLog(formData: FormData) {
@@ -27,7 +28,10 @@ export async function createWorkLog(formData: FormData) {
   })
 
   revalidatePath('/dashboard')
+  revalidateTag(CACHE_TAGS.worklogs, 'default')
   revalidatePath('/work-logs')
+  revalidateTag(CACHE_TAGS.worklogs, 'default')
   revalidatePath(`/assignments/${assignmentId}`)
+  revalidateTag(CACHE_TAGS.assignments, 'default')
   redirect('/work-logs')
 }

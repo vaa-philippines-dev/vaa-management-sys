@@ -1,7 +1,8 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
+import { CACHE_TAGS } from '@/lib/cache'
 import { redirect } from 'next/navigation'
 
 export async function createAssignment(formData: FormData) {
@@ -30,11 +31,14 @@ export async function createAssignment(formData: FormData) {
   })
 
   revalidatePath('/assignments')
+  revalidateTag(CACHE_TAGS.assignments, 'default')
   redirect(`/assignments/${assignment.id}`)
 }
 
 export async function updateAssignmentStatus(id: string, status: string) {
   await prisma.assignment.update({ where: { id }, data: { status: status as any } })
   revalidatePath('/assignments')
+  revalidateTag(CACHE_TAGS.assignments, 'default')
   revalidatePath(`/assignments/${id}`)
+  revalidateTag(CACHE_TAGS.assignments, 'default')
 }
