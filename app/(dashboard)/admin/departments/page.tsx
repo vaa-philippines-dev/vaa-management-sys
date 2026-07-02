@@ -171,7 +171,7 @@ async function DepartmentTree({ canEdit }: { canEdit: boolean }) {
       childrenCount: d._count.children,
       membershipsCount: d._count.memberships,
       clientsCount: d._count.clients,
-      isLevel: LEVEL_RECORD_NAMES.includes(d.name) && d.level === d.name,
+      isLevel: LEVEL_RECORD_NAMES.map(n => n.toUpperCase()).includes(d.level ?? '') && d.parentId === null,
       children: [],
     }
   }

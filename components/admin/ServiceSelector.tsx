@@ -88,11 +88,11 @@ export function ServiceSelector({
       <button
         type="button"
         onClick={(e) => { e.stopPropagation(); setOpen(true) }}
-        className="flex items-center gap-1.5 text-[10px] px-1.5 py-0.5 rounded-md hover:bg-accent transition-colors"
-        title={`${assignedCount} service${assignedCount !== 1 ? 's' : ''} assigned`}
+        className="inline-flex items-center gap-1 h-6 text-[10px] px-1.5 border rounded-md hover:bg-accent transition-colors"
+        title="Assign services to this department"
       >
         <Briefcase className="h-3 w-3 text-muted-foreground" />
-        <span className="font-medium">{assignedCount}</span>
+        <span>Assign Services{assignedCount > 0 ? ` (${assignedCount})` : ''}</span>
       </button>
 
       {open && (

@@ -67,6 +67,7 @@ export async function updateSkill(id: string, formData: FormData) {
   const jobDescription = ((formData.get('jobDescription') as string) ?? '').trim() || null
   const attachmentUrl = ((formData.get('attachmentUrl') as string) ?? '').trim() || null
   const isActive = formData.get('isActive') === 'on'
+  const departmentId = ((formData.get('departmentId') as string) ?? '').trim() || null
 
   if (!name) return { error: 'Name is required' }
   if (acronym) {
@@ -79,6 +80,13 @@ export async function updateSkill(id: string, formData: FormData) {
       where: { id },
       data: { name, shortName, acronym, category: category as any, jobDescription, attachmentUrl, isActive },
     })
+    if (departmentId) {
+      await prisma.departmentSkill.upsert({
+        where: { departmentId_skillId: { departmentId, skillId: id } },
+        create: { departmentId, skillId: id },
+        update: {},
+      })
+    }
   } catch (e: any) {
     if (e?.code === 'P2002') {
       return { error: 'Acronym already in use' }

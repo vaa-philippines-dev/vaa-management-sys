@@ -318,13 +318,13 @@ function DeptNode({
           {dept.childrenCount > 0 && <span>{dept.childrenCount} sub</span>}
           {dept.membershipsCount > 0 && <span>{dept.membershipsCount} mem</span>}
           {dept.clientsCount > 0 && <span>{dept.clientsCount} cli</span>}
-          {dept.level === 'SERVICE' && assignedServices.length > 0 && (
+          {dept.level === 'SERVICE' && !dept.isLevel && assignedServices.length > 0 && (
             <span className="font-medium">{assignedServices.length} svc</span>
           )}
         </div>
 
         <div className="hidden md:flex items-center gap-1 shrink-0">
-          {canEdit && dept.level === 'SERVICE' && allServices.length > 0 && (
+          {canEdit && dept.level === 'SERVICE' && !dept.isLevel && allServices.length > 0 && (
             <ServiceSelector
               departmentId={dept.id}
               departmentName={dept.name}
@@ -410,7 +410,7 @@ function DeptNode({
 
       {open && (
         <div className="border-t bg-muted/20">
-          {dept.level === 'SERVICE' && assignedServices.length > 0 && (
+          {dept.level === 'SERVICE' && !dept.isLevel && assignedServices.length > 0 && (
             <div className="px-4 py-2 border-b flex items-center gap-2 flex-wrap">
               <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mr-1">Services:</span>
               {assignedServices.map((s) => (
