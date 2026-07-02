@@ -22,9 +22,10 @@ export default async function SkillsPage() {
     <div className="space-y-4">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h2 className="text-lg font-bold tracking-tight">Services</h2>
+          <h2 className="text-lg font-bold tracking-tight">Services & Skills</h2>
           <p className="text-xs text-muted-foreground">
-            Manage the services VAs provide to clients. Each service can be linked to specific departments.
+            Manage the skill tags assigned to VAs. Use these to categorize and search VAs by their expertise.
+            Each VA can have multiple skills across different categories.
           </p>
         </div>
         {!canEdit && (

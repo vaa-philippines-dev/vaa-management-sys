@@ -3,7 +3,8 @@
 import { useState, useTransition } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Save, X, Briefcase, Check, Plus } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Save, X, Search, Briefcase, Loader2 } from 'lucide-react'
 import { setDepartmentSkills } from '@/app/(dashboard)/skills/actions'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
@@ -41,11 +42,11 @@ export function ServiceSelector({
   )
   const [filter, setFilter] = useState('')
   const [saving, setSaving] = useState(false)
-  const [pending, startTransition] = useTransition()
+  const [, startTransition] = useTransition()
 
-  const initialCount = services.filter((s) => s.assigned).length
-  const selectedCount = selected.size
-  const isDirty = selectedCount !== initialCount || services.filter((s) => s.assigned && !selected.has(s.id)).length > 0
+  const assignedCount = services.filter((s) => s.assigned).length
+  const isDirty = selected.size !== assignedCount
+    || services.some((s) => s.assigned && !selected.has(s.id))
 
   const toggle = (id: string) => {
     setSelected((prev) => {
@@ -73,98 +74,142 @@ export function ServiceSelector({
   const handleCancel = () => {
     setSelected(new Set(services.filter((s) => s.assigned).map((s) => s.id)))
     setOpen(false)
+    setFilter('')
   }
 
   const filtered = services.filter((s) =>
-    !filter || s.name.toLowerCase().includes(filter.toLowerCase()) || s.category.toLowerCase().includes(filter.toLowerCase())
+    !filter
+    || s.name.toLowerCase().includes(filter.toLowerCase())
+    || s.category.toLowerCase().includes(filter.toLowerCase())
   )
 
   return (
-    <div className="rounded-lg border bg-card">
+    <>
       <button
         type="button"
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center gap-2 px-3 py-2 hover:bg-accent/30 transition-colors text-left"
-        disabled={!canEdit}
+        onClick={(e) => { e.stopPropagation(); setOpen(true) }}
+        className="flex items-center gap-1.5 text-[10px] px-1.5 py-0.5 rounded-md hover:bg-accent transition-colors"
+        title={`${assignedCount} service${assignedCount !== 1 ? 's' : ''} assigned`}
       >
-        <Briefcase className="h-3.5 w-3.5 text-muted-foreground" />
-        <span className="text-xs font-medium">Services</span>
-        {initialCount > 0 ? (
-          <Badge variant="secondary" className="text-[10px] py-0 px-1.5">
-            {initialCount}
-          </Badge>
-        ) : (
-          <span className="text-[10px] text-muted-foreground">none</span>
-        )}
-        <Plus className={`h-3.5 w-3.5 text-muted-foreground ml-auto transition-transform ${open ? 'rotate-45' : ''}`} />
+        <Briefcase className="h-3 w-3 text-muted-foreground" />
+        <span className="font-medium">{assignedCount}</span>
       </button>
 
       {open && (
-        <div className="border-t p-3 space-y-2.5">
-          <input
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            placeholder="Filter services..."
-            className="w-full px-2.5 py-1.5 text-xs border rounded-md bg-background h-7"
-          />
-
-          {canEdit ? (
-            <div className="max-h-48 overflow-y-auto space-y-1 rounded border p-1.5 bg-muted/20">
-              {filtered.length === 0 ? (
-                <p className="text-[11px] text-muted-foreground text-center py-3">
-                  No services match. Create services first via /skills.
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={handleCancel}>
+          <div
+            className="bg-card border rounded-xl shadow-2xl w-full max-w-md mx-4 max-h-[80vh] flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-4 border-b">
+              <div>
+                <h3 className="text-sm font-semibold">Services — {departmentName}</h3>
+                <p className="text-[11px] text-muted-foreground">
+                  Choose which services this department provides
                 </p>
-              ) : (
-                filtered.map((service) => {
-                  const isSelected = selected.has(service.id)
-                  const colorClass = CATEGORY_COLORS[service.category] ?? CATEGORY_COLORS.GENERAL
-                  return (
-                    <label
-                      key={service.id}
-                      className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-background cursor-pointer"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        onChange={() => toggle(service.id)}
-                        className="rounded shrink-0"
-                      />
-                      <span className="text-xs flex-1 truncate">{service.name}</span>
-                      <Badge variant="outline" className={`text-[9px] py-0 px-1.5 ${colorClass}`}>
-                        {service.category.replace(/_/g, ' ')}
-                      </Badge>
-                    </label>
-                  )
-                })
-              )}
+              </div>
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="p-1 hover:bg-accent rounded transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
             </div>
-          ) : (
-            <div className="rounded border bg-muted/20 p-2.5 text-[11px] text-muted-foreground italic text-center">
-              View-only mode — Executive role cannot modify services
-            </div>
-          )}
 
-          <div className="flex items-center justify-between pt-1">
-            <span className="text-[10px] text-muted-foreground">
-              {selectedCount} selected
-              {isDirty && <span className="text-amber-600 ml-1">· unsaved</span>}
-            </span>
-            <div className="flex gap-1.5">
-              <Button type="button" variant="ghost" size="sm" className="h-7 text-xs" onClick={handleCancel} disabled={!canEdit || !isDirty || saving}>
-                <X className="h-3 w-3 mr-1" /> Cancel
-              </Button>
-              <Button type="button" size="sm" className="h-7 text-xs" onClick={handleSave} disabled={!canEdit || !isDirty || saving}>
-                {saving ? (
-                  'Saving...'
-                ) : (
-                  <><Save className="h-3 w-3 mr-1" /> Save
-                </>
-              )}
-              </Button>
+            {services.length === 0 ? (
+              <div className="p-8 text-center">
+                <Briefcase className="h-6 w-6 text-muted-foreground mx-auto mb-2" />
+                <p className="text-sm text-muted-foreground">
+                  No services created yet. Create services at /skills first.
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className="px-4 py-2 border-b">
+                  <div className="relative">
+                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
+                    <Input
+                      value={filter}
+                      onChange={(e) => setFilter(e.target.value)}
+                      placeholder="Search services..."
+                      className="pl-8 h-8 text-xs"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex-1 overflow-y-auto p-3 space-y-1">
+                  {filtered.length === 0 ? (
+                    <p className="text-xs text-muted-foreground text-center py-6">
+                      No services match your search.
+                    </p>
+                  ) : (
+                    filtered.map((service) => {
+                      const isSelected = selected.has(service.id)
+                      const colorClass = CATEGORY_COLORS[service.category] ?? CATEGORY_COLORS.GENERAL
+                      return (
+                        <label
+                          key={service.id}
+                          className={`flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors ${
+                            isSelected ? 'bg-primary/5 border border-primary/20' : 'hover:bg-accent/30 border border-transparent'
+                          } ${!canEdit ? 'opacity-60 cursor-not-allowed' : ''}`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => canEdit && toggle(service.id)}
+                            disabled={!canEdit}
+                            className="rounded shrink-0"
+                          />
+                          <span className="text-xs font-medium flex-1">{service.name}</span>
+                          <Badge variant="outline" className={`text-[9px] py-0 px-1.5 ${colorClass}`}>
+                            {service.category.replace(/_/g, ' ')}
+                          </Badge>
+                        </label>
+                      )
+                    })
+                  )}
+                </div>
+              </>
+            )}
+
+            <div className="flex items-center justify-between p-4 border-t">
+              <span className="text-[11px] text-muted-foreground">
+                {selected.size} service{selected.size !== 1 ? 's' : ''} selected
+                {isDirty && canEdit && (
+                  <span className="text-amber-600 ml-1">· unsaved</span>
+                )}
+              </span>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="h-8 text-xs"
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </Button>
+                {canEdit && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    className="h-8 text-xs"
+                    onClick={handleSave}
+                    disabled={!isDirty || saving}
+                  >
+                    {saving ? (
+                      <><Loader2 className="h-3 w-3 mr-1 animate-spin" /> Saving...</>
+                    ) : (
+                      <><Save className="h-3 w-3 mr-1" /> Save Changes</>
+                    )}
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         </div>
       )}
-    </div>
+    </>
   )
 }

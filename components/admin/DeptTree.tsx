@@ -228,7 +228,7 @@ export function DeptTree({
               onDelete={handleDelete}
               pendingId={pending}
               canEdit={canEdit}
-              services={services}
+              allServices={services}
               assignedSkillIds={deptSkillMap.filter((m) => m.departmentId === d.id).map((m) => m.skillId)}
             />
           ))}
@@ -245,7 +245,7 @@ function DeptNode({
   onDelete,
   pendingId,
   canEdit,
-  services,
+  allServices,
   assignedSkillIds,
 }: {
   dept: Dept
@@ -254,7 +254,7 @@ function DeptNode({
   onDelete: (id: string, name: string) => void
   pendingId: string | null
   canEdit: boolean
-  services: { id: string; name: string; category: string }[]
+  allServices: { id: string; name: string; category: string }[]
   assignedSkillIds: string[]
 }) {
   const [open, setOpen] = useState(depth < 1)
@@ -325,6 +325,19 @@ function DeptNode({
               <span className="font-medium text-foreground">{dept.clientsCount}</span> cli
             </span>
           )}
+          {dept.level === 'SERVICE' && allServices.length > 0 && (
+            <ServiceSelector
+              departmentId={dept.id}
+              departmentName={dept.name}
+              canEdit={canEdit}
+              services={allServices.map((s) => ({
+                id: s.id,
+                name: s.name,
+                category: s.category,
+                assigned: assignedSkillIds.includes(s.id),
+              }))}
+            />
+          )}
         </div>
 
         <div className="flex items-center gap-0.5 shrink-0">
@@ -380,21 +393,6 @@ function DeptNode({
 
       {open && (
         <div className="border-t bg-muted/20">
-          {services.length > 0 && dept.level === 'SERVICE' && (
-            <div className="px-3 py-2 border-b">
-              <ServiceSelector
-                departmentId={dept.id}
-                departmentName={dept.name}
-                canEdit={canEdit}
-                services={services.map((s) => ({
-                  id: s.id,
-                  name: s.name,
-                  category: s.category,
-                  assigned: assignedSkillIds.includes(s.id),
-                }))}
-              />
-            </div>
-          )}
           {dept.children.length > 0 && dept.children.map((child) => (
             <DeptNode
               key={child.id}
@@ -404,7 +402,7 @@ function DeptNode({
               onDelete={onDelete}
               pendingId={pendingId}
               canEdit={canEdit}
-              services={services}
+              allServices={allServices}
               assignedSkillIds={assignedSkillIds}
             />
           ))}
