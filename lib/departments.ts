@@ -141,12 +141,22 @@ export async function validateCreate(input: {
   const cleanLevel = validateLevel(input.level, errors)
 
   if (cleanAcronym) {
-    const existing = await prisma.department.findUnique({ where: { acronym: cleanAcronym } })
-    if (existing) errors.push({ field: 'acronym', message: 'Acronym already in use' })
+    const existing = await prisma.department.findFirst({
+      where: {
+        acronym: cleanAcronym,
+        parentId: input.parentId ?? null,
+      },
+    })
+    if (existing) errors.push({ field: 'acronym', message: 'Acronym already used in this parent' })
   }
   if (cleanName) {
-    const existing = await prisma.department.findUnique({ where: { name: cleanName } })
-    if (existing) errors.push({ field: 'name', message: 'Department name already exists' })
+    const existing = await prisma.department.findFirst({
+      where: {
+        name: cleanName,
+        parentId: input.parentId ?? null,
+      },
+    })
+    if (existing) errors.push({ field: 'name', message: 'Department name already exists in this parent' })
   }
   if (cleanName && LEVEL_RECORD_NAMES.includes(cleanName)) {
     errors.push({ field: 'name', message: 'Cannot use reserved Level name' })
@@ -185,8 +195,14 @@ export async function validateUpdate(id: string, input: {
   if (input.name !== undefined) {
     cleanName = validateName(input.name, errors)
     if (cleanName !== existing.name) {
-      const dup = await prisma.department.findUnique({ where: { name: cleanName } })
-      if (dup) errors.push({ field: 'name', message: 'Department name already exists' })
+      const dup = await prisma.department.findFirst({
+        where: {
+          name: cleanName,
+          parentId: input.parentId !== undefined ? (input.parentId ?? null) : existing.parentId,
+          NOT: { id },
+        },
+      })
+      if (dup) errors.push({ field: 'name', message: 'Department name already exists in this parent' })
     }
   }
 
@@ -194,8 +210,14 @@ export async function validateUpdate(id: string, input: {
   if (input.acronym !== undefined) {
     cleanAcronym = validateAcronym(input.acronym, errors)
     if (cleanAcronym && cleanAcronym !== existing.acronym) {
-      const dup = await prisma.department.findUnique({ where: { acronym: cleanAcronym } })
-      if (dup) errors.push({ field: 'acronym', message: 'Acronym already in use' })
+      const dup = await prisma.department.findFirst({
+        where: {
+          acronym: cleanAcronym,
+          parentId: input.parentId !== undefined ? (input.parentId ?? null) : existing.parentId,
+          NOT: { id },
+        },
+      })
+      if (dup) errors.push({ field: 'acronym', message: 'Acronym already used in this parent' })
     }
   }
 

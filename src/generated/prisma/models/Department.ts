@@ -344,12 +344,14 @@ export type DepartmentOrderByWithRelationInput = {
 
 export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  name?: string
-  acronym?: string
+  name_parentId?: Prisma.DepartmentNameParentIdCompoundUniqueInput
+  acronym_parentId?: Prisma.DepartmentAcronymParentIdCompoundUniqueInput
   AND?: Prisma.DepartmentWhereInput | Prisma.DepartmentWhereInput[]
   OR?: Prisma.DepartmentWhereInput[]
   NOT?: Prisma.DepartmentWhereInput | Prisma.DepartmentWhereInput[]
+  name?: Prisma.StringFilter<"Department"> | string
   shortName?: Prisma.StringNullableFilter<"Department"> | string | null
+  acronym?: Prisma.StringNullableFilter<"Department"> | string | null
   level?: Prisma.EnumDepartmentLevelNullableFilter<"Department"> | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFilter<"Department"> | $Enums.DepartmentStatus
   parentId?: Prisma.StringNullableFilter<"Department"> | string | null
@@ -374,7 +376,7 @@ export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
   tickets?: Prisma.TicketListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
   roleAssignments?: Prisma.RoleAssignmentListRelationFilter
-}, "id" | "name" | "acronym">
+}, "id" | "name_parentId" | "acronym_parentId">
 
 export type DepartmentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -591,6 +593,16 @@ export type DepartmentListRelationFilter = {
 
 export type DepartmentOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type DepartmentNameParentIdCompoundUniqueInput = {
+  name: string
+  parentId: string
+}
+
+export type DepartmentAcronymParentIdCompoundUniqueInput = {
+  acronym: string
+  parentId: string
 }
 
 export type DepartmentCountOrderByAggregateInput = {

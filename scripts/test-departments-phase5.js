@@ -123,13 +123,13 @@ async function hasChildren(pool, departmentId) {
   return r.rows[0].count > 0
 }
 
-async function checkDuplicateName(pool, name) {
-  const r = await pool.query('SELECT id FROM departments WHERE name = $1', [name])
+async function checkDuplicateName(pool, name, parentId = null) {
+  const r = await pool.query('SELECT id FROM departments WHERE name = $1 AND COALESCE(parent_id, \'\') = $2', [name, parentId ?? ''])
   return r.rows.length > 0
 }
 
-async function checkDuplicateAcronym(pool, acronym) {
-  const r = await pool.query('SELECT id FROM departments WHERE acronym = $1', [acronym])
+async function checkDuplicateAcronym(pool, acronym, parentId = null) {
+  const r = await pool.query('SELECT id FROM departments WHERE acronym = $1 AND COALESCE(parent_id, \'\') = $2', [acronym, parentId ?? ''])
   return r.rows.length > 0
 }
 
@@ -154,11 +154,12 @@ async function main() {
     const executive = levelRecords.find((d) => d.name === 'Executive')
     const management = levelRecords.find((d) => d.name === 'Management')
     const service = levelRecords.find((d) => d.name === 'Service')
-    const staffDept = depts.find((d) => d.name === 'Staff Department')
-    const vaMgt = depts.find((d) => d.name === 'VA Management')
+    const staffDept = depts.find((d) => d.name === 'Customer Success')
+    const vaMgt = depts.find((d) => d.name === 'Amazon Department')
     const customerSuccess = depts.find((d) => d.name === 'Customer Success')
     const amazon = depts.find((d) => d.name === 'Amazon Department')
     const hr = depts.find((d) => d.name === 'Human Resources')
+    const ceo = depts.find((d) => d.name === 'CEO')
 
     console.log('=== Phase 5: Department Module Test Case Verification ===\n')
     console.log(`Test fixtures loaded: ${depts.length} departments\n`)
@@ -223,7 +224,7 @@ async function main() {
     // TC-010: Management as parent
     await testCase('TC-010', 'Management as parent allowed', 'accept', () => {
       if (!staffDept || staffDept.parent_id !== management?.id) {
-        throw new Error('Staff Department should be under Management')
+        throw new Error('Customer Success should be under Management')
       }
     })
 

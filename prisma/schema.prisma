@@ -202,9 +202,9 @@ enum DepartmentLevel {
 
 model Department {
   id           String   @id @default(cuid())
-  name         String   @unique
+  name         String
   shortName    String?  @map("short_name")
-  acronym      String?  @unique
+  acronym      String?
   level        DepartmentLevel?
   status       DepartmentStatus @default(ACTIVE)
   parentId     String?  @map("parent_id")
@@ -231,6 +231,8 @@ model Department {
   auditLogs       AuditLog[]
   roleAssignments RoleAssignment[]
 
+  @@unique([name, parentId])
+  @@unique([acronym, parentId])
   @@map("departments")
 }
 
