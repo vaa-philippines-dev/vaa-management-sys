@@ -20,7 +20,7 @@ const MAX_NAME_LENGTH = 100
 const MAX_SHORT_NAME_LENGTH = 50
 const ACRONYM_MIN = 2
 const ACRONYM_MAX = 6
-const ACRONYM_REGEX = /^[A-Z]{2,6}$/
+const ACRONYM_REGEX = /^[A-Z0-9 ]{2,6}$/
 
 export function normalizeName(input: string): string {
   return (input ?? '').trim()

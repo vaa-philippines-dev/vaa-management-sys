@@ -187,6 +187,14 @@ export function VAProfileEditor({
           <div className="rounded-2xl border bg-card p-4 shadow-sm">
             <p className="text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wider flex items-center gap-1.5">
               <Upload className="h-3 w-3" /> Drive Files
+              <a
+                href="https://drive.google.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline font-normal normal-case tracking-normal text-[10px] ml-auto"
+              >
+                ↗ Google Drive
+              </a>
             </p>
             <div className="space-y-1 max-h-[300px] overflow-y-auto">
               {driveFiles.map((f) => (

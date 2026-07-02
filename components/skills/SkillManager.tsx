@@ -376,7 +376,7 @@ function AddEditForm({
             placeholder="AMZFBA"
             maxLength={6}
             onChange={(e) => {
-              e.target.value = e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 6)
+              e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9 ]/g, '').slice(0, 6)
             }}
             className="h-8 text-xs font-mono mt-0.5"
           />

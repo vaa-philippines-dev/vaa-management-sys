@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { getCurrentUser } from '@/lib/auth'
+import { getCurrentUser, canMutate } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { FilterBar } from '@/components/filters/FilterBar'
 import { Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { AddVAForm } from '@/components/vas/AddVAForm'
 import {
   Users,
   UserCog,
@@ -20,6 +21,12 @@ const AVAILABILITY_COLORS: Record<string, string> = {
   FULLY_ASSIGNED: 'bg-blue-500/15 text-blue-700 border-blue-500/20',
   ON_LEAVE: 'bg-orange-500/15 text-orange-700 border-orange-500/20',
   UNAVAILABLE: 'bg-red-500/15 text-red-700 border-red-500/20',
+}
+
+const STATUS_COLORS: Record<string, string> = {
+  ACTIVE: 'bg-green-500/15 text-green-700 border-green-500/20',
+  ON_HOLD: 'bg-amber-500/15 text-amber-700 border-amber-500/20',
+  INACTIVE: 'bg-red-500/15 text-red-600 border-red-500/20',
 }
 
 const EMPLOYMENT_COLORS: Record<string, string> = {
@@ -42,6 +49,7 @@ export default async function VAPage({
 }) {
   const currentUser = await getCurrentUser()
   const isHRE = currentUser ? hrgRoles.includes(currentUser.systemRole) : false
+  const isAdmin = currentUser ? canMutate(currentUser) : false
 
   const params = await searchParams
   const q = typeof params.q === 'string' ? params.q : undefined
@@ -60,6 +68,8 @@ export default async function VAPage({
           </p>
         </div>
       </div>
+
+      {isAdmin && <AddVAForm />}
 
       <div className="rounded-xl border bg-card p-3">
         <Suspense fallback={<Skeleton className="h-8 w-full rounded-md" />}>
@@ -105,7 +115,7 @@ async function FilterWrapper() {
         },
         {
           key: 'emp',
-          label: 'Status',
+          label: 'Eng. Status',
           options: [
             { value: 'EMPLOYED', label: 'Employed' },
             { value: 'ENGAGED', label: 'Engaged' },
@@ -261,11 +271,11 @@ async function VATableSection({
                 <tr className="border-b bg-muted/40">
                   <th className="text-left p-2.5 font-medium text-muted-foreground sticky left-0 bg-muted/40 z-10">Name</th>
                   <th className="text-left p-2.5 font-medium text-muted-foreground hidden md:table-cell">Email</th>
-                  <th className="text-left p-2.5 font-medium text-muted-foreground hidden lg:table-cell">Dept / Position</th>
-                  <th className="text-left p-2.5 font-medium text-muted-foreground hidden lg:table-cell">Contract</th>
+                  <th className="text-left p-2.5 font-medium text-muted-foreground hidden lg:table-cell">Department</th>
+                  <th className="text-left p-2.5 font-medium text-muted-foreground hidden lg:table-cell">Position</th>
                   <th className="text-left p-2.5 font-medium text-muted-foreground">Availability</th>
-                  <th className="text-left p-2.5 font-medium text-muted-foreground hidden xl:table-cell">Rate</th>
-                  <th className="text-left p-2.5 font-medium text-muted-foreground">Assignments</th>
+                  <th className="text-left p-2.5 font-medium text-muted-foreground">Status</th>
+                  <th className="text-left p-2.5 font-medium text-muted-foreground hidden md:table-cell">Eng. Status</th>
                   <th className="text-left p-2.5 font-medium text-muted-foreground w-0"> </th>
                 </tr>
               </thead>
@@ -283,80 +293,39 @@ async function VATableSection({
                           </div>
                           <div>
                             <p className="font-medium leading-tight">{va.user.firstName} {va.user.lastName}</p>
-                            {isHRE && va.user.profile?.gender && (
-                              <p className="text-[10px] text-muted-foreground leading-tight">{va.user.profile.gender}</p>
-                            )}
                           </div>
                         </Link>
                       </td>
-                      <td className="p-2.5 text-muted-foreground hidden md:table-cell">
-                        <p className="leading-tight">{va.user.email}</p>
-                        {isHRE && va.user.profile?.whatsappNumber && (
-                          <p className="text-[10px] leading-tight">WA: {va.user.profile.whatsappNumber}</p>
+                      <td className="p-2.5 text-muted-foreground hidden md:table-cell leading-tight">{va.user.email}</td>
+                      <td className="p-2.5 hidden lg:table-cell">
+                        {primaryMem?.department ? (
+                          <Badge variant="outline" className="text-[10px] py-0 px-1.5 leading-tight">{primaryMem.department.name}</Badge>
+                        ) : (
+                          <span className="text-muted-foreground text-[10px]">—</span>
                         )}
                       </td>
                       <td className="p-2.5 hidden lg:table-cell">
-                        {primaryMem ? (
-                          <div>
-                            <Badge variant="outline" className="text-[10px] py-0 px-1.5 leading-tight">{primaryMem.department.name}</Badge>
-                            {primaryMem.position && (
-                              <p className="text-[10px] text-muted-foreground mt-0.5 leading-tight">{primaryMem.position.title}</p>
-                            )}
-                            {va.vaaPosition && (
-                              <p className="text-[10px] text-muted-foreground leading-tight">{va.vaaPosition}</p>
-                            )}
-                          </div>
+                        {primaryMem?.position ? (
+                          <span className="text-xs leading-tight">{primaryMem.position.title}</span>
                         ) : (
-                          <span className="text-muted-foreground">—</span>
-                        )}
-                      </td>
-                      <td className="p-2.5 hidden lg:table-cell">
-                        {emp ? (
-                          <div>
-                            <Badge variant="outline" className={`text-[10px] py-0 px-1.5 leading-tight ${EMPLOYMENT_COLORS[emp.employmentStatus] || ''}`}>
-                              {emp.contractType.replace(/_/g, ' ')}
-                            </Badge>
-                            <p className="text-[10px] text-muted-foreground mt-0.5 leading-tight">
-                              {new Date(emp.startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
-                            </p>
-                          </div>
-                        ) : (
-                          <span className="text-muted-foreground">—</span>
+                          <span className="text-muted-foreground text-[10px]">—</span>
                         )}
                       </td>
                       <td className="p-2.5">
                         <Badge variant="outline" className={`text-[10px] py-0 px-1.5 leading-tight ${AVAILABILITY_COLORS[va.availabilityStatus] || ''}`}>
                           {va.availabilityStatus.replace(/_/g, ' ')}
                         </Badge>
-                        {va.hybrid && (
-                          <Badge variant="outline" className="text-[10px] py-0 px-1.5 ml-1 bg-purple-500/15 text-purple-700 border-purple-500/20 leading-tight">Hybrid</Badge>
-                        )}
-                      </td>
-                      <td className="p-2.5 hidden xl:table-cell">
-                        {va.baseRate ? (
-                          <p className="font-mono text-[10px] leading-tight">₱{Number(va.baseRate).toLocaleString()}/hr</p>
-                        ) : va.hourlyRate ? (
-                          <p className="font-mono text-[10px] leading-tight">${Number(va.hourlyRate).toFixed(2)}/hr</p>
-                        ) : (
-                          <span className="text-muted-foreground">—</span>
-                        )}
                       </td>
                       <td className="p-2.5">
-                        {va.assignments.length > 0 ? (
-                          <div className="flex flex-wrap gap-1">
-                            {va.assignments.slice(0, 2).map((a) => (
-                              <Link key={a.id} href={`/assignments/${a.id}`}>
-                                <Badge variant="secondary" className="text-[10px] py-0 px-1.5 cursor-pointer hover:bg-secondary/80 max-w-[100px] truncate leading-tight">
-                                  {a.client.name}
-                                </Badge>
-                              </Link>
-                            ))}
-                            {va.assignments.length > 2 && (
-                              <Badge variant="outline" className="text-[10px] py-0 px-1.5 leading-tight">
-                                +{va.assignments.length - 2}
-                              </Badge>
-                            )}
-                          </div>
+                        <Badge variant="outline" className={`text-[10px] py-0 px-1.5 leading-tight ${STATUS_COLORS[va.status] || STATUS_COLORS.INACTIVE}`}>
+                          {va.status === 'ACTIVE' ? 'Active' : va.status === 'ON_HOLD' ? 'On Hold' : 'Inactive'}
+                        </Badge>
+                      </td>
+                      <td className="p-2.5 hidden md:table-cell">
+                        {emp ? (
+                          <Badge variant="outline" className={`text-[10px] py-0 px-1.5 leading-tight ${EMPLOYMENT_COLORS[emp.employmentStatus] || ''}`}>
+                            {emp.employmentStatus.replace(/_/g, ' ')}
+                          </Badge>
                         ) : (
                           <span className="text-muted-foreground text-[10px]">—</span>
                         )}

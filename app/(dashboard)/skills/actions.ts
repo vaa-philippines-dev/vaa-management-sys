@@ -9,7 +9,7 @@ import { logAudit } from '@/lib/audit'
 const MAX_NAME = 100
 const MAX_SHORT = 50
 const MAX_ACRONYM = 6
-const ACRONYM_REGEX = /^[A-Z]{2,6}$/
+const ACRONYM_REGEX = /^[A-Z0-9 ]{2,6}$/
 const CATEGORIES = ['AMAZON', 'WALMART', 'TIKTOK_SHOP', 'SHOPIFY', 'GENERAL']
 
 export async function createSkill(formData: FormData) {
