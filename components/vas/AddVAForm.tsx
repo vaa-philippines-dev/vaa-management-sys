@@ -3,16 +3,17 @@
 import { useState, useTransition } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { ChevronDown, ChevronUp, Loader2, UserPlus } from 'lucide-react'
+import { Loader2, Plus, X, UserPlus } from 'lucide-react'
 import { createUser } from '@/app/(dashboard)/admin/users/actions'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
-export function AddVAForm() {
+export function AddVAModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const router = useRouter()
-  const [open, setOpen] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [, startTransition] = useTransition()
+
+  if (!open) return null
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -37,63 +38,56 @@ export function AddVAForm() {
       fd.set('systemRole', 'VA')
       fd.set('userType', 'VIRTUAL_ASSISTANT')
       await createUser(fd)
-      toast.success(`${name} added to roster`)
-      setOpen(false)
+      toast.success(`${name} added`)
+      onClose()
       form.reset()
       startTransition(() => router.refresh())
     } catch (e: any) {
-      toast.error(e.message ?? 'Failed to add VA')
+      toast.error(e.message ?? 'Failed')
     } finally {
       setSubmitting(false)
     }
   }
 
   return (
-    <div className="rounded-xl border bg-card overflow-hidden">
-      <button
-        type="button"
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center gap-2 px-4 py-3 hover:bg-accent/30 transition-colors text-left"
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={onClose}>
+      <div
+        className="bg-card border rounded-xl shadow-2xl w-full max-w-md mx-4"
+        onClick={(e) => e.stopPropagation()}
       >
-        <UserPlus className="h-4 w-4 text-muted-foreground" />
-        <span className="text-sm font-medium">Add VA</span>
-        <span className="text-xs text-muted-foreground">Quick data population — name only required</span>
-        {open ? (
-          <ChevronUp className="h-4 w-4 text-muted-foreground ml-auto" />
-        ) : (
-          <ChevronDown className="h-4 w-4 text-muted-foreground ml-auto" />
-        )}
-      </button>
-
-      {open && (
-        <div className="border-t p-4">
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <div className="grid gap-2 sm:grid-cols-2">
-              <div>
-                <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Full Name *</label>
-                <Input name="name" required placeholder="Juan Dela Cruz" className="h-8 text-xs mt-0.5" />
-              </div>
-              <div>
-                <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Email (optional)</label>
-                <Input name="email" type="email" placeholder="juan@vaa.com" className="h-8 text-xs mt-0.5" />
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-2 pt-1">
-              <Button type="button" variant="outline" size="sm" className="h-7 text-xs" onClick={() => setOpen(false)}>
-                Cancel
-              </Button>
-              <Button type="submit" size="sm" className="h-7 text-xs" disabled={submitting}>
-                {submitting ? (
-                  <><Loader2 className="h-3 w-3 mr-1 animate-spin" /> Adding...</>
-                ) : (
-                  <><UserPlus className="h-3 w-3 mr-1" /> Add VA</>
-                )}
-              </Button>
-            </div>
-          </form>
+        <div className="flex items-center justify-between p-4 border-b">
+          <div className="flex items-center gap-2">
+            <UserPlus className="h-4 w-4 text-primary" />
+            <h3 className="text-sm font-semibold">Add VA to Roster</h3>
+          </div>
+          <button type="button" onClick={onClose} className="p-1 hover:bg-accent rounded">
+            <X className="h-4 w-4" />
+          </button>
         </div>
-      )}
+        <form onSubmit={handleSubmit} className="p-4 space-y-3">
+          <div>
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Full Name</label>
+            <Input name="name" required placeholder="Juan Dela Cruz" className="h-9 text-sm" />
+            <p className="text-[10px] text-muted-foreground mt-1">
+              Optional email will be auto-generated if blank
+            </p>
+          </div>
+          <div>
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Email</label>
+            <Input name="email" type="email" placeholder="juan@vaa.com" className="h-9 text-sm" />
+          </div>
+          <div className="flex justify-end gap-2 pt-2">
+            <Button type="button" variant="outline" size="sm" className="h-8" onClick={onClose}>Cancel</Button>
+            <Button type="submit" size="sm" className="h-8" disabled={submitting}>
+              {submitting ? (
+                <><Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> Adding...</>
+              ) : (
+                <><Plus className="h-3.5 w-3.5 mr-1" /> Add</>
+              )}
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   )
 }
