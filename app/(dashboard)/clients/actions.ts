@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { CACHE_TAGS } from '@/lib/cache'
 import { redirect } from 'next/navigation'
+import { isServiceLevel, DepartmentValidationError } from '@/lib/departments'
 
 export async function createClient(formData: FormData) {
   const name = formData.get('name') as string
@@ -13,7 +14,15 @@ export async function createClient(formData: FormData) {
   const industry = (formData.get('industry') as string) || null
   const notes = (formData.get('notes') as string) || null
   const managerId = (formData.get('managerId') as string) || null
+  const departmentId = (formData.get('departmentId') as string) || null
   const skills = (formData.getAll('requiredSkills') as string[]).filter(Boolean)
+
+  if (departmentId) {
+    const ok = await isServiceLevel(departmentId)
+    if (!ok) {
+      throw new DepartmentValidationError([{ field: 'departmentId', message: 'Clients can only be assigned to Service-level departments' }])
+    }
+  }
 
   const client = await prisma.client.create({
     data: {
@@ -24,6 +33,7 @@ export async function createClient(formData: FormData) {
       industry,
       notes,
       managerId,
+      departmentId: departmentId || null,
       requiredSkills: skills,
     },
   })
@@ -41,7 +51,15 @@ export async function updateClient(id: string, formData: FormData) {
   const industry = (formData.get('industry') as string) || null
   const notes = (formData.get('notes') as string) || null
   const isActive = formData.get('isActive') === 'on'
+  const departmentId = (formData.get('departmentId') as string) || null
   const skills = (formData.getAll('requiredSkills') as string[]).filter(Boolean)
+
+  if (departmentId) {
+    const ok = await isServiceLevel(departmentId)
+    if (!ok) {
+      throw new DepartmentValidationError([{ field: 'departmentId', message: 'Clients can only be assigned to Service-level departments' }])
+    }
+  }
 
   await prisma.client.update({
     where: { id },
@@ -53,6 +71,7 @@ export async function updateClient(id: string, formData: FormData) {
       industry,
       notes,
       isActive,
+      departmentId: departmentId || null,
       requiredSkills: skills,
     },
   })

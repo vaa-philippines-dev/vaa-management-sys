@@ -5,6 +5,7 @@ import { revalidatePath, revalidateTag } from 'next/cache'
 import { CACHE_TAGS } from '@/lib/cache'
 import { requireSuperAdmin } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
+import { validateCreate, validateUpdate, isLevelRecord, hasChildren, DepartmentValidationError } from '@/lib/departments'
 
 const ENTITY_USER = 'User'
 const ENTITY_DEPARTMENT = 'Department'
@@ -225,11 +226,21 @@ export async function revokeTemporaryRole(assignmentId: string) {
   revalidateTag(CACHE_TAGS.admin, 'default')
 }
 
-export async function createDepartment(name: string, description: string | null, isParent: boolean, parentId: string | null) {
+export async function createDepartment(name: string, description: string | null, isParent: boolean, parentId: string | null, level?: string | null) {
   const admin = await getAdmin()
 
+  const clean = await validateCreate({ name, shortName: null, acronym: name.slice(0, 4).toUpperCase(), level: level ?? 'MANAGEMENT', parentId })
+
   const dept = await prisma.department.create({
-    data: { name, description: description ?? null, isParent, parentId },
+    data: {
+      name: clean.name,
+      shortName: clean.shortName,
+      acronym: clean.acronym,
+      level: clean.level,
+      description: description ?? null,
+      isParent,
+      parentId: clean.parentId,
+    },
   })
 
   await logAudit({
@@ -237,7 +248,7 @@ export async function createDepartment(name: string, description: string | null,
     action: 'CREATE',
     entityType: ENTITY_DEPARTMENT,
     entityId: dept.id,
-    after: { name, description, isParent, parentId },
+    after: { name: clean.name, shortName: clean.shortName, acronym: clean.acronym, level: clean.level, description, isParent, parentId: clean.parentId },
     departmentId: dept.id,
   })
 
@@ -255,8 +266,18 @@ export async function createDepartmentInline(formData: FormData) {
   const description = formData.get('description') as string
   if (!name) return
 
+  const clean = await validateCreate({ name, acronym: name.slice(0, 4).toUpperCase(), level: 'MANAGEMENT' })
+
   const dept = await prisma.department.create({
-    data: { name, description: description || null, isParent: true, parentId: null },
+    data: {
+      name: clean.name,
+      shortName: clean.shortName,
+      acronym: clean.acronym,
+      level: clean.level,
+      description: description || null,
+      isParent: true,
+      parentId: null,
+    },
   })
 
   await logAudit({
@@ -264,7 +285,7 @@ export async function createDepartmentInline(formData: FormData) {
     action: 'CREATE',
     entityType: ENTITY_DEPARTMENT,
     entityId: dept.id,
-    after: { name, description },
+    after: { name: clean.name, shortName: clean.shortName, acronym: clean.acronym, level: clean.level, description },
     departmentId: dept.id,
   })
 
@@ -276,13 +297,31 @@ export async function createDepartmentInline(formData: FormData) {
   revalidateTag(CACHE_TAGS.departments, 'default')
 }
 
-export async function updateDepartment(id: string, data: { name?: string; description?: string | null; isParent?: boolean; parentId?: string | null; status?: 'ACTIVE' | 'INACTIVE' }) {
+export async function updateDepartment(id: string, data: { name?: string; shortName?: string | null; acronym?: string | null; level?: string | null; description?: string | null; isParent?: boolean; parentId?: string | null; status?: 'ACTIVE' | 'INACTIVE' }) {
   const admin = await getAdmin()
-  const before = await prisma.department.findUnique({ where: { id }, select: { name: true, description: true, isParent: true, parentId: true, status: true } })
+  const before = await prisma.department.findUnique({ where: { id }, select: { name: true, shortName: true, acronym: true, level: true, description: true, isParent: true, parentId: true, status: true } })
+  if (!before) return
+
+  const clean = await validateUpdate(id, {
+    name: data.name,
+    shortName: data.shortName,
+    acronym: data.acronym,
+    level: data.level,
+    parentId: data.parentId,
+  })
 
   await prisma.department.update({
     where: { id },
-    data,
+    data: {
+      name: clean.name,
+      shortName: clean.shortName,
+      acronym: clean.acronym,
+      level: clean.level,
+      parentId: clean.parentId,
+      description: data.description,
+      isParent: data.isParent,
+      status: data.status,
+    },
   })
 
   await logAudit({
@@ -290,8 +329,8 @@ export async function updateDepartment(id: string, data: { name?: string; descri
     action: 'UPDATE',
     entityType: ENTITY_DEPARTMENT,
     entityId: id,
-    before: before ? { name: before.name, description: before.description, status: before.status } : undefined,
-    after: data,
+    before: { name: before.name, shortName: before.shortName, acronym: before.acronym, level: before.level, description: before.description, isParent: before.isParent, parentId: before.parentId, status: before.status },
+    after: { name: clean.name, shortName: clean.shortName, acronym: clean.acronym, level: clean.level, description: data.description, isParent: data.isParent, parentId: clean.parentId, status: data.status },
     departmentId: id,
   })
 
@@ -299,6 +338,30 @@ export async function updateDepartment(id: string, data: { name?: string; descri
   revalidateTag(CACHE_TAGS.users, 'default')
   revalidatePath('/admin')
   revalidateTag(CACHE_TAGS.admin, 'default')
+  revalidatePath('/departments')
+  revalidateTag(CACHE_TAGS.departments, 'default')
+}
+
+export async function deleteDepartment(id: string) {
+  const admin = await getAdmin()
+  const dept = await prisma.department.findUnique({ where: { id } })
+  if (!dept) return
+  if (await isLevelRecord(id)) {
+    throw new DepartmentValidationError([{ field: 'id', message: 'Cannot delete a system Level record' }])
+  }
+  if (await hasChildren(id)) {
+    throw new DepartmentValidationError([{ field: 'id', message: 'Cannot delete department with children. Reassign or deactivate first.' }])
+  }
+  await prisma.department.delete({ where: { id } })
+  await logAudit({
+    actorId: admin.id,
+    action: 'DELETE',
+    entityType: ENTITY_DEPARTMENT,
+    entityId: id,
+    before: { name: dept.name, level: dept.level },
+    departmentId: id,
+  })
+  revalidatePath('/admin')
   revalidatePath('/departments')
   revalidateTag(CACHE_TAGS.departments, 'default')
 }
@@ -338,11 +401,14 @@ export async function editDepartment(id: string, formData: FormData) {
 
   if (!id || !name) return
 
-  const before = await prisma.department.findUnique({ where: { id }, select: { name: true, description: true } })
+  const before = await prisma.department.findUnique({ where: { id }, select: { name: true, description: true, level: true } })
+  if (!before) return
+
+  const clean = await validateUpdate(id, { name })
 
   await prisma.department.update({
     where: { id },
-    data: { name, description: description || null },
+    data: { name: clean.name, description: description || null },
   })
 
   await logAudit({
@@ -350,8 +416,8 @@ export async function editDepartment(id: string, formData: FormData) {
     action: 'UPDATE',
     entityType: ENTITY_DEPARTMENT,
     entityId: id,
-    before: before ? { name: before.name, description: before.description } : undefined,
-    after: { name, description },
+    before: { name: before.name, description: before.description, level: before.level },
+    after: { name: clean.name, description },
     departmentId: id,
   })
 
