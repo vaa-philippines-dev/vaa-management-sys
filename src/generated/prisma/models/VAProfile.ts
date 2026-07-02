@@ -63,6 +63,8 @@ export type VAProfileMinAggregateOutputType = {
   payoutSummaryLink: string | null
   dept201FolderLink: string | null
   notes: string | null
+  status: $Enums.GeneralStatus | null
+  engagementStatus: $Enums.EmploymentStatus | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -91,6 +93,8 @@ export type VAProfileMaxAggregateOutputType = {
   payoutSummaryLink: string | null
   dept201FolderLink: string | null
   notes: string | null
+  status: $Enums.GeneralStatus | null
+  engagementStatus: $Enums.EmploymentStatus | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -119,6 +123,8 @@ export type VAProfileCountAggregateOutputType = {
   payoutSummaryLink: number
   dept201FolderLink: number
   notes: number
+  status: number
+  engagementStatus: number
   isActive: number
   createdAt: number
   updatedAt: number
@@ -163,6 +169,8 @@ export type VAProfileMinAggregateInputType = {
   payoutSummaryLink?: true
   dept201FolderLink?: true
   notes?: true
+  status?: true
+  engagementStatus?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -191,6 +199,8 @@ export type VAProfileMaxAggregateInputType = {
   payoutSummaryLink?: true
   dept201FolderLink?: true
   notes?: true
+  status?: true
+  engagementStatus?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -219,6 +229,8 @@ export type VAProfileCountAggregateInputType = {
   payoutSummaryLink?: true
   dept201FolderLink?: true
   notes?: true
+  status?: true
+  engagementStatus?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -334,6 +346,8 @@ export type VAProfileGroupByOutputType = {
   payoutSummaryLink: string | null
   dept201FolderLink: string | null
   notes: string | null
+  status: $Enums.GeneralStatus
+  engagementStatus: $Enums.EmploymentStatus | null
   isActive: boolean
   createdAt: Date
   updatedAt: Date
@@ -385,6 +399,8 @@ export type VAProfileWhereInput = {
   payoutSummaryLink?: Prisma.StringNullableFilter<"VAProfile"> | string | null
   dept201FolderLink?: Prisma.StringNullableFilter<"VAProfile"> | string | null
   notes?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  status?: Prisma.EnumGeneralStatusFilter<"VAProfile"> | $Enums.GeneralStatus
+  engagementStatus?: Prisma.EnumEmploymentStatusNullableFilter<"VAProfile"> | $Enums.EmploymentStatus | null
   isActive?: Prisma.BoolFilter<"VAProfile"> | boolean
   createdAt?: Prisma.DateTimeFilter<"VAProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"VAProfile"> | Date | string
@@ -418,6 +434,8 @@ export type VAProfileOrderByWithRelationInput = {
   payoutSummaryLink?: Prisma.SortOrderInput | Prisma.SortOrder
   dept201FolderLink?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
+  engagementStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -454,6 +472,8 @@ export type VAProfileWhereUniqueInput = Prisma.AtLeast<{
   payoutSummaryLink?: Prisma.StringNullableFilter<"VAProfile"> | string | null
   dept201FolderLink?: Prisma.StringNullableFilter<"VAProfile"> | string | null
   notes?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  status?: Prisma.EnumGeneralStatusFilter<"VAProfile"> | $Enums.GeneralStatus
+  engagementStatus?: Prisma.EnumEmploymentStatusNullableFilter<"VAProfile"> | $Enums.EmploymentStatus | null
   isActive?: Prisma.BoolFilter<"VAProfile"> | boolean
   createdAt?: Prisma.DateTimeFilter<"VAProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"VAProfile"> | Date | string
@@ -487,6 +507,8 @@ export type VAProfileOrderByWithAggregationInput = {
   payoutSummaryLink?: Prisma.SortOrderInput | Prisma.SortOrder
   dept201FolderLink?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
+  engagementStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -523,6 +545,8 @@ export type VAProfileScalarWhereWithAggregatesInput = {
   payoutSummaryLink?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
   dept201FolderLink?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
+  status?: Prisma.EnumGeneralStatusWithAggregatesFilter<"VAProfile"> | $Enums.GeneralStatus
+  engagementStatus?: Prisma.EnumEmploymentStatusNullableWithAggregatesFilter<"VAProfile"> | $Enums.EmploymentStatus | null
   isActive?: Prisma.BoolWithAggregatesFilter<"VAProfile"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"VAProfile"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"VAProfile"> | Date | string
@@ -550,6 +574,8 @@ export type VAProfileCreateInput = {
   payoutSummaryLink?: string | null
   dept201FolderLink?: string | null
   notes?: string | null
+  status?: $Enums.GeneralStatus
+  engagementStatus?: $Enums.EmploymentStatus | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -583,6 +609,8 @@ export type VAProfileUncheckedCreateInput = {
   payoutSummaryLink?: string | null
   dept201FolderLink?: string | null
   notes?: string | null
+  status?: $Enums.GeneralStatus
+  engagementStatus?: $Enums.EmploymentStatus | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -614,6 +642,8 @@ export type VAProfileUpdateInput = {
   payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  engagementStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -647,6 +677,8 @@ export type VAProfileUncheckedUpdateInput = {
   payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  engagementStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -679,6 +711,8 @@ export type VAProfileCreateManyInput = {
   payoutSummaryLink?: string | null
   dept201FolderLink?: string | null
   notes?: string | null
+  status?: $Enums.GeneralStatus
+  engagementStatus?: $Enums.EmploymentStatus | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -706,6 +740,8 @@ export type VAProfileUpdateManyMutationInput = {
   payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  engagementStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -734,6 +770,8 @@ export type VAProfileUncheckedUpdateManyInput = {
   payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  engagementStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -767,6 +805,8 @@ export type VAProfileCountOrderByAggregateInput = {
   payoutSummaryLink?: Prisma.SortOrder
   dept201FolderLink?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  engagementStatus?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -802,6 +842,8 @@ export type VAProfileMaxOrderByAggregateInput = {
   payoutSummaryLink?: Prisma.SortOrder
   dept201FolderLink?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  engagementStatus?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -830,6 +872,8 @@ export type VAProfileMinOrderByAggregateInput = {
   payoutSummaryLink?: Prisma.SortOrder
   dept201FolderLink?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  engagementStatus?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -889,6 +933,10 @@ export type NullableDecimalFieldUpdateOperationsInput = {
 
 export type EnumAvailabilityFieldUpdateOperationsInput = {
   set?: $Enums.Availability
+}
+
+export type NullableEnumEmploymentStatusFieldUpdateOperationsInput = {
+  set?: $Enums.EmploymentStatus | null
 }
 
 export type VAProfileCreateNestedOneWithoutVaSkillsInput = {
@@ -969,6 +1017,8 @@ export type VAProfileCreateWithoutUserInput = {
   payoutSummaryLink?: string | null
   dept201FolderLink?: string | null
   notes?: string | null
+  status?: $Enums.GeneralStatus
+  engagementStatus?: $Enums.EmploymentStatus | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1000,6 +1050,8 @@ export type VAProfileUncheckedCreateWithoutUserInput = {
   payoutSummaryLink?: string | null
   dept201FolderLink?: string | null
   notes?: string | null
+  status?: $Enums.GeneralStatus
+  engagementStatus?: $Enums.EmploymentStatus | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1047,6 +1099,8 @@ export type VAProfileUpdateWithoutUserInput = {
   payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  engagementStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1078,6 +1132,8 @@ export type VAProfileUncheckedUpdateWithoutUserInput = {
   payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  engagementStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1109,6 +1165,8 @@ export type VAProfileCreateWithoutVaSkillsInput = {
   payoutSummaryLink?: string | null
   dept201FolderLink?: string | null
   notes?: string | null
+  status?: $Enums.GeneralStatus
+  engagementStatus?: $Enums.EmploymentStatus | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1141,6 +1199,8 @@ export type VAProfileUncheckedCreateWithoutVaSkillsInput = {
   payoutSummaryLink?: string | null
   dept201FolderLink?: string | null
   notes?: string | null
+  status?: $Enums.GeneralStatus
+  engagementStatus?: $Enums.EmploymentStatus | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1187,6 +1247,8 @@ export type VAProfileUpdateWithoutVaSkillsInput = {
   payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  engagementStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1219,6 +1281,8 @@ export type VAProfileUncheckedUpdateWithoutVaSkillsInput = {
   payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  engagementStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1249,6 +1313,8 @@ export type VAProfileCreateWithoutDocumentsInput = {
   payoutSummaryLink?: string | null
   dept201FolderLink?: string | null
   notes?: string | null
+  status?: $Enums.GeneralStatus
+  engagementStatus?: $Enums.EmploymentStatus | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1281,6 +1347,8 @@ export type VAProfileUncheckedCreateWithoutDocumentsInput = {
   payoutSummaryLink?: string | null
   dept201FolderLink?: string | null
   notes?: string | null
+  status?: $Enums.GeneralStatus
+  engagementStatus?: $Enums.EmploymentStatus | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1327,6 +1395,8 @@ export type VAProfileUpdateWithoutDocumentsInput = {
   payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  engagementStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1359,6 +1429,8 @@ export type VAProfileUncheckedUpdateWithoutDocumentsInput = {
   payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  engagementStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1389,6 +1461,8 @@ export type VAProfileCreateWithoutAssignmentsInput = {
   payoutSummaryLink?: string | null
   dept201FolderLink?: string | null
   notes?: string | null
+  status?: $Enums.GeneralStatus
+  engagementStatus?: $Enums.EmploymentStatus | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1421,6 +1495,8 @@ export type VAProfileUncheckedCreateWithoutAssignmentsInput = {
   payoutSummaryLink?: string | null
   dept201FolderLink?: string | null
   notes?: string | null
+  status?: $Enums.GeneralStatus
+  engagementStatus?: $Enums.EmploymentStatus | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1467,6 +1543,8 @@ export type VAProfileUpdateWithoutAssignmentsInput = {
   payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  engagementStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1499,6 +1577,8 @@ export type VAProfileUncheckedUpdateWithoutAssignmentsInput = {
   payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  engagementStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1529,6 +1609,8 @@ export type VAProfileCreateWithoutWorkLogsInput = {
   payoutSummaryLink?: string | null
   dept201FolderLink?: string | null
   notes?: string | null
+  status?: $Enums.GeneralStatus
+  engagementStatus?: $Enums.EmploymentStatus | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1561,6 +1643,8 @@ export type VAProfileUncheckedCreateWithoutWorkLogsInput = {
   payoutSummaryLink?: string | null
   dept201FolderLink?: string | null
   notes?: string | null
+  status?: $Enums.GeneralStatus
+  engagementStatus?: $Enums.EmploymentStatus | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1607,6 +1691,8 @@ export type VAProfileUpdateWithoutWorkLogsInput = {
   payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  engagementStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1639,6 +1725,8 @@ export type VAProfileUncheckedUpdateWithoutWorkLogsInput = {
   payoutSummaryLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dept201FolderLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  engagementStatus?: Prisma.NullableEnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1728,6 +1816,8 @@ export type VAProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   payoutSummaryLink?: boolean
   dept201FolderLink?: boolean
   notes?: boolean
+  status?: boolean
+  engagementStatus?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1762,6 +1852,8 @@ export type VAProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   payoutSummaryLink?: boolean
   dept201FolderLink?: boolean
   notes?: boolean
+  status?: boolean
+  engagementStatus?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1791,6 +1883,8 @@ export type VAProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   payoutSummaryLink?: boolean
   dept201FolderLink?: boolean
   notes?: boolean
+  status?: boolean
+  engagementStatus?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1820,12 +1914,14 @@ export type VAProfileSelectScalar = {
   payoutSummaryLink?: boolean
   dept201FolderLink?: boolean
   notes?: boolean
+  status?: boolean
+  engagementStatus?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type VAProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "hourlyRate" | "baseRate" | "vaaPosition" | "level" | "availabilityStatus" | "totalCapacityHours" | "preferredWorkHours" | "availableSchedule" | "hybrid" | "onboardingFolderUrl" | "portfolioUrl" | "contractLink" | "folder201Link" | "file201Link" | "vaClientFileLink" | "healthCheckFileLink" | "vaProfileLink" | "payoutSummaryLink" | "dept201FolderLink" | "notes" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["vAProfile"]>
+export type VAProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "hourlyRate" | "baseRate" | "vaaPosition" | "level" | "availabilityStatus" | "totalCapacityHours" | "preferredWorkHours" | "availableSchedule" | "hybrid" | "onboardingFolderUrl" | "portfolioUrl" | "contractLink" | "folder201Link" | "file201Link" | "vaClientFileLink" | "healthCheckFileLink" | "vaProfileLink" | "payoutSummaryLink" | "dept201FolderLink" | "notes" | "status" | "engagementStatus" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["vAProfile"]>
 export type VAProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   assignments?: boolean | Prisma.VAProfile$assignmentsArgs<ExtArgs>
@@ -1873,6 +1969,8 @@ export type $VAProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     payoutSummaryLink: string | null
     dept201FolderLink: string | null
     notes: string | null
+    status: $Enums.GeneralStatus
+    engagementStatus: $Enums.EmploymentStatus | null
     isActive: boolean
     createdAt: Date
     updatedAt: Date
@@ -2326,6 +2424,8 @@ export interface VAProfileFieldRefs {
   readonly payoutSummaryLink: Prisma.FieldRef<"VAProfile", 'String'>
   readonly dept201FolderLink: Prisma.FieldRef<"VAProfile", 'String'>
   readonly notes: Prisma.FieldRef<"VAProfile", 'String'>
+  readonly status: Prisma.FieldRef<"VAProfile", 'GeneralStatus'>
+  readonly engagementStatus: Prisma.FieldRef<"VAProfile", 'EmploymentStatus'>
   readonly isActive: Prisma.FieldRef<"VAProfile", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"VAProfile", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"VAProfile", 'DateTime'>

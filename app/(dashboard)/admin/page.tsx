@@ -77,7 +77,7 @@ export default async function AdminPage() {
 async function StatsSection() {
   const [totalUsers, activeVAs, totalDepartments, roleCounts] = await Promise.all([
     cached('admin:totalUsers', [CACHE_TAGS.users], 60, () => prisma.user.count()),
-    cached('admin:activeVAs', [CACHE_TAGS.vas], 60, () => prisma.vAProfile.count({ where: { isActive: true } })),
+    cached('admin:activeVAs', [CACHE_TAGS.vas], 60, () => prisma.vAProfile.count({ where: { status: 'ACTIVE' } })),
     cached('admin:totalDepts', [CACHE_TAGS.departments], 600, () => prisma.department.count({ where: { status: 'ACTIVE' } })),
     cached('admin:roleCounts', [CACHE_TAGS.users], 60, () =>
       prisma.user.groupBy({ by: ['systemRole'], _count: true }).then((rows) =>

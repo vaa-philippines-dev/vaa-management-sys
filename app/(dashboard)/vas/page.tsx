@@ -208,7 +208,7 @@ async function VATableSection({
       })
     : vas
 
-  const activeCount = filteredVAs.filter((v) => v.isActive).length
+  const activeCount = filteredVAs.filter((v) => v.status === 'ACTIVE').length
   const availableCount = filteredVAs.filter((v) => v.availabilityStatus === 'AVAILABLE').length
   const totalAssignments = filteredVAs.reduce((s, v) => s + v.assignments.length, 0)
   const hasFilters = !!(q || dept || avail || empStatus)

@@ -116,6 +116,7 @@ export const PositionScalarFieldEnum = {
   departmentId: 'departmentId',
   isStaffRole: 'isStaffRole',
   sortOrder: 'sortOrder',
+  status: 'status',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -147,6 +148,7 @@ export const UserScalarFieldEnum = {
   systemRole: 'systemRole',
   userType: 'userType',
   avatarUrl: 'avatarUrl',
+  status: 'status',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -219,6 +221,7 @@ export const RoleAssignmentScalarFieldEnum = {
   departmentId: 'departmentId',
   grantedBy: 'grantedBy',
   expiresAt: 'expiresAt',
+  status: 'status',
   isActive: 'isActive',
   createdAt: 'createdAt'
 } as const
@@ -249,6 +252,8 @@ export const VAProfileScalarFieldEnum = {
   payoutSummaryLink: 'payoutSummaryLink',
   dept201FolderLink: 'dept201FolderLink',
   notes: 'notes',
+  status: 'status',
+  engagementStatus: 'engagementStatus',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -343,6 +348,7 @@ export const ClientScalarFieldEnum = {
   industry: 'industry',
   timezone: 'timezone',
   notes: 'notes',
+  status: 'status',
   isActive: 'isActive',
   managerId: 'managerId',
   departmentId: 'departmentId',

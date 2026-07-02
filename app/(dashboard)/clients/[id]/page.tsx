@@ -46,8 +46,8 @@ export default async function ClientDetailPage({
         <div className="flex-1">
           <div className="flex items-center gap-3">
             <h2 className="text-2xl font-bold tracking-tight">{client.name}</h2>
-            <Badge variant={client.isActive ? 'default' : 'secondary'}>
-              {client.isActive ? 'Active' : 'Inactive'}
+            <Badge variant={client.status === 'ACTIVE' ? 'default' : 'secondary'}>
+              {client.status === 'ACTIVE' ? 'Active' : client.status === 'ON_HOLD' ? 'On Hold' : 'Inactive'}
             </Badge>
             <Badge
               variant="outline"

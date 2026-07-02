@@ -11,7 +11,7 @@ import { Loader2, GitBranch, AlertTriangle, Plus, Trash2, Users, Briefcase, Buil
 
 type Source = { id: string; name: string; level: string | null }
 type Membership = { id: string; userName: string; userEmail: string; position: string | null }
-type Client = { id: string; name: string; contactName: string | null; isActive: boolean }
+type Client = { id: string; name: string; contactName: string | null; isActive: boolean; status?: 'ACTIVE' | 'INACTIVE' | 'ON_HOLD' }
 type Child = { id: string; name: string; acronym: string | null }
 
 type NewDeptDraft = {
@@ -256,7 +256,7 @@ export function SplitWizard({
                       />
                       <span className="flex-1 truncate">
                         {c.name}
-                        {!c.isActive && <Badge variant="outline" className="text-[9px] py-0 px-1 ml-1">inactive</Badge>}
+                        {(c.status ? c.status !== 'ACTIVE' : !c.isActive) && <Badge variant="outline" className="text-[9px] py-0 px-1 ml-1">inactive</Badge>}
                       </span>
                     </label>
                   ))}

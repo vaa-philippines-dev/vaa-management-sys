@@ -11,9 +11,9 @@ export default async function NewAssignmentPage({
   const { clientId } = await searchParams
 
   const [clients, vas] = await Promise.all([
-    prisma.client.findMany({ where: { isActive: true }, orderBy: { name: 'asc' } }),
+    prisma.client.findMany({ where: { status: 'ACTIVE' }, orderBy: { name: 'asc' } }),
     prisma.vAProfile.findMany({
-      where: { isActive: true },
+      where: { status: 'ACTIVE' },
       include: { user: true, vaSkills: { include: { skill: true } } },
       orderBy: { user: { firstName: 'asc' } },
     }),

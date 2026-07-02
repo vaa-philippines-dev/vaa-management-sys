@@ -46,6 +46,7 @@ type User = {
   systemRole: string
   userType: string
   isActive: boolean
+  status?: 'ACTIVE' | 'INACTIVE' | 'ON_HOLD'
   memberships: Membership[]
   roleAssignments: RoleAssignment[]
 }
@@ -106,9 +107,9 @@ export function UserCard({
             <span className="text-sm font-medium truncate">
               {user.firstName} {user.lastName}
             </span>
-            {!user.isActive && (
-              <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-red-500/10 text-red-600 border-red-500/20">
-                Disabled
+            {user.status && user.status !== 'ACTIVE' && (
+              <Badge variant="outline" className={`text-[10px] py-0 px-1.5 ${user.status === 'ON_HOLD' ? 'bg-amber-500/10 text-amber-700 border-amber-500/20' : 'bg-red-500/10 text-red-600 border-red-500/20'}`}>
+                {user.status === 'ON_HOLD' ? 'On Hold' : 'Disabled'}
               </Badge>
             )}
           </div>
@@ -121,9 +122,9 @@ export function UserCard({
           {TYPE_LABELS[user.userType] ?? user.userType}
         </Badge>
         {canEdit && (
-          <form action={toggleUserActive.bind(null, user.id, !user.isActive)} onClick={(e) => e.stopPropagation()}>
+          <form action={toggleUserActive.bind(null, user.id, user.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE')} onClick={(e) => e.stopPropagation()}>
             <Button type="submit" variant="ghost" size="sm" className="h-7 px-2 text-xs shrink-0">
-              {user.isActive ? (
+              {user.status === 'ACTIVE' ? (
                 <PowerOff className="h-3.5 w-3.5" />
               ) : (
                 <Power className="h-3.5 w-3.5" />

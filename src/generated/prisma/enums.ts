@@ -247,3 +247,12 @@ export const DepartmentLevel = {
 } as const
 
 export type DepartmentLevel = (typeof DepartmentLevel)[keyof typeof DepartmentLevel]
+
+
+export const GeneralStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  ON_HOLD: 'ON_HOLD'
+} as const
+
+export type GeneralStatus = (typeof GeneralStatus)[keyof typeof GeneralStatus]

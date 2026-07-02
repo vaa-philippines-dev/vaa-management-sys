@@ -53,7 +53,7 @@ export default async function AdminUsersPage({
       include: {
         profile: true,
         memberships: { include: { department: true, position: true } },
-        roleAssignments: { where: { isActive: true }, include: { department: true } },
+        roleAssignments: { where: { status: 'ACTIVE' }, include: { department: true } },
       },
     }),
     prisma.department.findMany({
@@ -62,7 +62,7 @@ export default async function AdminUsersPage({
       include: { positions: true },
     }),
     prisma.position.findMany({
-      where: { isActive: true },
+      where: { status: 'ACTIVE' },
       orderBy: { sortOrder: 'asc' },
     }),
     prisma.user.count(),
@@ -157,7 +157,7 @@ export default async function AdminUsersPage({
                 lastName: u.lastName,
                 systemRole: u.systemRole,
                 userType: u.userType,
-                isActive: u.isActive,
+                isActive: u.status === 'ACTIVE',
                 memberships: u.memberships.map((m) => ({
                   id: m.id,
                   department: { id: m.department.id, name: m.department.name },

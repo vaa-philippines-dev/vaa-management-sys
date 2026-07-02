@@ -62,7 +62,7 @@ export default async function VADetailPage({
   const editorData = {
     vaProfile: {
       id: va.id,
-      isActive: va.isActive,
+      isActive: va.status === 'ACTIVE',
       hybrid: va.hybrid,
       hourlyRate: va.hourlyRate ? Number(va.hourlyRate) : null,
       baseRate: va.baseRate ? Number(va.baseRate) : null,
@@ -164,7 +164,7 @@ export default async function VADetailPage({
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-xl font-bold tracking-tight">{va.user.firstName} {va.user.lastName}</h2>
-                <Badge variant={va.isActive ? 'default' : 'secondary'} className="text-xs">{va.isActive ? 'Active' : 'Inactive'}</Badge>
+                <Badge variant={va.status === 'ACTIVE' ? 'default' : 'secondary'} className="text-xs">{va.status === 'ACTIVE' ? 'Active' : va.status === 'ON_HOLD' ? 'On Hold' : 'Inactive'}</Badge>
                 {va.hybrid && <Badge variant="outline" className="text-xs bg-purple-500/15 text-purple-700 border-purple-500/20">Hybrid</Badge>}
               </div>
               <p className="text-xs text-muted-foreground mt-0.5">

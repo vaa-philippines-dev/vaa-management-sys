@@ -196,6 +196,12 @@ enum DepartmentLevel {
   SERVICE
 }
 
+enum GeneralStatus {
+  ACTIVE
+  INACTIVE
+  ON_HOLD
+}
+
 // ──────────────────────────────────────────────────────────────────
 // MODELS — Phase 0-1: Core Organization
 // ──────────────────────────────────────────────────────────────────
@@ -245,11 +251,12 @@ model Position {
   subordinates Position[] @relation("PositionChain")
   departmentId String?  @map("department_id")
   department   Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
-  isStaffRole  Boolean  @default(false) @map("is_staff_role")
-  sortOrder    Int      @default(0) @map("sort_order")
-  isActive     Boolean  @default(true) @map("is_active")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  isStaffRole  Boolean       @default(false) @map("is_staff_role")
+  sortOrder    Int           @default(0) @map("sort_order")
+  status       GeneralStatus @default(ACTIVE) @map("general_status")
+  isActive     Boolean       @default(true) @map("is_active")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
 
   memberships DepartmentMembership[]
 
@@ -281,14 +288,15 @@ model DepartmentMembership {
 model User {
   id         String     @id @default(cuid())
   email      String     @unique
-  firstName  String     @map("first_name")
-  lastName   String     @map("last_name")
-  systemRole SystemRole @map("system_role")
-  userType   UserType   @map("user_type")
-  avatarUrl  String?    @map("avatar_url")
-  isActive   Boolean    @default(true) @map("is_active")
-  createdAt  DateTime   @default(now()) @map("created_at")
-  updatedAt  DateTime   @updatedAt @map("updated_at")
+  firstName  String        @map("first_name")
+  lastName   String        @map("last_name")
+  systemRole SystemRole    @map("system_role")
+  userType   UserType      @map("user_type")
+  avatarUrl  String?       @map("avatar_url")
+  status     GeneralStatus @default(ACTIVE) @map("general_status")
+  isActive   Boolean       @default(true) @map("is_active")
+  createdAt  DateTime      @default(now()) @map("created_at")
+  updatedAt  DateTime      @updatedAt @map("updated_at")
 
   profile            UserProfile?
   vaProfile          VAProfile?
@@ -383,6 +391,7 @@ model RoleAssignment {
   grantedBy    String        @map("granted_by")
   grantor      User          @relation("RoleGranter", fields: [grantedBy], references: [id], onDelete: Cascade)
   expiresAt    DateTime?     @map("expires_at")
+  status       GeneralStatus @default(ACTIVE) @map("general_status")
   isActive     Boolean       @default(true) @map("is_active")
   createdAt    DateTime      @default(now()) @map("created_at")
 
@@ -417,9 +426,11 @@ model VAProfile {
   payoutSummaryLink   String?      @map("payout_summary_link")
   dept201FolderLink   String?      @map("dept_201_folder_link")
   notes               String?
-  isActive            Boolean      @default(true) @map("is_active")
-  createdAt           DateTime     @default(now()) @map("created_at")
-  updatedAt           DateTime     @updatedAt @map("updated_at")
+  status              GeneralStatus  @default(ACTIVE)   @map("general_status")
+  engagementStatus    EmploymentStatus?               @map("engagement_status")
+  isActive            Boolean         @default(true)   @map("is_active")
+  createdAt           DateTime        @default(now())  @map("created_at")
+  updatedAt           DateTime        @updatedAt       @map("updated_at")
 
   assignments Assignment[]
   workLogs    WorkLog[]
@@ -531,6 +542,7 @@ model Client {
   industry            String?
   timezone            String?        @default("America/New_York")
   notes               String?
+  status              GeneralStatus  @default(ACTIVE) @map("general_status")
   isActive            Boolean        @default(true) @map("is_active")
   managerId           String?        @map("manager_id")
   manager             User?          @relation("ClientManager", fields: [managerId], references: [id], onDelete: SetNull)

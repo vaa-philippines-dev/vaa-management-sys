@@ -105,15 +105,17 @@ async function ManagerStats({ deptId }: { deptId: string | null }) {
   const periodStart = startOfMonth(now)
   const periodEnd = endOfMonth(now)
 
-  const clientWhere = deptId ? { isActive: true, departmentId: deptId } : { isActive: true }
+  const clientWhere: { status: 'ACTIVE'; departmentId?: string } = deptId
+    ? { status: 'ACTIVE', departmentId: deptId }
+    : { status: 'ACTIVE' }
 
   const [clientCount, vaCount, activeAssignments, monthLogs] = await Promise.all([
     cached('dashboard:clientCount', [CACHE_TAGS.clients, CACHE_TAGS.dashboard], 60, () => prisma.client.count({ where: clientWhere })),
     deptId
       ? cached(`dashboard:vaCount:${deptId}`, [CACHE_TAGS.vas, CACHE_TAGS.dashboard], 60, () =>
-          prisma.vAProfile.count({ where: { isActive: true, user: { memberships: { some: { departmentId: deptId, endedAt: null } } } } })
+          prisma.vAProfile.count({ where: { status: 'ACTIVE', user: { memberships: { some: { departmentId: deptId, endedAt: null } } } } })
         )
-      : cached('dashboard:vaCount', [CACHE_TAGS.vas, CACHE_TAGS.dashboard], 60, () => prisma.vAProfile.count({ where: { isActive: true } })),
+      : cached('dashboard:vaCount', [CACHE_TAGS.vas, CACHE_TAGS.dashboard], 60, () => prisma.vAProfile.count({ where: { status: 'ACTIVE' } })),
     cached('dashboard:activeAssignments', [CACHE_TAGS.assignments, CACHE_TAGS.dashboard], 60, () =>
       prisma.assignment.findMany({
         where: { status: 'ACTIVE', ...(deptId ? { client: { departmentId: deptId } } : {}) },
