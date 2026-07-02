@@ -17,6 +17,8 @@ import {
   ListTodo,
   Shield,
   ClipboardList,
+  UserPlus,
+  Network,
 } from 'lucide-react'
 import Image from 'next/image'
 
@@ -95,6 +97,51 @@ export function Sidebar({ role = 'MANAGER', isAdmin = false }: { role?: 'MANAGER
           {isAdmin && (
             <>
               <div className="my-2 border-t" />
+              <p className="px-3 py-1 text-[10px] uppercase tracking-wider text-sidebar-foreground/50 font-semibold">
+                Admin
+              </p>
+              <Link href="/admin">
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    'w-full justify-start gap-3 rounded-lg text-sm font-medium transition-colors',
+                    pathname === '/admin'
+                      ? 'bg-sidebar-accent text-sidebar-accent-foreground'
+                      : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
+                  )}
+                >
+                  <LayoutDashboard className="h-4 w-4 shrink-0" />
+                  Admin Panel
+                </Button>
+              </Link>
+              <Link href="/admin/users">
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    'w-full justify-start gap-3 rounded-lg text-sm font-medium transition-colors',
+                    pathname.startsWith('/admin/users')
+                      ? 'bg-sidebar-accent text-sidebar-accent-foreground'
+                      : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
+                  )}
+                >
+                  <UserPlus className="h-4 w-4 shrink-0" />
+                  Manage Users
+                </Button>
+              </Link>
+              <Link href="/admin/departments">
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    'w-full justify-start gap-3 rounded-lg text-sm font-medium transition-colors',
+                    pathname.startsWith('/admin/departments')
+                      ? 'bg-sidebar-accent text-sidebar-accent-foreground'
+                      : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
+                  )}
+                >
+                  <Network className="h-4 w-4 shrink-0" />
+                  Manage Departments
+                </Button>
+              </Link>
               <Link href="/departments">
                 <Button
                   variant="ghost"
@@ -107,20 +154,6 @@ export function Sidebar({ role = 'MANAGER', isAdmin = false }: { role?: 'MANAGER
                 >
                   <Building2 className="h-4 w-4 shrink-0" />
                   Departments
-                </Button>
-              </Link>
-              <Link href="/admin">
-                <Button
-                  variant="ghost"
-                  className={cn(
-                    'w-full justify-start gap-3 rounded-lg text-sm font-medium transition-colors',
-                    pathname.startsWith('/admin')
-                      ? 'bg-sidebar-accent text-sidebar-accent-foreground'
-                      : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
-                  )}
-                >
-                  <Shield className="h-4 w-4 shrink-0" />
-                  Admin Panel
                 </Button>
               </Link>
               <Link href="/admin/audit">
