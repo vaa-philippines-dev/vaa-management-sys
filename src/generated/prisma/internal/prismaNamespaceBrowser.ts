@@ -260,8 +260,14 @@ export type VAProfileScalarFieldEnum = (typeof VAProfileScalarFieldEnum)[keyof t
 export const SkillScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  shortName: 'shortName',
+  acronym: 'acronym',
   category: 'category',
-  createdAt: 'createdAt'
+  jobDescription: 'jobDescription',
+  attachmentUrl: 'attachmentUrl',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type SkillScalarFieldEnum = (typeof SkillScalarFieldEnum)[keyof typeof SkillScalarFieldEnum]

@@ -27,22 +27,40 @@ export type AggregateSkill = {
 export type SkillMinAggregateOutputType = {
   id: string | null
   name: string | null
+  shortName: string | null
+  acronym: string | null
   category: $Enums.SkillCategory | null
+  jobDescription: string | null
+  attachmentUrl: string | null
+  isActive: boolean | null
   createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type SkillMaxAggregateOutputType = {
   id: string | null
   name: string | null
+  shortName: string | null
+  acronym: string | null
   category: $Enums.SkillCategory | null
+  jobDescription: string | null
+  attachmentUrl: string | null
+  isActive: boolean | null
   createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type SkillCountAggregateOutputType = {
   id: number
   name: number
+  shortName: number
+  acronym: number
   category: number
+  jobDescription: number
+  attachmentUrl: number
+  isActive: number
   createdAt: number
+  updatedAt: number
   _all: number
 }
 
@@ -50,22 +68,40 @@ export type SkillCountAggregateOutputType = {
 export type SkillMinAggregateInputType = {
   id?: true
   name?: true
+  shortName?: true
+  acronym?: true
   category?: true
+  jobDescription?: true
+  attachmentUrl?: true
+  isActive?: true
   createdAt?: true
+  updatedAt?: true
 }
 
 export type SkillMaxAggregateInputType = {
   id?: true
   name?: true
+  shortName?: true
+  acronym?: true
   category?: true
+  jobDescription?: true
+  attachmentUrl?: true
+  isActive?: true
   createdAt?: true
+  updatedAt?: true
 }
 
 export type SkillCountAggregateInputType = {
   id?: true
   name?: true
+  shortName?: true
+  acronym?: true
   category?: true
+  jobDescription?: true
+  attachmentUrl?: true
+  isActive?: true
   createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -144,8 +180,14 @@ export type SkillGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 export type SkillGroupByOutputType = {
   id: string
   name: string
+  shortName: string | null
+  acronym: string | null
   category: $Enums.SkillCategory
+  jobDescription: string | null
+  attachmentUrl: string | null
+  isActive: boolean
   createdAt: Date
+  updatedAt: Date
   _count: SkillCountAggregateOutputType | null
   _min: SkillMinAggregateOutputType | null
   _max: SkillMaxAggregateOutputType | null
@@ -172,8 +214,14 @@ export type SkillWhereInput = {
   NOT?: Prisma.SkillWhereInput | Prisma.SkillWhereInput[]
   id?: Prisma.StringFilter<"Skill"> | string
   name?: Prisma.StringFilter<"Skill"> | string
+  shortName?: Prisma.StringNullableFilter<"Skill"> | string | null
+  acronym?: Prisma.StringNullableFilter<"Skill"> | string | null
   category?: Prisma.EnumSkillCategoryFilter<"Skill"> | $Enums.SkillCategory
+  jobDescription?: Prisma.StringNullableFilter<"Skill"> | string | null
+  attachmentUrl?: Prisma.StringNullableFilter<"Skill"> | string | null
+  isActive?: Prisma.BoolFilter<"Skill"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Skill"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Skill"> | Date | string
   vaSkills?: Prisma.VASkillListRelationFilter
   departments?: Prisma.DepartmentSkillListRelationFilter
 }
@@ -181,8 +229,14 @@ export type SkillWhereInput = {
 export type SkillOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  shortName?: Prisma.SortOrderInput | Prisma.SortOrder
+  acronym?: Prisma.SortOrderInput | Prisma.SortOrder
   category?: Prisma.SortOrder
+  jobDescription?: Prisma.SortOrderInput | Prisma.SortOrder
+  attachmentUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   vaSkills?: Prisma.VASkillOrderByRelationAggregateInput
   departments?: Prisma.DepartmentSkillOrderByRelationAggregateInput
 }
@@ -190,20 +244,32 @@ export type SkillOrderByWithRelationInput = {
 export type SkillWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   name?: string
+  acronym?: string
   AND?: Prisma.SkillWhereInput | Prisma.SkillWhereInput[]
   OR?: Prisma.SkillWhereInput[]
   NOT?: Prisma.SkillWhereInput | Prisma.SkillWhereInput[]
+  shortName?: Prisma.StringNullableFilter<"Skill"> | string | null
   category?: Prisma.EnumSkillCategoryFilter<"Skill"> | $Enums.SkillCategory
+  jobDescription?: Prisma.StringNullableFilter<"Skill"> | string | null
+  attachmentUrl?: Prisma.StringNullableFilter<"Skill"> | string | null
+  isActive?: Prisma.BoolFilter<"Skill"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Skill"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Skill"> | Date | string
   vaSkills?: Prisma.VASkillListRelationFilter
   departments?: Prisma.DepartmentSkillListRelationFilter
-}, "id" | "name">
+}, "id" | "name" | "acronym">
 
 export type SkillOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  shortName?: Prisma.SortOrderInput | Prisma.SortOrder
+  acronym?: Prisma.SortOrderInput | Prisma.SortOrder
   category?: Prisma.SortOrder
+  jobDescription?: Prisma.SortOrderInput | Prisma.SortOrder
+  attachmentUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.SkillCountOrderByAggregateInput
   _max?: Prisma.SkillMaxOrderByAggregateInput
   _min?: Prisma.SkillMinOrderByAggregateInput
@@ -215,15 +281,27 @@ export type SkillScalarWhereWithAggregatesInput = {
   NOT?: Prisma.SkillScalarWhereWithAggregatesInput | Prisma.SkillScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Skill"> | string
   name?: Prisma.StringWithAggregatesFilter<"Skill"> | string
+  shortName?: Prisma.StringNullableWithAggregatesFilter<"Skill"> | string | null
+  acronym?: Prisma.StringNullableWithAggregatesFilter<"Skill"> | string | null
   category?: Prisma.EnumSkillCategoryWithAggregatesFilter<"Skill"> | $Enums.SkillCategory
+  jobDescription?: Prisma.StringNullableWithAggregatesFilter<"Skill"> | string | null
+  attachmentUrl?: Prisma.StringNullableWithAggregatesFilter<"Skill"> | string | null
+  isActive?: Prisma.BoolWithAggregatesFilter<"Skill"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Skill"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Skill"> | Date | string
 }
 
 export type SkillCreateInput = {
   id?: string
   name: string
+  shortName?: string | null
+  acronym?: string | null
   category?: $Enums.SkillCategory
+  jobDescription?: string | null
+  attachmentUrl?: string | null
+  isActive?: boolean
   createdAt?: Date | string
+  updatedAt?: Date | string
   vaSkills?: Prisma.VASkillCreateNestedManyWithoutSkillInput
   departments?: Prisma.DepartmentSkillCreateNestedManyWithoutSkillInput
 }
@@ -231,8 +309,14 @@ export type SkillCreateInput = {
 export type SkillUncheckedCreateInput = {
   id?: string
   name: string
+  shortName?: string | null
+  acronym?: string | null
   category?: $Enums.SkillCategory
+  jobDescription?: string | null
+  attachmentUrl?: string | null
+  isActive?: boolean
   createdAt?: Date | string
+  updatedAt?: Date | string
   vaSkills?: Prisma.VASkillUncheckedCreateNestedManyWithoutSkillInput
   departments?: Prisma.DepartmentSkillUncheckedCreateNestedManyWithoutSkillInput
 }
@@ -240,8 +324,14 @@ export type SkillUncheckedCreateInput = {
 export type SkillUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.EnumSkillCategoryFieldUpdateOperationsInput | $Enums.SkillCategory
+  jobDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaSkills?: Prisma.VASkillUpdateManyWithoutSkillNestedInput
   departments?: Prisma.DepartmentSkillUpdateManyWithoutSkillNestedInput
 }
@@ -249,8 +339,14 @@ export type SkillUpdateInput = {
 export type SkillUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.EnumSkillCategoryFieldUpdateOperationsInput | $Enums.SkillCategory
+  jobDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaSkills?: Prisma.VASkillUncheckedUpdateManyWithoutSkillNestedInput
   departments?: Prisma.DepartmentSkillUncheckedUpdateManyWithoutSkillNestedInput
 }
@@ -258,43 +354,79 @@ export type SkillUncheckedUpdateInput = {
 export type SkillCreateManyInput = {
   id?: string
   name: string
+  shortName?: string | null
+  acronym?: string | null
   category?: $Enums.SkillCategory
+  jobDescription?: string | null
+  attachmentUrl?: string | null
+  isActive?: boolean
   createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type SkillUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.EnumSkillCategoryFieldUpdateOperationsInput | $Enums.SkillCategory
+  jobDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type SkillUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.EnumSkillCategoryFieldUpdateOperationsInput | $Enums.SkillCategory
+  jobDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type SkillCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  shortName?: Prisma.SortOrder
+  acronym?: Prisma.SortOrder
   category?: Prisma.SortOrder
+  jobDescription?: Prisma.SortOrder
+  attachmentUrl?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type SkillMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  shortName?: Prisma.SortOrder
+  acronym?: Prisma.SortOrder
   category?: Prisma.SortOrder
+  jobDescription?: Prisma.SortOrder
+  attachmentUrl?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type SkillMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  shortName?: Prisma.SortOrder
+  acronym?: Prisma.SortOrder
   category?: Prisma.SortOrder
+  jobDescription?: Prisma.SortOrder
+  attachmentUrl?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type SkillScalarRelationFilter = {
@@ -337,16 +469,28 @@ export type SkillUpdateOneRequiredWithoutVaSkillsNestedInput = {
 export type SkillCreateWithoutDepartmentsInput = {
   id?: string
   name: string
+  shortName?: string | null
+  acronym?: string | null
   category?: $Enums.SkillCategory
+  jobDescription?: string | null
+  attachmentUrl?: string | null
+  isActive?: boolean
   createdAt?: Date | string
+  updatedAt?: Date | string
   vaSkills?: Prisma.VASkillCreateNestedManyWithoutSkillInput
 }
 
 export type SkillUncheckedCreateWithoutDepartmentsInput = {
   id?: string
   name: string
+  shortName?: string | null
+  acronym?: string | null
   category?: $Enums.SkillCategory
+  jobDescription?: string | null
+  attachmentUrl?: string | null
+  isActive?: boolean
   createdAt?: Date | string
+  updatedAt?: Date | string
   vaSkills?: Prisma.VASkillUncheckedCreateNestedManyWithoutSkillInput
 }
 
@@ -369,32 +513,56 @@ export type SkillUpdateToOneWithWhereWithoutDepartmentsInput = {
 export type SkillUpdateWithoutDepartmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.EnumSkillCategoryFieldUpdateOperationsInput | $Enums.SkillCategory
+  jobDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaSkills?: Prisma.VASkillUpdateManyWithoutSkillNestedInput
 }
 
 export type SkillUncheckedUpdateWithoutDepartmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.EnumSkillCategoryFieldUpdateOperationsInput | $Enums.SkillCategory
+  jobDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaSkills?: Prisma.VASkillUncheckedUpdateManyWithoutSkillNestedInput
 }
 
 export type SkillCreateWithoutVaSkillsInput = {
   id?: string
   name: string
+  shortName?: string | null
+  acronym?: string | null
   category?: $Enums.SkillCategory
+  jobDescription?: string | null
+  attachmentUrl?: string | null
+  isActive?: boolean
   createdAt?: Date | string
+  updatedAt?: Date | string
   departments?: Prisma.DepartmentSkillCreateNestedManyWithoutSkillInput
 }
 
 export type SkillUncheckedCreateWithoutVaSkillsInput = {
   id?: string
   name: string
+  shortName?: string | null
+  acronym?: string | null
   category?: $Enums.SkillCategory
+  jobDescription?: string | null
+  attachmentUrl?: string | null
+  isActive?: boolean
   createdAt?: Date | string
+  updatedAt?: Date | string
   departments?: Prisma.DepartmentSkillUncheckedCreateNestedManyWithoutSkillInput
 }
 
@@ -417,16 +585,28 @@ export type SkillUpdateToOneWithWhereWithoutVaSkillsInput = {
 export type SkillUpdateWithoutVaSkillsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.EnumSkillCategoryFieldUpdateOperationsInput | $Enums.SkillCategory
+  jobDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   departments?: Prisma.DepartmentSkillUpdateManyWithoutSkillNestedInput
 }
 
 export type SkillUncheckedUpdateWithoutVaSkillsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   category?: Prisma.EnumSkillCategoryFieldUpdateOperationsInput | $Enums.SkillCategory
+  jobDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   departments?: Prisma.DepartmentSkillUncheckedUpdateManyWithoutSkillNestedInput
 }
 
@@ -473,8 +653,14 @@ export type SkillCountOutputTypeCountDepartmentsArgs<ExtArgs extends runtime.Typ
 export type SkillSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  shortName?: boolean
+  acronym?: boolean
   category?: boolean
+  jobDescription?: boolean
+  attachmentUrl?: boolean
+  isActive?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
   vaSkills?: boolean | Prisma.Skill$vaSkillsArgs<ExtArgs>
   departments?: boolean | Prisma.Skill$departmentsArgs<ExtArgs>
   _count?: boolean | Prisma.SkillCountOutputTypeDefaultArgs<ExtArgs>
@@ -483,25 +669,43 @@ export type SkillSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type SkillSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  shortName?: boolean
+  acronym?: boolean
   category?: boolean
+  jobDescription?: boolean
+  attachmentUrl?: boolean
+  isActive?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["skill"]>
 
 export type SkillSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  shortName?: boolean
+  acronym?: boolean
   category?: boolean
+  jobDescription?: boolean
+  attachmentUrl?: boolean
+  isActive?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
 }, ExtArgs["result"]["skill"]>
 
 export type SkillSelectScalar = {
   id?: boolean
   name?: boolean
+  shortName?: boolean
+  acronym?: boolean
   category?: boolean
+  jobDescription?: boolean
+  attachmentUrl?: boolean
+  isActive?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type SkillOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "category" | "createdAt", ExtArgs["result"]["skill"]>
+export type SkillOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "shortName" | "acronym" | "category" | "jobDescription" | "attachmentUrl" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["skill"]>
 export type SkillInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vaSkills?: boolean | Prisma.Skill$vaSkillsArgs<ExtArgs>
   departments?: boolean | Prisma.Skill$departmentsArgs<ExtArgs>
@@ -519,8 +723,14 @@ export type $SkillPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
+    shortName: string | null
+    acronym: string | null
     category: $Enums.SkillCategory
+    jobDescription: string | null
+    attachmentUrl: string | null
+    isActive: boolean
     createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["skill"]>
   composites: {}
 }
@@ -948,8 +1158,14 @@ export interface Prisma__SkillClient<T, Null = never, ExtArgs extends runtime.Ty
 export interface SkillFieldRefs {
   readonly id: Prisma.FieldRef<"Skill", 'String'>
   readonly name: Prisma.FieldRef<"Skill", 'String'>
+  readonly shortName: Prisma.FieldRef<"Skill", 'String'>
+  readonly acronym: Prisma.FieldRef<"Skill", 'String'>
   readonly category: Prisma.FieldRef<"Skill", 'SkillCategory'>
+  readonly jobDescription: Prisma.FieldRef<"Skill", 'String'>
+  readonly attachmentUrl: Prisma.FieldRef<"Skill", 'String'>
+  readonly isActive: Prisma.FieldRef<"Skill", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Skill", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"Skill", 'DateTime'>
 }
     
 
