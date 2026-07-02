@@ -1,20 +1,15 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useFormStatus } from 'react-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Modal } from '@/components/ui/modal'
 import { toast } from 'sonner'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Pencil } from 'lucide-react'
 import {
   Upload,
   FileText,
-  Check,
-  X,
   AlertCircle,
-  ChevronRight,
   Shield,
   ExternalLink,
   Globe,
@@ -90,105 +85,83 @@ export function VAProfileEditor({
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-      <div className="space-y-0 rounded-2xl border bg-card overflow-hidden shadow-sm">
-        <EditRow
+      <div className="space-y-4">
+        <EditableSection
           icon={User}
           label="Personal Information"
-          dialogTitle="Personal Information"
-          renderDialog={(close) => <PersonalFormContent data={data} onClose={close} />}
-          preview={
-            <div className="grid grid-cols-2 gap-x-8 gap-y-1.5">
-              <Mini label="Assigned Email" value={data.user.email} />
-              <Mini label="Work Email" value={data.profile?.workEmail} />
-              <Mini label="Personal Email" value={data.profile?.personalEmail} />
-              <Mini label="WhatsApp" value={data.profile?.whatsappNumber} />
-              <Mini label="Emergency" value={
-                data.profile?.emergencyContactName
-                  ? `${data.profile.emergencyContactName}${data.profile?.emergencyContactPhone ? ` — ${data.profile.emergencyContactPhone}` : ''}`
-                  : null
-              } />
-            </div>
-          }
-        />
+          renderEdit={(onClose) => <PersonalFormContent data={data} onClose={onClose} />}
+        >
+          <TableRow label="Assigned Email" value={data.user.email} />
+          <TableRow label="Work Email" value={data.profile?.workEmail} />
+          <TableRow label="Personal Email" value={data.profile?.personalEmail} />
+          <TableRow label="WhatsApp" value={data.profile?.whatsappNumber} />
+          <TableRow
+            label="Emergency Contact"
+            value={data.profile?.emergencyContactName
+              ? `${data.profile.emergencyContactName}${data.profile?.emergencyContactPhone ? ` — ${data.profile.emergencyContactPhone}` : ''}`
+              : null}
+          />
+        </EditableSection>
 
-        <Divider />
-
-        <EditRow
+        <EditableSection
           icon={MapPin}
           label="Complete Address"
-          dialogTitle="Complete Address"
-          renderDialog={(close) => <AddressFormContent data={data} onClose={close} />}
-          preview={
-            <div className="grid grid-cols-3 gap-x-4 gap-y-1.5">
-              <Mini label="#, Building & Street" value={data.profile?.address} />
-              <Mini label="Province" value={data.profile?.province} />
-              <Mini label="City / Municipality" value={data.profile?.cityMunicipality} />
-              <Mini label="Barangay" value={data.profile?.barangay} />
-              <Mini label="Zip Code" value={data.profile?.zipCode} />
-              <Mini label="Landmark" value={data.profile?.landmark} />
-            </div>
-          }
-        />
+          renderEdit={(onClose) => <AddressFormContent data={data} onClose={onClose} />}
+        >
+          <TableRow label="#, Building & Street" value={data.profile?.address} />
+          <TableRow label="Province" value={data.profile?.province} />
+          <TableRow label="City / Municipality" value={data.profile?.cityMunicipality} />
+          <TableRow label="Barangay" value={data.profile?.barangay} />
+          <TableRow label="Zip Code" value={data.profile?.zipCode} />
+          <TableRow label="Landmark" value={data.profile?.landmark} />
+        </EditableSection>
 
-        <Divider />
-
-        <EditRow
+        <EditableSection
           icon={Briefcase}
           label="Employment & Payment"
-          dialogTitle="Employment & Payment"
-          renderDialog={(close) => <EmploymentFormContent data={data} onClose={close} />}
-          size="md"
-          preview={
-            <div className="grid grid-cols-3 gap-x-4 gap-y-1.5">
-              <Mini label="Position" value={data.membership?.positionTitle || data.vaProfile.vaaPosition} />
-              <Mini label="Status" value={data.employment?.employmentStatus?.replace(/_/g, ' ')} />
-              <Mini label="Base Rate" value={data.vaProfile.baseRate ? `₱${Number(data.vaProfile.baseRate).toLocaleString()}/hr` : null} />
-              <Mini label="Hourly Rate" value={data.vaProfile.hourlyRate ? `$${Number(data.vaProfile.hourlyRate).toFixed(2)}/hr` : null} />
-              <Mini label="Birth Date" value={data.profile?.birthDate ? format(new Date(data.profile.birthDate), 'MMM dd, yyyy') + (data.profile.nonCelebrant ? ' (NC)' : '') : null} />
-              <Mini label="GCash" value={data.profile?.gcashNumber} />
-              <Mini label="Payoneer" value={data.profile?.payoneerAccount} />
-              <Mini label="Hired" value={data.employment?.startDate ? format(new Date(data.employment.startDate), 'MMM dd, yyyy') : null} />
-            </div>
-          }
-        />
+          renderEdit={(onClose) => <EmploymentFormContent data={data} onClose={onClose} />}
+        >
+          <TableRow label="Position" value={data.membership?.positionTitle || data.vaProfile.vaaPosition} />
+          <TableRow label="Status" value={data.employment?.employmentStatus?.replace(/_/g, ' ')} />
+          <TableRow label="Base Rate" value={data.vaProfile.baseRate ? `₱${Number(data.vaProfile.baseRate).toLocaleString()}/hr` : null} />
+          <TableRow label="Hourly Rate" value={data.vaProfile.hourlyRate ? `$${Number(data.vaProfile.hourlyRate).toFixed(2)}/hr` : null} />
+          <TableRow label="Birth Date" value={data.profile?.birthDate ? format(new Date(data.profile.birthDate), 'MMM dd, yyyy') + (data.profile.nonCelebrant ? ' (NC)' : '') : null} />
+          <TableRow label="GCash" value={data.profile?.gcashNumber} />
+          <TableRow label="Payoneer" value={data.profile?.payoneerAccount} />
+          <TableRow label="Hired" value={data.employment?.startDate ? format(new Date(data.employment.startDate), 'MMM dd, yyyy') : null} />
+        </EditableSection>
 
-        <Divider />
-
-        <EditRow
+        <EditableSection
           icon={Globe}
           label="Socials"
-          dialogTitle="Socials"
-          renderDialog={(close) => <SocialsFormContent data={data} onClose={close} />}
-          preview={
-            <div className="grid grid-cols-2 gap-x-8 gap-y-1.5">
-              <Mini label="Facebook Profile" value={data.profile?.facebookName} />
-              <Mini label="Facebook URL" value={data.profile?.facebookUrl} link />
-            </div>
-          }
-        />
+          renderEdit={(onClose) => <SocialsFormContent data={data} onClose={onClose} />}
+        >
+          <TableRow label="Facebook Profile" value={data.profile?.facebookName} />
+          <TableRow label="Facebook URL" value={data.profile?.facebookUrl} link />
+        </EditableSection>
 
-        <Divider />
-
-        <EditRow
-          icon={Shield}
-          label="201 Files"
-          dialogTitle="201 Files"
-          renderDialog={(close) => <Files201Content data={data} vaName={vaName} onJustUploaded={handleRecentUpload} onClose={close} currentUserId={currentUserId} />}
-          size="lg"
-          preview={
-            <div className="space-y-3">
-              <div className="grid grid-cols-2 gap-x-8 gap-y-1.5">
-                <Mini label="Passport Number" value={data.profile?.passportNumber} />
-                <Mini label="PhilHealth Number" value={data.profile?.philhealthNumber} />
+        <div className="rounded-2xl border bg-card overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                <Shield className="h-4 w-4 text-primary" />
               </div>
-              <div className="flex flex-wrap gap-2">
-                <DocBadge icon={IdCard} label="Passport" url={data.profile?.passportPhoto} highlighted={recentUpload === 'passportPhoto'} />
-                <DocBadge icon={Camera} label="PhilHealth" url={data.profile?.philhealthPhoto} highlighted={recentUpload === 'philhealthPhoto'} />
-                <DocBadge icon={FileText} label="Contract" url={data.profile?.signedContract} highlighted={recentUpload === 'signedContract'} />
-              </div>
+              <p className="text-sm font-semibold">201 Files</p>
             </div>
-          }
-        />
+          </div>
+          <div className="border-t px-5 py-4 space-y-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <TableRow label="Passport Number" value={data.profile?.passportNumber} />
+              <TableRow label="PhilHealth Number" value={data.profile?.philhealthNumber} />
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <DocBadge icon={IdCard} label="Passport" url={data.profile?.passportPhoto ?? null} highlighted={recentUpload === 'passportPhoto'} />
+              <DocBadge icon={Camera} label="PhilHealth" url={data.profile?.philhealthPhoto ?? null} highlighted={recentUpload === 'philhealthPhoto'} />
+              <DocBadge icon={FileText} label="Contract" url={data.profile?.signedContract ?? null} highlighted={recentUpload === 'signedContract'} />
+            </div>
+            <Files201Content data={data} vaName={vaName} onJustUploaded={handleRecentUpload} onClose={() => {}} currentUserId={currentUserId} />
+          </div>
+        </div>
       </div>
 
       <div className="space-y-4">
@@ -244,165 +217,85 @@ export function VAProfileEditor({
   )
 }
 
-function EditRow({
+function EditableSection({
   icon: Icon,
   label,
-  preview,
-  dialogTitle,
-  size,
-  renderDialog,
+  children,
+  renderEdit,
 }: {
   icon: React.ComponentType<{ className?: string }>
   label: string
-  preview: React.ReactNode
-  dialogTitle: string
-  size?: 'sm' | 'md' | 'lg'
-  renderDialog: (close: () => void) => React.ReactNode
+  children: React.ReactNode
+  renderEdit: (onClose: () => void) => React.ReactNode
 }) {
-  const [open, setOpen] = useState(false)
-  const close = () => setOpen(false)
+  const [editing, setEditing] = useState(false)
 
   return (
-    <>
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="w-full text-left px-5 py-4 hover:bg-muted/30 transition-colors group cursor-pointer"
-      >
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-3 shrink-0 min-w-[160px]">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 group-hover:bg-primary/15 transition-colors">
-              <Icon className="h-4 w-4 text-primary" />
-            </div>
-            <p className="text-sm font-semibold">{label}</p>
+    <div className="rounded-2xl border bg-card overflow-hidden">
+      <div className="flex items-center justify-between px-5 py-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+            <Icon className="h-4 w-4 text-primary" />
           </div>
-          <div className="flex-1 min-w-0 flex items-center justify-end gap-3">
-            <div className="flex-1 min-w-0">{preview}</div>
-            <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />
-          </div>
+          <p className="text-sm font-semibold">{label}</p>
         </div>
-      </button>
-      <Modal open={open} onOpenChange={setOpen} title={dialogTitle} size={size}>
-        {renderDialog(close)}
-      </Modal>
-    </>
+        {!editing && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 text-xs"
+            onClick={() => setEditing(true)}
+          >
+            <Pencil className="h-3 w-3 mr-1.5" />Edit
+          </Button>
+        )}
+      </div>
+      <div className="border-t">
+        {editing ? (
+          <div className="p-5">
+            {renderEdit(() => setEditing(false))}
+          </div>
+        ) : (
+          <div className="px-5 py-4 space-y-2">
+            {children}
+          </div>
+        )}
+      </div>
+    </div>
   )
 }
 
-function Mini({ label, value, link }: { label: string; value: string | null | undefined; link?: boolean }) {
+function TableRow({ label, value, link }: { label: string; value: string | null | undefined; link?: boolean }) {
   if (!value) return null
   return (
-    <div className="min-w-0">
-      <span className="text-[10px] text-muted-foreground/70 block truncate">{label}</span>
+    <div className="flex items-center py-1.5 gap-4">
+      <span className="text-[11px] text-muted-foreground w-[140px] shrink-0">{label}</span>
       {link ? (
-        <a href={value} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline truncate block">
+        <a href={value} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline truncate">
           {value}
         </a>
       ) : (
-        <span className="text-xs font-medium truncate block">{value}</span>
+        <span className="text-xs font-medium truncate">{value}</span>
       )}
     </div>
   )
 }
 
-function DocBadge({
-  icon: Icon,
-  label,
-  url,
-  highlighted,
-}: {
-  icon: React.ComponentType<{ className?: string }>
-  label: string
-  url: string | null | undefined
-  highlighted?: boolean
-}) {
-  if (!url) {
-    return (
-      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-muted/50 border border-dashed border-muted-foreground/20 text-[10px] text-muted-foreground/50">
-        <Icon className="h-3 w-3" />
-        {label}
-      </div>
-    )
-  }
-  return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={cn(
-        'flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs transition-all',
-        highlighted
-          ? 'bg-green-500/20 border-green-500/50 text-green-800 ring-2 ring-green-500/30 shadow-sm shadow-green-500/20'
-          : 'bg-green-500/10 border-green-500/20 text-green-700 hover:bg-green-500/20'
-      )}
-    >
-      <Check className="h-3 w-3" />
-      <Icon className="h-3 w-3" />
-      {label}
-      {highlighted && (
-        <span className="text-[9px] font-semibold uppercase tracking-wider mr-0.5">New</span>
-      )}
-      <ExternalLink className="h-2.5 w-2.5" />
-    </a>
-  )
-}
+// ── Forms (unchanged) ──
 
-function StatBox({ label, value, icon: Icon }: { label: string; value: string | null | undefined; icon: React.ComponentType<{ className?: string }> }) {
+function FI({ name, label, defaultValue, type, placeholder }: { name: string; label: string; defaultValue?: string | null; type?: string; placeholder?: string }) {
   return (
-    <div className="p-2.5 rounded-xl bg-muted/30 border border-transparent hover:border-border/50 transition-colors">
-      <div className="flex items-center gap-1.5 mb-0.5">
-        <Icon className="h-3 w-3 text-muted-foreground" />
-        <span className="text-[10px] text-muted-foreground/60 uppercase tracking-wider">{label}</span>
-      </div>
-      <p className="text-sm font-semibold truncate">
-        {value || <span className="text-muted-foreground/40 font-normal">—</span>}
-      </p>
+    <div>
+      <Label htmlFor={`fi-${name}`} className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">{label}</Label>
+      <Input
+        id={`fi-${name}`}
+        name={name}
+        defaultValue={defaultValue ?? ''}
+        type={type ?? 'text'}
+        placeholder={placeholder}
+        className="h-8 text-xs"
+      />
     </div>
-  )
-}
-
-function Divider() {
-  return <div className="border-t mx-5" />
-}
-
-function FI({ name, label, defaultValue, type = 'text', placeholder }: { name: string; label: string; defaultValue?: string | null; type?: string; placeholder?: string }) {
-  return (
-    <div className="space-y-1">
-      <Label htmlFor={name} className="text-xs">{label}</Label>
-      <Input id={name} name={name} defaultValue={defaultValue ?? ''} type={type} placeholder={placeholder} className="h-8 text-xs" />
-    </div>
-  )
-}
-
-function SavingButton({ label }: { label?: string }) {
-  const { pending } = useFormStatus()
-  return (
-    <Button type="submit" size="sm" className="text-xs h-8" disabled={pending}>
-      {pending ? (
-        <><Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> Saving...</>
-      ) : (
-        label ?? 'Save Changes'
-      )}
-    </Button>
-  )
-}
-
-function FormSpy({ onSubmitted, label, saving }: { onSubmitted: () => void; label?: string; saving?: boolean }) {
-  const { pending: formPending } = useFormStatus()
-  const pending = saving ?? formPending
-
-  useEffect(() => {
-    if (formPending) return
-  }, [formPending])
-
-  return (
-    <Button type="submit" size="sm" className="text-xs h-8" disabled={pending}>
-      {pending ? (
-        <><Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> Saving...</>
-      ) : (
-        label ?? 'Save Changes'
-      )}
-    </Button>
   )
 }
 
@@ -436,23 +329,11 @@ function SaveForm({ action, onClose, className, children, toastLabel }: {
   )
 }
 
-function ModalCancelBtn({ onCancel }: { onCancel: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onCancel}
-      className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors"
-    >
-      Cancel
-    </button>
-  )
-}
-
 function PersonalFormContent({ data, onClose }: { data: VAData; onClose: () => void }) {
   return (
-    <SaveForm action={(fd) => updateUserProfileAction(data.user.id, fd)} onClose={onClose} toastLabel="Personal info saved" className="flex flex-col gap-4 h-full">
+    <SaveForm action={(fd) => updateUserProfileAction(data.user.id, fd)} onClose={onClose} toastLabel="Personal info saved" className="flex flex-col gap-4">
       {(saving) => (<>
-        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 flex-1">
+        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
           <FI name="firstName" label="First Name" defaultValue={data.user.firstName} />
           <FI name="lastName" label="Last Name" defaultValue={data.user.lastName} />
           <FI name="workEmail" label="Work Email" defaultValue={data.profile?.workEmail} type="email" placeholder="work@vaa.com" />
@@ -461,9 +342,8 @@ function PersonalFormContent({ data, onClose }: { data: VAData; onClose: () => v
           <FI name="emergencyContactName" label="Emergency Contact Name" defaultValue={data.profile?.emergencyContactName} />
           <FI name="emergencyContactPhone" label="Emergency Contact Number" defaultValue={data.profile?.emergencyContactPhone} placeholder="09000000000" />
         </div>
-        <div className="flex items-center justify-end gap-2 pt-2 border-t">
-          <button type="button" onClick={onClose}
-            className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors">
+        <div className="flex justify-end gap-2 pt-2 border-t">
+          <button type="button" onClick={onClose} className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors">
             Cancel
           </button>
           <Button type="submit" size="sm" className="text-xs h-8" disabled={saving}>
@@ -477,9 +357,9 @@ function PersonalFormContent({ data, onClose }: { data: VAData; onClose: () => v
 
 function AddressFormContent({ data, onClose }: { data: VAData; onClose: () => void }) {
   return (
-    <SaveForm action={(fd) => updateUserProfileAction(data.user.id, fd)} onClose={onClose} toastLabel="Address saved" className="flex flex-col gap-4 h-full">
+    <SaveForm action={(fd) => updateUserProfileAction(data.user.id, fd)} onClose={onClose} toastLabel="Address saved" className="flex flex-col gap-4">
       {(saving) => (<>
-        <div className="flex-1 space-y-3">
+        <div className="space-y-3">
           <AddressFields
             defaultValues={{
               regionCode: data.profile?.regionCode ?? undefined,
@@ -495,9 +375,8 @@ function AddressFormContent({ data, onClose }: { data: VAData; onClose: () => vo
             <FI name="landmark" label="Landmark" defaultValue={data.profile?.landmark} />
           </div>
         </div>
-        <div className="flex items-center justify-end gap-2 pt-2 border-t">
-          <button type="button" onClick={onClose}
-            className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors">
+        <div className="flex justify-end gap-2 pt-2 border-t">
+          <button type="button" onClick={onClose} className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors">
             Cancel
           </button>
           <Button type="submit" size="sm" className="text-xs h-8" disabled={saving}>
@@ -511,9 +390,9 @@ function AddressFormContent({ data, onClose }: { data: VAData; onClose: () => vo
 
 function EmploymentFormContent({ data, onClose }: { data: VAData; onClose: () => void }) {
   return (
-    <SaveForm action={(fd) => updateEmployment(data.vaProfile.id, data.user.id, fd)} onClose={onClose} toastLabel="Employment & pay saved" className="flex flex-col gap-4 h-full">
+    <SaveForm action={(fd) => updateEmployment(data.vaProfile.id, data.user.id, fd)} onClose={onClose} toastLabel="Employment & pay saved" className="flex flex-col gap-4">
       {(saving) => (<>
-        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 flex-1">
+        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
           <FI name="vaaPosition" label="VAA Position" defaultValue={data.vaProfile.vaaPosition} />
           <FI name="level" label="Level" defaultValue={data.vaProfile.level} />
           <FI name="baseRate" label="Base Rate (PHP)" defaultValue={data.vaProfile.baseRate?.toString()} type="number" />
@@ -528,9 +407,8 @@ function EmploymentFormContent({ data, onClose }: { data: VAData; onClose: () =>
           <FI name="payoneerAccount" label="Payoneer Account" defaultValue={data.profile?.payoneerAccount} type="email" placeholder="email@example.com" />
           <FI name="notes" label="Notes" defaultValue={data.vaProfile.notes} />
         </div>
-        <div className="flex items-center justify-end gap-2 pt-2 border-t">
-          <button type="button" onClick={onClose}
-            className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors">
+        <div className="flex justify-end gap-2 pt-2 border-t">
+          <button type="button" onClick={onClose} className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors">
             Cancel
           </button>
           <Button type="submit" size="sm" className="text-xs h-8" disabled={saving}>
@@ -544,15 +422,14 @@ function EmploymentFormContent({ data, onClose }: { data: VAData; onClose: () =>
 
 function SocialsFormContent({ data, onClose }: { data: VAData; onClose: () => void }) {
   return (
-    <SaveForm action={(fd) => updateUserProfileAction(data.user.id, fd)} onClose={onClose} toastLabel="Socials saved" className="flex flex-col gap-4 h-full">
+    <SaveForm action={(fd) => updateUserProfileAction(data.user.id, fd)} onClose={onClose} toastLabel="Socials saved" className="flex flex-col gap-4">
       {(saving) => (<>
-        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 flex-1">
+        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
           <FI name="facebookName" label="Facebook Name" defaultValue={data.profile?.facebookName} />
           <FI name="facebookUrl" label="Facebook URL" defaultValue={data.profile?.facebookUrl} placeholder="https://facebook.com/..." />
         </div>
-        <div className="flex items-center justify-end gap-2 pt-2 border-t">
-          <button type="button" onClick={onClose}
-            className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors">
+        <div className="flex justify-end gap-2 pt-2 border-t">
+          <button type="button" onClick={onClose} className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors">
             Cancel
           </button>
           <Button type="submit" size="sm" className="text-xs h-8" disabled={saving}>
@@ -588,35 +465,22 @@ function Files201Content({
 
   const handleSave = async () => {
     setSaving(true)
-    await updateUserProfileFiles(data.user.id, passportPhoto, philhealthPhoto, signedContract)
-    setSaving(false)
-    onClose()
+    try {
+      await updateUserProfileFiles(data.user.id, passportPhoto, philhealthPhoto, signedContract)
+      toast.success('201 files saved')
+    } catch (e: any) {
+      toast.error(e.message ?? 'Failed to save files')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
-    <div className="flex flex-col gap-4 h-full">
-      <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
-        <FI name="passportNumber" label="Passport Number" defaultValue={data.profile?.passportNumber} />
-        <FI name="philhealthNumber" label="PhilHealth Number" defaultValue={data.profile?.philhealthNumber} />
-      </div>
-      <div className="border-t pt-4 flex-1 overflow-y-auto">
-        <p className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wider flex items-center gap-1.5">
-          <Upload className="h-3 w-3" /> Upload Documents
-        </p>
-        <div className="space-y-4">
-          <UploadRow label="Passport Photo" icon={IdCard} currentUrl={passportPhoto} fieldName="passportPhoto" vaName={vaName} profileId={data.user.id} uploadedBy={currentUserId} onUploaded={setPassportPhoto} onJustUploaded={handleJustUploaded} />
-          <UploadRow label="PhilHealth Photo" icon={Camera} currentUrl={philhealthPhoto} fieldName="philhealthPhoto" vaName={vaName} profileId={data.user.id} uploadedBy={currentUserId} onUploaded={setPhilhealthPhoto} onJustUploaded={handleJustUploaded} />
-          <UploadRow label="Signed Contract" icon={FileText} currentUrl={signedContract} fieldName="signedContract" vaName={vaName} profileId={data.user.id} uploadedBy={currentUserId} onUploaded={setSignedContract} onJustUploaded={handleJustUploaded} />
-        </div>
-      </div>
-      <div className="flex items-center justify-end gap-2 pt-2 border-t">
-        <button
-          type="button"
-          onClick={onClose}
-          className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors"
-        >
-          Cancel
-        </button>
+    <div className="space-y-3">
+      <UploadRow label="Passport Photo" icon={IdCard} currentUrl={passportPhoto} fieldName="passportPhoto" vaName={vaName} profileId={data.user.id} uploadedBy={currentUserId} onUploaded={setPassportPhoto} onJustUploaded={handleJustUploaded} />
+      <UploadRow label="PhilHealth Photo" icon={Camera} currentUrl={philhealthPhoto} fieldName="philhealthPhoto" vaName={vaName} profileId={data.user.id} uploadedBy={currentUserId} onUploaded={setPhilhealthPhoto} onJustUploaded={handleJustUploaded} />
+      <UploadRow label="Signed Contract" icon={FileText} currentUrl={signedContract} fieldName="signedContract" vaName={vaName} profileId={data.user.id} uploadedBy={currentUserId} onUploaded={setSignedContract} onJustUploaded={handleJustUploaded} />
+      <div className="flex justify-end pt-2 border-t">
         <Button onClick={handleSave} type="button" size="sm" className="text-xs h-8" disabled={saving}>
           {saving ? <><Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> Saving...</> : 'Save Changes'}
         </Button>
@@ -648,13 +512,11 @@ function UploadRow({
 }) {
   const [uploading, setUploading] = useState(false)
   const [progress, setProgress] = useState(0)
-  const [fileName, setFileName] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [uploadedUrl, setUploadedUrl] = useState(currentUrl)
-  const [justUploaded, setJustUploaded] = useState(false)
+  const [url, setUrl] = useState<string | null>(currentUrl)
+  const [recentlyUploaded, setRecentlyUploaded] = useState(false)
 
   const handleFile = (file: File) => {
-    setFileName(file.name)
     setUploading(true)
     setProgress(0)
     setError(null)
@@ -672,86 +534,98 @@ function UploadRow({
     })
     xhr.addEventListener('load', () => {
       setUploading(false)
-      if (xhr.status >= 200 && xhr.status < 300) {
+      try {
         const res = JSON.parse(xhr.responseText)
-        if (res.success) {
-          setUploadedUrl(res.url)
-          onUploaded(res.url)
-          setJustUploaded(true)
-          onJustUploaded?.(fieldName)
-          setProgress(100)
-          toast.success(`${label} uploaded successfully!`, {
-            description: `Saved to Drive: ${res.fullPath || fieldName}`,
-            duration: 6000,
-            action: { label: 'View Document here', onClick: () => window.open(res.url, '_blank') },
-          })
-        } else {
-          const message = res.error || 'Upload failed'
-          setError(message)
-          toast.error('Upload failed', { description: message })
-        }
-      } else {
-        setError('Upload failed')
-        toast.error('Upload failed', { description: `Server returned ${xhr.status}` })
+        if (res.error) { setError(res.error); return }
+        setUrl(res.url)
+        onUploaded(res.url)
+        onJustUploaded?.(fieldName)
+        setRecentlyUploaded(true)
+        setTimeout(() => setRecentlyUploaded(false), 8000)
+        toast.success(label + ' uploaded successfully!', {
+          action: { label: 'View Document', onClick: () => window.open(res.url, '_blank') },
+        })
+      } catch {
+        setError('Failed to parse response')
       }
     })
-    xhr.addEventListener('error', () => { setUploading(false); setError('Network error'); toast.error('Network error', { description: 'Could not reach the upload server.' }) })
+    xhr.addEventListener('error', () => { setUploading(false); setError('Upload failed') })
     xhr.open('POST', '/api/upload')
     xhr.send(formData)
   }
 
+  const borderClass = recentlyUploaded ? 'border-green-400 ring-1 ring-green-300 bg-green-50' : error ? 'border-red-300 bg-red-50' : ''
+
   return (
-    <div className={cn(
-      'flex items-center gap-3 p-3 rounded-xl border transition-all duration-300',
-      justUploaded ? 'border-green-500/50 bg-green-500/5 ring-2 ring-green-500/20' : 'border bg-muted/10 hover:bg-muted/20'
-    )}>
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-        <Icon className="h-4 w-4 text-primary" />
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5">
-          <p className="text-xs font-medium">{label}</p>
-          {justUploaded && (
-            <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-green-600 bg-green-500/15 px-1.5 py-0.5 rounded-full">
-              <span className="h-1 w-1 rounded-full bg-green-600 animate-pulse" /> Just uploaded
+    <div className={`rounded-lg border p-3 transition-colors ${borderClass}`}>
+      <div className="flex items-center gap-3">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted">
+          <Icon className="h-4 w-4 text-muted-foreground" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-medium flex items-center gap-2">
+            {label}
+            {recentlyUploaded && (
+              <span className="text-[10px] text-green-600 bg-green-100 px-1.5 py-0.5 rounded-full">Just uploaded</span>
+            )}
+          </p>
+          {url && !uploading && (
+            <a href={url} target="_blank" rel="noreferrer" className="text-[11px] text-blue-600 hover:underline truncate block">{url}</a>
+          )}
+          {!url && !uploading && !error && (
+            <span className="text-[11px] text-muted-foreground">No file uploaded</span>
+          )}
+          {error && (
+            <span className="text-[11px] text-red-600 flex items-center gap-1 mt-0.5">
+              <AlertCircle className="h-3 w-3" />{error}
             </span>
           )}
         </div>
-        {uploading ? (
-          <div className="mt-1">
-            <div className="flex items-center gap-2 mb-1">
-              <FileText className="h-3 w-3 shrink-0 text-muted-foreground" />
-              <span className="text-[10px] text-muted-foreground truncate">{fileName}</span>
-              <span className="text-[10px] text-primary font-medium ml-auto">{progress}%</span>
-            </div>
-            <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-              <div className="h-full bg-primary rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
-            </div>
-          </div>
-        ) : uploadedUrl ? (
-          <div className="flex items-center gap-2 mt-0.5">
-            <Check className="h-3 w-3 text-green-600 shrink-0" />
-            <a href={uploadedUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline truncate">View file</a>
-          </div>
-        ) : (
-          <p className="text-[10px] text-muted-foreground/50 mt-0.5">No file uploaded</p>
-        )}
-        {error && (
-          <p className="text-[10px] text-red-500 mt-0.5 flex items-center gap-1">
-            <AlertCircle className="h-3 w-3" /> {error}
-          </p>
-        )}
+        <label className="shrink-0">
+          <input
+            type="file"
+            className="hidden"
+            onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f) }}
+          />
+          <Button type="button" variant="outline" size="sm" className="text-xs h-7" disabled={uploading}>
+            {uploading ? `${progress}%` : url ? 'Replace' : 'Upload'}
+          </Button>
+        </label>
       </div>
-      <label className="cursor-pointer shrink-0 inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-7 px-2.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-        <input type="file" accept="image/*,.pdf" disabled={uploading} className="hidden"
-          onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f) }} />
-        <Upload className="h-3 w-3 mr-1" />
-        {uploadedUrl ? 'Replace' : 'Upload'}
-      </label>
+      {uploading && (
+        <div className="mt-2 h-1.5 w-full bg-muted rounded-full overflow-hidden">
+          <div className="h-full bg-blue-500 transition-all duration-200" style={{ width: `${progress}%` }} />
+        </div>
+      )}
     </div>
   )
 }
 
-function cn(...classes: (string | false | null | undefined)[]) {
-  return classes.filter(Boolean).join(' ')
+function DocBadge({ icon: Icon, label, url, highlighted }: { icon: React.ComponentType<{ className?: string }>; label: string; url: string | null; highlighted?: boolean }) {
+  const borderClass = highlighted ? 'border-green-400 ring-1 ring-green-300 bg-green-50' : ''
+  return (
+    <div className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-xs transition-all duration-300 ${borderClass}`}>
+      <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+      <span className="font-medium">{label}</span>
+      {url ? (
+        <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+          View ↗
+        </a>
+      ) : (
+        <span className="text-muted-foreground">Missing</span>
+      )}
+    </div>
+  )
+}
+
+function StatBox({ label, value, icon: Icon }: { label: string; value: string | null | undefined; icon: React.ComponentType<{ className?: string }> }) {
+  return (
+    <div className="rounded-lg border bg-muted/20 p-3">
+      <div className="flex items-center gap-2 mb-1">
+        <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+        <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</span>
+      </div>
+      <p className="text-sm font-semibold truncate">{value || '—'}</p>
+    </div>
+  )
 }
