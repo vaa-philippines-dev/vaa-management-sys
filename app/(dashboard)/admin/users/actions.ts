@@ -276,9 +276,9 @@ export async function createDepartmentInline(formData: FormData) {
   revalidateTag(CACHE_TAGS.departments, 'default')
 }
 
-export async function updateDepartment(id: string, data: { name?: string; description?: string | null; isParent?: boolean; parentId?: string | null; isActive?: boolean }) {
+export async function updateDepartment(id: string, data: { name?: string; description?: string | null; isParent?: boolean; parentId?: string | null; status?: 'ACTIVE' | 'INACTIVE' }) {
   const admin = await getAdmin()
-  const before = await prisma.department.findUnique({ where: { id }, select: { name: true, description: true, isParent: true, parentId: true, isActive: true } })
+  const before = await prisma.department.findUnique({ where: { id }, select: { name: true, description: true, isParent: true, parentId: true, status: true } })
 
   await prisma.department.update({
     where: { id },
@@ -290,7 +290,7 @@ export async function updateDepartment(id: string, data: { name?: string; descri
     action: 'UPDATE',
     entityType: ENTITY_DEPARTMENT,
     entityId: id,
-    before: before ? { name: before.name, description: before.description, isActive: before.isActive } : undefined,
+    before: before ? { name: before.name, description: before.description, status: before.status } : undefined,
     after: data,
     departmentId: id,
   })
@@ -308,9 +308,11 @@ export async function toggleDepartmentActive(id: string) {
   const dept = await prisma.department.findUnique({ where: { id } })
   if (!dept) return
 
+  const newStatus = dept.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE'
+
   await prisma.department.update({
     where: { id },
-    data: { isActive: !dept.isActive },
+    data: { status: newStatus },
   })
 
   await logAudit({
@@ -318,8 +320,8 @@ export async function toggleDepartmentActive(id: string) {
     action: 'STATUS_CHANGE',
     entityType: ENTITY_DEPARTMENT,
     entityId: id,
-    before: { isActive: dept.isActive },
-    after: { isActive: !dept.isActive },
+    before: { status: dept.status },
+    after: { status: newStatus },
     metadata: { name: dept.name },
     departmentId: id,
   })

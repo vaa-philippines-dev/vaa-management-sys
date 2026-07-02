@@ -11,7 +11,7 @@ export function DepartmentCard({
   dept,
   icon,
 }: {
-  dept: { id: string; name: string; description: string | null; isActive: boolean; _count: { memberships: number; clients: number } }
+  dept: { id: string; name: string; description: string | null; status: 'ACTIVE' | 'MERGED' | 'SPLIT' | 'INACTIVE'; _count: { memberships: number; clients: number } }
   icon: React.ReactNode
 }) {
   const [editing, setEditing] = useState(false)
@@ -56,8 +56,8 @@ export function DepartmentCard({
               <Link href={`/dashboard?dept=${dept.id}`} className="text-sm font-medium hover:text-primary transition-colors">
                 {dept.name}
               </Link>
-              {!dept.isActive && (
-                <Badge variant="outline" className="text-xs bg-red-500/10 text-red-600 border-red-500/20">Inactive</Badge>
+              {dept.status !== 'ACTIVE' && (
+                <Badge variant="outline" className="text-xs bg-red-500/10 text-red-600 border-red-500/20">{dept.status}</Badge>
               )}
             </div>
             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -72,9 +72,9 @@ export function DepartmentCard({
                 <button
                   type="submit"
                   className="p-1 hover:bg-accent rounded transition-colors"
-                  title={dept.isActive ? 'Deactivate' : 'Activate'}
+                  title={dept.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
                 >
-                  {dept.isActive ? (
+                  {dept.status === 'ACTIVE' ? (
                     <ToggleRight className="h-4 w-4 text-green-600" />
                   ) : (
                     <ToggleLeft className="h-4 w-4 text-muted-foreground" />

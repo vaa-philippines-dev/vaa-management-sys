@@ -77,7 +77,7 @@ export default async function VAPage({
 async function FilterWrapper() {
   const departments = await cached('vas:departments', [CACHE_TAGS.departments], 600, () =>
     prisma.department.findMany({
-      where: { isActive: true },
+      where: { status: 'ACTIVE' },
       orderBy: { sortOrder: 'asc' },
     })
   )

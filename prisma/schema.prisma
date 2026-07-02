@@ -181,27 +181,48 @@ enum AuditAction {
   LOGIN_FAILED
 }
 
+// ── Departments ──────────────────────────────────────────────────
+
+enum DepartmentStatus {
+  ACTIVE
+  MERGED
+  SPLIT
+  INACTIVE
+}
+
+enum DepartmentLevel {
+  EXECUTIVE
+  MANAGEMENT
+  SERVICE
+}
+
 // ──────────────────────────────────────────────────────────────────
 // MODELS — Phase 0-1: Core Organization
 // ──────────────────────────────────────────────────────────────────
 
 model Department {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  shortName   String?  @map("short_name")
-  acronym     String?  @unique
-  level       String?
-  parentId    String?  @map("parent_id")
-  parent      Department? @relation("DeptHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
-  children    Department[] @relation("DeptHierarchy")
-  isParent    Boolean  @default(false) @map("is_parent")
-  description String?
-  headId      String?  @map("head_id")
-  head        User?    @relation("DeptHead", fields: [headId], references: [id], onDelete: SetNull)
-  sortOrder   Int      @default(0) @map("sort_order")
-  isActive    Boolean  @default(true) @map("is_active")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id           String   @id @default(cuid())
+  name         String   @unique
+  shortName    String?  @map("short_name")
+  acronym      String?  @unique
+  level        DepartmentLevel?
+  status       DepartmentStatus @default(ACTIVE)
+  parentId     String?  @map("parent_id")
+  parent       Department?  @relation("DeptHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children     Department[]  @relation("DeptHierarchy")
+  mergedIntoId String?  @map("merged_into_id")
+  mergedInto   Department?  @relation("DepartmentMerge", fields: [mergedIntoId], references: [id], onDelete: SetNull)
+  mergedFrom   Department[]  @relation("DepartmentMerge")
+  splitFromId  String?  @map("split_from_id")
+  splitFrom    Department?  @relation("DepartmentSplit", fields: [splitFromId], references: [id], onDelete: SetNull)
+  splitInto    Department[]  @relation("DepartmentSplit")
+  isParent     Boolean  @default(false) @map("is_parent")
+  description  String?
+  headId       String?  @map("head_id")
+  head         User?    @relation("DeptHead", fields: [headId], references: [id], onDelete: SetNull)
+  sortOrder    Int      @default(0) @map("sort_order")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
   memberships     DepartmentMembership[]
   positions       Position[]

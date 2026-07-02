@@ -1795,12 +1795,17 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const DepartmentScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  shortName: 'shortName',
+  acronym: 'acronym',
+  level: 'level',
+  status: 'status',
   parentId: 'parentId',
+  mergedIntoId: 'mergedIntoId',
+  splitFromId: 'splitFromId',
   isParent: 'isParent',
   description: 'description',
   headId: 'headId',
   sortOrder: 'sortOrder',
-  isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -2179,6 +2184,34 @@ export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 
  * Reference to a field of type 'String[]'
  */
 export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
+    
+
+
+/**
+ * Reference to a field of type 'DepartmentLevel'
+ */
+export type EnumDepartmentLevelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DepartmentLevel'>
+    
+
+
+/**
+ * Reference to a field of type 'DepartmentLevel[]'
+ */
+export type ListEnumDepartmentLevelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DepartmentLevel[]'>
+    
+
+
+/**
+ * Reference to a field of type 'DepartmentStatus'
+ */
+export type EnumDepartmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DepartmentStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'DepartmentStatus[]'
+ */
+export type ListEnumDepartmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DepartmentStatus[]'>
     
 
 

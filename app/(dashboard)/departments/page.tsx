@@ -24,7 +24,7 @@ export default async function DepartmentsPage() {
   if (!user) return null
 
   const departments = await prisma.department.findMany({
-    where: { isActive: true },
+    where: { status: 'ACTIVE' },
     orderBy: { sortOrder: 'asc' },
     include: {
       _count: { select: { memberships: true, clients: true } },

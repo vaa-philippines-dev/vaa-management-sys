@@ -44,6 +44,20 @@ export type StringNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedStringNullableFilter<$PrismaModel> | string | null
 }
 
+export type EnumDepartmentLevelNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.DepartmentLevel | Prisma.EnumDepartmentLevelFieldRefInput<$PrismaModel> | null
+  in?: $Enums.DepartmentLevel[] | Prisma.ListEnumDepartmentLevelFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.DepartmentLevel[] | Prisma.ListEnumDepartmentLevelFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumDepartmentLevelNullableFilter<$PrismaModel> | $Enums.DepartmentLevel | null
+}
+
+export type EnumDepartmentStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.DepartmentStatus | Prisma.EnumDepartmentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.DepartmentStatus[] | Prisma.ListEnumDepartmentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DepartmentStatus[] | Prisma.ListEnumDepartmentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDepartmentStatusFilter<$PrismaModel> | $Enums.DepartmentStatus
+}
+
 export type BoolFilter<$PrismaModel = never> = {
   equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
   not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean
@@ -110,6 +124,26 @@ export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedStringNullableFilter<$PrismaModel>
   _max?: Prisma.NestedStringNullableFilter<$PrismaModel>
+}
+
+export type EnumDepartmentLevelNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DepartmentLevel | Prisma.EnumDepartmentLevelFieldRefInput<$PrismaModel> | null
+  in?: $Enums.DepartmentLevel[] | Prisma.ListEnumDepartmentLevelFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.DepartmentLevel[] | Prisma.ListEnumDepartmentLevelFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumDepartmentLevelNullableWithAggregatesFilter<$PrismaModel> | $Enums.DepartmentLevel | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDepartmentLevelNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDepartmentLevelNullableFilter<$PrismaModel>
+}
+
+export type EnumDepartmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DepartmentStatus | Prisma.EnumDepartmentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.DepartmentStatus[] | Prisma.ListEnumDepartmentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DepartmentStatus[] | Prisma.ListEnumDepartmentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDepartmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.DepartmentStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDepartmentStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDepartmentStatusFilter<$PrismaModel>
 }
 
 export type BoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -658,6 +692,20 @@ export type NestedStringNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedStringNullableFilter<$PrismaModel> | string | null
 }
 
+export type NestedEnumDepartmentLevelNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.DepartmentLevel | Prisma.EnumDepartmentLevelFieldRefInput<$PrismaModel> | null
+  in?: $Enums.DepartmentLevel[] | Prisma.ListEnumDepartmentLevelFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.DepartmentLevel[] | Prisma.ListEnumDepartmentLevelFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumDepartmentLevelNullableFilter<$PrismaModel> | $Enums.DepartmentLevel | null
+}
+
+export type NestedEnumDepartmentStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.DepartmentStatus | Prisma.EnumDepartmentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.DepartmentStatus[] | Prisma.ListEnumDepartmentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DepartmentStatus[] | Prisma.ListEnumDepartmentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDepartmentStatusFilter<$PrismaModel> | $Enums.DepartmentStatus
+}
+
 export type NestedBoolFilter<$PrismaModel = never> = {
   equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
   not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean
@@ -728,6 +776,26 @@ export type NestedIntNullableFilter<$PrismaModel = never> = {
   gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
   gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
   not?: Prisma.NestedIntNullableFilter<$PrismaModel> | number | null
+}
+
+export type NestedEnumDepartmentLevelNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DepartmentLevel | Prisma.EnumDepartmentLevelFieldRefInput<$PrismaModel> | null
+  in?: $Enums.DepartmentLevel[] | Prisma.ListEnumDepartmentLevelFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.DepartmentLevel[] | Prisma.ListEnumDepartmentLevelFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumDepartmentLevelNullableWithAggregatesFilter<$PrismaModel> | $Enums.DepartmentLevel | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDepartmentLevelNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDepartmentLevelNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumDepartmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DepartmentStatus | Prisma.EnumDepartmentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.DepartmentStatus[] | Prisma.ListEnumDepartmentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DepartmentStatus[] | Prisma.ListEnumDepartmentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDepartmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.DepartmentStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDepartmentStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDepartmentStatusFilter<$PrismaModel>
 }
 
 export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {

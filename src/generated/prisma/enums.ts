@@ -228,3 +228,22 @@ export const AuditAction = {
 } as const
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction]
+
+
+export const DepartmentStatus = {
+  ACTIVE: 'ACTIVE',
+  MERGED: 'MERGED',
+  SPLIT: 'SPLIT',
+  INACTIVE: 'INACTIVE'
+} as const
+
+export type DepartmentStatus = (typeof DepartmentStatus)[keyof typeof DepartmentStatus]
+
+
+export const DepartmentLevel = {
+  EXECUTIVE: 'EXECUTIVE',
+  MANAGEMENT: 'MANAGEMENT',
+  SERVICE: 'SERVICE'
+} as const
+
+export type DepartmentLevel = (typeof DepartmentLevel)[keyof typeof DepartmentLevel]

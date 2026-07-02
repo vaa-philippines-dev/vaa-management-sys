@@ -90,12 +90,17 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const DepartmentScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  shortName: 'shortName',
+  acronym: 'acronym',
+  level: 'level',
+  status: 'status',
   parentId: 'parentId',
+  mergedIntoId: 'mergedIntoId',
+  splitFromId: 'splitFromId',
   isParent: 'isParent',
   description: 'description',
   headId: 'headId',
   sortOrder: 'sortOrder',
-  isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
