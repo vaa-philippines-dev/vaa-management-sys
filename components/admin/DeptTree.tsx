@@ -380,7 +380,7 @@ function DeptNode({
 
       {open && (
         <div className="border-t bg-muted/20">
-          {services.length > 0 && (
+          {services.length > 0 && dept.level === 'SERVICE' && (
             <div className="px-3 py-2 border-b">
               <ServiceSelector
                 departmentId={dept.id}

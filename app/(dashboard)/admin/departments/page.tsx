@@ -17,6 +17,7 @@ import {
 } from 'lucide-react'
 import { LEVEL_RECORD_NAMES } from '@/lib/departments'
 import { DeptTree } from '@/components/admin/DeptTree'
+import { AddDepartmentForm } from '@/components/admin/AddDepartmentForm'
 
 const adminViewRoles = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE']
 
@@ -32,6 +33,10 @@ export default async function AdminDepartmentsPage() {
     redirect('/dashboard')
   }
   const canEdit = canMutate(currentUser)
+  const levelParents = await prisma.department.findMany({
+    where: { name: { in: ['Executive', 'Management', 'Service'] } },
+    select: { id: true, name: true },
+  })
 
   return (
     <div className="space-y-4">
@@ -50,6 +55,13 @@ export default async function AdminDepartmentsPage() {
           </span>
         )}
       </div>
+
+      {canEdit && (
+        <AddDepartmentForm
+          canEdit={canEdit}
+          levelParents={levelParents}
+        />
+      )}
 
       <Suspense fallback={<Skeleton className="h-32 rounded-xl" />}>
         <StatsHeader />
