@@ -191,9 +191,7 @@ async function DepartmentTree({ canEdit }: { canEdit: boolean }) {
     cached('admin:allSkills', [CACHE_TAGS.skills], 60, () =>
       prisma.skill.findMany({ orderBy: [{ category: 'asc' }, { name: 'asc' }] })
     ),
-    cached('admin:deptSkills', [CACHE_TAGS.departments, CACHE_TAGS.skills], 60, () =>
-      prisma.departmentSkill.findMany({ select: { departmentId: true, skillId: true } })
-    ),
+    prisma.departmentSkill.findMany({ select: { departmentId: true, skillId: true } }),
   ])
 
   const mapped = allDepts.map(mapDept)
