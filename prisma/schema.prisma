@@ -188,6 +188,9 @@ enum AuditAction {
 model Department {
   id          String   @id @default(cuid())
   name        String   @unique
+  shortName   String?  @map("short_name")
+  acronym     String?  @unique
+  level       String?
   parentId    String?  @map("parent_id")
   parent      Department? @relation("DeptHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
   children    Department[] @relation("DeptHierarchy")
