@@ -29,6 +29,7 @@ import {
 import { updateVAProfile, updateUserProfileAction, updateEmployment, updateUserProfileFiles } from '@/app/(dashboard)/vas/actions'
 import { format } from 'date-fns'
 import type { DriveFile } from '@/lib/google/drive'
+import { AddressFields } from '@/components/vas/AddressFields'
 
 type VAData = {
   vaProfile: {
@@ -52,6 +53,8 @@ type VAData = {
     address: string | null; barangay: string | null
     cityMunicipality: string | null; province: string | null
     zipCode: string | null; landmark: string | null
+    regionCode: string | null; provinceCode: string | null
+    cityCode: string | null; barangayCode: string | null
     emergencyContactName: string | null; emergencyContactPhone: string | null
     emergencyContactRelation: string | null
     facebookName: string | null; facebookUrl: string | null
@@ -473,13 +476,21 @@ function AddressFormContent({ data, onClose }: { data: VAData; onClose: () => vo
   return (
     <SaveForm action={(fd) => updateUserProfileAction(data.user.id, fd)} onClose={onClose} toastLabel="Address saved" className="flex flex-col gap-4 h-full">
       {(saving) => (<>
-        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 flex-1">
-          <FI name="address" label="House #, Building & Street Name" defaultValue={data.profile?.address} placeholder="123 Main St, Building A" />
-          <FI name="province" label="Province" defaultValue={data.profile?.province} />
-          <FI name="cityMunicipality" label="City / Municipality" defaultValue={data.profile?.cityMunicipality} />
-          <FI name="barangay" label="Barangay" defaultValue={data.profile?.barangay} />
-          <FI name="zipCode" label="Zip Code" defaultValue={data.profile?.zipCode} placeholder="1000" />
-          <FI name="landmark" label="Landmark" defaultValue={data.profile?.landmark} />
+        <div className="flex-1 space-y-3">
+          <AddressFields
+            defaultValues={{
+              regionCode: data.profile?.regionCode ?? undefined,
+              provinceCode: data.profile?.provinceCode ?? undefined,
+              cityCode: data.profile?.cityCode ?? undefined,
+              barangayCode: data.profile?.barangayCode ?? undefined,
+            }}
+            namePrefix="address"
+          />
+          <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
+            <FI name="address" label="House #, Building & Street Name" defaultValue={data.profile?.address} placeholder="123 Main St, Building A" />
+            <FI name="zipCode" label="Zip Code" defaultValue={data.profile?.zipCode} placeholder="1000" />
+            <FI name="landmark" label="Landmark" defaultValue={data.profile?.landmark} />
+          </div>
         </div>
         <div className="flex items-center justify-end gap-2 pt-2 border-t">
           <button type="button" onClick={onClose}

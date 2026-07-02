@@ -43,6 +43,11 @@ export type UserProfileMinAggregateOutputType = {
   emergencyContactRelation: string | null
   gcashNumber: string | null
   personalEmail: string | null
+  workEmail: string | null
+  regionCode: string | null
+  provinceCode: string | null
+  cityCode: string | null
+  barangayCode: string | null
   facebookName: string | null
   facebookUrl: string | null
   linkedinUrl: string | null
@@ -75,6 +80,11 @@ export type UserProfileMaxAggregateOutputType = {
   emergencyContactRelation: string | null
   gcashNumber: string | null
   personalEmail: string | null
+  workEmail: string | null
+  regionCode: string | null
+  provinceCode: string | null
+  cityCode: string | null
+  barangayCode: string | null
   facebookName: string | null
   facebookUrl: string | null
   linkedinUrl: string | null
@@ -107,6 +117,11 @@ export type UserProfileCountAggregateOutputType = {
   emergencyContactRelation: number
   gcashNumber: number
   personalEmail: number
+  workEmail: number
+  regionCode: number
+  provinceCode: number
+  cityCode: number
+  barangayCode: number
   facebookName: number
   facebookUrl: number
   linkedinUrl: number
@@ -142,6 +157,11 @@ export type UserProfileMinAggregateInputType = {
   emergencyContactRelation?: true
   gcashNumber?: true
   personalEmail?: true
+  workEmail?: true
+  regionCode?: true
+  provinceCode?: true
+  cityCode?: true
+  barangayCode?: true
   facebookName?: true
   facebookUrl?: true
   linkedinUrl?: true
@@ -174,6 +194,11 @@ export type UserProfileMaxAggregateInputType = {
   emergencyContactRelation?: true
   gcashNumber?: true
   personalEmail?: true
+  workEmail?: true
+  regionCode?: true
+  provinceCode?: true
+  cityCode?: true
+  barangayCode?: true
   facebookName?: true
   facebookUrl?: true
   linkedinUrl?: true
@@ -206,6 +231,11 @@ export type UserProfileCountAggregateInputType = {
   emergencyContactRelation?: true
   gcashNumber?: true
   personalEmail?: true
+  workEmail?: true
+  regionCode?: true
+  provinceCode?: true
+  cityCode?: true
+  barangayCode?: true
   facebookName?: true
   facebookUrl?: true
   linkedinUrl?: true
@@ -312,6 +342,11 @@ export type UserProfileGroupByOutputType = {
   emergencyContactRelation: string | null
   gcashNumber: string | null
   personalEmail: string | null
+  workEmail: string | null
+  regionCode: string | null
+  provinceCode: string | null
+  cityCode: string | null
+  barangayCode: string | null
   facebookName: string | null
   facebookUrl: string | null
   linkedinUrl: string | null
@@ -366,6 +401,11 @@ export type UserProfileWhereInput = {
   emergencyContactRelation?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   gcashNumber?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   personalEmail?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  workEmail?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  regionCode?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  provinceCode?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  cityCode?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  barangayCode?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   facebookName?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   facebookUrl?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   linkedinUrl?: Prisma.StringNullableFilter<"UserProfile"> | string | null
@@ -400,6 +440,11 @@ export type UserProfileOrderByWithRelationInput = {
   emergencyContactRelation?: Prisma.SortOrderInput | Prisma.SortOrder
   gcashNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   personalEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  workEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  regionCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  provinceCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  cityCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  barangayCode?: Prisma.SortOrderInput | Prisma.SortOrder
   facebookName?: Prisma.SortOrderInput | Prisma.SortOrder
   facebookUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   linkedinUrl?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -437,6 +482,11 @@ export type UserProfileWhereUniqueInput = Prisma.AtLeast<{
   emergencyContactRelation?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   gcashNumber?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   personalEmail?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  workEmail?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  regionCode?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  provinceCode?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  cityCode?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  barangayCode?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   facebookName?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   facebookUrl?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   linkedinUrl?: Prisma.StringNullableFilter<"UserProfile"> | string | null
@@ -471,6 +521,11 @@ export type UserProfileOrderByWithAggregationInput = {
   emergencyContactRelation?: Prisma.SortOrderInput | Prisma.SortOrder
   gcashNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   personalEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  workEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  regionCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  provinceCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  cityCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  barangayCode?: Prisma.SortOrderInput | Prisma.SortOrder
   facebookName?: Prisma.SortOrderInput | Prisma.SortOrder
   facebookUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   linkedinUrl?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -510,6 +565,11 @@ export type UserProfileScalarWhereWithAggregatesInput = {
   emergencyContactRelation?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
   gcashNumber?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
   personalEmail?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
+  workEmail?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
+  regionCode?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
+  provinceCode?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
+  cityCode?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
+  barangayCode?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
   facebookName?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
   facebookUrl?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
   linkedinUrl?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
@@ -542,6 +602,11 @@ export type UserProfileCreateInput = {
   emergencyContactRelation?: string | null
   gcashNumber?: string | null
   personalEmail?: string | null
+  workEmail?: string | null
+  regionCode?: string | null
+  provinceCode?: string | null
+  cityCode?: string | null
+  barangayCode?: string | null
   facebookName?: string | null
   facebookUrl?: string | null
   linkedinUrl?: string | null
@@ -576,6 +641,11 @@ export type UserProfileUncheckedCreateInput = {
   emergencyContactRelation?: string | null
   gcashNumber?: string | null
   personalEmail?: string | null
+  workEmail?: string | null
+  regionCode?: string | null
+  provinceCode?: string | null
+  cityCode?: string | null
+  barangayCode?: string | null
   facebookName?: string | null
   facebookUrl?: string | null
   linkedinUrl?: string | null
@@ -608,6 +678,11 @@ export type UserProfileUpdateInput = {
   emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  regionCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provinceCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barangayCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   facebookName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   facebookUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedinUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -642,6 +717,11 @@ export type UserProfileUncheckedUpdateInput = {
   emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  regionCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provinceCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barangayCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   facebookName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   facebookUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedinUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -675,6 +755,11 @@ export type UserProfileCreateManyInput = {
   emergencyContactRelation?: string | null
   gcashNumber?: string | null
   personalEmail?: string | null
+  workEmail?: string | null
+  regionCode?: string | null
+  provinceCode?: string | null
+  cityCode?: string | null
+  barangayCode?: string | null
   facebookName?: string | null
   facebookUrl?: string | null
   linkedinUrl?: string | null
@@ -707,6 +792,11 @@ export type UserProfileUpdateManyMutationInput = {
   emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  regionCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provinceCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barangayCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   facebookName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   facebookUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedinUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -740,6 +830,11 @@ export type UserProfileUncheckedUpdateManyInput = {
   emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  regionCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provinceCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barangayCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   facebookName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   facebookUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedinUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -786,6 +881,11 @@ export type UserProfileCountOrderByAggregateInput = {
   emergencyContactRelation?: Prisma.SortOrder
   gcashNumber?: Prisma.SortOrder
   personalEmail?: Prisma.SortOrder
+  workEmail?: Prisma.SortOrder
+  regionCode?: Prisma.SortOrder
+  provinceCode?: Prisma.SortOrder
+  cityCode?: Prisma.SortOrder
+  barangayCode?: Prisma.SortOrder
   facebookName?: Prisma.SortOrder
   facebookUrl?: Prisma.SortOrder
   linkedinUrl?: Prisma.SortOrder
@@ -819,6 +919,11 @@ export type UserProfileMaxOrderByAggregateInput = {
   emergencyContactRelation?: Prisma.SortOrder
   gcashNumber?: Prisma.SortOrder
   personalEmail?: Prisma.SortOrder
+  workEmail?: Prisma.SortOrder
+  regionCode?: Prisma.SortOrder
+  provinceCode?: Prisma.SortOrder
+  cityCode?: Prisma.SortOrder
+  barangayCode?: Prisma.SortOrder
   facebookName?: Prisma.SortOrder
   facebookUrl?: Prisma.SortOrder
   linkedinUrl?: Prisma.SortOrder
@@ -851,6 +956,11 @@ export type UserProfileMinOrderByAggregateInput = {
   emergencyContactRelation?: Prisma.SortOrder
   gcashNumber?: Prisma.SortOrder
   personalEmail?: Prisma.SortOrder
+  workEmail?: Prisma.SortOrder
+  regionCode?: Prisma.SortOrder
+  provinceCode?: Prisma.SortOrder
+  cityCode?: Prisma.SortOrder
+  barangayCode?: Prisma.SortOrder
   facebookName?: Prisma.SortOrder
   facebookUrl?: Prisma.SortOrder
   linkedinUrl?: Prisma.SortOrder
@@ -923,6 +1033,11 @@ export type UserProfileCreateWithoutUserInput = {
   emergencyContactRelation?: string | null
   gcashNumber?: string | null
   personalEmail?: string | null
+  workEmail?: string | null
+  regionCode?: string | null
+  provinceCode?: string | null
+  cityCode?: string | null
+  barangayCode?: string | null
   facebookName?: string | null
   facebookUrl?: string | null
   linkedinUrl?: string | null
@@ -955,6 +1070,11 @@ export type UserProfileUncheckedCreateWithoutUserInput = {
   emergencyContactRelation?: string | null
   gcashNumber?: string | null
   personalEmail?: string | null
+  workEmail?: string | null
+  regionCode?: string | null
+  provinceCode?: string | null
+  cityCode?: string | null
+  barangayCode?: string | null
   facebookName?: string | null
   facebookUrl?: string | null
   linkedinUrl?: string | null
@@ -1003,6 +1123,11 @@ export type UserProfileUpdateWithoutUserInput = {
   emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  regionCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provinceCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barangayCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   facebookName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   facebookUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedinUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1035,6 +1160,11 @@ export type UserProfileUncheckedUpdateWithoutUserInput = {
   emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gcashNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  regionCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  provinceCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  barangayCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   facebookName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   facebookUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedinUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1070,6 +1200,11 @@ export type UserProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   emergencyContactRelation?: boolean
   gcashNumber?: boolean
   personalEmail?: boolean
+  workEmail?: boolean
+  regionCode?: boolean
+  provinceCode?: boolean
+  cityCode?: boolean
+  barangayCode?: boolean
   facebookName?: boolean
   facebookUrl?: boolean
   linkedinUrl?: boolean
@@ -1104,6 +1239,11 @@ export type UserProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   emergencyContactRelation?: boolean
   gcashNumber?: boolean
   personalEmail?: boolean
+  workEmail?: boolean
+  regionCode?: boolean
+  provinceCode?: boolean
+  cityCode?: boolean
+  barangayCode?: boolean
   facebookName?: boolean
   facebookUrl?: boolean
   linkedinUrl?: boolean
@@ -1138,6 +1278,11 @@ export type UserProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   emergencyContactRelation?: boolean
   gcashNumber?: boolean
   personalEmail?: boolean
+  workEmail?: boolean
+  regionCode?: boolean
+  provinceCode?: boolean
+  cityCode?: boolean
+  barangayCode?: boolean
   facebookName?: boolean
   facebookUrl?: boolean
   linkedinUrl?: boolean
@@ -1172,6 +1317,11 @@ export type UserProfileSelectScalar = {
   emergencyContactRelation?: boolean
   gcashNumber?: boolean
   personalEmail?: boolean
+  workEmail?: boolean
+  regionCode?: boolean
+  provinceCode?: boolean
+  cityCode?: boolean
+  barangayCode?: boolean
   facebookName?: boolean
   facebookUrl?: boolean
   linkedinUrl?: boolean
@@ -1186,7 +1336,7 @@ export type UserProfileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type UserProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "phone" | "whatsappNumber" | "gender" | "birthDate" | "nonCelebrant" | "barangay" | "cityMunicipality" | "province" | "zipCode" | "landmark" | "address" | "emergencyContactName" | "emergencyContactPhone" | "emergencyContactRelation" | "gcashNumber" | "personalEmail" | "facebookName" | "facebookUrl" | "linkedinUrl" | "payoneerAccount" | "passportNumber" | "passportPhoto" | "philhealthNumber" | "philhealthPhoto" | "signedContract" | "personalityTraits" | "createdAt" | "updatedAt", ExtArgs["result"]["userProfile"]>
+export type UserProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "phone" | "whatsappNumber" | "gender" | "birthDate" | "nonCelebrant" | "barangay" | "cityMunicipality" | "province" | "zipCode" | "landmark" | "address" | "emergencyContactName" | "emergencyContactPhone" | "emergencyContactRelation" | "gcashNumber" | "personalEmail" | "workEmail" | "regionCode" | "provinceCode" | "cityCode" | "barangayCode" | "facebookName" | "facebookUrl" | "linkedinUrl" | "payoneerAccount" | "passportNumber" | "passportPhoto" | "philhealthNumber" | "philhealthPhoto" | "signedContract" | "personalityTraits" | "createdAt" | "updatedAt", ExtArgs["result"]["userProfile"]>
 export type UserProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -1221,6 +1371,11 @@ export type $UserProfilePayload<ExtArgs extends runtime.Types.Extensions.Interna
     emergencyContactRelation: string | null
     gcashNumber: string | null
     personalEmail: string | null
+    workEmail: string | null
+    regionCode: string | null
+    provinceCode: string | null
+    cityCode: string | null
+    barangayCode: string | null
     facebookName: string | null
     facebookUrl: string | null
     linkedinUrl: string | null
@@ -1675,6 +1830,11 @@ export interface UserProfileFieldRefs {
   readonly emergencyContactRelation: Prisma.FieldRef<"UserProfile", 'String'>
   readonly gcashNumber: Prisma.FieldRef<"UserProfile", 'String'>
   readonly personalEmail: Prisma.FieldRef<"UserProfile", 'String'>
+  readonly workEmail: Prisma.FieldRef<"UserProfile", 'String'>
+  readonly regionCode: Prisma.FieldRef<"UserProfile", 'String'>
+  readonly provinceCode: Prisma.FieldRef<"UserProfile", 'String'>
+  readonly cityCode: Prisma.FieldRef<"UserProfile", 'String'>
+  readonly barangayCode: Prisma.FieldRef<"UserProfile", 'String'>
   readonly facebookName: Prisma.FieldRef<"UserProfile", 'String'>
   readonly facebookUrl: Prisma.FieldRef<"UserProfile", 'String'>
   readonly linkedinUrl: Prisma.FieldRef<"UserProfile", 'String'>
