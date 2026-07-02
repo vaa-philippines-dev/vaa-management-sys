@@ -21,7 +21,7 @@ export default async function SkillsPage() {
     ),
     cached('skills:depts', [CACHE_TAGS.departments], 600, () =>
       prisma.department.findMany({
-        where: { status: 'ACTIVE', level: 'SERVICE' },
+        where: { status: 'ACTIVE', level: 'SERVICE', parentId: { not: null } },
         orderBy: { sortOrder: 'asc' },
         select: { id: true, name: true },
       })

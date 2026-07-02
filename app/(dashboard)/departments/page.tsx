@@ -97,7 +97,7 @@ export default async function DepartmentsPage() {
 
   const departments = await cached('depts:directory', [CACHE_TAGS.departments], 60, () =>
     prisma.department.findMany({
-      where: { status: 'ACTIVE' },
+      where: { status: 'ACTIVE', parentId: { not: null } },
       orderBy: [{ level: 'asc' }, { sortOrder: 'asc' }, { name: 'asc' }],
       include: {
         _count: { select: { children: true, memberships: true, clients: true } },

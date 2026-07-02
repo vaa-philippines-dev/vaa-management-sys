@@ -144,7 +144,7 @@ async function DepartmentsSection() {
   const [departments, roleCounts, totalUsers] = await Promise.all([
     cached('admin:departments', [CACHE_TAGS.departments], 600, () =>
       prisma.department.findMany({
-        where: { status: 'ACTIVE' },
+        where: { status: 'ACTIVE', parentId: { not: null } },
         orderBy: { sortOrder: 'asc' },
         include: { _count: { select: { memberships: true, clients: true } } },
       })

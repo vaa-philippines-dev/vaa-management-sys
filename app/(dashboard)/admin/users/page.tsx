@@ -57,7 +57,7 @@ export default async function AdminUsersPage({
       },
     }),
     prisma.department.findMany({
-      where: { status: 'ACTIVE' },
+      where: { status: 'ACTIVE', parentId: { not: null } },
       orderBy: { sortOrder: 'asc' },
       include: { positions: true },
     }),
