@@ -393,6 +393,7 @@ export const ModelName = {
   RoleAssignment: 'RoleAssignment',
   VAProfile: 'VAProfile',
   Skill: 'Skill',
+  DepartmentSkill: 'DepartmentSkill',
   VASkill: 'VASkill',
   VADocument: 'VADocument',
   LeaveRequest: 'LeaveRequest',
@@ -417,7 +418,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "skill" | "vASkill" | "vADocument" | "leaveRequest" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "auditLog"
+    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveRequest" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "auditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1084,6 +1085,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.SkillCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.SkillCountAggregateOutputType> | number
+        }
+      }
+    }
+    DepartmentSkill: {
+      payload: Prisma.$DepartmentSkillPayload<ExtArgs>
+      fields: Prisma.DepartmentSkillFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DepartmentSkillFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentSkillPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DepartmentSkillFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentSkillPayload>
+        }
+        findFirst: {
+          args: Prisma.DepartmentSkillFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentSkillPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DepartmentSkillFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentSkillPayload>
+        }
+        findMany: {
+          args: Prisma.DepartmentSkillFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentSkillPayload>[]
+        }
+        create: {
+          args: Prisma.DepartmentSkillCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentSkillPayload>
+        }
+        createMany: {
+          args: Prisma.DepartmentSkillCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DepartmentSkillCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentSkillPayload>[]
+        }
+        delete: {
+          args: Prisma.DepartmentSkillDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentSkillPayload>
+        }
+        update: {
+          args: Prisma.DepartmentSkillUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentSkillPayload>
+        }
+        deleteMany: {
+          args: Prisma.DepartmentSkillDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DepartmentSkillUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DepartmentSkillUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentSkillPayload>[]
+        }
+        upsert: {
+          args: Prisma.DepartmentSkillUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentSkillPayload>
+        }
+        aggregate: {
+          args: Prisma.DepartmentSkillAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDepartmentSkill>
+        }
+        groupBy: {
+          args: Prisma.DepartmentSkillGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DepartmentSkillGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DepartmentSkillCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DepartmentSkillCountAggregateOutputType> | number
         }
       }
     }
@@ -1971,6 +2046,16 @@ export const SkillScalarFieldEnum = {
 export type SkillScalarFieldEnum = (typeof SkillScalarFieldEnum)[keyof typeof SkillScalarFieldEnum]
 
 
+export const DepartmentSkillScalarFieldEnum = {
+  id: 'id',
+  departmentId: 'departmentId',
+  skillId: 'skillId',
+  createdAt: 'createdAt'
+} as const
+
+export type DepartmentSkillScalarFieldEnum = (typeof DepartmentSkillScalarFieldEnum)[keyof typeof DepartmentSkillScalarFieldEnum]
+
+
 export const VASkillScalarFieldEnum = {
   id: 'id',
   vaProfileId: 'vaProfileId',
@@ -2676,6 +2761,7 @@ export type GlobalOmitConfig = {
   roleAssignment?: Prisma.RoleAssignmentOmit
   vAProfile?: Prisma.VAProfileOmit
   skill?: Prisma.SkillOmit
+  departmentSkill?: Prisma.DepartmentSkillOmit
   vASkill?: Prisma.VASkillOmit
   vADocument?: Prisma.VADocumentOmit
   leaveRequest?: Prisma.LeaveRequestOmit

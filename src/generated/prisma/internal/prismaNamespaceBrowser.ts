@@ -60,6 +60,7 @@ export const ModelName = {
   RoleAssignment: 'RoleAssignment',
   VAProfile: 'VAProfile',
   Skill: 'Skill',
+  DepartmentSkill: 'DepartmentSkill',
   VASkill: 'VASkill',
   VADocument: 'VADocument',
   LeaveRequest: 'LeaveRequest',
@@ -264,6 +265,16 @@ export const SkillScalarFieldEnum = {
 } as const
 
 export type SkillScalarFieldEnum = (typeof SkillScalarFieldEnum)[keyof typeof SkillScalarFieldEnum]
+
+
+export const DepartmentSkillScalarFieldEnum = {
+  id: 'id',
+  departmentId: 'departmentId',
+  skillId: 'skillId',
+  createdAt: 'createdAt'
+} as const
+
+export type DepartmentSkillScalarFieldEnum = (typeof DepartmentSkillScalarFieldEnum)[keyof typeof DepartmentSkillScalarFieldEnum]
 
 
 export const VASkillScalarFieldEnum = {

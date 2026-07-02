@@ -87,6 +87,11 @@ export type VAProfile = Prisma.VAProfileModel
  */
 export type Skill = Prisma.SkillModel
 /**
+ * Model DepartmentSkill
+ * 
+ */
+export type DepartmentSkill = Prisma.DepartmentSkillModel
+/**
  * Model VASkill
  * 
  */

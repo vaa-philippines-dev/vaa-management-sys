@@ -309,6 +309,7 @@ export type DepartmentWhereInput = {
   tickets?: Prisma.TicketListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
   roleAssignments?: Prisma.RoleAssignmentListRelationFilter
+  services?: Prisma.DepartmentSkillListRelationFilter
 }
 
 export type DepartmentOrderByWithRelationInput = {
@@ -340,6 +341,7 @@ export type DepartmentOrderByWithRelationInput = {
   tickets?: Prisma.TicketOrderByRelationAggregateInput
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
   roleAssignments?: Prisma.RoleAssignmentOrderByRelationAggregateInput
+  services?: Prisma.DepartmentSkillOrderByRelationAggregateInput
 }
 
 export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
@@ -376,6 +378,7 @@ export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
   tickets?: Prisma.TicketListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
   roleAssignments?: Prisma.RoleAssignmentListRelationFilter
+  services?: Prisma.DepartmentSkillListRelationFilter
 }, "id" | "name_parentId" | "acronym_parentId">
 
 export type DepartmentOrderByWithAggregationInput = {
@@ -447,6 +450,7 @@ export type DepartmentCreateInput = {
   tickets?: Prisma.TicketCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateInput = {
@@ -474,6 +478,7 @@ export type DepartmentUncheckedCreateInput = {
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUpdateInput = {
@@ -501,6 +506,7 @@ export type DepartmentUpdateInput = {
   tickets?: Prisma.TicketUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateInput = {
@@ -528,6 +534,7 @@ export type DepartmentUncheckedUpdateInput = {
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateManyInput = {
@@ -966,6 +973,20 @@ export type DepartmentUpdateOneWithoutRoleAssignmentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.DepartmentUpdateToOneWithWhereWithoutRoleAssignmentsInput, Prisma.DepartmentUpdateWithoutRoleAssignmentsInput>, Prisma.DepartmentUncheckedUpdateWithoutRoleAssignmentsInput>
 }
 
+export type DepartmentCreateNestedOneWithoutServicesInput = {
+  create?: Prisma.XOR<Prisma.DepartmentCreateWithoutServicesInput, Prisma.DepartmentUncheckedCreateWithoutServicesInput>
+  connectOrCreate?: Prisma.DepartmentCreateOrConnectWithoutServicesInput
+  connect?: Prisma.DepartmentWhereUniqueInput
+}
+
+export type DepartmentUpdateOneRequiredWithoutServicesNestedInput = {
+  create?: Prisma.XOR<Prisma.DepartmentCreateWithoutServicesInput, Prisma.DepartmentUncheckedCreateWithoutServicesInput>
+  connectOrCreate?: Prisma.DepartmentCreateOrConnectWithoutServicesInput
+  upsert?: Prisma.DepartmentUpsertWithoutServicesInput
+  connect?: Prisma.DepartmentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DepartmentUpdateToOneWithWhereWithoutServicesInput, Prisma.DepartmentUpdateWithoutServicesInput>, Prisma.DepartmentUncheckedUpdateWithoutServicesInput>
+}
+
 export type DepartmentCreateNestedOneWithoutClientsInput = {
   create?: Prisma.XOR<Prisma.DepartmentCreateWithoutClientsInput, Prisma.DepartmentUncheckedCreateWithoutClientsInput>
   connectOrCreate?: Prisma.DepartmentCreateOrConnectWithoutClientsInput
@@ -1038,6 +1059,7 @@ export type DepartmentCreateWithoutChildrenInput = {
   tickets?: Prisma.TicketCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutChildrenInput = {
@@ -1064,6 +1086,7 @@ export type DepartmentUncheckedCreateWithoutChildrenInput = {
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutChildrenInput = {
@@ -1095,6 +1118,7 @@ export type DepartmentCreateWithoutParentInput = {
   tickets?: Prisma.TicketCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutParentInput = {
@@ -1121,6 +1145,7 @@ export type DepartmentUncheckedCreateWithoutParentInput = {
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutParentInput = {
@@ -1157,6 +1182,7 @@ export type DepartmentCreateWithoutMergedFromInput = {
   tickets?: Prisma.TicketCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutMergedFromInput = {
@@ -1183,6 +1209,7 @@ export type DepartmentUncheckedCreateWithoutMergedFromInput = {
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutMergedFromInput = {
@@ -1214,6 +1241,7 @@ export type DepartmentCreateWithoutMergedIntoInput = {
   tickets?: Prisma.TicketCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutMergedIntoInput = {
@@ -1240,6 +1268,7 @@ export type DepartmentUncheckedCreateWithoutMergedIntoInput = {
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutMergedIntoInput = {
@@ -1276,6 +1305,7 @@ export type DepartmentCreateWithoutSplitIntoInput = {
   tickets?: Prisma.TicketCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutSplitIntoInput = {
@@ -1302,6 +1332,7 @@ export type DepartmentUncheckedCreateWithoutSplitIntoInput = {
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutSplitIntoInput = {
@@ -1333,6 +1364,7 @@ export type DepartmentCreateWithoutSplitFromInput = {
   tickets?: Prisma.TicketCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutSplitFromInput = {
@@ -1359,6 +1391,7 @@ export type DepartmentUncheckedCreateWithoutSplitFromInput = {
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutSplitFromInput = {
@@ -1406,6 +1439,7 @@ export type DepartmentUpdateWithoutChildrenInput = {
   tickets?: Prisma.TicketUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutChildrenInput = {
@@ -1432,6 +1466,7 @@ export type DepartmentUncheckedUpdateWithoutChildrenInput = {
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUpsertWithWhereUniqueWithoutParentInput = {
@@ -1506,6 +1541,7 @@ export type DepartmentUpdateWithoutMergedFromInput = {
   tickets?: Prisma.TicketUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutMergedFromInput = {
@@ -1532,6 +1568,7 @@ export type DepartmentUncheckedUpdateWithoutMergedFromInput = {
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUpsertWithWhereUniqueWithoutMergedIntoInput = {
@@ -1585,6 +1622,7 @@ export type DepartmentUpdateWithoutSplitIntoInput = {
   tickets?: Prisma.TicketUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutSplitIntoInput = {
@@ -1611,6 +1649,7 @@ export type DepartmentUncheckedUpdateWithoutSplitIntoInput = {
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUpsertWithWhereUniqueWithoutSplitFromInput = {
@@ -1653,6 +1692,7 @@ export type DepartmentCreateWithoutPositionsInput = {
   tickets?: Prisma.TicketCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutPositionsInput = {
@@ -1679,6 +1719,7 @@ export type DepartmentUncheckedCreateWithoutPositionsInput = {
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutPositionsInput = {
@@ -1721,6 +1762,7 @@ export type DepartmentUpdateWithoutPositionsInput = {
   tickets?: Prisma.TicketUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutPositionsInput = {
@@ -1747,6 +1789,7 @@ export type DepartmentUncheckedUpdateWithoutPositionsInput = {
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateWithoutMembershipsInput = {
@@ -1773,6 +1816,7 @@ export type DepartmentCreateWithoutMembershipsInput = {
   tickets?: Prisma.TicketCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutMembershipsInput = {
@@ -1799,6 +1843,7 @@ export type DepartmentUncheckedCreateWithoutMembershipsInput = {
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutMembershipsInput = {
@@ -1841,6 +1886,7 @@ export type DepartmentUpdateWithoutMembershipsInput = {
   tickets?: Prisma.TicketUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutMembershipsInput = {
@@ -1867,6 +1913,7 @@ export type DepartmentUncheckedUpdateWithoutMembershipsInput = {
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateWithoutHeadInput = {
@@ -1893,6 +1940,7 @@ export type DepartmentCreateWithoutHeadInput = {
   tickets?: Prisma.TicketCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutHeadInput = {
@@ -1919,6 +1967,7 @@ export type DepartmentUncheckedCreateWithoutHeadInput = {
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutHeadInput = {
@@ -1971,6 +2020,7 @@ export type DepartmentCreateWithoutRoleAssignmentsInput = {
   clients?: Prisma.ClientCreateNestedManyWithoutDepartmentInput
   tickets?: Prisma.TicketCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutRoleAssignmentsInput = {
@@ -1997,6 +2047,7 @@ export type DepartmentUncheckedCreateWithoutRoleAssignmentsInput = {
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutDepartmentInput
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutRoleAssignmentsInput = {
@@ -2039,6 +2090,7 @@ export type DepartmentUpdateWithoutRoleAssignmentsInput = {
   clients?: Prisma.ClientUpdateManyWithoutDepartmentNestedInput
   tickets?: Prisma.TicketUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutRoleAssignmentsInput = {
@@ -2065,6 +2117,131 @@ export type DepartmentUncheckedUpdateWithoutRoleAssignmentsInput = {
   clients?: Prisma.ClientUncheckedUpdateManyWithoutDepartmentNestedInput
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUncheckedUpdateManyWithoutDepartmentNestedInput
+}
+
+export type DepartmentCreateWithoutServicesInput = {
+  id?: string
+  name: string
+  shortName?: string | null
+  acronym?: string | null
+  level?: $Enums.DepartmentLevel | null
+  status?: $Enums.DepartmentStatus
+  isParent?: boolean
+  description?: string | null
+  sortOrder?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  parent?: Prisma.DepartmentCreateNestedOneWithoutChildrenInput
+  children?: Prisma.DepartmentCreateNestedManyWithoutParentInput
+  mergedInto?: Prisma.DepartmentCreateNestedOneWithoutMergedFromInput
+  mergedFrom?: Prisma.DepartmentCreateNestedManyWithoutMergedIntoInput
+  splitFrom?: Prisma.DepartmentCreateNestedOneWithoutSplitIntoInput
+  splitInto?: Prisma.DepartmentCreateNestedManyWithoutSplitFromInput
+  head?: Prisma.UserCreateNestedOneWithoutDepartmentHeadInput
+  memberships?: Prisma.DepartmentMembershipCreateNestedManyWithoutDepartmentInput
+  positions?: Prisma.PositionCreateNestedManyWithoutDepartmentInput
+  clients?: Prisma.ClientCreateNestedManyWithoutDepartmentInput
+  tickets?: Prisma.TicketCreateNestedManyWithoutDepartmentInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutDepartmentInput
+  roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutDepartmentInput
+}
+
+export type DepartmentUncheckedCreateWithoutServicesInput = {
+  id?: string
+  name: string
+  shortName?: string | null
+  acronym?: string | null
+  level?: $Enums.DepartmentLevel | null
+  status?: $Enums.DepartmentStatus
+  parentId?: string | null
+  mergedIntoId?: string | null
+  splitFromId?: string | null
+  isParent?: boolean
+  description?: string | null
+  headId?: string | null
+  sortOrder?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  children?: Prisma.DepartmentUncheckedCreateNestedManyWithoutParentInput
+  mergedFrom?: Prisma.DepartmentUncheckedCreateNestedManyWithoutMergedIntoInput
+  splitInto?: Prisma.DepartmentUncheckedCreateNestedManyWithoutSplitFromInput
+  memberships?: Prisma.DepartmentMembershipUncheckedCreateNestedManyWithoutDepartmentInput
+  positions?: Prisma.PositionUncheckedCreateNestedManyWithoutDepartmentInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutDepartmentInput
+  tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutDepartmentInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutDepartmentInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutDepartmentInput
+}
+
+export type DepartmentCreateOrConnectWithoutServicesInput = {
+  where: Prisma.DepartmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.DepartmentCreateWithoutServicesInput, Prisma.DepartmentUncheckedCreateWithoutServicesInput>
+}
+
+export type DepartmentUpsertWithoutServicesInput = {
+  update: Prisma.XOR<Prisma.DepartmentUpdateWithoutServicesInput, Prisma.DepartmentUncheckedUpdateWithoutServicesInput>
+  create: Prisma.XOR<Prisma.DepartmentCreateWithoutServicesInput, Prisma.DepartmentUncheckedCreateWithoutServicesInput>
+  where?: Prisma.DepartmentWhereInput
+}
+
+export type DepartmentUpdateToOneWithWhereWithoutServicesInput = {
+  where?: Prisma.DepartmentWhereInput
+  data: Prisma.XOR<Prisma.DepartmentUpdateWithoutServicesInput, Prisma.DepartmentUncheckedUpdateWithoutServicesInput>
+}
+
+export type DepartmentUpdateWithoutServicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
+  status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parent?: Prisma.DepartmentUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.DepartmentUpdateManyWithoutParentNestedInput
+  mergedInto?: Prisma.DepartmentUpdateOneWithoutMergedFromNestedInput
+  mergedFrom?: Prisma.DepartmentUpdateManyWithoutMergedIntoNestedInput
+  splitFrom?: Prisma.DepartmentUpdateOneWithoutSplitIntoNestedInput
+  splitInto?: Prisma.DepartmentUpdateManyWithoutSplitFromNestedInput
+  head?: Prisma.UserUpdateOneWithoutDepartmentHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUpdateManyWithoutDepartmentNestedInput
+  positions?: Prisma.PositionUpdateManyWithoutDepartmentNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutDepartmentNestedInput
+  tickets?: Prisma.TicketUpdateManyWithoutDepartmentNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutDepartmentNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutDepartmentNestedInput
+}
+
+export type DepartmentUncheckedUpdateWithoutServicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
+  status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.DepartmentUncheckedUpdateManyWithoutParentNestedInput
+  mergedFrom?: Prisma.DepartmentUncheckedUpdateManyWithoutMergedIntoNestedInput
+  splitInto?: Prisma.DepartmentUncheckedUpdateManyWithoutSplitFromNestedInput
+  memberships?: Prisma.DepartmentMembershipUncheckedUpdateManyWithoutDepartmentNestedInput
+  positions?: Prisma.PositionUncheckedUpdateManyWithoutDepartmentNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutDepartmentNestedInput
+  tickets?: Prisma.TicketUncheckedUpdateManyWithoutDepartmentNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutDepartmentNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateWithoutClientsInput = {
@@ -2091,6 +2268,7 @@ export type DepartmentCreateWithoutClientsInput = {
   tickets?: Prisma.TicketCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutClientsInput = {
@@ -2117,6 +2295,7 @@ export type DepartmentUncheckedCreateWithoutClientsInput = {
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutClientsInput = {
@@ -2159,6 +2338,7 @@ export type DepartmentUpdateWithoutClientsInput = {
   tickets?: Prisma.TicketUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutClientsInput = {
@@ -2185,6 +2365,7 @@ export type DepartmentUncheckedUpdateWithoutClientsInput = {
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateWithoutTicketsInput = {
@@ -2211,6 +2392,7 @@ export type DepartmentCreateWithoutTicketsInput = {
   clients?: Prisma.ClientCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutTicketsInput = {
@@ -2237,6 +2419,7 @@ export type DepartmentUncheckedCreateWithoutTicketsInput = {
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutDepartmentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutTicketsInput = {
@@ -2279,6 +2462,7 @@ export type DepartmentUpdateWithoutTicketsInput = {
   clients?: Prisma.ClientUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutTicketsInput = {
@@ -2305,6 +2489,7 @@ export type DepartmentUncheckedUpdateWithoutTicketsInput = {
   clients?: Prisma.ClientUncheckedUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateWithoutAuditLogsInput = {
@@ -2331,6 +2516,7 @@ export type DepartmentCreateWithoutAuditLogsInput = {
   clients?: Prisma.ClientCreateNestedManyWithoutDepartmentInput
   tickets?: Prisma.TicketCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutAuditLogsInput = {
@@ -2357,6 +2543,7 @@ export type DepartmentUncheckedCreateWithoutAuditLogsInput = {
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutDepartmentInput
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutDepartmentInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutAuditLogsInput = {
@@ -2399,6 +2586,7 @@ export type DepartmentUpdateWithoutAuditLogsInput = {
   clients?: Prisma.ClientUpdateManyWithoutDepartmentNestedInput
   tickets?: Prisma.TicketUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutAuditLogsInput = {
@@ -2425,6 +2613,7 @@ export type DepartmentUncheckedUpdateWithoutAuditLogsInput = {
   clients?: Prisma.ClientUncheckedUpdateManyWithoutDepartmentNestedInput
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateManyParentInput = {
@@ -2502,6 +2691,7 @@ export type DepartmentUpdateWithoutParentInput = {
   tickets?: Prisma.TicketUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutParentInput = {
@@ -2528,6 +2718,7 @@ export type DepartmentUncheckedUpdateWithoutParentInput = {
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateManyWithoutParentInput = {
@@ -2571,6 +2762,7 @@ export type DepartmentUpdateWithoutMergedIntoInput = {
   tickets?: Prisma.TicketUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutMergedIntoInput = {
@@ -2597,6 +2789,7 @@ export type DepartmentUncheckedUpdateWithoutMergedIntoInput = {
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateManyWithoutMergedIntoInput = {
@@ -2640,6 +2833,7 @@ export type DepartmentUpdateWithoutSplitFromInput = {
   tickets?: Prisma.TicketUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutSplitFromInput = {
@@ -2666,6 +2860,7 @@ export type DepartmentUncheckedUpdateWithoutSplitFromInput = {
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateManyWithoutSplitFromInput = {
@@ -2726,6 +2921,7 @@ export type DepartmentUpdateWithoutHeadInput = {
   tickets?: Prisma.TicketUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutHeadInput = {
@@ -2752,6 +2948,7 @@ export type DepartmentUncheckedUpdateWithoutHeadInput = {
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutDepartmentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutDepartmentNestedInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateManyWithoutHeadInput = {
@@ -2786,6 +2983,7 @@ export type DepartmentCountOutputType = {
   tickets: number
   auditLogs: number
   roleAssignments: number
+  services: number
 }
 
 export type DepartmentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2798,6 +2996,7 @@ export type DepartmentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extens
   tickets?: boolean | DepartmentCountOutputTypeCountTicketsArgs
   auditLogs?: boolean | DepartmentCountOutputTypeCountAuditLogsArgs
   roleAssignments?: boolean | DepartmentCountOutputTypeCountRoleAssignmentsArgs
+  services?: boolean | DepartmentCountOutputTypeCountServicesArgs
 }
 
 /**
@@ -2873,6 +3072,13 @@ export type DepartmentCountOutputTypeCountRoleAssignmentsArgs<ExtArgs extends ru
   where?: Prisma.RoleAssignmentWhereInput
 }
 
+/**
+ * DepartmentCountOutputType without action
+ */
+export type DepartmentCountOutputTypeCountServicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DepartmentSkillWhereInput
+}
+
 
 export type DepartmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2903,6 +3109,7 @@ export type DepartmentSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   tickets?: boolean | Prisma.Department$ticketsArgs<ExtArgs>
   auditLogs?: boolean | Prisma.Department$auditLogsArgs<ExtArgs>
   roleAssignments?: boolean | Prisma.Department$roleAssignmentsArgs<ExtArgs>
+  services?: boolean | Prisma.Department$servicesArgs<ExtArgs>
   _count?: boolean | Prisma.DepartmentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["department"]>
 
@@ -2983,6 +3190,7 @@ export type DepartmentInclude<ExtArgs extends runtime.Types.Extensions.InternalA
   tickets?: boolean | Prisma.Department$ticketsArgs<ExtArgs>
   auditLogs?: boolean | Prisma.Department$auditLogsArgs<ExtArgs>
   roleAssignments?: boolean | Prisma.Department$roleAssignmentsArgs<ExtArgs>
+  services?: boolean | Prisma.Department$servicesArgs<ExtArgs>
   _count?: boolean | Prisma.DepartmentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type DepartmentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3014,6 +3222,7 @@ export type $DepartmentPayload<ExtArgs extends runtime.Types.Extensions.Internal
     tickets: Prisma.$TicketPayload<ExtArgs>[]
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
     roleAssignments: Prisma.$RoleAssignmentPayload<ExtArgs>[]
+    services: Prisma.$DepartmentSkillPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3438,6 +3647,7 @@ export interface Prisma__DepartmentClient<T, Null = never, ExtArgs extends runti
   tickets<T extends Prisma.Department$ticketsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Department$ticketsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditLogs<T extends Prisma.Department$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Department$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   roleAssignments<T extends Prisma.Department$roleAssignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Department$roleAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoleAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  services<T extends Prisma.Department$servicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Department$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DepartmentSkillPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4172,6 +4382,30 @@ export type Department$roleAssignmentsArgs<ExtArgs extends runtime.Types.Extensi
   take?: number
   skip?: number
   distinct?: Prisma.RoleAssignmentScalarFieldEnum | Prisma.RoleAssignmentScalarFieldEnum[]
+}
+
+/**
+ * Department.services
+ */
+export type Department$servicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DepartmentSkill
+   */
+  select?: Prisma.DepartmentSkillSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DepartmentSkill
+   */
+  omit?: Prisma.DepartmentSkillOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DepartmentSkillInclude<ExtArgs> | null
+  where?: Prisma.DepartmentSkillWhereInput
+  orderBy?: Prisma.DepartmentSkillOrderByWithRelationInput | Prisma.DepartmentSkillOrderByWithRelationInput[]
+  cursor?: Prisma.DepartmentSkillWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DepartmentSkillScalarFieldEnum | Prisma.DepartmentSkillScalarFieldEnum[]
 }
 
 /**

@@ -21,6 +21,7 @@ import {
 import { toggleDepartmentActive, deleteDepartment } from '@/app/(dashboard)/admin/users/actions'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import { ServiceSelector } from '@/components/admin/ServiceSelector'
 
 type Dept = {
   id: string
@@ -58,7 +59,17 @@ const LEVEL_BG: Record<string, string> = {
   SERVICE: 'hover:bg-emerald-500/5',
 }
 
-export function DeptTree({ departments, canEdit = true }: { departments: Dept[]; canEdit?: boolean }) {
+export function DeptTree({
+  departments,
+  services = [],
+  deptSkillMap = [],
+  canEdit = true,
+}: {
+  departments: Dept[]
+  services?: { id: string; name: string; category: string }[]
+  deptSkillMap?: { departmentId: string; skillId: string }[]
+  canEdit?: boolean
+}) {
   const router = useRouter()
   const [query, setQuery] = useState('')
   const [levelFilter, setLevelFilter] = useState<string>('all')
@@ -217,6 +228,8 @@ export function DeptTree({ departments, canEdit = true }: { departments: Dept[];
               onDelete={handleDelete}
               pendingId={pending}
               canEdit={canEdit}
+              services={services}
+              assignedSkillIds={deptSkillMap.filter((m) => m.departmentId === d.id).map((m) => m.skillId)}
             />
           ))}
         </div>
@@ -232,6 +245,8 @@ function DeptNode({
   onDelete,
   pendingId,
   canEdit,
+  services,
+  assignedSkillIds,
 }: {
   dept: Dept
   depth: number
@@ -239,6 +254,8 @@ function DeptNode({
   onDelete: (id: string, name: string) => void
   pendingId: string | null
   canEdit: boolean
+  services: { id: string; name: string; category: string }[]
+  assignedSkillIds: string[]
 }) {
   const [open, setOpen] = useState(depth < 1)
   const isPending = pendingId === dept.id
@@ -361,9 +378,24 @@ function DeptNode({
         </div>
       </div>
 
-      {open && dept.children.length > 0 && (
+      {open && (
         <div className="border-t bg-muted/20">
-          {dept.children.map((child) => (
+          {services.length > 0 && (
+            <div className="px-3 py-2 border-b">
+              <ServiceSelector
+                departmentId={dept.id}
+                departmentName={dept.name}
+                canEdit={canEdit}
+                services={services.map((s) => ({
+                  id: s.id,
+                  name: s.name,
+                  category: s.category,
+                  assigned: assignedSkillIds.includes(s.id),
+                }))}
+              />
+            </div>
+          )}
+          {dept.children.length > 0 && dept.children.map((child) => (
             <DeptNode
               key={child.id}
               dept={child}
@@ -372,6 +404,8 @@ function DeptNode({
               onDelete={onDelete}
               pendingId={pendingId}
               canEdit={canEdit}
+              services={services}
+              assignedSkillIds={assignedSkillIds}
             />
           ))}
         </div>

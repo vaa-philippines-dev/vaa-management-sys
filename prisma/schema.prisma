@@ -230,6 +230,7 @@ model Department {
   tickets         Ticket[]
   auditLogs       AuditLog[]
   roleAssignments RoleAssignment[]
+  services        DepartmentSkill[]
 
   @@unique([name, parentId])
   @@unique([acronym, parentId])
@@ -436,8 +437,21 @@ model Skill {
   createdAt DateTime      @default(now()) @map("created_at")
 
   vaSkills VASkill[]
+  departments DepartmentSkill[]
 
   @@map("skills")
+}
+
+model DepartmentSkill {
+  id           String     @id @default(cuid())
+  departmentId String     @map("department_id")
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  skillId      String     @map("skill_id")
+  skill        Skill      @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now()) @map("created_at")
+
+  @@unique([departmentId, skillId])
+  @@map("department_skills")
 }
 
 model VASkill {

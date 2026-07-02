@@ -128,29 +128,6 @@ async function StatsHeader() {
 }
 
 async function DepartmentTree({ canEdit }: { canEdit: boolean }) {
-  const allDepts = await cached('admin:deptTree', [CACHE_TAGS.departments, CACHE_TAGS.admin], 60, () =>
-    prisma.department.findMany({
-      orderBy: [{ level: 'asc' }, { sortOrder: 'asc' }, { name: 'asc' }],
-      include: {
-        parent: { select: { id: true, name: true } },
-        mergedInto: { select: { name: true } },
-        splitFrom: { select: { name: true } },
-        _count: { select: { children: true, memberships: true, clients: true } },
-      },
-    })
-  )
-
-  const mapped = allDepts.map(mapDept)
-  const byId = new Map<string, DeptNode>()
-  for (const d of mapped) byId.set(d.id, d)
-  for (const d of mapped) {
-    if (d.parentId) {
-      const parent = byId.get(d.parentId)
-      if (parent) parent.children.push(d)
-    }
-  }
-  const roots = mapped.filter((d) => !d.parentId)
-
   type DeptNode = {
     id: string
     name: string
@@ -187,5 +164,38 @@ async function DepartmentTree({ canEdit }: { canEdit: boolean }) {
     }
   }
 
-  return <DeptTree departments={roots} canEdit={canEdit} />
+  const [allDepts, allServices, deptSkills] = await Promise.all([
+    cached('admin:deptTree', [CACHE_TAGS.departments, CACHE_TAGS.admin], 60, () =>
+      prisma.department.findMany({
+        orderBy: [{ level: 'asc' }, { sortOrder: 'asc' }, { name: 'asc' }],
+        include: {
+          parent: { select: { id: true, name: true } },
+          mergedInto: { select: { name: true } },
+          splitFrom: { select: { name: true } },
+          _count: { select: { children: true, memberships: true, clients: true } },
+        },
+      })
+    ),
+    cached('admin:allSkills', [CACHE_TAGS.skills], 60, () =>
+      prisma.skill.findMany({ orderBy: [{ category: 'asc' }, { name: 'asc' }] })
+    ),
+    cached('admin:deptSkills', [CACHE_TAGS.departments, CACHE_TAGS.skills], 60, () =>
+      prisma.departmentSkill.findMany({ select: { departmentId: true, skillId: true } })
+    ),
+  ])
+
+  const mapped = allDepts.map(mapDept)
+  const byId = new Map<string, DeptNode>()
+  for (const d of mapped) byId.set(d.id, d)
+  for (const d of mapped) {
+    if (d.parentId) {
+      const parent = byId.get(d.parentId)
+      if (parent) parent.children.push(d)
+    }
+  }
+  const roots = mapped.filter((d) => !d.parentId)
+
+  const services = allServices.map((s) => ({ id: s.id, name: s.name, category: s.category }))
+
+  return <DeptTree departments={roots} services={services} deptSkillMap={deptSkills} canEdit={canEdit} />
 }
