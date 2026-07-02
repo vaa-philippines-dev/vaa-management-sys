@@ -82,10 +82,12 @@ export function UserCard({
   user,
   departments,
   positions,
+  canEdit = true,
 }: {
   user: User
   departments: Department[]
   positions: Position[]
+  canEdit?: boolean
 }) {
   const [open, setOpen] = useState(false)
 
@@ -118,15 +120,17 @@ export function UserCard({
         <Badge variant="secondary" className="text-[10px] py-0 px-1.5 shrink-0">
           {TYPE_LABELS[user.userType] ?? user.userType}
         </Badge>
-        <form action={toggleUserActive.bind(null, user.id, !user.isActive)} onClick={(e) => e.stopPropagation()}>
-          <Button type="submit" variant="ghost" size="sm" className="h-7 px-2 text-xs shrink-0">
-            {user.isActive ? (
-              <PowerOff className="h-3.5 w-3.5" />
-            ) : (
-              <Power className="h-3.5 w-3.5" />
-            )}
-          </Button>
-        </form>
+        {canEdit && (
+          <form action={toggleUserActive.bind(null, user.id, !user.isActive)} onClick={(e) => e.stopPropagation()}>
+            <Button type="submit" variant="ghost" size="sm" className="h-7 px-2 text-xs shrink-0">
+              {user.isActive ? (
+                <PowerOff className="h-3.5 w-3.5" />
+              ) : (
+                <Power className="h-3.5 w-3.5" />
+              )}
+            </Button>
+          </form>
+        )}
         {open ? (
           <ChevronUp className="h-4 w-4 text-muted-foreground shrink-0" />
         ) : (
@@ -136,6 +140,11 @@ export function UserCard({
 
       {open && (
         <div className="border-t p-3 space-y-3">
+          {!canEdit && (
+            <div className="rounded-md bg-amber-500/10 border border-amber-500/20 px-3 py-2 text-xs text-amber-700">
+              View-only mode — Executive role cannot modify user records.
+            </div>
+          )}
           <div className="grid gap-2.5 sm:grid-cols-2">
             <div>
               <label className="text-[11px] font-medium text-muted-foreground mb-1 block">System Role</label>
@@ -181,27 +190,29 @@ export function UserCard({
                 ))
               )}
             </div>
-            <form action={assignDeptByForm.bind(null, user.id)} className="flex gap-1.5 flex-wrap">
-              <select name="departmentId" className="px-2 py-1 text-xs border rounded-md bg-background h-7" required>
-                <option value="">Dept...</option>
-                {departments.map((d) => (
-                  <option key={d.id} value={d.id}>{d.name}</option>
-                ))}
-              </select>
-              <select name="positionId" className="px-2 py-1 text-xs border rounded-md bg-background h-7">
-                <option value="">No position</option>
-                {positions.map((p) => (
-                  <option key={p.id} value={p.id}>{p.title}</option>
-                ))}
-              </select>
-              <label className="flex items-center gap-1 text-[11px] h-7">
-                <input type="checkbox" name="isPrimary" value="true" />
-                Primary
-              </label>
-              <Button type="submit" size="sm" variant="outline" className="text-xs h-7 px-2">
-                <Plus className="h-3 w-3 mr-0.5" />Assign
-              </Button>
-            </form>
+            {canEdit && (
+              <form action={assignDeptByForm.bind(null, user.id)} className="flex gap-1.5 flex-wrap">
+                <select name="departmentId" className="px-2 py-1 text-xs border rounded-md bg-background h-7" required>
+                  <option value="">Dept...</option>
+                  {departments.map((d) => (
+                    <option key={d.id} value={d.id}>{d.name}</option>
+                  ))}
+                </select>
+                <select name="positionId" className="px-2 py-1 text-xs border rounded-md bg-background h-7">
+                  <option value="">No position</option>
+                  {positions.map((p) => (
+                    <option key={p.id} value={p.id}>{p.title}</option>
+                  ))}
+                </select>
+                <label className="flex items-center gap-1 text-[11px] h-7">
+                  <input type="checkbox" name="isPrimary" value="true" />
+                  Primary
+                </label>
+                <Button type="submit" size="sm" variant="outline" className="text-xs h-7 px-2">
+                  <Plus className="h-3 w-3 mr-0.5" />Assign
+                </Button>
+              </form>
+            )}
           </div>
 
           <div>
@@ -223,29 +234,31 @@ export function UserCard({
                 ))
               )}
             </div>
-            <form action={assignTempRoleByForm.bind(null, user.id)} className="flex gap-1.5 flex-wrap">
-              <select name="module" className="px-2 py-1 text-xs border rounded-md bg-background h-7" required>
-                <option value="">Module...</option>
-                {modules.map((m) => (
-                  <option key={m} value={m}>{m}</option>
-                ))}
-              </select>
-              <select name="role" className="px-2 py-1 text-xs border rounded-md bg-background h-7" required>
-                <option value="">Role...</option>
-                {tempRoles.map((r) => (
-                  <option key={r} value={r}>{r}</option>
-                ))}
-              </select>
-              <select name="tempDeptId" className="px-2 py-1 text-xs border rounded-md bg-background h-7">
-                <option value="">All depts</option>
-                {departments.map((d) => (
-                  <option key={d.id} value={d.id}>{d.name}</option>
-                ))}
-              </select>
-              <Button type="submit" size="sm" variant="outline" className="text-xs h-7 px-2">
-                <Plus className="h-3 w-3 mr-0.5" />Grant
-              </Button>
-            </form>
+            {canEdit && (
+              <form action={assignTempRoleByForm.bind(null, user.id)} className="flex gap-1.5 flex-wrap">
+                <select name="module" className="px-2 py-1 text-xs border rounded-md bg-background h-7" required>
+                  <option value="">Module...</option>
+                  {modules.map((m) => (
+                    <option key={m} value={m}>{m}</option>
+                  ))}
+                </select>
+                <select name="role" className="px-2 py-1 text-xs border rounded-md bg-background h-7" required>
+                  <option value="">Role...</option>
+                  {tempRoles.map((r) => (
+                    <option key={r} value={r}>{r}</option>
+                  ))}
+                </select>
+                <select name="tempDeptId" className="px-2 py-1 text-xs border rounded-md bg-background h-7">
+                  <option value="">All depts</option>
+                  {departments.map((d) => (
+                    <option key={d.id} value={d.id}>{d.name}</option>
+                  ))}
+                </select>
+                <Button type="submit" size="sm" variant="outline" className="text-xs h-7 px-2">
+                  <Plus className="h-3 w-3 mr-0.5" />Grant
+                </Button>
+              </form>
+            )}
           </div>
         </div>
       )}

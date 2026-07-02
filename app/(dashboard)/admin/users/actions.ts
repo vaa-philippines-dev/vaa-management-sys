@@ -3,7 +3,7 @@
 import { prisma } from '@/lib/prisma'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { CACHE_TAGS } from '@/lib/cache'
-import { requireSuperAdmin } from '@/lib/auth'
+import { requireSuperAdmin, requireAdminMutator } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
 import {
   validateCreate,
@@ -21,7 +21,7 @@ const ENTITY_MEMBERSHIP = 'DepartmentMembership'
 const ENTITY_ROLE = 'RoleAssignment'
 
 async function getAdmin() {
-  return requireSuperAdmin()
+  return requireAdminMutator()
 }
 
 export async function updateUserRole(userId: string, systemRole: string) {

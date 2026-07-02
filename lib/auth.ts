@@ -47,6 +47,19 @@ export async function requireSuperAdmin() {
   return requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN')
 }
 
+export async function requireAdminMutator() {
+  const user = await requireAuth()
+  if (!['SUPER_ADMIN', 'SYSTEM_ADMIN'].includes(user.systemRole)) {
+    throw new Error('View-only access. Executive role cannot modify data.')
+  }
+  return user
+}
+
+export function canMutate(user: { systemRole: string } | null | undefined): boolean {
+  if (!user) return false
+  return ['SUPER_ADMIN', 'SYSTEM_ADMIN'].includes(user.systemRole)
+}
+
 export async function requireManager() {
   return requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER')
 }

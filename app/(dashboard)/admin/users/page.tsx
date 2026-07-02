@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { getCurrentUser } from '@/lib/auth'
+import { getCurrentUser, canMutate } from '@/lib/auth'
 import { Users } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import { UserCard } from '@/components/admin/UserCard'
@@ -14,9 +14,10 @@ export default async function AdminUsersPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
   const currentUser = await getCurrentUser()
-  if (!currentUser || !['SUPER_ADMIN', 'SYSTEM_ADMIN'].includes(currentUser.systemRole)) {
+  if (!currentUser || !['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE'].includes(currentUser.systemRole)) {
     redirect('/dashboard')
   }
+  const canEdit = canMutate(currentUser)
 
   const params = await searchParams
   const q = typeof params.q === 'string' ? params.q : undefined
@@ -83,9 +84,14 @@ export default async function AdminUsersPage({
             </p>
           </div>
         </div>
+        {!canEdit && (
+          <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded bg-amber-500/10 text-amber-700 border border-amber-500/20">
+            View Only
+          </span>
+        )}
       </div>
 
-      <AddUserPanel />
+      <AddUserPanel canEdit={canEdit} />
 
       <div className="rounded-xl border bg-card p-3">
         <Suspense fallback={<Skeleton className="h-8 w-full rounded-md" />}>
@@ -171,6 +177,7 @@ export default async function AdminUsersPage({
                 positions: d.positions.map((p) => ({ id: p.id, title: p.title })),
               }))}
               positions={positions.map((p) => ({ id: p.id, title: p.title }))}
+              canEdit={canEdit}
             />
           ))}
         </div>

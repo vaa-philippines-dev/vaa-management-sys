@@ -19,10 +19,20 @@ const USER_TYPES = [
   { value: 'VIRTUAL_ASSISTANT', label: 'Virtual Assistant' },
 ]
 
-export function AddUserPanel() {
+export function AddUserPanel({ canEdit = true }: { canEdit?: boolean }) {
   const [open, setOpen] = useState(false)
   const [role, setRole] = useState('')
   const [type, setType] = useState('INTERNAL_STAFF')
+
+  if (!canEdit) {
+    return (
+      <div className="rounded-xl border bg-muted/30 p-3 text-center">
+        <p className="text-xs text-muted-foreground">
+          Add User panel is hidden in view-only mode
+        </p>
+      </div>
+    )
+  }
 
   return (
     <div className="rounded-xl border bg-card">

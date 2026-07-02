@@ -58,7 +58,7 @@ const LEVEL_BG: Record<string, string> = {
   SERVICE: 'hover:bg-emerald-500/5',
 }
 
-export function DeptTree({ departments }: { departments: Dept[] }) {
+export function DeptTree({ departments, canEdit = true }: { departments: Dept[]; canEdit?: boolean }) {
   const router = useRouter()
   const [query, setQuery] = useState('')
   const [levelFilter, setLevelFilter] = useState<string>('all')
@@ -216,6 +216,7 @@ export function DeptTree({ departments }: { departments: Dept[] }) {
               onToggle={handleToggle}
               onDelete={handleDelete}
               pendingId={pending}
+              canEdit={canEdit}
             />
           ))}
         </div>
@@ -230,20 +231,22 @@ function DeptNode({
   onToggle,
   onDelete,
   pendingId,
+  canEdit,
 }: {
   dept: Dept
   depth: number
   onToggle: (id: string, status: string) => void
   onDelete: (id: string, name: string) => void
   pendingId: string | null
+  canEdit: boolean
 }) {
   const [open, setOpen] = useState(depth < 1)
   const isPending = pendingId === dept.id
 
-  const canMerge = dept.status === 'ACTIVE' && !dept.isLevel
-  const canSplit = dept.status === 'ACTIVE' && !dept.isLevel
-  const canToggle = !dept.isLevel
-  const canDelete = !dept.isLevel && dept.childrenCount === 0
+  const canMerge = canEdit && dept.status === 'ACTIVE' && !dept.isLevel
+  const canSplit = canEdit && dept.status === 'ACTIVE' && !dept.isLevel
+  const canToggle = canEdit && !dept.isLevel
+  const canDelete = canEdit && !dept.isLevel && dept.childrenCount === 0
 
   const levelColor = LEVEL_COLORS[dept.level ?? 'SERVICE'] ?? 'bg-gray-500'
   const levelBg = LEVEL_BG[dept.level ?? 'SERVICE'] ?? ''
@@ -368,6 +371,7 @@ function DeptNode({
               onToggle={onToggle}
               onDelete={onDelete}
               pendingId={pendingId}
+              canEdit={canEdit}
             />
           ))}
         </div>

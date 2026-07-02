@@ -8,7 +8,7 @@ import { requireRole } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
 
 export async function createVA(formData: FormData) {
-  await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER')
+  await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER')
 
   const email = formData.get('email') as string
   const nameVal = (formData.get('name') as string) || ''
@@ -43,7 +43,7 @@ export async function createVA(formData: FormData) {
 }
 
 export async function updateVAProfile(vaProfileId: string, formData: FormData) {
-  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER')
+  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER')
 
   const data: Record<string, any> = {}
   const allowedFields = [
@@ -90,7 +90,7 @@ export async function updateVAProfile(vaProfileId: string, formData: FormData) {
 }
 
 export async function updateUserProfile(userId: string, formData: FormData) {
-  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER')
+  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER')
 
   const data: Record<string, any> = {}
   const userData: Record<string, any> = {}
@@ -165,7 +165,7 @@ export async function updateUserProfile(userId: string, formData: FormData) {
 export { updateUserProfile as updateUserProfileAction }
 
 export async function updateEmployment(vaProfileId: string, userId: string, formData: FormData) {
-  await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER')
+  await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER')
   await updateVAProfile(vaProfileId, formData)
   await updateUserProfile(userId, formData)
 }
@@ -176,7 +176,7 @@ export async function updateUserProfileFiles(
   philhealthPhoto: string | null,
   signedContract: string | null
 ) {
-  await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER')
+  await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER')
 
   await prisma.userProfile.upsert({
     where: { userId },

@@ -11,7 +11,7 @@ export default async function DashboardLayout({
 }) {
   const user = await getCurrentUser()
   const role = user?.userType === 'VIRTUAL_ASSISTANT' ? 'VA' : 'MANAGER'
-  const isAdmin = user ? ['SUPER_ADMIN', 'SYSTEM_ADMIN'].includes(user.systemRole) : false
+  const isAdmin = user ? ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE'].includes(user.systemRole) : false
 
   return (
     <PostLoginGate>

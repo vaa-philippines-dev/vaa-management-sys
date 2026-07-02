@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { getCurrentUser } from '@/lib/auth'
+import { getCurrentUser, canMutate } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -18,7 +18,7 @@ import {
 import { LEVEL_RECORD_NAMES } from '@/lib/departments'
 import { DeptTree } from '@/components/admin/DeptTree'
 
-const hrgRoles = ['SUPER_ADMIN', 'SYSTEM_ADMIN']
+const adminViewRoles = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE']
 
 const LEVEL_META: Record<string, { label: string; color: string; textColor: string; bg: string }> = {
   EXECUTIVE: { label: 'Executive', color: 'bg-purple-500', textColor: 'text-purple-700', bg: 'bg-purple-500/10' },
@@ -28,9 +28,10 @@ const LEVEL_META: Record<string, { label: string; color: string; textColor: stri
 
 export default async function AdminDepartmentsPage() {
   const currentUser = await getCurrentUser()
-  if (!currentUser || !hrgRoles.includes(currentUser.systemRole)) {
+  if (!currentUser || !adminViewRoles.includes(currentUser.systemRole)) {
     redirect('/dashboard')
   }
+  const canEdit = canMutate(currentUser)
 
   return (
     <div className="space-y-4">
@@ -38,9 +39,16 @@ export default async function AdminDepartmentsPage() {
         <div>
           <h2 className="text-lg font-bold tracking-tight">Departments</h2>
           <p className="text-xs text-muted-foreground">
-            Manage the full organizational hierarchy — executives, management, and client-facing service teams
+            {canEdit
+              ? 'Manage the full organizational hierarchy — executives, management, and client-facing service teams'
+              : 'View the full organizational hierarchy — read-only access for Executive role'}
           </p>
         </div>
+        {!canEdit && (
+          <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded bg-amber-500/10 text-amber-700 border border-amber-500/20">
+            View Only
+          </span>
+        )}
       </div>
 
       <Suspense fallback={<Skeleton className="h-32 rounded-xl" />}>
@@ -48,7 +56,7 @@ export default async function AdminDepartmentsPage() {
       </Suspense>
 
       <Suspense fallback={<Skeleton className="h-96 rounded-xl" />}>
-        <DepartmentTree />
+        <DepartmentTree canEdit={canEdit} />
       </Suspense>
     </div>
   )
@@ -119,7 +127,7 @@ async function StatsHeader() {
   )
 }
 
-async function DepartmentTree() {
+async function DepartmentTree({ canEdit }: { canEdit: boolean }) {
   const allDepts = await cached('admin:deptTree', [CACHE_TAGS.departments, CACHE_TAGS.admin], 60, () =>
     prisma.department.findMany({
       orderBy: [{ level: 'asc' }, { sortOrder: 'asc' }, { name: 'asc' }],
@@ -179,5 +187,5 @@ async function DepartmentTree() {
     }
   }
 
-  return <DeptTree departments={roots} />
+  return <DeptTree departments={roots} canEdit={canEdit} />
 }
