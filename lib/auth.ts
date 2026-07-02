@@ -10,7 +10,7 @@ export async function getCurrentUser() {
         vaProfile: true,
         profile: true,
         memberships: { include: { department: true, position: true } },
-        roleAssignments: { where: { isActive: true } },
+        roleAssignments: { where: { status: 'ACTIVE' } },
       },
     })
   }
@@ -26,7 +26,7 @@ export async function getCurrentUser() {
       vaProfile: true,
       profile: true,
       memberships: { include: { department: true, position: true } },
-      roleAssignments: { where: { isActive: true } },
+      roleAssignments: { where: { status: 'ACTIVE' } },
     },
   })
 }

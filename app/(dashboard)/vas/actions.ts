@@ -68,7 +68,7 @@ export async function updateVAProfile(vaProfileId: string, formData: FormData) {
 
   const before = await prisma.vAProfile.findUnique({
     where: { id: vaProfileId },
-    select: { vaaPosition: true, level: true, baseRate: true, hourlyRate: true, preferredWorkHours: true, availabilityStatus: true, hybrid: true, isActive: true },
+    select: { vaaPosition: true, level: true, baseRate: true, hourlyRate: true, preferredWorkHours: true, availabilityStatus: true, hybrid: true, status: true },
   })
 
   await prisma.vAProfile.update({ where: { id: vaProfileId }, data })

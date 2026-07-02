@@ -532,7 +532,7 @@ export async function getMergePreview(sourceId: string, targetId: string): Promi
     prisma.department.findUnique({ where: { id: sourceId }, select: { id: true, name: true, level: true, status: true } }),
     prisma.department.findUnique({ where: { id: targetId }, select: { id: true, name: true, level: true, status: true } }),
     prisma.departmentMembership.count({ where: { departmentId: sourceId, endedAt: null } }),
-    prisma.client.count({ where: { departmentId: sourceId, isActive: true } }),
+    prisma.client.count({ where: { departmentId: sourceId, status: 'ACTIVE' } }),
     prisma.assignment.count({ where: { client: { departmentId: sourceId }, status: 'ACTIVE' } }),
     prisma.department.count({ where: { parentId: sourceId, status: { in: ['ACTIVE', 'INACTIVE'] } } }),
   ])
@@ -587,7 +587,7 @@ export async function mergeDepartments(input: {
       data: { departmentId: input.targetId },
     })
     await tx.client.updateMany({
-      where: { departmentId: input.sourceId, isActive: true },
+      where: { departmentId: input.sourceId, status: 'ACTIVE' },
       data: { departmentId: input.targetId },
     })
     await tx.assignment.updateMany({
@@ -646,7 +646,7 @@ export async function getSplitPreview(sourceId: string): Promise<SplitPreview> {
   const [source, memberships, clients, assignments, children] = await Promise.all([
     prisma.department.findUnique({ where: { id: sourceId }, select: { id: true, name: true, level: true, status: true } }),
     prisma.departmentMembership.count({ where: { departmentId: sourceId, endedAt: null } }),
-    prisma.client.count({ where: { departmentId: sourceId, isActive: true } }),
+    prisma.client.count({ where: { departmentId: sourceId, status: 'ACTIVE' } }),
     prisma.assignment.count({ where: { client: { departmentId: sourceId }, status: 'ACTIVE' } }),
     prisma.department.count({ where: { parentId: sourceId, status: { in: ['ACTIVE', 'INACTIVE'] } } }),
   ])

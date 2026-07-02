@@ -45,9 +45,18 @@ export default async function DashboardPage({
   }
 
   if (user.userType === 'VIRTUAL_ASSISTANT') {
+    const vaId = user.vaProfile?.id
+    if (!vaId) {
+      return (
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <AlertCircle className="h-10 w-10 text-muted-foreground mb-3" />
+          <p className="text-sm text-muted-foreground">Your VA profile is being set up. Please contact an administrator.</p>
+        </div>
+      )
+    }
     return (
       <Suspense fallback={<VADashSkeleton />}>
-        <VADashboard userId={user.id} vaProfileId={user.vaProfile!.id} />
+        <VADashboard userId={user.id} vaProfileId={vaId} />
       </Suspense>
     )
   }
