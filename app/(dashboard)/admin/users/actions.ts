@@ -661,6 +661,54 @@ export async function getSplitPreview(sourceId: string): Promise<SplitPreview> {
   }
 }
 
+export type SplitDetails = {
+  source: { id: string; name: string; level: string | null }
+  memberships: { id: string; userName: string; userEmail: string; position: string | null }[]
+  clients: { id: string; name: string; contactName: string | null; isActive: boolean }[]
+  children: { id: string; name: string; acronym: string | null }[]
+}
+
+export async function getSplitDetails(sourceId: string): Promise<SplitDetails> {
+  const source = await prisma.department.findUnique({ where: { id: sourceId }, select: { id: true, name: true, level: true } })
+  if (!source) throw new DepartmentValidationError([{ field: 'id', message: 'Department not found' }])
+
+  const [memberships, clients, children] = await Promise.all([
+    prisma.departmentMembership.findMany({
+      where: { departmentId: sourceId, endedAt: null },
+      include: {
+        user: { select: { firstName: true, lastName: true, email: true } },
+        position: { select: { title: true } },
+      },
+      orderBy: { user: { firstName: 'asc' } },
+    }),
+    prisma.client.findMany({
+      where: { departmentId: sourceId },
+      orderBy: { name: 'asc' },
+    }),
+    prisma.department.findMany({
+      where: { parentId: sourceId, status: { in: ['ACTIVE', 'INACTIVE'] } },
+      orderBy: { name: 'asc' },
+    }),
+  ])
+
+  return {
+    source: { id: source.id, name: source.name, level: source.level },
+    memberships: memberships.map((m) => ({
+      id: m.id,
+      userName: `${m.user.firstName} ${m.user.lastName}`.trim(),
+      userEmail: m.user.email,
+      position: m.position?.title ?? null,
+    })),
+    clients: clients.map((c) => ({
+      id: c.id,
+      name: c.name,
+      contactName: c.contactName,
+      isActive: c.isActive,
+    })),
+    children: children.map((d) => ({ id: d.id, name: d.name, acronym: d.acronym })),
+  }
+}
+
 export type SplitNewDepartment = {
   name: string
   shortName?: string | null
