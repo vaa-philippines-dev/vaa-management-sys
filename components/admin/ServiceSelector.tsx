@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
@@ -43,6 +43,12 @@ export function ServiceSelector({
   const [filter, setFilter] = useState('')
   const [saving, setSaving] = useState(false)
   const [, startTransition] = useTransition()
+
+  useEffect(() => {
+    if (!open) {
+      setSelected(new Set(services.filter((s) => s.assigned).map((s) => s.id)))
+    }
+  }, [services, open])
 
   const assignedCount = services.filter((s) => s.assigned).length
   const isDirty = selected.size !== assignedCount
