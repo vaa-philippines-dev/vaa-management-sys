@@ -17,7 +17,7 @@ export default async function ReportsPage({
   const periodStart = startOfMonth(refDate)
   const periodEnd = endOfMonth(refDate)
 
-  const assignments = await cached('reports:assignments', [CACHE_TAGS.reports], 30, () =>
+  const assignments = await cached('reports:assignments', [CACHE_TAGS.reports], 120, () =>
     prisma.assignment.findMany({
       where: {
         status: { in: ['ACTIVE', 'COMPLETED'] },

@@ -20,7 +20,7 @@ export default async function ClientsPage() {
   const isDevMode = !process.env.NEXT_PUBLIC_SUPABASE_URL
 
   const clients = user
-    ? await cached('clients:list:user', [CACHE_TAGS.clients], 30, () =>
+    ? await cached('clients:list:user', [CACHE_TAGS.clients], 60, () =>
         prisma.client.findMany({
           where: ['SUPER_ADMIN','SYSTEM_ADMIN','EXECUTIVE','DEPT_MANAGER','STAFF'].includes(user.systemRole) ? { managerId: user.id } : undefined,
           include: {
@@ -29,7 +29,7 @@ export default async function ClientsPage() {
           orderBy: { createdAt: 'desc' },
         })
       )
-    : await cached('clients:list', [CACHE_TAGS.clients], 30, () =>
+    : await cached('clients:list', [CACHE_TAGS.clients], 60, () =>
         prisma.client.findMany({
           include: {
             assignments: { include: { vaProfile: { include: { user: true } } } },

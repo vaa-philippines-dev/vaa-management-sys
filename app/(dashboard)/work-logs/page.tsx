@@ -20,7 +20,7 @@ export default async function WorkLogsPage({
   if (assignmentId) where.assignmentId = assignmentId
   if (user?.userType === 'VIRTUAL_ASSISTANT') where.vaProfileId = user.vaProfile?.id
 
-  const logs = await cached('worklogs:list', [CACHE_TAGS.worklogs], 30, () =>
+  const logs = await cached('worklogs:list', [CACHE_TAGS.worklogs], 15, () =>
     prisma.workLog.findMany({
       where,
       include: {

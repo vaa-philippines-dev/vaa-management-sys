@@ -3,7 +3,6 @@ import { getCurrentUser } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { FilterBar } from '@/components/filters/FilterBar'
 import { Suspense } from 'react'
@@ -51,6 +50,104 @@ export default async function VAPage({
   const empStatus = typeof params.emp === 'string' ? params.emp : undefined
   const sort = typeof params.sort === 'string' ? params.sort : 'az'
 
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-lg font-bold tracking-tight">VA Roster</h2>
+          <p className="text-xs text-muted-foreground">
+            {isHRE ? 'HR view' : 'Read-only'}
+          </p>
+        </div>
+      </div>
+
+      <div className="rounded-xl border bg-card p-3">
+        <Suspense fallback={<Skeleton className="h-8 w-full rounded-md" />}>
+          <FilterWrapper />
+        </Suspense>
+      </div>
+
+      <Suspense fallback={<TableSkeleton />}>
+        <VATableSection q={q} dept={dept} avail={avail} empStatus={empStatus} sort={sort} isHRE={isHRE} />
+      </Suspense>
+    </div>
+  )
+}
+
+async function FilterWrapper() {
+  const departments = await cached('vas:departments', [CACHE_TAGS.departments], 600, () =>
+    prisma.department.findMany({
+      where: { isActive: true },
+      orderBy: { sortOrder: 'asc' },
+    })
+  )
+
+  return (
+    <FilterBar
+      filters={[
+        ...(departments.length > 0
+          ? [{
+              key: 'dept',
+              label: 'Department',
+              options: departments.map((d) => ({ value: d.id, label: d.name })),
+            }]
+          : []),
+        {
+          key: 'avail',
+          label: 'Availability',
+          options: [
+            { value: 'AVAILABLE', label: 'Available' },
+            { value: 'PARTIALLY_ASSIGNED', label: 'Partially Assigned' },
+            { value: 'FULLY_ASSIGNED', label: 'Fully Assigned' },
+            { value: 'ON_LEAVE', label: 'On Leave' },
+            { value: 'UNAVAILABLE', label: 'Unavailable' },
+          ],
+        },
+        {
+          key: 'emp',
+          label: 'Status',
+          options: [
+            { value: 'EMPLOYED', label: 'Employed' },
+            { value: 'ENGAGED', label: 'Engaged' },
+            { value: 'CONTRACTED', label: 'Contracted' },
+            { value: 'END_OF_CONTRACT', label: 'End of Contract' },
+            { value: 'TRANSFERRED', label: 'Transferred' },
+            { value: 'RESIGNED', label: 'Resigned' },
+            { value: 'TERMINATED', label: 'Terminated' },
+          ],
+        },
+        {
+          key: 'sort',
+          label: 'Sort',
+          placeholder: 'A → Z',
+          options: [
+            { value: 'az', label: 'A → Z' },
+            { value: 'za', label: 'Z → A' },
+            { value: 'newest', label: 'Newest first' },
+            { value: 'oldest', label: 'Oldest first' },
+          ],
+        },
+      ]}
+      searchPlaceholder="Search name or email..."
+    />
+  )
+}
+
+async function VATableSection({
+  q,
+  dept,
+  avail,
+  empStatus,
+  sort,
+  isHRE,
+}: {
+  q?: string
+  dept?: string
+  avail?: string
+  empStatus?: string
+  sort: string
+  isHRE: boolean
+}) {
   const userWhere: Record<string, unknown> = {}
   if (q) {
     userWhere.OR = [
@@ -72,8 +169,8 @@ export default async function VAPage({
     sort === 'oldest' ? { createdAt: 'asc' } :
     { firstName: 'asc' }
 
-  const [vas, departments, allVAs] = await Promise.all([
-    cached('vas:list', [CACHE_TAGS.vas], 30, () =>
+  const [vas, allVAs] = await Promise.all([
+    cached('vas:list', [CACHE_TAGS.vas], 60, () =>
       prisma.vAProfile.findMany({
         where: {
           user: { userType: 'VIRTUAL_ASSISTANT', ...userWhere },
@@ -99,13 +196,7 @@ export default async function VAPage({
         orderBy: { user: orderBy },
       })
     ),
-    cached('vas:departments', [CACHE_TAGS.departments], 30, () =>
-      prisma.department.findMany({
-        where: { isActive: true },
-        orderBy: { sortOrder: 'asc' },
-      })
-    ),
-    cached('vas:count', [CACHE_TAGS.vas], 30, () =>
+    cached('vas:count', [CACHE_TAGS.vas], 60, () =>
       prisma.vAProfile.count({ where: { user: { userType: 'VIRTUAL_ASSISTANT' } } })
     ),
   ])
@@ -123,19 +214,7 @@ export default async function VAPage({
   const hasFilters = !!(q || dept || avail || empStatus)
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-bold tracking-tight">VA Roster</h2>
-          <p className="text-xs text-muted-foreground">
-            {hasFilters
-              ? `${filteredVAs.length} of ${allVAs} VAs`
-              : `${allVAs} virtual assistants`}
-            {isHRE ? ' · HR view' : ' · Read-only'}
-          </p>
-        </div>
-      </div>
-
+    <>
       <div className="grid gap-3 md:grid-cols-4">
         <div className="rounded-xl border bg-card p-4">
           <div className="flex items-center justify-between mb-1">
@@ -143,6 +222,9 @@ export default async function VAPage({
             <Users className="h-3.5 w-3.5 text-muted-foreground" />
           </div>
           <p className="text-2xl font-bold">{filteredVAs.length}</p>
+          {hasFilters && (
+            <p className="text-[10px] text-muted-foreground mt-0.5">of {allVAs}</p>
+          )}
         </div>
         <div className="rounded-xl border bg-card p-4">
           <div className="flex items-center justify-between mb-1">
@@ -165,58 +247,6 @@ export default async function VAPage({
           </div>
           <p className="text-2xl font-bold">{totalAssignments}</p>
         </div>
-      </div>
-
-      <div className="rounded-xl border bg-card p-3">
-        <Suspense fallback={<Skeleton className="h-8 w-full rounded-md" />}>
-          <FilterBar
-            filters={[
-              ...(departments.length > 0
-                ? [{
-                    key: 'dept',
-                    label: 'Department',
-                    options: departments.map((d) => ({ value: d.id, label: d.name })),
-                  }]
-                : []),
-              {
-                key: 'avail',
-                label: 'Availability',
-                options: [
-                  { value: 'AVAILABLE', label: 'Available' },
-                  { value: 'PARTIALLY_ASSIGNED', label: 'Partially Assigned' },
-                  { value: 'FULLY_ASSIGNED', label: 'Fully Assigned' },
-                  { value: 'ON_LEAVE', label: 'On Leave' },
-                  { value: 'UNAVAILABLE', label: 'Unavailable' },
-                ],
-              },
-              {
-                key: 'emp',
-                label: 'Status',
-                options: [
-                  { value: 'EMPLOYED', label: 'Employed' },
-                  { value: 'ENGAGED', label: 'Engaged' },
-                  { value: 'CONTRACTED', label: 'Contracted' },
-                  { value: 'END_OF_CONTRACT', label: 'End of Contract' },
-                  { value: 'TRANSFERRED', label: 'Transferred' },
-                  { value: 'RESIGNED', label: 'Resigned' },
-                  { value: 'TERMINATED', label: 'Terminated' },
-                ],
-              },
-              {
-                key: 'sort',
-                label: 'Sort',
-                placeholder: 'A → Z',
-                options: [
-                  { value: 'az', label: 'A → Z' },
-                  { value: 'za', label: 'Z → A' },
-                  { value: 'newest', label: 'Newest first' },
-                  { value: 'oldest', label: 'Oldest first' },
-                ],
-              },
-            ]}
-            searchPlaceholder="Search name or email..."
-          />
-        </Suspense>
       </div>
 
       <div className="rounded-xl border bg-card overflow-hidden">
@@ -346,6 +376,36 @@ export default async function VAPage({
           </div>
         )}
       </div>
-    </div>
+    </>
+  )
+}
+
+function TableSkeleton() {
+  return (
+    <>
+      <div className="grid gap-3 md:grid-cols-4">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="rounded-xl border bg-card p-4 space-y-2">
+            <Skeleton className="h-3 w-16" />
+            <Skeleton className="h-7 w-10" />
+          </div>
+        ))}
+      </div>
+      <div className="rounded-xl border bg-card overflow-hidden">
+        <div className="p-4 space-y-3">
+          <Skeleton className="h-6 w-full max-w-md" />
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="flex items-center gap-3">
+              <Skeleton className="h-7 w-7 rounded-full shrink-0" />
+              <div className="flex-1 space-y-1">
+                <Skeleton className="h-3 w-28" />
+                <Skeleton className="h-2.5 w-40" />
+              </div>
+              <Skeleton className="h-5 w-16 rounded-full" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
   )
 }
