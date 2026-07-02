@@ -1,6 +1,7 @@
 import { Sidebar } from '@/components/layout/Sidebar'
 import { Navbar } from '@/components/layout/Navbar'
 import { RealtimeProvider } from '@/components/layout/RealtimeProvider'
+import { PostLoginGate } from '@/components/loading/PostLoginGate'
 import { getCurrentUser } from '@/lib/auth'
 
 export default async function DashboardLayout({
@@ -13,14 +14,16 @@ export default async function DashboardLayout({
   const isAdmin = user ? ['SUPER_ADMIN', 'SYSTEM_ADMIN'].includes(user.systemRole) : false
 
   return (
-    <RealtimeProvider>
-      <div className="flex h-screen bg-background">
-        <Sidebar role={role} isAdmin={isAdmin} />
-        <div className="flex flex-1 flex-col overflow-hidden">
-          <Navbar />
-          <main className="flex-1 overflow-auto p-6">{children}</main>
+    <PostLoginGate>
+      <RealtimeProvider>
+        <div className="flex h-screen bg-background">
+          <Sidebar role={role} isAdmin={isAdmin} />
+          <div className="flex flex-1 flex-col overflow-hidden">
+            <Navbar />
+            <main className="flex-1 overflow-auto p-6">{children}</main>
+          </div>
         </div>
-      </div>
-    </RealtimeProvider>
+      </RealtimeProvider>
+    </PostLoginGate>
   )
 }

@@ -63,10 +63,14 @@ export async function GET(request: NextRequest) {
 
       const adminRoles = ['SUPER_ADMIN', 'SYSTEM_ADMIN']
       if (adminRoles.includes(dbUser.systemRole) && next === '/dashboard') {
-        return NextResponse.redirect(`${origin}/departments`)
+        const res = NextResponse.redirect(`${origin}/departments`)
+        res.cookies.set('vaa_just_logged_in', '1', { path: '/', maxAge: 10, httpOnly: false, sameSite: 'lax' })
+        return res
       }
     }
-    return NextResponse.redirect(`${origin}${next}`)
+    const res = NextResponse.redirect(`${origin}${next}`)
+    res.cookies.set('vaa_just_logged_in', '1', { path: '/', maxAge: 10, httpOnly: false, sameSite: 'lax' })
+    return res
   } catch (err: any) {
     console.error('[callback] Unhandled error:', err?.message, err)
     return NextResponse.redirect(
