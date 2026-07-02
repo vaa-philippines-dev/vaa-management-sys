@@ -21,6 +21,8 @@ export async function createSkill(formData: FormData) {
   const jobDescription = ((formData.get('jobDescription') as string) ?? '').trim() || null
   const attachmentUrl = ((formData.get('attachmentUrl') as string) ?? '').trim() || null
 
+  const departmentId = ((formData.get('departmentId') as string) ?? '').trim() || null
+
   if (!name) return { error: 'Name is required' }
   if (name.length > MAX_NAME) return { error: `Name must not exceed ${MAX_NAME} characters` }
   if (shortName && shortName.length > MAX_SHORT) return { error: `Short name must not exceed ${MAX_SHORT} characters` }
@@ -31,11 +33,18 @@ export async function createSkill(formData: FormData) {
   if (!CATEGORIES.includes(category)) return { error: 'Invalid category' }
 
   try {
-    await prisma.skill.upsert({
+    const skill = await prisma.skill.upsert({
       where: { name },
       update: { shortName, acronym, category: category as any, jobDescription, attachmentUrl },
       create: { name, shortName, acronym, category: category as any, jobDescription, attachmentUrl },
     })
+    if (departmentId) {
+      await prisma.departmentSkill.upsert({
+        where: { departmentId_skillId: { departmentId, skillId: skill.id } },
+        create: { departmentId, skillId: skill.id },
+        update: {},
+      })
+    }
   } catch (e: any) {
     if (e?.code === 'P2002') {
       return { error: 'Acronym already in use' }

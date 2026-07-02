@@ -9,14 +9,27 @@ export default async function SkillsPage() {
   if (!user) redirect('/login')
   const canEdit = canMutate(user)
 
-  const skills = await cached('skills:list', [CACHE_TAGS.skills], 3600, () =>
-    prisma.skill.findMany({
-      include: {
-        _count: { select: { vaSkills: true, departments: true } },
-      },
-      orderBy: [{ category: 'asc' }, { name: 'asc' }],
-    })
-  )
+  const [skills, departments, deptSkills] = await Promise.all([
+    cached('skills:list', [CACHE_TAGS.skills], 3600, () =>
+      prisma.skill.findMany({
+        include: {
+          _count: { select: { vaSkills: true, departments: true } },
+          departments: { include: { department: { select: { id: true, name: true } } } },
+        },
+        orderBy: [{ category: 'asc' }, { name: 'asc' }],
+      })
+    ),
+    cached('skills:depts', [CACHE_TAGS.departments], 600, () =>
+      prisma.department.findMany({
+        where: { status: 'ACTIVE', level: 'SERVICE' },
+        orderBy: { sortOrder: 'asc' },
+        select: { id: true, name: true },
+      })
+    ),
+    cached('skills:deptSkills', [CACHE_TAGS.departments, CACHE_TAGS.skills], 60, () =>
+      prisma.departmentSkill.findMany({ include: { department: { select: { id: true, name: true } } } })
+    ),
+  ])
 
   return (
     <div className="space-y-4">
@@ -24,8 +37,7 @@ export default async function SkillsPage() {
         <div>
           <h2 className="text-lg font-bold tracking-tight">Services & Skills</h2>
           <p className="text-xs text-muted-foreground">
-            Manage the skill tags assigned to VAs. Use these to categorize and search VAs by their expertise.
-            Each VA can have multiple skills across different categories.
+            Skill tags assigned to VAs. Link services to departments for categorization.
           </p>
         </div>
         {!canEdit && (
@@ -43,12 +55,12 @@ export default async function SkillsPage() {
           shortName: s.shortName,
           acronym: s.acronym,
           category: s.category,
-          jobDescription: s.jobDescription,
-          attachmentUrl: s.attachmentUrl,
           isActive: s.isActive,
           vaCount: s._count.vaSkills,
-          departmentCount: s._count.departments,
+          departmentNames: s.departments.map((d) => d.department.name),
         }))}
+        departments={departments.map((d) => ({ id: d.id, name: d.name }))}
+        deptSkills={deptSkills}
       />
     </div>
   )
