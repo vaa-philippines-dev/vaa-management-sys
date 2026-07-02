@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useTransition } from 'react'
+import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -17,6 +17,7 @@ import {
   Search,
   Filter,
   X,
+  Ellipsis,
 } from 'lucide-react'
 import { toggleDepartmentActive, deleteDepartment } from '@/app/(dashboard)/admin/users/actions'
 import { useRouter } from 'next/navigation'
@@ -258,6 +259,7 @@ function DeptNode({
   assignedSkillIds: string[]
 }) {
   const [open, setOpen] = useState(depth < 1)
+  const [showActions, setShowActions] = useState(false)
   const isPending = pendingId === dept.id
 
   const canMerge = canEdit && dept.status === 'ACTIVE' && !dept.isLevel
@@ -266,20 +268,16 @@ function DeptNode({
   const canDelete = canEdit && !dept.isLevel && dept.childrenCount === 0
 
   const levelColor = LEVEL_COLORS[dept.level ?? 'SERVICE'] ?? 'bg-gray-500'
-  const levelBg = LEVEL_BG[dept.level ?? 'SERVICE'] ?? ''
+  const assignedServices = allServices.filter((s) => assignedSkillIds.includes(s.id))
 
   return (
     <div className="rounded-lg border bg-card overflow-hidden">
       <div
-        className={`flex items-center gap-2 px-3 py-2 transition-colors ${levelBg} ${isPending ? 'opacity-50' : ''}`}
+        className={`flex items-center gap-2 px-3 py-2.5 transition-colors ${isPending ? 'opacity-50' : ''}`}
         style={{ paddingLeft: `${12 + depth * 16}px` }}
       >
         {dept.children.length > 0 ? (
-          <button
-            type="button"
-            onClick={() => setOpen(!open)}
-            className="p-0.5 hover:bg-accent rounded transition-colors shrink-0"
-          >
+          <button type="button" onClick={() => setOpen(!open)} className="p-0.5 hover:bg-accent rounded shrink-0">
             {open ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
           </button>
         ) : (
@@ -289,14 +287,16 @@ function DeptNode({
         <div className={`h-5 w-1 rounded-full ${levelColor} shrink-0`} />
 
         <div className="flex-1 min-w-0 flex items-center gap-2 flex-wrap">
-          <span className="text-sm font-medium truncate">{dept.name}</span>
+          <Link
+            href={`/dashboard?dept=${dept.id}`}
+            className="text-sm font-medium truncate hover:text-primary transition-colors"
+          >
+            {dept.name}
+          </Link>
           {dept.acronym && (
             <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
               {dept.acronym}
             </span>
-          )}
-          {dept.shortName && dept.shortName !== dept.name && (
-            <span className="text-xs text-muted-foreground hidden sm:inline">({dept.shortName})</span>
           )}
           {dept.isLevel && (
             <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-purple-500/10 text-purple-700 border-purple-500/20">
@@ -304,28 +304,27 @@ function DeptNode({
             </Badge>
           )}
           <Badge variant="outline" className={`text-[10px] py-0 px-1.5 ${STATUS_COLORS[dept.status] ?? ''}`}>
-            {dept.status}
-            {dept.status === 'ACTIVE' ? ' ✓' : ''}
+            {dept.status === 'ACTIVE' ? 'Active' : dept.status}
           </Badge>
+          {dept.mergedIntoName && (
+            <span className="text-[10px] text-muted-foreground">→ {dept.mergedIntoName}</span>
+          )}
+          {dept.splitFromName && (
+            <span className="text-[10px] text-muted-foreground">← {dept.splitFromName}</span>
+          )}
         </div>
 
-        <div className="hidden lg:flex items-center gap-2.5 text-[11px] text-muted-foreground shrink-0">
-          {dept.childrenCount > 0 && (
-            <span className="flex items-center gap-1">
-              <span className="font-medium text-foreground">{dept.childrenCount}</span> sub
-            </span>
+        <div className="hidden sm:flex items-center gap-1.5 text-[11px] text-muted-foreground shrink-0">
+          {dept.childrenCount > 0 && <span>{dept.childrenCount} sub</span>}
+          {dept.membershipsCount > 0 && <span>{dept.membershipsCount} mem</span>}
+          {dept.clientsCount > 0 && <span>{dept.clientsCount} cli</span>}
+          {dept.level === 'SERVICE' && assignedServices.length > 0 && (
+            <span className="font-medium">{assignedServices.length} svc</span>
           )}
-          {dept.membershipsCount > 0 && (
-            <span className="flex items-center gap-1">
-              <span className="font-medium text-foreground">{dept.membershipsCount}</span> mem
-            </span>
-          )}
-          {dept.clientsCount > 0 && (
-            <span className="flex items-center gap-1">
-              <span className="font-medium text-foreground">{dept.clientsCount}</span> cli
-            </span>
-          )}
-          {dept.level === 'SERVICE' && allServices.length > 0 && (
+        </div>
+
+        <div className="hidden md:flex items-center gap-1 shrink-0">
+          {canEdit && dept.level === 'SERVICE' && allServices.length > 0 && (
             <ServiceSelector
               departmentId={dept.id}
               departmentName={dept.name}
@@ -338,61 +337,100 @@ function DeptNode({
               }))}
             />
           )}
-        </div>
-
-        <div className="flex items-center gap-0.5 shrink-0">
           {canMerge && (
             <Link href={`/admin/departments/merge/${dept.id}`}>
-              <Button variant="ghost" size="sm" className="h-7 w-7 p-0" title="Merge">
-                <GitMerge className="h-3.5 w-3.5" />
-              </Button>
+              <Button variant="outline" size="sm" className="h-6 text-[10px] px-1.5 gap-1">Merge</Button>
             </Link>
           )}
           {canSplit && (
             <Link href={`/admin/departments/split/${dept.id}`}>
-              <Button variant="ghost" size="sm" className="h-7 w-7 p-0" title="Split">
-                <GitBranch className="h-3.5 w-3.5" />
-              </Button>
+              <Button variant="outline" size="sm" className="h-6 text-[10px] px-1.5 gap-1">Split</Button>
             </Link>
           )}
           {canToggle && (
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
-              className="h-7 w-7 p-0"
+              className="h-6 text-[10px] px-1.5 gap-1"
               onClick={() => onToggle(dept.id, dept.status)}
               disabled={isPending}
-              title={dept.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
             >
-              {dept.status === 'ACTIVE' ? (
-                <ToggleRight className="h-3.5 w-3.5 text-green-600" />
-              ) : (
-                <ToggleLeft className="h-3.5 w-3.5 text-muted-foreground" />
-              )}
+              {dept.status === 'ACTIVE' ? <ToggleRight className="h-3 w-3 text-green-600" /> : <ToggleLeft className="h-3 w-3" />}
+              {dept.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
             </Button>
           )}
           {canDelete && (
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
-              className="h-7 w-7 p-0"
+              className="h-6 text-[10px] px-1.5 gap-1 text-red-600 hover:text-red-700 border-red-200 hover:border-red-300"
               onClick={() => onDelete(dept.id, dept.name)}
               disabled={isPending}
-              title="Delete"
             >
-              <Trash2 className="h-3.5 w-3.5 text-red-500" />
+              <Trash2 className="h-3 w-3" /> Delete
             </Button>
           )}
-          <Link href={`/dashboard?dept=${dept.id}`}>
-            <Button variant="ghost" size="sm" className="h-7 w-7 p-0" title="View dashboard">
-              <ExternalLink className="h-3.5 w-3.5" />
-            </Button>
-          </Link>
+        </div>
+
+        <div className="md:hidden">
+          <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => setShowActions(!showActions)}>
+            <Ellipsis className="h-3.5 w-3.5" />
+          </Button>
         </div>
       </div>
 
+      {showActions && (
+        <div className="border-t px-3 py-2 bg-muted/20 md:hidden flex flex-wrap gap-1.5">
+          {canMerge && (
+            <Link href={`/admin/departments/merge/${dept.id}`}>
+              <Button variant="outline" size="sm" className="h-6 text-[10px] px-1.5 gap-1">Merge</Button>
+            </Link>
+          )}
+          {canSplit && (
+            <Link href={`/admin/departments/split/${dept.id}`}>
+              <Button variant="outline" size="sm" className="h-6 text-[10px] px-1.5 gap-1">Split</Button>
+            </Link>
+          )}
+          {canToggle && (
+            <Button variant="outline" size="sm" className="h-6 text-[10px] px-1.5 gap-1" onClick={() => onToggle(dept.id, dept.status)} disabled={isPending}>
+              {dept.status === 'ACTIVE' ? <ToggleRight className="h-3 w-3 text-green-600" /> : <ToggleLeft className="h-3 w-3" />}
+              {dept.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
+            </Button>
+          )}
+          {canDelete && (
+            <Button variant="outline" size="sm" className="h-6 text-[10px] px-1.5 gap-1 text-red-600" onClick={() => onDelete(dept.id, dept.name)} disabled={isPending}>
+              <Trash2 className="h-3 w-3" /> Delete
+            </Button>
+          )}
+          <Link href={`/dashboard?dept=${dept.id}`}>
+            <Button variant="outline" size="sm" className="h-6 text-[10px] px-1.5 gap-1"><ExternalLink className="h-3 w-3" /> Open</Button>
+          </Link>
+        </div>
+      )}
+
       {open && (
         <div className="border-t bg-muted/20">
+          {dept.level === 'SERVICE' && assignedServices.length > 0 && (
+            <div className="px-4 py-2 border-b flex items-center gap-2 flex-wrap">
+              <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mr-1">Services:</span>
+              {assignedServices.map((s) => (
+                <Badge key={s.id} variant="secondary" className="text-[10px] py-0 px-1.5">{s.name}</Badge>
+              ))}
+              {canEdit && allServices.length > 0 && (
+                <ServiceSelector
+                  departmentId={dept.id}
+                  departmentName={dept.name}
+                  canEdit={canEdit}
+                  services={allServices.map((s) => ({
+                    id: s.id,
+                    name: s.name,
+                    category: s.category,
+                    assigned: assignedSkillIds.includes(s.id),
+                  }))}
+                />
+              )}
+            </div>
+          )}
           {dept.children.length > 0 && dept.children.map((child) => (
             <DeptNode
               key={child.id}
