@@ -94,6 +94,7 @@ export default async function VADetailPage({
       gcashNumber: profile.gcashNumber ?? null,
       phone: profile.phone ?? null,
       personalEmail: profile.personalEmail ?? null,
+      workEmail: profile.workEmail ?? null,
       payoneerAccount: profile.payoneerAccount ?? null,
       birthDate: toDateString(profile.birthDate),
       nonCelebrant: profile.nonCelebrant,

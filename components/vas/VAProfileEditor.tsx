@@ -48,7 +48,8 @@ type VAData = {
   profile: {
     gender: string | null; whatsappNumber: string | null
     gcashNumber: string | null; phone: string | null
-    personalEmail: string | null; payoneerAccount: string | null
+    personalEmail: string | null; workEmail: string | null
+    payoneerAccount: string | null
     birthDate: string | null; nonCelebrant: boolean
     address: string | null; barangay: string | null
     cityMunicipality: string | null; province: string | null
@@ -98,6 +99,7 @@ export function VAProfileEditor({
           preview={
             <div className="grid grid-cols-2 gap-x-8 gap-y-1.5">
               <Mini label="Assigned Email" value={data.user.email} />
+              <Mini label="Work Email" value={data.profile?.workEmail} />
               <Mini label="Personal Email" value={data.profile?.personalEmail} />
               <Mini label="WhatsApp" value={data.profile?.whatsappNumber} />
               <Mini label="Emergency" value={
@@ -453,6 +455,7 @@ function PersonalFormContent({ data, onClose }: { data: VAData; onClose: () => v
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 flex-1">
           <FI name="firstName" label="First Name" defaultValue={data.user.firstName} />
           <FI name="lastName" label="Last Name" defaultValue={data.user.lastName} />
+          <FI name="workEmail" label="Work Email" defaultValue={data.profile?.workEmail} type="email" placeholder="work@vaa.com" />
           <FI name="personalEmail" label="Personal Email" defaultValue={data.profile?.personalEmail} type="email" placeholder="personal@email.com" />
           <FI name="whatsappNumber" label="WhatsApp Number" defaultValue={data.profile?.whatsappNumber} placeholder="09000000000" />
           <FI name="emergencyContactName" label="Emergency Contact Name" defaultValue={data.profile?.emergencyContactName} />

@@ -98,9 +98,10 @@ export async function updateUserProfile(userId: string, formData: FormData) {
     'firstName', 'lastName', 'gender', 'birthDate', 'nonCelebrant',
     'whatsappNumber', 'gcashNumber', 'phone',
     'barangay', 'cityMunicipality', 'province', 'zipCode', 'landmark', 'address',
+    'regionCode', 'provinceCode', 'cityCode', 'barangayCode',
     'emergencyContactName', 'emergencyContactPhone', 'emergencyContactRelation',
     'facebookUrl', 'facebookName', 'linkedinUrl',
-    'payoneerAccount', 'personalEmail',
+    'payoneerAccount', 'personalEmail', 'workEmail',
     'passportNumber', 'passportPhoto', 'philhealthNumber', 'philhealthPhoto',
     'signedContract',
   ]
