@@ -5,7 +5,15 @@ import { revalidatePath, revalidateTag } from 'next/cache'
 import { CACHE_TAGS } from '@/lib/cache'
 import { requireSuperAdmin } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
-import { validateCreate, validateUpdate, isLevelRecord, hasChildren, DepartmentValidationError } from '@/lib/departments'
+import {
+  validateCreate,
+  validateUpdate,
+  isLevelRecord,
+  hasChildren,
+  DepartmentValidationError,
+  validateAcronym,
+  validateName,
+} from '@/lib/departments'
 
 const ENTITY_USER = 'User'
 const ENTITY_DEPARTMENT = 'Department'
@@ -496,4 +504,310 @@ export async function assignTempRoleByForm(id: string, formData: FormData) {
   const module = formData.get('module') as string
   const deptId = formData.get('tempDeptId') as string
   if (role && module) await assignTemporaryRole(id, role, module, deptId || null)
+}
+
+// ── Department Merge / Split ─────────────────────────────────────
+
+export type MergeReassignmentMap = {
+  memberships: Record<string, string>
+  clients: Record<string, string>
+  assignments: Record<string, string>
+  children: Record<string, string>
+}
+
+export type MergePreview = {
+  source: { id: string; name: string; level: string | null }
+  target: { id: string; name: string; level: string | null }
+  sameLevel: boolean
+  counts: {
+    memberships: number
+    clients: number
+    assignments: number
+    children: number
+  }
+}
+
+export async function getMergePreview(sourceId: string, targetId: string): Promise<MergePreview> {
+  const [source, target, memberships, clients, assignments, children] = await Promise.all([
+    prisma.department.findUnique({ where: { id: sourceId }, select: { id: true, name: true, level: true, status: true } }),
+    prisma.department.findUnique({ where: { id: targetId }, select: { id: true, name: true, level: true, status: true } }),
+    prisma.departmentMembership.count({ where: { departmentId: sourceId, endedAt: null } }),
+    prisma.client.count({ where: { departmentId: sourceId, isActive: true } }),
+    prisma.assignment.count({ where: { client: { departmentId: sourceId }, status: 'ACTIVE' } }),
+    prisma.department.count({ where: { parentId: sourceId, status: { in: ['ACTIVE', 'INACTIVE'] } } }),
+  ])
+
+  if (!source || !target) {
+    throw new DepartmentValidationError([{ field: 'id', message: 'Department not found' }])
+  }
+
+  return {
+    source: { id: source.id, name: source.name, level: source.level },
+    target: { id: target.id, name: target.name, level: target.level },
+    sameLevel: source.level === target.level,
+    counts: { memberships, clients, assignments, children },
+  }
+}
+
+export async function mergeDepartments(input: {
+  sourceId: string
+  targetId: string
+  reassignments?: MergeReassignmentMap
+}) {
+  const admin = await getAdmin()
+
+  if (input.sourceId === input.targetId) {
+    throw new DepartmentValidationError([{ field: 'targetId', message: 'Source and target cannot be the same department' }])
+  }
+
+  const [source, target] = await Promise.all([
+    prisma.department.findUnique({ where: { id: input.sourceId } }),
+    prisma.department.findUnique({ where: { id: input.targetId } }),
+  ])
+
+  if (!source || !target) {
+    throw new DepartmentValidationError([{ field: 'id', message: 'Department not found' }])
+  }
+  if (source.status === 'MERGED' || source.status === 'SPLIT') {
+    throw new DepartmentValidationError([{ field: 'sourceId', message: `Cannot merge a department in status ${source.status}` }])
+  }
+  if (await isLevelRecord(input.sourceId)) {
+    throw new DepartmentValidationError([{ field: 'sourceId', message: 'Cannot merge a system Level record' }])
+  }
+  if (await isLevelRecord(input.targetId)) {
+    throw new DepartmentValidationError([{ field: 'targetId', message: 'Cannot merge into a system Level record' }])
+  }
+  if (source.level !== target.level) {
+    throw new DepartmentValidationError([{ field: 'targetId', message: 'Source and target must be the same Level to merge' }])
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.departmentMembership.updateMany({
+      where: { departmentId: input.sourceId, endedAt: null },
+      data: { departmentId: input.targetId },
+    })
+    await tx.client.updateMany({
+      where: { departmentId: input.sourceId, isActive: true },
+      data: { departmentId: input.targetId },
+    })
+    await tx.assignment.updateMany({
+      where: { client: { departmentId: input.sourceId }, status: 'ACTIVE' },
+      data: {},
+    })
+    await tx.department.updateMany({
+      where: { parentId: input.sourceId, status: { in: ['ACTIVE', 'INACTIVE'] } },
+      data: { parentId: input.targetId },
+    })
+    await tx.department.update({
+      where: { id: input.sourceId },
+      data: {
+        status: 'MERGED',
+        mergedIntoId: input.targetId,
+        parentId: null,
+        memberships: {
+          updateMany: {
+            where: { endedAt: null },
+            data: { endedAt: new Date() },
+          },
+        },
+      },
+    })
+  })
+
+  await logAudit({
+    actorId: admin.id,
+    action: 'TRANSFER',
+    entityType: 'Department',
+    entityId: input.sourceId,
+    before: { name: source.name, level: source.level, status: 'ACTIVE' },
+    after: { name: source.name, status: 'MERGED', mergedIntoId: input.targetId },
+    metadata: { operation: 'MERGE', targetId: input.targetId, targetName: target.name },
+    departmentId: input.sourceId,
+  })
+
+  revalidatePath('/admin')
+  revalidatePath('/departments')
+  revalidatePath(`/departments`)
+  revalidateTag(CACHE_TAGS.departments, 'default')
+  revalidateTag(CACHE_TAGS.admin, 'default')
+}
+
+export type SplitPreview = {
+  source: { id: string; name: string; level: string | null }
+  counts: {
+    memberships: number
+    clients: number
+    assignments: number
+    children: number
+  }
+}
+
+export async function getSplitPreview(sourceId: string): Promise<SplitPreview> {
+  const [source, memberships, clients, assignments, children] = await Promise.all([
+    prisma.department.findUnique({ where: { id: sourceId }, select: { id: true, name: true, level: true, status: true } }),
+    prisma.departmentMembership.count({ where: { departmentId: sourceId, endedAt: null } }),
+    prisma.client.count({ where: { departmentId: sourceId, isActive: true } }),
+    prisma.assignment.count({ where: { client: { departmentId: sourceId }, status: 'ACTIVE' } }),
+    prisma.department.count({ where: { parentId: sourceId, status: { in: ['ACTIVE', 'INACTIVE'] } } }),
+  ])
+
+  if (!source) {
+    throw new DepartmentValidationError([{ field: 'id', message: 'Department not found' }])
+  }
+
+  return {
+    source: { id: source.id, name: source.name, level: source.level },
+    counts: { memberships, clients, assignments, children },
+  }
+}
+
+export type SplitNewDepartment = {
+  name: string
+  shortName?: string | null
+  acronym?: string | null
+  level?: string | null
+  parentId?: string | null
+  reassignMemberships?: string[]
+  reassignClients?: string[]
+  reassignChildren?: string[]
+}
+
+export async function splitDepartment(
+  sourceId: string,
+  newDepartments: SplitNewDepartment[]
+) {
+  const admin = await getAdmin()
+
+  if (newDepartments.length < 2) {
+    throw new DepartmentValidationError([{ field: 'newDepartments', message: 'Split must produce at least 2 new departments' }])
+  }
+
+  const source = await prisma.department.findUnique({ where: { id: sourceId } })
+  if (!source) {
+    throw new DepartmentValidationError([{ field: 'sourceId', message: 'Source department not found' }])
+  }
+  if (source.status === 'MERGED' || source.status === 'SPLIT') {
+    throw new DepartmentValidationError([{ field: 'sourceId', message: `Cannot split a department in status ${source.status}` }])
+  }
+  if (await isLevelRecord(sourceId)) {
+    throw new DepartmentValidationError([{ field: 'sourceId', message: 'Cannot split a system Level record' }])
+  }
+
+  const cleaned = await Promise.all(
+    newDepartments.map(async (d) => {
+      const errors: { field: string; message: string }[] = []
+      const cleanName = validateName(d.name, errors)
+      const cleanShort = d.shortName ? (() => { const s = d.shortName!.trim(); if (s.length > 50) errors.push({ field: 'shortName', message: 'Too long' }); return s })() : null
+      const cleanAcronym = validateAcronym(d.acronym ?? d.name.slice(0, 4), errors)
+      if (errors.length) throw new DepartmentValidationError(errors)
+      return await validateCreate({
+        name: cleanName,
+        shortName: cleanShort,
+        acronym: cleanAcronym,
+        level: d.level ?? source.level ?? 'MANAGEMENT',
+        parentId: d.parentId ?? source.parentId,
+      })
+    })
+  )
+
+  const created: { id: string; name: string; reassigned: { memberships: number; clients: number; children: number } }[] = []
+
+  await prisma.$transaction(async (tx) => {
+    for (let i = 0; i < cleaned.length; i++) {
+      const c = cleaned[i]
+      const reassign = newDepartments[i]
+
+      const newDept = await tx.department.create({
+        data: {
+          name: c.name,
+          shortName: c.shortName,
+          acronym: c.acronym,
+          level: c.level,
+          parentId: c.parentId,
+          isParent: source.isParent,
+          splitFromId: sourceId,
+        },
+      })
+
+      let mCount = 0
+      let cCount = 0
+      let chCount = 0
+
+      if (reassign.reassignMemberships && reassign.reassignMemberships.length > 0) {
+        const result = await tx.departmentMembership.updateMany({
+          where: {
+            id: { in: reassign.reassignMemberships },
+            departmentId: sourceId,
+          },
+          data: { departmentId: newDept.id },
+        })
+        mCount = result.count
+      }
+
+      if (reassign.reassignClients && reassign.reassignClients.length > 0) {
+        const result = await tx.client.updateMany({
+          where: {
+            id: { in: reassign.reassignClients },
+            departmentId: sourceId,
+          },
+          data: { departmentId: newDept.id },
+        })
+        cCount = result.count
+      }
+
+      if (reassign.reassignChildren && reassign.reassignChildren.length > 0) {
+        const result = await tx.department.updateMany({
+          where: {
+            id: { in: reassign.reassignChildren },
+            parentId: sourceId,
+          },
+          data: { parentId: newDept.id },
+        })
+        chCount = result.count
+      }
+
+      created.push({ id: newDept.id, name: newDept.name, reassigned: { memberships: mCount, clients: cCount, children: chCount } })
+    }
+
+    await tx.department.update({
+      where: { id: sourceId },
+      data: {
+        status: 'SPLIT',
+        memberships: {
+          updateMany: {
+            where: { endedAt: null },
+            data: { endedAt: new Date() },
+          },
+        },
+      },
+    })
+  })
+
+  for (const d of created) {
+    await logAudit({
+      actorId: admin.id,
+      action: 'CREATE',
+      entityType: 'Department',
+      entityId: d.id,
+      after: { name: d.name, splitFromId: sourceId, reassigned: d.reassigned },
+      metadata: { operation: 'SPLIT', sourceId },
+      departmentId: d.id,
+    })
+  }
+
+  await logAudit({
+    actorId: admin.id,
+    action: 'TRANSFER',
+    entityType: 'Department',
+    entityId: sourceId,
+    before: { name: source.name, level: source.level, status: 'ACTIVE' },
+    after: { name: source.name, status: 'SPLIT' },
+    metadata: { operation: 'SPLIT', newDepartments: created.map((d) => ({ id: d.id, name: d.name })) },
+    departmentId: sourceId,
+  })
+
+  revalidatePath('/admin')
+  revalidatePath('/departments')
+  revalidateTag(CACHE_TAGS.departments, 'default')
+  revalidateTag(CACHE_TAGS.admin, 'default')
 }
