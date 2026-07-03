@@ -36,12 +36,22 @@ export async function proxy(request: NextRequest) {
   const isProtected = protectedPaths.some((p) => pathname.startsWith(p))
   const isAuth = authPaths.some((p) => pathname === p) || pathname === '/'
 
+  const justLoggedIn = request.cookies.get('vaa_just_logged_in')
+
   if (isProtected && !session) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
   if (isAuth && session) {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+    const redirectRes = NextResponse.redirect(new URL('/dashboard', request.url))
+    if (justLoggedIn) {
+      redirectRes.cookies.set('vaa_just_logged_in', justLoggedIn.value, { path: '/', maxAge: 10, httpOnly: false, sameSite: 'lax' })
+    }
+    return redirectRes
+  }
+
+  if (justLoggedIn) {
+    response.cookies.set('vaa_just_logged_in', justLoggedIn.value, { path: '/', maxAge: 10, httpOnly: false, sameSite: 'lax' })
   }
 
   return response

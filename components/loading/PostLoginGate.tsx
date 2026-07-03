@@ -10,13 +10,8 @@ export function PostLoginGate({ children }: { children: React.ReactNode }) {
 
     if (document.cookie.includes('vaa_just_logged_in=1')) {
       document.cookie = 'vaa_just_logged_in=; path=/; max-age=0'
-      return 'loading'
     }
-    if (!window.sessionStorage.getItem('vaa_splash_shown')) {
-      window.sessionStorage.setItem('vaa_splash_shown', '1')
-      return 'loading'
-    }
-    return 'done'
+    return 'loading'
   })
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
