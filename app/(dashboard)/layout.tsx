@@ -20,7 +20,9 @@ export default async function DashboardLayout({
           <Sidebar role={role} isAdmin={isAdmin} />
           <div className="flex flex-1 flex-col overflow-hidden">
             <Navbar />
-            <main className="flex-1 overflow-auto p-6">{children}</main>
+            <main className="flex-1 overflow-auto p-6">
+              <div className="mx-auto max-w-7xl">{children}</div>
+            </main>
           </div>
         </div>
       </RealtimeProvider>

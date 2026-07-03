@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Plus, Search, Pencil, Trash2, ChevronDown, ChevronUp, Building2, Users } from 'lucide-react'
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table'
 import { createSkill, updateSkill, deleteSkill } from '@/app/(dashboard)/skills/actions'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
@@ -145,77 +146,22 @@ export function SkillManager({
                   <span className="text-xs font-semibold">{dept.name}</span>
                   <Badge variant="secondary" className="text-[10px] py-0 px-1.5">{items.length}</Badge>
                 </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-xs">
-                    <thead>
-                      <tr className="border-b bg-muted/10">
-                        <th className="text-left p-2 font-medium text-muted-foreground">Name</th>
-                        <th className="text-left p-2 font-medium text-muted-foreground hidden sm:table-cell">Short</th>
-                        <th className="text-left p-2 font-medium text-muted-foreground hidden md:table-cell">Acronym</th>
-                        <th className="text-left p-2 font-medium text-muted-foreground">Category</th>
-                        <th className="text-left p-2 font-medium text-muted-foreground">VAs</th>
-                        <th className="text-left p-2 font-medium text-muted-foreground">Status</th>
-                        {canEdit && <th className="text-left p-2 font-medium text-muted-foreground w-0"> </th>}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {items.map((s) => (
-                        <SkillRow
-                          key={s.id + dept.id}
-                          skill={s}
-                          isEditing={editingId === s.id}
-                          onStartEdit={() => { setEditingId(s.id); setShowAdd(false) }}
-                          onCancelEdit={() => setEditingId(null)}
-                          onSubmit={async (fd) => {
-                            const r = await updateSkill(s.id, fd)
-                            if (r?.error) { toast.error(r.error); return }
-                            toast.success(`${s.name} updated`)
-                            setEditingId(null)
-                            startTransition(() => router.refresh())
-                          }}
-                          onDelete={async () => {
-                            if (!confirm(`Delete "${s.name}"?`)) return
-                            try {
-                              await deleteSkill(s.id)
-                              toast.success('Service deleted')
-                              startTransition(() => router.refresh())
-                            } catch (e: any) { toast.error(e.message ?? 'Failed') }
-                          }}
-                          canEdit={canEdit}
-                          departments={departments}
-                        />
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )
-          })}
-
-          {(byDept.get('__unassigned__') || []).length > 0 && (
-            <div className="rounded-xl border bg-card overflow-hidden">
-              <div className="flex items-center gap-2 px-4 py-2.5 bg-muted/20 border-b">
-                <Building2 className="h-3.5 w-3.5 text-muted-foreground" />
-                <span className="text-xs font-semibold">Unassigned</span>
-                <Badge variant="secondary" className="text-[10px] py-0 px-1.5">{byDept.get('__unassigned__')!.length}</Badge>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-xs">
-                  <thead>
-                    <tr className="border-b bg-muted/10">
-                      <th className="text-left p-2 font-medium text-muted-foreground">Name</th>
-                      <th className="text-left p-2 font-medium text-muted-foreground hidden sm:table-cell">Short</th>
-                      <th className="text-left p-2 font-medium text-muted-foreground hidden md:table-cell">Acronym</th>
-                      <th className="text-left p-2 font-medium text-muted-foreground">Category</th>
-                      <th className="text-left p-2 font-medium text-muted-foreground">VAs</th>
-                      <th className="text-left p-2 font-medium text-muted-foreground">Status</th>
-                      {canEdit && <th className="text-left p-2 font-medium text-muted-foreground w-0"> </th>}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {(byDept.get('__unassigned__') || []).map((s) => (
+                <Table className="text-xs">
+                  <TableHeader>
+                    <TableRow className="bg-muted/10">
+                      <TableHead className="px-3 py-2.5">Name</TableHead>
+                      <TableHead className="px-3 py-2.5 hidden sm:table-cell">Short</TableHead>
+                      <TableHead className="px-3 py-2.5 hidden md:table-cell">Acronym</TableHead>
+                      <TableHead className="px-3 py-2.5">Category</TableHead>
+                      <TableHead className="px-3 py-2.5">VAs</TableHead>
+                      <TableHead className="px-3 py-2.5">Status</TableHead>
+                      {canEdit && <TableHead className="px-3 py-2.5 w-0"> </TableHead>}
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {items.map((s) => (
                       <SkillRow
-                        key={s.id + '__unassigned__'}
+                        key={s.id + dept.id}
                         skill={s}
                         isEditing={editingId === s.id}
                         onStartEdit={() => { setEditingId(s.id); setShowAdd(false) }}
@@ -239,9 +185,60 @@ export function SkillManager({
                         departments={departments}
                       />
                     ))}
-                  </tbody>
-                </table>
+                  </TableBody>
+                </Table>
               </div>
+            )
+          })}
+
+          {(byDept.get('__unassigned__') || []).length > 0 && (
+            <div className="rounded-xl border bg-card overflow-hidden">
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-muted/20 border-b">
+                <Building2 className="h-3.5 w-3.5 text-muted-foreground" />
+                <span className="text-xs font-semibold">Unassigned</span>
+                <Badge variant="secondary" className="text-[10px] py-0 px-1.5">{byDept.get('__unassigned__')!.length}</Badge>
+              </div>
+              <Table className="text-xs">
+                <TableHeader>
+                  <TableRow className="bg-muted/10">
+                    <TableHead className="px-3 py-2.5">Name</TableHead>
+                    <TableHead className="px-3 py-2.5 hidden sm:table-cell">Short</TableHead>
+                    <TableHead className="px-3 py-2.5 hidden md:table-cell">Acronym</TableHead>
+                    <TableHead className="px-3 py-2.5">Category</TableHead>
+                    <TableHead className="px-3 py-2.5">VAs</TableHead>
+                    <TableHead className="px-3 py-2.5">Status</TableHead>
+                    {canEdit && <TableHead className="px-3 py-2.5 w-0"> </TableHead>}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(byDept.get('__unassigned__') || []).map((s) => (
+                    <SkillRow
+                      key={s.id + '__unassigned__'}
+                      skill={s}
+                      isEditing={editingId === s.id}
+                      onStartEdit={() => { setEditingId(s.id); setShowAdd(false) }}
+                      onCancelEdit={() => setEditingId(null)}
+                      onSubmit={async (fd) => {
+                        const r = await updateSkill(s.id, fd)
+                        if (r?.error) { toast.error(r.error); return }
+                        toast.success(`${s.name} updated`)
+                        setEditingId(null)
+                        startTransition(() => router.refresh())
+                      }}
+                      onDelete={async () => {
+                        if (!confirm(`Delete "${s.name}"?`)) return
+                        try {
+                          await deleteSkill(s.id)
+                          toast.success('Service deleted')
+                          startTransition(() => router.refresh())
+                        } catch (e: any) { toast.error(e.message ?? 'Failed') }
+                      }}
+                      canEdit={canEdit}
+                      departments={departments}
+                    />
+                  ))}
+                </TableBody>
+              </Table>
             </div>
           )}
         </div>
@@ -273,8 +270,8 @@ function SkillRow({
 
   if (isEditing && canEdit) {
     return (
-      <tr className="border-b bg-amber-500/5">
-        <td colSpan={7} className="p-3">
+      <TableRow className="bg-amber-500/5">
+        <TableCell colSpan={7} className="p-3 whitespace-normal">
           <AddEditForm
             mode="edit"
             initial={skill}
@@ -282,35 +279,35 @@ function SkillRow({
             onCancel={onCancelEdit}
             onSubmit={onSubmit}
           />
-        </td>
-      </tr>
+        </TableCell>
+      </TableRow>
     )
   }
 
   return (
-    <tr className="border-b hover:bg-muted/20 transition-colors group">
-      <td className="p-2">
+    <TableRow className="group">
+      <TableCell className="px-3 py-2.5">
         <span className="font-medium">{skill.name}</span>
-      </td>
-      <td className="p-2 text-muted-foreground hidden sm:table-cell">{skill.shortName ?? '—'}</td>
-      <td className="p-2 hidden md:table-cell">
+      </TableCell>
+      <TableCell className="px-3 py-2.5 text-muted-foreground hidden sm:table-cell">{skill.shortName ?? '—'}</TableCell>
+      <TableCell className="px-3 py-2.5 hidden md:table-cell">
         {skill.acronym ? (
           <code className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-muted">{skill.acronym}</code>
         ) : '—'}
-      </td>
-      <td className="p-2">
+      </TableCell>
+      <TableCell className="px-3 py-2.5">
         <Badge variant="outline" className={`text-[10px] py-0 px-1.5 ${colorClass}`}>
           {CATEGORY_META[skill.category as Category]?.label ?? skill.category}
         </Badge>
-      </td>
-      <td className="p-2 text-muted-foreground">{skill.vaCount}</td>
-      <td className="p-2">
+      </TableCell>
+      <TableCell className="px-3 py-2.5 text-muted-foreground">{skill.vaCount}</TableCell>
+      <TableCell className="px-3 py-2.5">
         <Badge variant="outline" className={`text-[10px] py-0 px-1.5 ${skill.isActive ? 'bg-emerald-500/15 text-emerald-700 border-emerald-500/20' : 'bg-gray-500/15 text-gray-700 border-gray-500/20'}`}>
           {skill.isActive ? 'Active' : 'Inactive'}
         </Badge>
-      </td>
+      </TableCell>
       {canEdit && (
-        <td className="p-2">
+        <TableCell className="px-3 py-2.5">
           <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
             <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={onStartEdit} title="Edit">
               <Pencil className="h-3 w-3" />
@@ -319,9 +316,9 @@ function SkillRow({
               <Trash2 className="h-3 w-3 text-red-500" />
             </Button>
           </div>
-        </td>
+        </TableCell>
       )}
-    </tr>
+    </TableRow>
   )
 }
 

@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { FilterBar } from '@/components/filters/FilterBar'
 import { Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table'
 import { QuickAddVABtn } from '@/components/vas/QuickAddVABtn'
 import {
   Users,
@@ -237,84 +238,82 @@ async function VATableSection({
             <p className="text-sm text-muted-foreground">No VAs match your filters</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="border-b bg-muted/30">
-                  <th className="text-left p-2 font-medium text-muted-foreground sticky left-0 bg-muted/30 z-10">Name</th>
-                  <th className="text-left p-2 font-medium text-muted-foreground hidden md:table-cell">Email</th>
-                  <th className="text-left p-2 font-medium text-muted-foreground hidden lg:table-cell">Department</th>
-                  <th className="text-left p-2 font-medium text-muted-foreground hidden lg:table-cell">Position</th>
-                  <th className="text-left p-2 font-medium text-muted-foreground hidden sm:table-cell">Availability</th>
-                  <th className="text-left p-2 font-medium text-muted-foreground hidden sm:table-cell">Status</th>
-                  <th className="text-left p-2 font-medium text-muted-foreground hidden md:table-cell">Eng. Status</th>
-                  <th className="text-left p-2 font-medium text-muted-foreground w-0"> </th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredVAs.map((va) => {
-                  const emp = va.user.employmentRecords?.[0]
-                  const primaryMem = va.user.memberships?.find((m) => m.isPrimary) ?? va.user.memberships?.[0]
+          <Table className="text-xs">
+            <TableHeader>
+              <TableRow className="bg-muted/30">
+                <TableHead className="px-3 py-2.5 sticky left-0 bg-muted/30 z-10">Name</TableHead>
+                <TableHead className="px-3 py-2.5 hidden md:table-cell">Email</TableHead>
+                <TableHead className="px-3 py-2.5 hidden lg:table-cell">Department</TableHead>
+                <TableHead className="px-3 py-2.5 hidden lg:table-cell">Position</TableHead>
+                <TableHead className="px-3 py-2.5 hidden sm:table-cell">Availability</TableHead>
+                <TableHead className="px-3 py-2.5 hidden sm:table-cell">Status</TableHead>
+                <TableHead className="px-3 py-2.5 hidden md:table-cell">Eng. Status</TableHead>
+                <TableHead className="px-3 py-2.5 w-0"> </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredVAs.map((va) => {
+                const emp = va.user.employmentRecords?.[0]
+                const primaryMem = va.user.memberships?.find((m) => m.isPrimary) ?? va.user.memberships?.[0]
 
-                  return (
-                    <tr key={va.id} className="border-b hover:bg-primary/5 transition-colors group">
-                      <td className="p-2 sticky left-0 bg-card group-hover:bg-primary/5 z-10 transition-colors">
-                        <Link href={`/vas/${va.id}`} className="flex items-center gap-2 hover:text-primary transition-colors">
-                          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-[10px] font-medium text-primary shrink-0">
-                            {(va.user.firstName || 'V')[0].toUpperCase()}
-                          </div>
-                          <span className="font-medium">
-                            {va.user.firstName} {va.user.lastName}
-                          </span>
-                        </Link>
-                      </td>
-                      <td className="p-2 text-muted-foreground hidden md:table-cell">{va.user.email}</td>
-                      <td className="p-2 hidden lg:table-cell">
-                        {primaryMem?.department ? (
-                          <Badge variant="outline" className="text-[10px] py-0 px-1.5">{primaryMem.department.name}</Badge>
-                        ) : <span className="text-muted-foreground">—</span>}
-                      </td>
-                      <td className="p-2 hidden lg:table-cell">
-                        {primaryMem?.position ? primaryMem.position.title : <span className="text-muted-foreground">—</span>}
-                      </td>
-                      <td className="p-2 hidden sm:table-cell">
-                        <Badge variant="outline" className={`text-[10px] py-0 px-1.5 ${AVAILABILITY_COLORS[va.availabilityStatus] || ''}`}>
-                          {va.availabilityStatus.replace(/_/g, ' ')}
+                return (
+                  <TableRow key={va.id} className="hover:bg-primary/5 group">
+                    <TableCell className="px-3 py-2.5 sticky left-0 bg-card group-hover:bg-primary/5 z-10 transition-colors">
+                      <Link href={`/vas/${va.id}`} className="flex items-center gap-2 hover:text-primary transition-colors">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-[10px] font-medium text-primary shrink-0">
+                          {(va.user.firstName || 'V')[0].toUpperCase()}
+                        </div>
+                        <span className="font-medium">
+                          {va.user.firstName} {va.user.lastName}
+                        </span>
+                      </Link>
+                    </TableCell>
+                    <TableCell className="px-3 py-2.5 text-muted-foreground hidden md:table-cell">{va.user.email}</TableCell>
+                    <TableCell className="px-3 py-2.5 hidden lg:table-cell">
+                      {primaryMem?.department ? (
+                        <Badge variant="outline" className="text-[10px] py-0 px-1.5">{primaryMem.department.name}</Badge>
+                      ) : <span className="text-muted-foreground">—</span>}
+                    </TableCell>
+                    <TableCell className="px-3 py-2.5 hidden lg:table-cell">
+                      {primaryMem?.position ? primaryMem.position.title : <span className="text-muted-foreground">—</span>}
+                    </TableCell>
+                    <TableCell className="px-3 py-2.5 hidden sm:table-cell">
+                      <Badge variant="outline" className={`text-[10px] py-0 px-1.5 ${AVAILABILITY_COLORS[va.availabilityStatus] || ''}`}>
+                        {va.availabilityStatus.replace(/_/g, ' ')}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="px-3 py-2.5 hidden sm:table-cell">
+                      <Badge variant="outline" className={`text-[10px] py-0 px-1.5 ${STATUS_COLORS[va.status] || STATUS_COLORS.INACTIVE}`}>
+                        {va.status === 'ACTIVE' ? 'Active' : va.status === 'ON_HOLD' ? 'On Hold' : 'Inactive'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="px-3 py-2.5 hidden md:table-cell">
+                      {emp ? (
+                        <Badge variant="outline" className={`text-[10px] py-0 px-1.5 ${EMPLOYMENT_COLORS[emp.employmentStatus] || ''}`}>
+                          {emp.employmentStatus.replace(/_/g, ' ')}
                         </Badge>
-                      </td>
-                      <td className="p-2 hidden sm:table-cell">
-                        <Badge variant="outline" className={`text-[10px] py-0 px-1.5 ${STATUS_COLORS[va.status] || STATUS_COLORS.INACTIVE}`}>
-                          {va.status === 'ACTIVE' ? 'Active' : va.status === 'ON_HOLD' ? 'On Hold' : 'Inactive'}
-                        </Badge>
-                      </td>
-                      <td className="p-2 hidden md:table-cell">
-                        {emp ? (
-                          <Badge variant="outline" className={`text-[10px] py-0 px-1.5 ${EMPLOYMENT_COLORS[emp.employmentStatus] || ''}`}>
-                            {emp.employmentStatus.replace(/_/g, ' ')}
-                          </Badge>
-                        ) : <span className="text-muted-foreground">—</span>}
-                      </td>
-                      <td className="p-2">
-                        <Link href={`/vas/${va.id}`}>
-                          {isHRE ? (
-                            <Button variant="outline" size="sm" className="h-6 text-[10px] px-2 gap-1 bg-blue-500/5 hover:bg-blue-500/10 border-blue-200 text-blue-700">
-                              <Pencil className="h-3 w-3" />
-                              Edit
-                            </Button>
-                          ) : (
-                            <Button variant="outline" size="sm" className="h-6 text-[10px] px-2 gap-1">
-                              <Eye className="h-3 w-3" />
-                              View
-                            </Button>
-                          )}
-                        </Link>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
+                      ) : <span className="text-muted-foreground">—</span>}
+                    </TableCell>
+                    <TableCell className="px-3 py-2.5">
+                      <Link href={`/vas/${va.id}`}>
+                        {isHRE ? (
+                          <Button variant="outline" size="sm" className="h-6 text-[10px] px-2 gap-1 bg-blue-500/5 hover:bg-blue-500/10 border-blue-200 text-blue-700">
+                            <Pencil className="h-3 w-3" />
+                            Edit
+                          </Button>
+                        ) : (
+                          <Button variant="outline" size="sm" className="h-6 text-[10px] px-2 gap-1">
+                            <Eye className="h-3 w-3" />
+                            View
+                          </Button>
+                        )}
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
         )}
       </div>
     </>
