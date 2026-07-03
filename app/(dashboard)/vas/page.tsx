@@ -256,8 +256,10 @@ async function VATableSection({
                 const emp = va.user.employmentRecords?.[0]
                 const primaryMem = va.user.memberships?.find((m) => m.isPrimary) ?? va.user.memberships?.[0]
 
+                const accentColor = va.status === 'ACTIVE' ? 'border-l-green-500' : va.status === 'ON_HOLD' ? 'border-l-amber-500' : 'border-l-red-500/60'
+
                 return (
-                  <TableRow key={va.id} className="hover:bg-primary/5 group">
+                  <TableRow key={va.id} className={`hover:bg-primary/5 group border-l-4 ${accentColor}`}>
                     <TableCell className="px-3 py-2.5 sticky left-0 bg-card group-hover:bg-primary/5 z-10 transition-colors">
                       <Link href={`/vas/${va.id}`} className="flex items-center gap-2 hover:text-primary transition-colors">
                         <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-[10px] font-medium text-primary shrink-0">

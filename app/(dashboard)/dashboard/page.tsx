@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import { startOfMonth, endOfMonth, format } from 'date-fns'
 import { Skeleton } from '@/components/ui/skeleton'
+import { CircularProgress } from '@/components/ui/circular-progress'
 
 export default async function DashboardPage({
   searchParams,
@@ -141,7 +142,7 @@ async function ManagerStats({ deptId }: { deptId: string | null }) {
   const totalMonthHours = monthLogs.reduce((s, l) => s + Number(l.hours), 0)
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 fade-in-stagger">
       <StatCard icon={Building2} label="Active Clients" value={clientCount} href="/clients" />
       <StatCard icon={Users} label="Active VAs" value={vaCount} href="/vas" />
       <StatCard icon={Briefcase} label="Active Assignments" value={activeAssignments.length} href="/assignments" />
@@ -292,29 +293,59 @@ async function VADashboard({ userId, vaProfileId }: { userId: string; vaProfileI
   const totalMonthHours = monthLogs.reduce((s, l) => s + Number(l.hours), 0)
   const todayHours = todayLogs.reduce((s, l) => s + Number(l.hours), 0)
 
+  const monthlyTarget = assignments.reduce((s, a) => s + (a.monthlyHours ? Number(a.monthlyHours) : Number(a.agreedHours)), 0)
+  const monthPct = monthlyTarget > 0 ? Math.min((totalMonthHours / monthlyTarget) * 100, 100) : 0
+  const monthColor = monthPct > 100 ? 'text-orange-500' : monthPct >= 80 ? 'text-green-500' : 'text-blue-500'
+
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold tracking-tight">Hi {va.user.firstName || 'there'}</h2>
         <p className="text-sm text-muted-foreground mt-1">{format(now, 'EEEE, MMMM dd, yyyy')}</p>
       </div>
+
       <Card className="bg-gradient-to-br from-gray-900 to-gray-700 text-white border-0">
         <CardContent className="pt-6 pb-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-white/70">Today so far</p>
-              <p className="text-4xl font-bold mt-1">{todayHours.toFixed(1)}h</p>
-              <p className="text-sm text-white/70 mt-2">{todayLogs.length === 0 ? "You haven't logged any hours today." : `${todayLogs.length} entr${todayLogs.length === 1 ? 'y' : 'ies'} logged`}</p>
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-5">
+              <CircularProgress
+                value={monthPct}
+                size={88}
+                strokeWidth={7}
+                colorClassName={monthlyTarget > 0 ? monthColor : 'text-white/40'}
+                trackClassName="text-white/15"
+              >
+                <span className="text-lg font-bold">{monthlyTarget > 0 ? `${monthPct.toFixed(0)}%` : '—'}</span>
+              </CircularProgress>
+              <div>
+                <p className="text-sm text-white/70">Today so far</p>
+                <p className="text-4xl font-bold mt-1">{todayHours.toFixed(1)}h</p>
+                <p className="text-sm text-white/70 mt-2">{todayLogs.length === 0 ? "You haven't logged any hours today." : `${todayLogs.length} entr${todayLogs.length === 1 ? 'y' : 'ies'} logged`}</p>
+              </div>
             </div>
             <Link href="/work-logs/new"><Button size="lg" className="bg-white text-gray-900 hover:bg-white/90"><Plus className="h-4 w-4 mr-2" />Log Hours</Button></Link>
           </div>
         </CardContent>
       </Card>
+
       <div className="grid gap-4 md:grid-cols-3">
-        <Card><CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-muted-foreground">This Month</CardTitle></CardHeader><CardContent><p className="text-2xl font-bold">{totalMonthHours.toFixed(1)}h</p></CardContent></Card>
-        <Card><CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-muted-foreground">Active Clients</CardTitle></CardHeader><CardContent><p className="text-2xl font-bold">{assignments.length}</p></CardContent></Card>
-        <Card><CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-muted-foreground">My Skills</CardTitle></CardHeader><CardContent><p className="text-2xl font-bold">{va.vaSkills.length}</p></CardContent></Card>
+        <Card className="card-hover">
+          <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-muted-foreground">This Month</CardTitle></CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">{totalMonthHours.toFixed(1)}h</p>
+            {monthlyTarget > 0 && <p className="text-xs text-muted-foreground mt-1">of {monthlyTarget.toFixed(0)}h target</p>}
+          </CardContent>
+        </Card>
+        <Card className="card-hover">
+          <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-muted-foreground">Active Clients</CardTitle></CardHeader>
+          <CardContent><p className="text-2xl font-bold">{assignments.length}</p></CardContent>
+        </Card>
+        <Card className="card-hover">
+          <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-muted-foreground">My Skills</CardTitle></CardHeader>
+          <CardContent><p className="text-2xl font-bold">{va.vaSkills.length}</p></CardContent>
+        </Card>
       </div>
+
       <Card>
         <CardHeader className="pb-3"><CardTitle className="text-base">My Assignments</CardTitle></CardHeader>
         <CardContent>
@@ -326,14 +357,22 @@ async function VADashboard({ userId, vaProfileId }: { userId: string; vaProfileI
                 const logged = a.workLogs.reduce((s, l) => s + Number(l.hours), 0)
                 const target = a.monthlyHours ? Number(a.monthlyHours) : Number(a.agreedHours)
                 const pct = target > 0 ? Math.min((logged / target) * 100, 100) : 0
+                const ringColor = pct > 100 ? 'text-orange-500' : pct >= 80 ? 'text-green-500' : 'text-blue-500'
+                const badgeClass = pct > 100 ? 'bg-orange-500/15 text-orange-700 border-orange-500/20' : pct >= 80 ? 'bg-green-500/15 text-green-700 border-green-500/20' : 'bg-blue-500/15 text-blue-700 border-blue-500/20'
                 return (
-                  <Link key={a.id} href={`/assignments/${a.id}`} className="block p-4 rounded-lg border bg-card hover:bg-accent/30 transition-colors">
-                    <div className="flex items-center justify-between mb-2">
-                      <div><p className="text-sm font-semibold">{a.client.name}</p><p className="text-xs text-muted-foreground">{a.type} • {a.notes ?? ''}</p></div>
-                      <div className="text-right"><p className="text-sm font-medium">{logged.toFixed(1)}h / {target.toFixed(0)}h</p><p className="text-xs text-muted-foreground">{pct.toFixed(0)}% of target</p></div>
+                  <Link key={a.id} href={`/assignments/${a.id}`} className="flex items-center gap-4 p-4 rounded-lg border bg-card hover:bg-accent/30 transition-colors">
+                    <CircularProgress value={pct} size={48} strokeWidth={4} colorClassName={ringColor} className="shrink-0">
+                      <span className="text-[10px] font-semibold">{pct.toFixed(0)}%</span>
+                    </CircularProgress>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold truncate">{a.client.name}</p>
+                      <p className="text-xs text-muted-foreground truncate">{a.type} • {a.notes ?? ''}</p>
                     </div>
-                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                      <div className={pct > 100 ? 'h-full bg-orange-500' : pct >= 80 ? 'h-full bg-green-500' : 'h-full bg-blue-500'} style={{ width: `${pct}%` }} />
+                    <div className="text-right shrink-0">
+                      <p className="text-sm font-medium">{logged.toFixed(1)}h / {target.toFixed(0)}h</p>
+                      <Badge variant="outline" className={`text-[10px] py-0 px-1.5 mt-1 ${badgeClass}`}>
+                        {pct > 100 ? 'Over target' : pct >= 80 ? 'On track' : 'Behind pace'}
+                      </Badge>
                     </div>
                   </Link>
                 )
@@ -349,8 +388,13 @@ async function VADashboard({ userId, vaProfileId }: { userId: string; vaProfileI
 function StatCard({ icon: Icon, label, value, href }: { icon: React.ComponentType<{ className?: string }>; label: string; value: number | string; href: string }) {
   return (
     <Link href={href}>
-      <Card className="card-hover">
-        <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0"><CardTitle className="text-sm font-medium text-muted-foreground">{label}</CardTitle><Icon className="h-4 w-4 text-muted-foreground" /></CardHeader>
+      <Card className="card-hover group/stat bg-gradient-to-br from-card to-muted/40">
+        <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
+          <CardTitle className="text-sm font-medium text-muted-foreground">{label}</CardTitle>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted transition-transform group-hover/stat:scale-110">
+            <Icon className="h-4 w-4 text-muted-foreground" />
+          </div>
+        </CardHeader>
         <CardContent><p className="text-2xl font-bold">{value}</p></CardContent>
       </Card>
     </Link>
@@ -393,8 +437,11 @@ function VADashSkeleton() {
   return (
     <div className="space-y-6">
       <Skeleton className="h-8 w-48" />
-      <div className="rounded-xl bg-gray-800 p-6 space-y-3">
-        <Skeleton className="h-4 w-24 bg-white/10" /><Skeleton className="h-10 w-20 bg-white/10" />
+      <div className="rounded-xl bg-gray-800 p-6 flex items-center gap-5">
+        <Skeleton className="h-22 w-22 rounded-full bg-white/10 shrink-0" />
+        <div className="space-y-3">
+          <Skeleton className="h-4 w-24 bg-white/10" /><Skeleton className="h-10 w-20 bg-white/10" />
+        </div>
       </div>
       <div className="grid gap-4 md:grid-cols-3">
         {[1,2,3].map((i) => (

@@ -65,10 +65,10 @@ export default async function ClientsPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 fade-in-stagger">
           {clients.map((c) => (
             <Link key={c.id} href={`/clients/${c.id}`}>
-              <Card className="group cursor-pointer transition-all hover:shadow-md">
+              <Card className="group cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between gap-2">
                     <CardTitle className="text-base font-semibold">{c.name}</CardTitle>

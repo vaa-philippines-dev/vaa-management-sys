@@ -33,7 +33,7 @@ export default async function AssignmentsPage() {
 
   const renderCard = (a: typeof assignments[number]) => (
     <Link key={a.id} href={`/assignments/${a.id}`}>
-      <Card className="cursor-pointer transition-all hover:shadow-md">
+      <Card className={`cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 border-l-4 ${a.status === 'ACTIVE' ? 'border-l-green-500' : 'border-l-muted-foreground/30'}`}>
         <CardContent className="pt-6">
           <div className="flex items-start justify-between gap-2 mb-2">
             <div>
@@ -102,7 +102,7 @@ export default async function AssignmentsPage() {
             {regular.length === 0 ? (
               <p className="text-xs text-muted-foreground">No regular assignments.</p>
             ) : (
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 fade-in-stagger">
                 {regular.map(renderCard)}
               </div>
             )}
@@ -114,7 +114,7 @@ export default async function AssignmentsPage() {
             {projects.length === 0 ? (
               <p className="text-xs text-muted-foreground">No project assignments.</p>
             ) : (
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 fade-in-stagger">
                 {projects.map(renderCard)}
               </div>
             )}

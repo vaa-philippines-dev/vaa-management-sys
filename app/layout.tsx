@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Montserrat } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import { PostLoginGate } from "@/components/loading/PostLoginGate";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -31,7 +32,7 @@ export default function RootLayout({
       className={`${inter.variable} ${montserrat.variable} h-full antialiased`}
     >
       <body className="min-h-full font-sans">
-        {children}
+        <PostLoginGate>{children}</PostLoginGate>
         <Toaster />
       </body>
     </html>
