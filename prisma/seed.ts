@@ -83,18 +83,18 @@ async function main() {
     include: { vaProfile: true },
   })
 
-  const skillCatalog: { name: string; category: "AMAZON" | "WALMART" | "TIKTOK_SHOP" | "SHOPIFY" | "GENERAL" }[] = [
-    { name: "TikTok Shop Virtual Assistant", category: "TIKTOK_SHOP" },
-    { name: "Shopify Virtual Assistant", category: "SHOPIFY" },
-    { name: "Customer Service", category: "GENERAL" },
-    { name: "Amazon Expert", category: "AMAZON" },
-    { name: "Amazon PPC Specialist", category: "AMAZON" },
-    { name: "Social Media Specialist", category: "GENERAL" },
-    { name: "Creative Expert", category: "GENERAL" },
-    { name: "Virtual Executive Assistant", category: "GENERAL" },
-    { name: "Wholesale Expert", category: "AMAZON" },
-    { name: "Walmart Virtual Assistant", category: "WALMART" },
-    { name: "Walmart PPC Specialist", category: "WALMART" },
+  const skillCatalog: { name: string; category: "STANDARD" | "UPSKILL" | "SPECIAL" }[] = [
+    { name: "TikTok Shop Virtual Assistant", category: "STANDARD" },
+    { name: "Shopify Virtual Assistant", category: "STANDARD" },
+    { name: "Customer Service", category: "STANDARD" },
+    { name: "Amazon Expert", category: "STANDARD" },
+    { name: "Amazon PPC Specialist", category: "UPSKILL" },
+    { name: "Social Media Specialist", category: "STANDARD" },
+    { name: "Creative Expert", category: "STANDARD" },
+    { name: "Virtual Executive Assistant", category: "STANDARD" },
+    { name: "Wholesale Expert", category: "UPSKILL" },
+    { name: "Walmart Virtual Assistant", category: "STANDARD" },
+    { name: "Walmart PPC Specialist", category: "UPSKILL" },
   ]
 
   const skills = await Promise.all(

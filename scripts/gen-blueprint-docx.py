@@ -1079,7 +1079,7 @@ make_table(
     [
         ["AssignmentType", "REGULAR | PROJECT"],
         ["AssignmentStatus", "ACTIVE | PAUSED | COMPLETED | CANCELLED | ON_HOLD"],
-        ["SkillCategory", "AMAZON | WALMART | TIKTOK_SHOP | SHOPIFY | GENERAL"],
+        ["SkillCategory", "STANDARD | UPSKILL | SPECIAL"],
         ["ClientPlatform", "AMAZON | WALMART | TIKTOK_SHOP | SHOPIFY | MULTI"],
         ["Priority", "LOW | MEDIUM | HIGH | URGENT"],
     ],

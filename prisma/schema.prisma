@@ -115,11 +115,9 @@ enum AssignmentStatus {
 }
 
 enum SkillCategory {
-  AMAZON
-  WALMART
-  TIKTOK_SHOP
-  SHOPIFY
-  GENERAL
+  STANDARD
+  UPSKILL
+  SPECIAL
 }
 
 enum ClientPlatform {
@@ -451,7 +449,7 @@ model Skill {
   name            String        @unique
   shortName       String?       @map("short_name")
   acronym         String?       @unique
-  category        SkillCategory @default(GENERAL)
+  category        SkillCategory @default(STANDARD)
   jobDescription  String?       @map("job_description")
   attachmentUrl   String?       @map("attachment_url")
   isActive        Boolean       @default(true) @map("is_active")

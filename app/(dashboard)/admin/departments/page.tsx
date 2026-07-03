@@ -33,10 +33,17 @@ export default async function AdminDepartmentsPage() {
     redirect('/dashboard')
   }
   const canEdit = canMutate(currentUser)
-  const levelParents = await prisma.department.findMany({
-    where: { name: { in: ['Executive', 'Management', 'Service'] } },
-    select: { id: true, name: true },
-  })
+  const [levelParents, managementDepartments] = await Promise.all([
+    prisma.department.findMany({
+      where: { name: { in: ['Executive', 'Management', 'Service'] } },
+      select: { id: true, name: true },
+    }),
+    prisma.department.findMany({
+      where: { level: 'MANAGEMENT', NOT: { name: 'Management' } },
+      select: { id: true, name: true },
+      orderBy: { name: 'asc' },
+    }),
+  ])
 
   return (
     <div className="space-y-4">
@@ -60,6 +67,7 @@ export default async function AdminDepartmentsPage() {
         <AddDepartmentForm
           canEdit={canEdit}
           levelParents={levelParents}
+          managementDepartments={managementDepartments}
         />
       )}
 

@@ -10,10 +10,19 @@ import { toast } from 'sonner'
 
 type Parent = { id: string; name: string }
 
-export function AddDepartmentForm({ canEdit, levelParents }: { canEdit: boolean; levelParents: Parent[] }) {
+export function AddDepartmentForm({
+  canEdit,
+  levelParents,
+  managementDepartments,
+}: {
+  canEdit: boolean
+  levelParents: Parent[]
+  managementDepartments: Parent[]
+}) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [level, setLevel] = useState('MANAGEMENT')
+  const [parentDeptId, setParentDeptId] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
   if (!canEdit) return null
@@ -21,6 +30,11 @@ export function AddDepartmentForm({ canEdit, levelParents }: { canEdit: boolean;
   const getParentId = (lvl: string) => {
     const parent = levelParents.find((p) => p.name === lvl.charAt(0) + lvl.slice(1).toLowerCase())
     return parent?.id ?? null
+  }
+
+  const handleCancel = () => {
+    setOpen(false)
+    setParentDeptId('')
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -38,9 +52,11 @@ export function AddDepartmentForm({ canEdit, levelParents }: { canEdit: boolean;
       return
     }
     try {
-      await createDepartment(name, null, false, getParentId(level), level)
+      const resolvedParentId = level === 'MANAGEMENT' && parentDeptId ? parentDeptId : getParentId(level)
+      await createDepartment(name, null, false, resolvedParentId, level, shortName, acronym)
       toast.success(`"${name}" created`)
       setOpen(false)
+      setParentDeptId('')
       router.refresh()
     } catch (e: any) {
       toast.error(e.message ?? 'Failed to create department')
@@ -93,7 +109,10 @@ export function AddDepartmentForm({ canEdit, levelParents }: { canEdit: boolean;
                 <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Level *</label>
                 <select
                   value={level}
-                  onChange={(e) => setLevel(e.target.value)}
+                  onChange={(e) => {
+                    setLevel(e.target.value)
+                    if (e.target.value !== 'MANAGEMENT') setParentDeptId('')
+                  }}
                   className="w-full h-8 text-xs border rounded-md bg-background px-2 mt-0.5"
                 >
                   <option value="EXECUTIVE">Executive</option>
@@ -103,8 +122,26 @@ export function AddDepartmentForm({ canEdit, levelParents }: { canEdit: boolean;
               </div>
             </div>
 
+            {level === 'MANAGEMENT' && (
+              <div className="grid gap-2 sm:grid-cols-4">
+                <div className="sm:col-span-2">
+                  <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Parent Department</label>
+                  <select
+                    value={parentDeptId}
+                    onChange={(e) => setParentDeptId(e.target.value)}
+                    className="w-full h-8 text-xs border rounded-md bg-background px-2 mt-0.5"
+                  >
+                    <option value="">— None (top-level under Management) —</option>
+                    {managementDepartments.map((d) => (
+                      <option key={d.id} value={d.id}>{d.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )}
+
             <div className="flex items-end gap-2 justify-end">
-              <Button type="button" variant="outline" size="sm" className="h-7 text-xs" onClick={() => setOpen(false)}>
+              <Button type="button" variant="outline" size="sm" className="h-7 text-xs" onClick={handleCancel}>
                 Cancel
               </Button>
               <Button type="submit" size="sm" className="h-7 text-xs" disabled={submitting}>

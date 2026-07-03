@@ -10,14 +10,14 @@ const MAX_NAME = 100
 const MAX_SHORT = 50
 const MAX_ACRONYM = 6
 const ACRONYM_REGEX = /^[A-Z0-9 ]{2,6}$/
-const CATEGORIES = ['AMAZON', 'WALMART', 'TIKTOK_SHOP', 'SHOPIFY', 'GENERAL']
+const CATEGORIES = ['STANDARD', 'UPSKILL', 'SPECIAL']
 
 export async function createSkill(formData: FormData) {
   await requireAdminMutator()
   const name = ((formData.get('name') as string) ?? '').trim()
   const shortName = ((formData.get('shortName') as string) ?? '').trim() || null
   const acronym = ((formData.get('acronym') as string) ?? '').trim().toUpperCase() || null
-  const category = (formData.get('category') as string) || 'GENERAL'
+  const category = (formData.get('category') as string) || 'STANDARD'
   const jobDescription = ((formData.get('jobDescription') as string) ?? '').trim() || null
   const attachmentUrl = ((formData.get('attachmentUrl') as string) ?? '').trim() || null
 
@@ -63,7 +63,7 @@ export async function updateSkill(id: string, formData: FormData) {
   const name = ((formData.get('name') as string) ?? '').trim()
   const shortName = ((formData.get('shortName') as string) ?? '').trim() || null
   const acronym = ((formData.get('acronym') as string) ?? '').trim().toUpperCase() || null
-  const category = (formData.get('category') as string) || 'GENERAL'
+  const category = (formData.get('category') as string) || 'STANDARD'
   const jobDescription = ((formData.get('jobDescription') as string) ?? '').trim() || null
   const attachmentUrl = ((formData.get('attachmentUrl') as string) ?? '').trim() || null
   const isActive = formData.get('isActive') === 'on'

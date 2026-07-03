@@ -234,10 +234,24 @@ export async function revokeTemporaryRole(assignmentId: string) {
   revalidateTag(CACHE_TAGS.admin, 'default')
 }
 
-export async function createDepartment(name: string, description: string | null, isParent: boolean, parentId: string | null, level?: string | null) {
+export async function createDepartment(
+  name: string,
+  description: string | null,
+  isParent: boolean,
+  parentId: string | null,
+  level?: string | null,
+  shortName?: string | null,
+  acronym?: string | null,
+) {
   const admin = await getAdmin()
 
-  const clean = await validateCreate({ name, shortName: null, acronym: name.slice(0, 4).toUpperCase(), level: level ?? 'MANAGEMENT', parentId })
+  const clean = await validateCreate({
+    name,
+    shortName: shortName ?? null,
+    acronym: acronym ?? name.slice(0, 4).toUpperCase(),
+    level: level ?? 'MANAGEMENT',
+    parentId,
+  })
 
   const dept = await prisma.department.create({
     data: {

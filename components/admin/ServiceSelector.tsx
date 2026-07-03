@@ -17,11 +17,9 @@ type Service = {
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
-  AMAZON: 'bg-amber-500/15 text-amber-700 border-amber-500/20',
-  WALMART: 'bg-blue-500/15 text-blue-700 border-blue-500/20',
-  TIKTOK_SHOP: 'bg-pink-500/15 text-pink-700 border-pink-500/20',
-  SHOPIFY: 'bg-green-500/15 text-green-700 border-green-500/20',
-  GENERAL: 'bg-gray-500/15 text-gray-700 border-gray-500/20',
+  STANDARD: 'bg-blue-500/15 text-blue-700 border-blue-500/20',
+  UPSKILL: 'bg-purple-500/15 text-purple-700 border-purple-500/20',
+  SPECIAL: 'bg-amber-500/15 text-amber-700 border-amber-500/20',
 }
 
 export function ServiceSelector({
@@ -152,7 +150,7 @@ export function ServiceSelector({
                   ) : (
                     filtered.map((service) => {
                       const isSelected = selected.has(service.id)
-                      const colorClass = CATEGORY_COLORS[service.category] ?? CATEGORY_COLORS.GENERAL
+                      const colorClass = CATEGORY_COLORS[service.category] ?? CATEGORY_COLORS.STANDARD
                       return (
                         <label
                           key={service.id}

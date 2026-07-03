@@ -147,11 +147,9 @@ export type AssignmentStatus = (typeof AssignmentStatus)[keyof typeof Assignment
 
 
 export const SkillCategory = {
-  AMAZON: 'AMAZON',
-  WALMART: 'WALMART',
-  TIKTOK_SHOP: 'TIKTOK_SHOP',
-  SHOPIFY: 'SHOPIFY',
-  GENERAL: 'GENERAL'
+  STANDARD: 'STANDARD',
+  UPSKILL: 'UPSKILL',
+  SPECIAL: 'SPECIAL'
 } as const
 
 export type SkillCategory = (typeof SkillCategory)[keyof typeof SkillCategory]

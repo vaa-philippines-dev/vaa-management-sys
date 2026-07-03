@@ -9,14 +9,12 @@ import { createSkill, updateSkill, deleteSkill } from '@/app/(dashboard)/skills/
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
-type Category = 'AMAZON' | 'WALMART' | 'TIKTOK_SHOP' | 'SHOPIFY' | 'GENERAL'
+type Category = 'STANDARD' | 'UPSKILL' | 'SPECIAL'
 
 const CATEGORY_META: Record<Category, { label: string; color: string }> = {
-  AMAZON: { label: 'Amazon', color: 'bg-orange-500/15 text-orange-700 border-orange-500/20' },
-  WALMART: { label: 'Walmart', color: 'bg-blue-500/15 text-blue-700 border-blue-500/20' },
-  TIKTOK_SHOP: { label: 'TikTok Shop', color: 'bg-pink-500/15 text-pink-700 border-pink-500/20' },
-  SHOPIFY: { label: 'Shopify', color: 'bg-green-500/15 text-green-700 border-green-500/20' },
-  GENERAL: { label: 'General', color: 'bg-gray-500/15 text-gray-700 border-gray-500/20' },
+  STANDARD: { label: 'Standard', color: 'bg-blue-500/15 text-blue-700 border-blue-500/20' },
+  UPSKILL: { label: 'Upskill', color: 'bg-purple-500/15 text-purple-700 border-purple-500/20' },
+  SPECIAL: { label: 'Special', color: 'bg-amber-500/15 text-amber-700 border-amber-500/20' },
 }
 
 type Skill = {
@@ -271,7 +269,7 @@ function SkillRow({
   canEdit: boolean
   departments: DeptOption[]
 }) {
-  const colorClass = CATEGORY_META[skill.category as Category]?.color ?? CATEGORY_META.GENERAL.color
+  const colorClass = CATEGORY_META[skill.category as Category]?.color ?? CATEGORY_META.STANDARD.color
 
   if (isEditing && canEdit) {
     return (
@@ -371,12 +369,10 @@ function AddEditForm({
         </div>
         <div>
           <label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-0.5 block">Category</label>
-          <select name="category" defaultValue={initial?.category ?? 'GENERAL'} className="h-8 text-xs border rounded-md bg-background px-2 w-full">
-            <option value="AMAZON">Amazon</option>
-            <option value="WALMART">Walmart</option>
-            <option value="TIKTOK_SHOP">TikTok Shop</option>
-            <option value="SHOPIFY">Shopify</option>
-            <option value="GENERAL">General</option>
+          <select name="category" defaultValue={initial?.category ?? 'STANDARD'} className="h-8 text-xs border rounded-md bg-background px-2 w-full">
+            <option value="STANDARD">Standard</option>
+            <option value="UPSKILL">Upskill</option>
+            <option value="SPECIAL">Special</option>
           </select>
         </div>
       </div>
