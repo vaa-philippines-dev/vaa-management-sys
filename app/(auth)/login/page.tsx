@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
+import { ThemeToggle } from '@/components/layout/ThemeToggle'
+import { SupportRequestModal } from '@/components/auth/SupportRequestModal'
+import { RequestAccountModal } from '@/components/auth/RequestAccountModal'
 import Image from 'next/image'
 
 const errorMessages: Record<string, string> = {
@@ -15,6 +18,8 @@ const errorMessages: Record<string, string> = {
 export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [supportOpen, setSupportOpen] = useState(false)
+  const [requestOpen, setRequestOpen] = useState(false)
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -53,19 +58,18 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-background">
-      <div
-        className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12 text-center relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #1E6991 0%, #134a63 100%)' }}
-      >
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-12">
+      <div className="absolute right-4 top-4 z-20 sm:right-6 sm:top-6">
+        <ThemeToggle />
+      </div>
+
+      <div className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center">
         <div
           className="absolute rounded-full blur-3xl"
           style={{
-            width: 420,
-            height: 420,
-            top: '-10%',
-            right: '-10%',
-            background: 'radial-gradient(circle, rgba(245,155,25,0.35) 0%, transparent 70%)',
+            width: 480,
+            height: 480,
+            background: 'radial-gradient(circle, rgba(30,105,145,0.18) 0%, transparent 70%)',
           }}
         />
         <div
@@ -73,50 +77,38 @@ export default function LoginPage() {
           style={{
             width: 320,
             height: 320,
-            bottom: '-10%',
-            left: '-10%',
-            background: 'radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%)',
+            transform: 'translate(120px, -80px)',
+            background: 'radial-gradient(circle, rgba(245,155,25,0.15) 0%, transparent 70%)',
           }}
         />
-        <div className="relative z-10 flex flex-col items-center">
-          <Image
-            src="/vaalogo.svg"
-            alt="VAA Philippines Logo"
-            width={140}
-            height={140}
-            className="drop-shadow-2xl mb-8"
-          />
-          <h1 className="text-3xl font-bold text-white tracking-tight">
-            VAA Philippines
-          </h1>
-          <p className="mt-3 text-lg text-white/80" style={{ fontFamily: 'var(--font-montserrat)' }}>
-            Our <span style={{ color: '#F59B19' }}>E</span>xperts . Your Growth
-          </p>
-        </div>
       </div>
 
-      <div className="flex flex-1 items-center justify-center px-4 py-12">
-        <div className="w-full max-w-md space-y-8">
-          <div className="flex flex-col items-center text-center">
+      <div className="relative z-10 w-full max-w-sm animate-in fade-in-0 zoom-in-95 rounded-2xl border bg-card/80 px-8 py-10 shadow-2xl backdrop-blur-xl duration-300">
+        <div className="fade-in-stagger flex flex-col items-center">
+          <div className="relative mb-6 flex h-32 w-32 items-center justify-center">
             <Image
               src="/vaalogo.svg"
-              alt="VAA Philippines Logo"
-              width={96}
-              height={96}
-              className="mb-6 lg:hidden"
+              alt="VAA Logo"
+              width={128}
+              height={128}
+              className="drop-shadow-lg"
             />
-            <h2 className="text-3xl font-bold tracking-tight text-foreground">
-              Sign in to your VAA account
-            </h2>
-            <p className="mt-2 text-base text-muted-foreground">
-              Use your provided Google account
-            </p>
           </div>
+
+          <p
+            className="text-center text-lg font-semibold tracking-tight"
+            style={{ fontFamily: 'var(--font-montserrat)', color: '#176E9C' }}
+          >
+            Our Experts . Your Growth
+          </p>
+          <p className="mt-1.5 text-center text-xs text-muted-foreground">
+            Sign in to continue
+          </p>
 
           <Button
             onClick={handleGoogleLogin}
             disabled={loading}
-            className="w-full h-12 bg-[#1a73e8] hover:bg-[#1557b0] text-white border-0"
+            className="mt-6 h-9 w-full rounded-lg border-0 bg-[#1a73e8] text-sm font-medium text-white hover:bg-[#1557b0]"
           >
             <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
               <path
@@ -140,7 +132,7 @@ export default function LoginPage() {
           </Button>
 
           {error && (
-            <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
+            <div className="mt-4 w-full rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">
               <div className="flex gap-2">
                 <svg className="h-5 w-5 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd" />
@@ -158,11 +150,33 @@ export default function LoginPage() {
             </div>
           )}
 
-          <p className="text-center text-sm text-muted-foreground">
-            Note: Account credentials are provided by your manager.
+          <div className="my-5 h-px w-full bg-border" />
+
+          <div className="flex flex-col items-center gap-2 text-xs">
+            <button
+              type="button"
+              onClick={() => setSupportOpen(true)}
+              className="text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+            >
+              Trouble logging in?
+            </button>
+            <button
+              type="button"
+              onClick={() => setRequestOpen(true)}
+              className="text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+            >
+              Don't have an account? <span className="font-medium text-foreground">Request one</span>
+            </button>
+          </div>
+
+          <p className="mt-5 text-center text-[11px] text-muted-foreground/70">
+            Account credentials are provided by your manager.
           </p>
         </div>
       </div>
+
+      <SupportRequestModal open={supportOpen} onOpenChange={setSupportOpen} />
+      <RequestAccountModal open={requestOpen} onOpenChange={setRequestOpen} />
     </div>
   )
 }
