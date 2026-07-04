@@ -85,21 +85,21 @@ export default function LoginPage() {
 
       <div className="relative z-10 w-full max-w-sm animate-in fade-in-0 zoom-in-95 rounded-2xl border bg-card/80 px-8 py-10 shadow-2xl backdrop-blur-xl duration-300">
         <div className="fade-in-stagger flex flex-col items-center">
-          <div className="relative mb-6 flex h-32 w-32 items-center justify-center">
+          <div className="relative mb-1 flex h-44 w-44 items-center justify-center">
             <Image
               src="/vaalogo.svg"
               alt="VAA Logo"
-              width={128}
-              height={128}
+              width={176}
+              height={176}
               className="drop-shadow-lg"
             />
           </div>
 
           <p
-            className="text-center text-lg font-semibold tracking-tight"
+            className="text-center text-lg font-semibold tracking-[0.25em]"
             style={{ fontFamily: 'var(--font-montserrat)', color: '#176E9C' }}
           >
-            Our Experts . Your Growth
+            Our <span style={{ color: '#F59822' }}>E</span>xperts . Your Growth
           </p>
           <p className="mt-1.5 text-center text-xs text-muted-foreground">
             Sign in to continue
