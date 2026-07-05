@@ -105,7 +105,7 @@ export default function LoginPage() {
             Our <span style={{ color: '#F59822' }}>E</span>xperts . Your Growth
           </p>
           <p className="mt-1.5 text-center text-xs text-muted-foreground">
-            Sign in to continue
+            Continue with your VAA Philippines account.
           </p>
 
           <Button
