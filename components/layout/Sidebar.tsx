@@ -64,9 +64,6 @@ export function Sidebar({ role = 'MANAGER', isAdmin = false }: { role?: 'MANAGER
           height={32}
           className="shrink-0"
         />
-        <span className="text-sm font-semibold tracking-tight text-sidebar-foreground">
-          VAA Philippines
-        </span>
       </div>
       <ScrollArea className="flex-1 px-3 py-4">
         <nav className="flex flex-col gap-1">
