@@ -6,8 +6,6 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
-  GitMerge,
-  GitBranch,
   ChevronDown,
   ChevronRight,
   ExternalLink,
@@ -18,11 +16,29 @@ import {
   Filter,
   X,
   Ellipsis,
+  GripVertical,
 } from 'lucide-react'
-import { toggleDepartmentActive, deleteDepartment } from '@/app/(dashboard)/admin/users/actions'
+import { toggleDepartmentActive, deleteDepartment, reorderDepartments } from '@/app/(dashboard)/admin/users/actions'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { ServiceSelector } from '@/components/admin/ServiceSelector'
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from '@dnd-kit/core'
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+  arrayMove,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 type Dept = {
   id: string
@@ -52,12 +68,6 @@ const LEVEL_COLORS: Record<string, string> = {
   EXECUTIVE: 'bg-purple-500',
   MANAGEMENT: 'bg-blue-500',
   SERVICE: 'bg-emerald-500',
-}
-
-const LEVEL_BG: Record<string, string> = {
-  EXECUTIVE: 'hover:bg-purple-500/5',
-  MANAGEMENT: 'hover:bg-blue-500/5',
-  SERVICE: 'hover:bg-emerald-500/5',
 }
 
 export function DeptTree({
@@ -104,6 +114,16 @@ export function DeptTree({
     }
   }
 
+  const handleReorder = async (parentId: string | null, orderedIds: string[]) => {
+    try {
+      await reorderDepartments(parentId, orderedIds)
+      router.refresh()
+    } catch (e: any) {
+      toast.error(e.message ?? 'Failed to reorder')
+      router.refresh()
+    }
+  }
+
   const matches = (d: Dept) => {
     if (levelFilter !== 'all' && d.level !== levelFilter) return false
     if (statusFilter !== 'all' && d.status !== statusFilter) return false
@@ -140,6 +160,7 @@ export function DeptTree({
   }, [filtered])
 
   const hasFilters = query || levelFilter !== 'all' || statusFilter !== 'all'
+  const isFiltering = !!hasFilters
 
   return (
     <div className="space-y-3">
@@ -197,6 +218,11 @@ export function DeptTree({
             Showing {filteredCount} of {totalCount} department{totalCount !== 1 ? 's' : ''}
           </p>
         )}
+        {!isFiltering && canEdit && (
+          <p className="text-[11px] text-muted-foreground">
+            Hover a department to reveal actions. Drag the handle to reorder within its group.
+          </p>
+        )}
       </div>
 
       {filtered.length === 0 ? (
@@ -219,23 +245,80 @@ export function DeptTree({
           )}
         </div>
       ) : (
-        <div className="space-y-1.5">
-          {filtered.map((d) => (
+        <SortableGroup
+          key={filtered.map((d) => d.id).join(',')}
+          items={filtered}
+          parentId={null}
+          canReorder={canEdit && !isFiltering}
+          onReorder={handleReorder}
+          renderItem={(d) => (
             <DeptNode
               key={d.id}
               dept={d}
               depth={0}
               onToggle={handleToggle}
               onDelete={handleDelete}
+              onReorder={handleReorder}
               pendingId={pending}
               canEdit={canEdit}
+              canReorder={canEdit && !isFiltering}
               allServices={services}
               assignedSkillIds={deptSkillMap.filter((m) => m.departmentId === d.id).map((m) => m.skillId)}
+              deptSkillMap={deptSkillMap}
             />
-          ))}
-        </div>
+          )}
+        />
       )}
     </div>
+  )
+}
+
+function SortableGroup({
+  items,
+  parentId,
+  canReorder,
+  onReorder,
+  renderItem,
+}: {
+  items: Dept[]
+  parentId: string | null
+  canReorder: boolean
+  onReorder: (parentId: string | null, orderedIds: string[]) => void
+  renderItem: (d: Dept) => React.ReactNode
+}) {
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  )
+  const [order, setOrder] = useState(items.map((d) => d.id))
+
+  const byId = new Map(items.map((d) => [d.id, d]))
+  const orderedItems = order.filter((id) => byId.has(id)).map((id) => byId.get(id)!)
+
+  const draggableIds = orderedItems.filter((d) => !d.isLevel).map((d) => d.id)
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+    const oldIndex = orderedItems.findIndex((d) => d.id === active.id)
+    const newIndex = orderedItems.findIndex((d) => d.id === over.id)
+    if (oldIndex === -1 || newIndex === -1) return
+    const reordered = arrayMove(orderedItems, oldIndex, newIndex)
+    const newOrder = reordered.map((d) => d.id)
+    setOrder(newOrder)
+    onReorder(parentId, newOrder)
+  }
+
+  if (!canReorder) {
+    return <div className="space-y-1.5">{orderedItems.map(renderItem)}</div>
+  }
+
+  return (
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <SortableContext items={draggableIds} strategy={verticalListSortingStrategy}>
+        <div className="space-y-1.5">{orderedItems.map(renderItem)}</div>
+      </SortableContext>
+    </DndContext>
   )
 }
 
@@ -244,19 +327,25 @@ function DeptNode({
   depth,
   onToggle,
   onDelete,
+  onReorder,
   pendingId,
   canEdit,
+  canReorder,
   allServices,
   assignedSkillIds,
+  deptSkillMap,
 }: {
   dept: Dept
   depth: number
   onToggle: (id: string, status: string) => void
   onDelete: (id: string, name: string) => void
+  onReorder: (parentId: string | null, orderedIds: string[]) => void
   pendingId: string | null
   canEdit: boolean
+  canReorder: boolean
   allServices: { id: string; name: string; category: string }[]
   assignedSkillIds: string[]
+  deptSkillMap: { departmentId: string; skillId: string }[]
 }) {
   const [open, setOpen] = useState(depth < 1)
   const [showActions, setShowActions] = useState(false)
@@ -266,16 +355,39 @@ function DeptNode({
   const canSplit = canEdit && dept.status === 'ACTIVE' && !dept.isLevel
   const canToggle = canEdit && !dept.isLevel
   const canDelete = canEdit && !dept.isLevel && dept.childrenCount === 0
+  const canDrag = canReorder && !dept.isLevel
+
+  const sortable = useSortable({ id: dept.id, disabled: !canDrag })
+  const style = {
+    transform: CSS.Transform.toString(sortable.transform),
+    transition: sortable.transition,
+  }
 
   const levelColor = LEVEL_COLORS[dept.level ?? 'SERVICE'] ?? 'bg-gray-500'
   const assignedServices = allServices.filter((s) => assignedSkillIds.includes(s.id))
 
   return (
-    <div className="rounded-lg border bg-card overflow-hidden">
+    <div
+      ref={sortable.setNodeRef}
+      style={style}
+      className={`rounded-lg border bg-card overflow-hidden group/row ${sortable.isDragging ? 'opacity-60 shadow-lg z-10 relative' : ''}`}
+    >
       <div
         className={`flex items-center gap-2 px-3 py-2.5 transition-colors ${isPending ? 'opacity-50' : ''}`}
         style={{ paddingLeft: `${12 + depth * 16}px` }}
       >
+        {canDrag && (
+          <button
+            type="button"
+            {...sortable.attributes}
+            {...sortable.listeners}
+            className="p-0.5 rounded shrink-0 cursor-grab active:cursor-grabbing opacity-0 group-hover/row:opacity-100 transition-opacity touch-none"
+            title="Drag to reorder"
+          >
+            <GripVertical className="h-3.5 w-3.5 text-muted-foreground" />
+          </button>
+        )}
+
         {dept.children.length > 0 ? (
           <button type="button" onClick={() => setOpen(!open)} className="p-0.5 hover:bg-accent rounded shrink-0">
             {open ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
@@ -323,7 +435,7 @@ function DeptNode({
           )}
         </div>
 
-        <div className="hidden md:flex items-center gap-1 shrink-0">
+        <div className="hidden md:flex items-center gap-1 shrink-0 opacity-0 group-hover/row:opacity-100 transition-opacity">
           {canEdit && dept.level === 'SERVICE' && !dept.isLevel && allServices.length > 0 && (
             <ServiceSelector
               departmentId={dept.id}
@@ -381,6 +493,19 @@ function DeptNode({
 
       {showActions && (
         <div className="border-t px-3 py-2 bg-muted/20 md:hidden flex flex-wrap gap-1.5">
+          {canEdit && dept.level === 'SERVICE' && !dept.isLevel && allServices.length > 0 && (
+            <ServiceSelector
+              departmentId={dept.id}
+              departmentName={dept.name}
+              canEdit={canEdit}
+              services={allServices.map((s) => ({
+                id: s.id,
+                name: s.name,
+                category: s.category,
+                assigned: assignedSkillIds.includes(s.id),
+              }))}
+            />
+          )}
           {canMerge && (
             <Link href={`/admin/departments/merge/${dept.id}`}>
               <Button variant="outline" size="sm" className="h-6 text-[10px] px-1.5 gap-1">Merge</Button>
@@ -416,34 +541,35 @@ function DeptNode({
               {assignedServices.map((s) => (
                 <Badge key={s.id} variant="secondary" className="text-[10px] py-0 px-1.5">{s.name}</Badge>
               ))}
-              {canEdit && allServices.length > 0 && (
-                <ServiceSelector
-                  departmentId={dept.id}
-                  departmentName={dept.name}
-                  canEdit={canEdit}
-                  services={allServices.map((s) => ({
-                    id: s.id,
-                    name: s.name,
-                    category: s.category,
-                    assigned: assignedSkillIds.includes(s.id),
-                  }))}
-                />
-              )}
             </div>
           )}
-          {dept.children.length > 0 && dept.children.map((child) => (
-            <DeptNode
-              key={child.id}
-              dept={child}
-              depth={depth + 1}
-              onToggle={onToggle}
-              onDelete={onDelete}
-              pendingId={pendingId}
-              canEdit={canEdit}
-              allServices={allServices}
-              assignedSkillIds={assignedSkillIds}
-            />
-          ))}
+          {dept.children.length > 0 && (
+            <div className="py-1">
+              <SortableGroup
+                key={dept.children.map((c) => c.id).join(',')}
+                items={dept.children}
+                parentId={dept.id}
+                canReorder={canReorder}
+                onReorder={onReorder}
+                renderItem={(child) => (
+                  <DeptNode
+                    key={child.id}
+                    dept={child}
+                    depth={depth + 1}
+                    onToggle={onToggle}
+                    onDelete={onDelete}
+                    onReorder={onReorder}
+                    pendingId={pendingId}
+                    canEdit={canEdit}
+                    canReorder={canReorder}
+                    allServices={allServices}
+                    assignedSkillIds={deptSkillMap.filter((m) => m.departmentId === child.id).map((m) => m.skillId)}
+                    deptSkillMap={deptSkillMap}
+                  />
+                )}
+              />
+            </div>
+          )}
         </div>
       )}
     </div>

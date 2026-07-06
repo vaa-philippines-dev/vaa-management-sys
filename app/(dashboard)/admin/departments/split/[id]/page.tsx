@@ -64,7 +64,7 @@ export default async function SplitPage({ params }: { params: Promise<{ id: stri
         </div>
       </div>
 
-      <SplitWizard source={details.source} memberships={details.memberships} clients={details.clients} children={details.children} parentOptions={parentOptions} />
+      <SplitWizard source={details.source} memberships={details.memberships} clients={details.clients} subDepartments={details.children} services={details.services} parentOptions={parentOptions} />
     </div>
   )
 }

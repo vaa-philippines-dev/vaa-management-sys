@@ -13,6 +13,7 @@ type Source = { id: string; name: string; level: string | null }
 type Membership = { id: string; userName: string; userEmail: string; position: string | null }
 type Client = { id: string; name: string; contactName: string | null; isActive: boolean; status?: 'ACTIVE' | 'INACTIVE' | 'ON_HOLD' }
 type Child = { id: string; name: string; acronym: string | null }
+type ServiceItem = { id: string; name: string; category: string }
 
 type NewDeptDraft = {
   id: string
@@ -23,6 +24,7 @@ type NewDeptDraft = {
   memberships: Set<string>
   clients: Set<string>
   children: Set<string>
+  services: Set<string>
 }
 
 function makeDraft(): NewDeptDraft {
@@ -35,6 +37,7 @@ function makeDraft(): NewDeptDraft {
     memberships: new Set(),
     clients: new Set(),
     children: new Set(),
+    services: new Set(),
   }
 }
 
@@ -42,13 +45,15 @@ export function SplitWizard({
   source,
   memberships,
   clients,
-  children,
+  subDepartments,
+  services,
   parentOptions,
 }: {
   source: Source
   memberships: Membership[]
   clients: Client[]
-  children: Child[]
+  subDepartments: Child[]
+  services: ServiceItem[]
   parentOptions: { id: string; name: string }[]
 }) {
   const router = useRouter()
@@ -92,12 +97,24 @@ export function SplitWizard({
       })
     )
 
+  const toggleService = (draftId: string, svcId: string) =>
+    setDrafts((d) =>
+      d.map((x) => {
+        if (x.id !== draftId) return x
+        const s = new Set(x.services)
+        s.has(svcId) ? s.delete(svcId) : s.add(svcId)
+        return { ...x, services: s }
+      })
+    )
+
   const allAssignedMemberIds = new Set(drafts.flatMap((d) => [...d.memberships]))
   const allAssignedClientIds = new Set(drafts.flatMap((d) => [...d.clients]))
   const allAssignedChildIds = new Set(drafts.flatMap((d) => [...d.children]))
+  const allAssignedServiceIds = new Set(drafts.flatMap((d) => [...d.services]))
   const unassignedMembers = memberships.filter((m) => !allAssignedMemberIds.has(m.id))
   const unassignedClients = clients.filter((c) => !allAssignedClientIds.has(c.id))
-  const unassignedChildren = children.filter((c) => !allAssignedChildIds.has(c.id))
+  const unassignedChildren = subDepartments.filter((c) => !allAssignedChildIds.has(c.id))
+  const unassignedServices = services.filter((s) => !allAssignedServiceIds.has(s.id))
 
   const canSubmit =
     drafts.every((d) => d.name.trim() && d.acronym.trim()) &&
@@ -116,6 +133,7 @@ export function SplitWizard({
         reassignMemberships: [...d.memberships],
         reassignClients: [...d.clients],
         reassignChildren: [...d.children],
+        reassignServices: [...d.services],
       }))
       await splitDepartment(source.id, newDepartments)
       toast.success(`Split "${source.name}" into ${drafts.length} departments`)
@@ -137,7 +155,7 @@ export function SplitWizard({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-3 gap-2 text-center text-xs">
+          <div className="grid grid-cols-4 gap-2 text-center text-xs">
             <div className="rounded-lg border p-2">
               <p className="text-2xl font-bold">{memberships.length}</p>
               <p className="text-muted-foreground">Members</p>
@@ -147,8 +165,12 @@ export function SplitWizard({
               <p className="text-muted-foreground">Clients</p>
             </div>
             <div className="rounded-lg border p-2">
-              <p className="text-2xl font-bold">{children.length}</p>
+              <p className="text-2xl font-bold">{subDepartments.length}</p>
               <p className="text-muted-foreground">Sub-departments</p>
+            </div>
+            <div className="rounded-lg border p-2">
+              <p className="text-2xl font-bold">{services.length}</p>
+              <p className="text-muted-foreground">Services</p>
             </div>
           </div>
         </CardContent>
@@ -264,14 +286,14 @@ export function SplitWizard({
               </div>
             )}
 
-            {children.length > 0 && (
+            {subDepartments.length > 0 && (
               <div>
                 <label className="text-[11px] font-medium text-muted-foreground flex items-center gap-1">
                   <Building2 className="h-3 w-3" />
                   Assign sub-departments ({d.children.size} selected)
                 </label>
                 <div className="mt-1 max-h-32 overflow-y-auto rounded border p-2 space-y-1">
-                  {children.map((c) => (
+                  {subDepartments.map((c) => (
                     <label key={c.id} className="flex items-center gap-2 text-xs">
                       <input
                         type="checkbox"
@@ -287,6 +309,30 @@ export function SplitWizard({
                 </div>
               </div>
             )}
+
+            {services.length > 0 && (
+              <div>
+                <label className="text-[11px] font-medium text-muted-foreground flex items-center gap-1">
+                  <Briefcase className="h-3 w-3" />
+                  Assign services ({d.services.size} selected)
+                </label>
+                <div className="mt-1 max-h-32 overflow-y-auto rounded border p-2 space-y-1">
+                  {services.map((s) => (
+                    <label key={s.id} className="flex items-center gap-2 text-xs">
+                      <input
+                        type="checkbox"
+                        checked={d.services.has(s.id)}
+                        onChange={() => toggleService(d.id, s.id)}
+                        className="rounded"
+                      />
+                      <span className="flex-1 truncate">
+                        {s.name} <span className="text-muted-foreground">({s.category.replace(/_/g, ' ')})</span>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       ))}
@@ -295,14 +341,14 @@ export function SplitWizard({
         <Plus className="h-3.5 w-3.5 mr-1" /> Add another new department
       </Button>
 
-      {(unassignedMembers.length > 0 || unassignedClients.length > 0 || unassignedChildren.length > 0) && (
+      {(unassignedMembers.length > 0 || unassignedClients.length > 0 || unassignedChildren.length > 0 || unassignedServices.length > 0) && (
         <Card>
           <CardContent className="py-3">
             <div className="flex items-center gap-2 text-xs text-amber-700 bg-amber-500/10 border border-amber-500/20 rounded p-2">
               <AlertTriangle className="h-4 w-4 shrink-0" />
               <div>
                 <span className="font-medium">Unassigned items will remain with the source (which will be marked SPLIT):</span>{' '}
-                {unassignedMembers.length} members, {unassignedClients.length} clients, {unassignedChildren.length} sub-departments
+                {unassignedMembers.length} members, {unassignedClients.length} clients, {unassignedChildren.length} sub-departments, {unassignedServices.length} services
               </div>
             </div>
           </CardContent>

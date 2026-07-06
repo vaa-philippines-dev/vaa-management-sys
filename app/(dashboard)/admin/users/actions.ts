@@ -680,13 +680,14 @@ export type SplitDetails = {
   memberships: { id: string; userName: string; userEmail: string; position: string | null }[]
   clients: { id: string; name: string; contactName: string | null; isActive: boolean }[]
   children: { id: string; name: string; acronym: string | null }[]
+  services: { id: string; name: string; category: string }[]
 }
 
 export async function getSplitDetails(sourceId: string): Promise<SplitDetails> {
   const source = await prisma.department.findUnique({ where: { id: sourceId }, select: { id: true, name: true, level: true } })
   if (!source) throw new DepartmentValidationError([{ field: 'id', message: 'Department not found' }])
 
-  const [memberships, clients, children] = await Promise.all([
+  const [memberships, clients, children, deptSkills] = await Promise.all([
     prisma.departmentMembership.findMany({
       where: { departmentId: sourceId, endedAt: null },
       include: {
@@ -702,6 +703,11 @@ export async function getSplitDetails(sourceId: string): Promise<SplitDetails> {
     prisma.department.findMany({
       where: { parentId: sourceId, status: { in: ['ACTIVE', 'INACTIVE'] } },
       orderBy: { name: 'asc' },
+    }),
+    prisma.departmentSkill.findMany({
+      where: { departmentId: sourceId },
+      include: { skill: { select: { id: true, name: true, category: true } } },
+      orderBy: { skill: { name: 'asc' } },
     }),
   ])
 
@@ -720,6 +726,7 @@ export async function getSplitDetails(sourceId: string): Promise<SplitDetails> {
       isActive: c.isActive,
     })),
     children: children.map((d) => ({ id: d.id, name: d.name, acronym: d.acronym })),
+    services: deptSkills.map((ds) => ({ id: ds.skill.id, name: ds.skill.name, category: ds.skill.category })),
   }
 }
 
@@ -732,6 +739,7 @@ export type SplitNewDepartment = {
   reassignMemberships?: string[]
   reassignClients?: string[]
   reassignChildren?: string[]
+  reassignServices?: string[]
 }
 
 export async function splitDepartment(
@@ -772,7 +780,7 @@ export async function splitDepartment(
     })
   )
 
-  const created: { id: string; name: string; reassigned: { memberships: number; clients: number; children: number } }[] = []
+  const created: { id: string; name: string; reassigned: { memberships: number; clients: number; children: number; services: number } }[] = []
 
   await prisma.$transaction(async (tx) => {
     for (let i = 0; i < cleaned.length; i++) {
@@ -794,6 +802,7 @@ export async function splitDepartment(
       let mCount = 0
       let cCount = 0
       let chCount = 0
+      let svcCount = 0
 
       if (reassign.reassignMemberships && reassign.reassignMemberships.length > 0) {
         const result = await tx.departmentMembership.updateMany({
@@ -828,7 +837,21 @@ export async function splitDepartment(
         chCount = result.count
       }
 
-      created.push({ id: newDept.id, name: newDept.name, reassigned: { memberships: mCount, clients: cCount, children: chCount } })
+      if (reassign.reassignServices && reassign.reassignServices.length > 0) {
+        for (const skillId of reassign.reassignServices) {
+          const alreadyAssigned = await tx.departmentSkill.findUnique({
+            where: { departmentId_skillId: { departmentId: newDept.id, skillId } },
+          })
+          if (alreadyAssigned) continue
+          const result = await tx.departmentSkill.updateMany({
+            where: { departmentId: sourceId, skillId },
+            data: { departmentId: newDept.id },
+          })
+          svcCount += result.count
+        }
+      }
+
+      created.push({ id: newDept.id, name: newDept.name, reassigned: { memberships: mCount, clients: cCount, children: chCount, services: svcCount } })
     }
 
     await tx.department.update({
@@ -872,4 +895,38 @@ export async function splitDepartment(
   revalidatePath('/departments')
   revalidateTag(CACHE_TAGS.departments, 'default')
   revalidateTag(CACHE_TAGS.admin, 'default')
+}
+
+export async function reorderDepartments(parentId: string | null, orderedIds: string[]) {
+  const admin = await getAdmin()
+
+  if (orderedIds.length === 0) return
+
+  const siblings = await prisma.department.findMany({
+    where: { id: { in: orderedIds }, parentId },
+    select: { id: true },
+  })
+  if (siblings.length !== orderedIds.length) {
+    throw new DepartmentValidationError([{ field: 'orderedIds', message: 'One or more departments do not belong to this parent' }])
+  }
+
+  await prisma.$transaction(
+    orderedIds.map((id, index) =>
+      prisma.department.update({
+        where: { id, parentId },
+        data: { sortOrder: index },
+      })
+    )
+  )
+
+  await logAudit({
+    actorId: admin.id,
+    action: 'UPDATE',
+    entityType: ENTITY_DEPARTMENT,
+    entityId: parentId ?? 'root',
+    metadata: { operation: 'REORDER', parentId, orderedIds },
+  })
+
+  revalidatePath('/admin/departments')
+  revalidateTag(CACHE_TAGS.departments, 'default')
 }
