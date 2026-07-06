@@ -67,6 +67,7 @@ export function VAProfileEditor({
   data,
   driveFiles,
   currentUserId,
+  canEdit = false,
 }: {
   data: VAData
   skills: { id: string; name: string; proficiency: string | null }[]
@@ -74,6 +75,7 @@ export function VAProfileEditor({
   documents: { id: string; documentType: string; fileName: string; googleDriveUrl: string }[]
   driveFiles: DriveFile[]
   currentUserId?: string
+  canEdit?: boolean
 }) {
   const vaName = `${data.user.firstName} ${data.user.lastName}`.trim()
   const [recentUpload, setRecentUpload] = useState<string | null>(null)
@@ -90,6 +92,7 @@ export function VAProfileEditor({
           icon={User}
           label="Personal Information"
           renderEdit={(onClose) => <PersonalFormContent data={data} onClose={onClose} />}
+          canEdit={canEdit}
         >
           <TableRow label="Assigned Email" value={data.user.email} />
           <TableRow label="Work Email" value={data.profile?.workEmail} />
@@ -107,6 +110,7 @@ export function VAProfileEditor({
           icon={MapPin}
           label="Complete Address"
           renderEdit={(onClose) => <AddressFormContent data={data} onClose={onClose} />}
+          canEdit={canEdit}
         >
           <TableRow label="#, Building & Street" value={data.profile?.address} />
           <TableRow label="Province" value={data.profile?.province} />
@@ -120,6 +124,7 @@ export function VAProfileEditor({
           icon={Briefcase}
           label="Employment & Payment"
           renderEdit={(onClose) => <EmploymentFormContent data={data} onClose={onClose} />}
+          canEdit={canEdit}
         >
           <TableRow label="Position" value={data.membership?.positionTitle || data.vaProfile.vaaPosition} />
           <TableRow label="Status" value={data.employment?.employmentStatus?.replace(/_/g, ' ')} />
@@ -135,6 +140,7 @@ export function VAProfileEditor({
           icon={Globe}
           label="Socials"
           renderEdit={(onClose) => <SocialsFormContent data={data} onClose={onClose} />}
+          canEdit={canEdit}
         >
           <TableRow label="Facebook Profile" value={data.profile?.facebookName} />
           <TableRow label="Facebook URL" value={data.profile?.facebookUrl} link />
@@ -159,13 +165,15 @@ export function VAProfileEditor({
               <DocBadge icon={Camera} label="PhilHealth" url={data.profile?.philhealthPhoto ?? null} highlighted={recentUpload === 'philhealthPhoto'} />
               <DocBadge icon={FileText} label="Contract" url={data.profile?.signedContract ?? null} highlighted={recentUpload === 'signedContract'} />
             </div>
-            <Files201Content data={data} vaName={vaName} onJustUploaded={handleRecentUpload} onClose={() => {}} currentUserId={currentUserId} />
+            {canEdit && (
+              <Files201Content data={data} vaName={vaName} onJustUploaded={handleRecentUpload} onClose={() => {}} currentUserId={currentUserId} />
+            )}
           </div>
         </div>
       </div>
 
       <div className="space-y-4">
-        <StatusCard vaProfileId={data.vaProfile.id} status={data.vaProfile.status} engagementStatus={data.vaProfile.engagementStatus} />
+        <StatusCard vaProfileId={data.vaProfile.id} status={data.vaProfile.status} engagementStatus={data.vaProfile.engagementStatus} canEdit={canEdit} />
 
         <div className="rounded-2xl border bg-card p-4 shadow-sm">
           <p className="text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wider">Overview</p>
@@ -232,11 +240,13 @@ function EditableSection({
   label,
   children,
   renderEdit,
+  canEdit = true,
 }: {
   icon: React.ComponentType<{ className?: string }>
   label: string
   children: React.ReactNode
   renderEdit: (onClose: () => void) => React.ReactNode
+  canEdit?: boolean
 }) {
   const [editing, setEditing] = useState(false)
 
@@ -249,7 +259,7 @@ function EditableSection({
           </div>
           <p className="text-sm font-semibold">{label}</p>
         </div>
-        {!editing && (
+        {!editing && canEdit && (
           <Button
             variant="ghost"
             size="sm"
@@ -326,6 +336,9 @@ function SaveForm({ action, onClose, className, children, toastLabel }: {
       await action(fd)
     } catch (err) {
       console.error(err)
+      setSaving(false)
+      toast.error(err instanceof Error ? err.message : 'Failed to save changes')
+      return
     }
     setSaving(false)
     if (toastLabel) toast.success(toastLabel)
@@ -649,10 +662,12 @@ function StatusCard({
   vaProfileId,
   status,
   engagementStatus,
+  canEdit,
 }: {
   vaProfileId: string
   status: string
   engagementStatus: string | null
+  canEdit: boolean
 }) {
   const [currentStatus, setCurrentStatus] = useState(status)
   const [currentEngagement, setCurrentEngagement] = useState(engagementStatus ?? '')
@@ -688,7 +703,7 @@ function StatusCard({
           <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Active Status</Label>
           <select
             value={currentStatus}
-            disabled={savingField === 'status'}
+            disabled={!canEdit || savingField === 'status'}
             onChange={(e) => handleChange('status', e.target.value)}
             className="w-full h-8 text-xs rounded-md border bg-background px-2 disabled:opacity-60"
           >
@@ -701,7 +716,7 @@ function StatusCard({
           <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Engagement Status</Label>
           <select
             value={currentEngagement}
-            disabled={savingField === 'engagementStatus'}
+            disabled={!canEdit || savingField === 'engagementStatus'}
             onChange={(e) => handleChange('engagementStatus', e.target.value)}
             className="w-full h-8 text-xs rounded-md border bg-background px-2 disabled:opacity-60"
           >

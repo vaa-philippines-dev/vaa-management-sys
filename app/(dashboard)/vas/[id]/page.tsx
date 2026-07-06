@@ -1,8 +1,8 @@
 import { prisma } from '@/lib/prisma'
-import { getCurrentUser } from '@/lib/auth'
+import { getCurrentUser, VA_MUTATOR_ROLES } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { listDriveFiles } from '@/lib/google/drive'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -26,7 +26,8 @@ export default async function VADetailPage({
 }) {
   const { id } = await params
   const currentUser = await getCurrentUser()
-  const isHRE = currentUser ? hrgRoles.includes(currentUser.systemRole) : false
+  if (!currentUser) redirect('/login')
+  const isHRE = hrgRoles.includes(currentUser.systemRole)
 
   const va = await cached(`vas:detail:${id}`, [CACHE_TAGS.vas], 30, () =>
     prisma.vAProfile.findUnique({
@@ -56,6 +57,8 @@ export default async function VADetailPage({
   const profile = va.user.profile
   const emp = va.user.employmentRecords?.[0]
   const primaryMem = va.user.memberships?.find((m) => m.isPrimary) ?? va.user.memberships?.[0]
+  const canViewSensitive = isHRE || currentUser.id === va.user.id
+  const canEdit = VA_MUTATOR_ROLES.includes(currentUser.systemRole)
 
   const driveFiles = await listDriveFiles().catch(() => [])
 
@@ -92,11 +95,11 @@ export default async function VADetailPage({
     profile: profile ? {
       gender: profile.gender ?? null,
       whatsappNumber: profile.whatsappNumber ?? null,
-      gcashNumber: profile.gcashNumber ?? null,
+      gcashNumber: canViewSensitive ? (profile.gcashNumber ?? null) : null,
       phone: profile.phone ?? null,
       personalEmail: profile.personalEmail ?? null,
       workEmail: profile.workEmail ?? null,
-      payoneerAccount: profile.payoneerAccount ?? null,
+      payoneerAccount: canViewSensitive ? (profile.payoneerAccount ?? null) : null,
       birthDate: toDateString(profile.birthDate),
       nonCelebrant: profile.nonCelebrant,
       address: profile.address ?? null,
@@ -115,11 +118,11 @@ export default async function VADetailPage({
       facebookName: profile.facebookName ?? null,
       facebookUrl: profile.facebookUrl ?? null,
       linkedinUrl: profile.linkedinUrl ?? null,
-      passportNumber: profile.passportNumber ?? null,
-      passportPhoto: profile.passportPhoto ?? null,
-      philhealthNumber: profile.philhealthNumber ?? null,
-      philhealthPhoto: profile.philhealthPhoto ?? null,
-      signedContract: profile.signedContract ?? null,
+      passportNumber: canViewSensitive ? (profile.passportNumber ?? null) : null,
+      passportPhoto: canViewSensitive ? (profile.passportPhoto ?? null) : null,
+      philhealthNumber: canViewSensitive ? (profile.philhealthNumber ?? null) : null,
+      philhealthPhoto: canViewSensitive ? (profile.philhealthPhoto ?? null) : null,
+      signedContract: canViewSensitive ? (profile.signedContract ?? null) : null,
     } : null,
     membership: primaryMem ? {
       departmentName: primaryMem.department.name,
@@ -182,29 +185,15 @@ export default async function VADetailPage({
         </div>
       </div>
 
-      {isHRE ? (
-        <VAProfileEditor
-          data={editorData}
-          skills={skillsData}
-          assignments={assignmentData}
-          documents={docData}
-          driveFiles={driveFiles}
-          currentUserId={currentUser?.id ?? ''}
-        />
-      ) : (
-        <>
-          <VAProfileEditor
-            data={editorData}
-            skills={skillsData}
-            assignments={assignmentData}
-            documents={docData}
-            driveFiles={driveFiles}
-            currentUserId={currentUser?.id ?? ''}
-          />
-
-          {/* Non-HR just sees read-only; edit buttons are hidden via component props */}
-        </>
-      )}
+      <VAProfileEditor
+        data={editorData}
+        skills={skillsData}
+        assignments={assignmentData}
+        documents={docData}
+        driveFiles={driveFiles}
+        currentUserId={currentUser.id}
+        canEdit={canEdit}
+      />
 
       {/* Skills */}
       {va.vaSkills.length > 0 && (
@@ -250,7 +239,7 @@ export default async function VADetailPage({
         </CardContent>
       </Card>
 
-      {!isHRE && (
+      {!canEdit && (
         <p className="text-xs text-muted-foreground text-center py-4">
           Read-only view. Contact HR for edits.
         </p>

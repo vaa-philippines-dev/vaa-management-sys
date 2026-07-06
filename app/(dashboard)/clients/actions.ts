@@ -5,8 +5,12 @@ import { revalidatePath, revalidateTag } from 'next/cache'
 import { CACHE_TAGS } from '@/lib/cache'
 import { redirect } from 'next/navigation'
 import { isServiceLevel, DepartmentValidationError } from '@/lib/departments'
+import { requireRole, CLIENT_MUTATOR_ROLES } from '@/lib/auth'
+import { logAudit } from '@/lib/audit'
 
 export async function createClient(formData: FormData) {
+  const actor = await requireRole(...CLIENT_MUTATOR_ROLES)
+
   const name = formData.get('name') as string
   const contactName = (formData.get('contactName') as string) || null
   const contactEmail = (formData.get('contactEmail') as string) || null
@@ -38,12 +42,22 @@ export async function createClient(formData: FormData) {
     },
   })
 
+  await logAudit({
+    actorId: actor.id,
+    action: 'CREATE',
+    entityType: 'Client',
+    entityId: client.id,
+    after: { name, contactName, contactEmail, platform, industry, managerId, departmentId },
+  })
+
   revalidatePath('/clients')
   revalidateTag(CACHE_TAGS.clients, 'default')
   redirect(`/clients/${client.id}`)
 }
 
 export async function updateClient(id: string, formData: FormData) {
+  const actor = await requireRole(...CLIENT_MUTATOR_ROLES)
+
   const name = formData.get('name') as string
   const contactName = (formData.get('contactName') as string) || null
   const contactEmail = (formData.get('contactEmail') as string) || null
@@ -61,6 +75,11 @@ export async function updateClient(id: string, formData: FormData) {
     }
   }
 
+  const before = await prisma.client.findUnique({
+    where: { id },
+    select: { name: true, contactName: true, contactEmail: true, platform: true, industry: true, isActive: true, departmentId: true },
+  })
+
   await prisma.client.update({
     where: { id },
     data: {
@@ -76,6 +95,15 @@ export async function updateClient(id: string, formData: FormData) {
     },
   })
 
+  await logAudit({
+    actorId: actor.id,
+    action: 'UPDATE',
+    entityType: 'Client',
+    entityId: id,
+    before: before ? { ...before } : undefined,
+    after: { name, contactName, contactEmail, platform, industry, isActive, departmentId },
+  })
+
   revalidatePath('/clients')
   revalidateTag(CACHE_TAGS.clients, 'default')
   revalidatePath(`/clients/${id}`)
@@ -83,7 +111,20 @@ export async function updateClient(id: string, formData: FormData) {
 }
 
 export async function deleteClient(id: string) {
+  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN')
+
+  const before = await prisma.client.findUnique({ where: { id }, select: { name: true } })
+
   await prisma.client.delete({ where: { id } })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'DELETE',
+    entityType: 'Client',
+    entityId: id,
+    before: before ? { ...before } : undefined,
+  })
+
   revalidatePath('/clients')
   revalidateTag(CACHE_TAGS.clients, 'default')
   redirect('/clients')

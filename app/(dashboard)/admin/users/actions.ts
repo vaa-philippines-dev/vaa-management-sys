@@ -542,6 +542,8 @@ export type MergePreview = {
 }
 
 export async function getMergePreview(sourceId: string, targetId: string): Promise<MergePreview> {
+  await getAdmin()
+
   const [source, target, memberships, clients, assignments, children] = await Promise.all([
     prisma.department.findUnique({ where: { id: sourceId }, select: { id: true, name: true, level: true, status: true } }),
     prisma.department.findUnique({ where: { id: targetId }, select: { id: true, name: true, level: true, status: true } }),
@@ -657,6 +659,8 @@ export type SplitPreview = {
 }
 
 export async function getSplitPreview(sourceId: string): Promise<SplitPreview> {
+  await getAdmin()
+
   const [source, memberships, clients, assignments, children] = await Promise.all([
     prisma.department.findUnique({ where: { id: sourceId }, select: { id: true, name: true, level: true, status: true } }),
     prisma.departmentMembership.count({ where: { departmentId: sourceId, endedAt: null } }),
@@ -684,6 +688,8 @@ export type SplitDetails = {
 }
 
 export async function getSplitDetails(sourceId: string): Promise<SplitDetails> {
+  await getAdmin()
+
   const source = await prisma.department.findUnique({ where: { id: sourceId }, select: { id: true, name: true, level: true } })
   if (!source) throw new DepartmentValidationError([{ field: 'id', message: 'Department not found' }])
 

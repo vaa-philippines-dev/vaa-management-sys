@@ -1,4 +1,6 @@
 import { prisma } from '@/lib/prisma'
+import { getCurrentUser, ASSIGNMENT_MUTATOR_ROLES } from '@/lib/auth'
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { AssignmentForm } from '@/components/assignments/AssignmentForm'
@@ -8,6 +10,11 @@ export default async function NewAssignmentPage({
 }: {
   searchParams: Promise<{ clientId?: string }>
 }) {
+  const currentUser = await getCurrentUser()
+  if (!currentUser || !ASSIGNMENT_MUTATOR_ROLES.includes(currentUser.systemRole)) {
+    redirect('/dashboard')
+  }
+
   const { clientId } = await searchParams
 
   const [clients, vas] = await Promise.all([

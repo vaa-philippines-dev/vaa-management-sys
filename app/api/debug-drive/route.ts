@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { google } from 'googleapis'
+import { requireSuperAdmin } from '@/lib/auth'
 
 function getDriveAuth() {
   const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL
@@ -13,6 +14,8 @@ function getDriveAuth() {
 
 export async function GET() {
   try {
+    await requireSuperAdmin()
+
     const auth = getDriveAuth()
     const drive = google.drive({ version: 'v3', auth })
 

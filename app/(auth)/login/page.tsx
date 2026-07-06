@@ -104,6 +104,9 @@ export default function LoginPage() {
           >
             Our <span style={{ color: '#F59822' }}>E</span>xperts . Your Growth
           </p>
+          <p className="mt-1 text-center text-sm font-semibold uppercase tracking-wide text-foreground">
+            Staff & VA Management Portal
+          </p>
           <p className="mt-1.5 text-center text-xs text-muted-foreground">
             Continue with your VAA Philippines account.
           </p>

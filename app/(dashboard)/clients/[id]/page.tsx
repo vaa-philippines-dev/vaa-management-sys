@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
-import { notFound } from 'next/navigation'
+import { getCurrentUser } from '@/lib/auth'
+import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -15,11 +16,18 @@ const PLATFORM_META: Record<string, { label: string; color: string }> = {
   MULTI: { label: 'Multi-platform', color: 'bg-gray-500/15 text-gray-700 border-gray-500/20' },
 }
 
+const CLIENT_VIEW_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'STAFF']
+
 export default async function ClientDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>
 }) {
+  const currentUser = await getCurrentUser()
+  if (!currentUser || !CLIENT_VIEW_ROLES.includes(currentUser.systemRole)) {
+    redirect('/dashboard')
+  }
+
   const { id } = await params
   const client = await prisma.client.findUnique({
     where: { id },

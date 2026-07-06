@@ -1,9 +1,14 @@
 import { prisma } from '@/lib/prisma'
-import { getCurrentUser } from '@/lib/auth'
+import { getCurrentUser, CLIENT_MUTATOR_ROLES } from '@/lib/auth'
+import { redirect } from 'next/navigation'
 import { ClientForm } from '@/components/clients/ClientForm'
 
 export default async function NewClientPage() {
   const user = await getCurrentUser()
+  if (!user || !CLIENT_MUTATOR_ROLES.includes(user.systemRole)) {
+    redirect('/dashboard')
+  }
+
   const skills = await prisma.skill.findMany({ orderBy: { name: 'asc' } })
 
   return (

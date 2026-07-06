@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-- `npm run dev` / `npm run build` / `npm run start` / `npm run lint`
+- `npm run dev` / `npm run build` / `npm run start` / `npm run lint` (also runs `check:action-auth`, a guard that fails if any `actions.ts` Server Action lacks an auth guard call)
 - `npm run db:migrate` — `prisma migrate dev`
 - `npm run db:push` — `prisma db push`
 - `npm run db:seed` — runs `prisma/seed.ts` via `tsx`
@@ -50,8 +50,8 @@ Routing: `app/(auth)/` holds login + the OAuth callback route; `app/(dashboard)/
 
 - Supabase Auth (`@supabase/ssr`) is identity-only; the Prisma `User` table is the actual authorization source of truth. The OAuth callback (`app/(auth)/callback/route.ts`) rejects and signs out any Supabase session with no matching Prisma `User` row.
 - Key helpers in `lib/auth.ts`: `getCurrentUser()`, `requireAuth()`, `requireRole()`, `requireSuperAdmin()`, `requireAdminMutator()` (blocks `EXECUTIVE` — view-only by design), `requireManager()`, `requireVA()`, `canMutate()`, `hasModuleAccess()`.
-- There is no `middleware.ts`/proxy-based route protection for auth — each protected page calls `getCurrentUser()` and checks roles itself, redirecting as needed.
-- Dev fallback: if Supabase isn't configured, `getCurrentUser()` falls back to the first `DEPT_MANAGER` user in the database — relevant when debugging local auth behavior that seems to ignore login state.
+- `proxy.ts` only redirects unauthenticated requests away from protected paths (or to `/login` if Supabase itself isn't configured) — it does not check roles. Each protected page still calls `getCurrentUser()` and checks roles itself, redirecting as needed.
+- If Supabase isn't configured, `getCurrentUser()` returns `null` (no session, not logged in) and `proxy.ts` redirects protected paths to `/login` — there is no dev-mode auto-login fallback. Configure `NEXT_PUBLIC_SUPABASE_URL`/`NEXT_PUBLIC_SUPABASE_ANON_KEY` to test authenticated flows locally.
 
 ## UI conventions
 

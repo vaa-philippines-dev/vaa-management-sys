@@ -1,17 +1,26 @@
 import { prisma } from '@/lib/prisma'
+import { getCurrentUser } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { startOfMonth, endOfMonth, format } from 'date-fns'
+import { redirect } from 'next/navigation'
 import { MonthlyReportControls } from '@/components/reports/MonthlyReportControls'
 import { BarChart3 } from 'lucide-react'
+
+const REPORTS_VIEW_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'STAFF']
 
 export default async function ReportsPage({
   searchParams,
 }: {
   searchParams: Promise<{ month?: string }>
 }) {
+  const currentUser = await getCurrentUser()
+  if (!currentUser || !REPORTS_VIEW_ROLES.includes(currentUser.systemRole)) {
+    redirect('/dashboard')
+  }
+
   const { month } = await searchParams
   const refDate = month ? new Date(`${month}-01`) : new Date()
   const periodStart = startOfMonth(refDate)

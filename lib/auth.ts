@@ -1,18 +1,14 @@
 import { prisma } from '@/lib/prisma'
 import { createServerSupabase } from '@/lib/supabase/server'
 
+export const CLIENT_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'STAFF']
+export const ASSIGNMENT_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'STAFF']
+export const VA_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER']
+
 export async function getCurrentUser() {
   const supabase = await createServerSupabase()
   if (!supabase) {
-    return prisma.user.findFirst({
-      where: { systemRole: 'DEPT_MANAGER' },
-      include: {
-        vaProfile: true,
-        profile: true,
-        memberships: { include: { department: true, position: true } },
-        roleAssignments: { where: { status: 'ACTIVE' } },
-      },
-    })
+    return null
   }
 
   const {

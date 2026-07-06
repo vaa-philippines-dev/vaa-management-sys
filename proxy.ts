@@ -10,6 +10,11 @@ export async function proxy(request: NextRequest) {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!supabaseUrl || !supabaseAnonKey) {
+    const { pathname } = request.nextUrl
+    const isProtected = protectedPaths.some((p) => pathname.startsWith(p))
+    if (isProtected) {
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
     return NextResponse.next()
   }
 

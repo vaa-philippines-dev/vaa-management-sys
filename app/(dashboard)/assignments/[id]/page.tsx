@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma'
-import { getCurrentUser } from '@/lib/auth'
-import { notFound } from 'next/navigation'
+import { getCurrentUser, ASSIGNMENT_MUTATOR_ROLES } from '@/lib/auth'
+import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -16,6 +16,7 @@ export default async function AssignmentDetailPage({
 }) {
   const { id } = await params
   const user = await getCurrentUser()
+  if (!user) redirect('/login')
 
   const assignment = await prisma.assignment.findUnique({
     where: { id },
@@ -54,7 +55,7 @@ export default async function AssignmentDetailPage({
             Assigned to {assignment.vaProfile.user.firstName || assignment.vaProfile.user.email}
           </p>
         </div>
-        {['SUPER_ADMIN','SYSTEM_ADMIN','EXECUTIVE','DEPT_MANAGER','STAFF'].includes(user?.systemRole ?? '') && <AssignmentStatusButtons id={assignment.id} current={assignment.status} />}
+        {ASSIGNMENT_MUTATOR_ROLES.includes(user.systemRole) && <AssignmentStatusButtons id={assignment.id} current={assignment.status} />}
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
@@ -93,7 +94,7 @@ export default async function AssignmentDetailPage({
       <Card>
         <CardHeader className="pb-3 flex flex-row items-center justify-between">
           <CardTitle className="text-base">Work Logs</CardTitle>
-          {['SUPER_ADMIN','SYSTEM_ADMIN','EXECUTIVE','DEPT_MANAGER','STAFF'].includes(user?.systemRole ?? '') && (
+          {ASSIGNMENT_MUTATOR_ROLES.includes(user.systemRole) && (
             <Link href={`/work-logs/new?assignmentId=${assignment.id}`}>
               <Button size="sm">Log Hours</Button>
             </Link>
