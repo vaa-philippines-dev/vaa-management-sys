@@ -42,6 +42,92 @@ export async function createVA(formData: FormData) {
   redirect(`/vas/${user.vaProfile!.id}`)
 }
 
+export type VACsvRow = {
+  name: string
+  email?: string
+  hourlyRate?: string
+  notes?: string
+}
+
+export type VACsvImportResult = {
+  created: number
+  skipped: { row: number; reason: string }[]
+}
+
+export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult> {
+  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER')
+
+  const result: VACsvImportResult = { created: 0, skipped: [] }
+
+  for (let i = 0; i < rows.length; i++) {
+    const rowNum = i + 2 // account for header row, 1-indexed
+    const name = (rows[i].name || '').trim()
+    const emailInput = (rows[i].email || '').trim().toLowerCase()
+    const hourlyRateInput = (rows[i].hourlyRate || '').trim()
+    const notes = (rows[i].notes || '').trim() || null
+
+    if (!name) {
+      result.skipped.push({ row: rowNum, reason: 'Missing name' })
+      continue
+    }
+
+    const parts = name.split(' ').filter(Boolean)
+    const firstName = parts[0] || name
+    const lastName = parts.slice(1).join(' ') || '-'
+    const email = emailInput || `${firstName.toLowerCase().replace(/[^a-z0-9]/g, '')}-va-${Date.now()}-${i}@placeholder.vaa`
+
+    const hourlyRate = hourlyRateInput && !Number.isNaN(Number(hourlyRateInput)) ? Number(hourlyRateInput) : null
+
+    if (emailInput) {
+      const existing = await prisma.user.findUnique({ where: { email: emailInput } })
+      if (existing) {
+        result.skipped.push({ row: rowNum, reason: `Email already exists: ${emailInput}` })
+        continue
+      }
+    }
+
+    try {
+      const user = await prisma.user.create({
+        data: {
+          email,
+          firstName,
+          lastName,
+          systemRole: 'VA',
+          userType: 'VIRTUAL_ASSISTANT',
+          vaProfile: {
+            create: {
+              hourlyRate,
+              notes,
+            },
+          },
+        },
+        include: { vaProfile: true },
+      })
+
+      await logAudit({
+        actorId: actor.id,
+        action: 'CREATE',
+        entityType: 'User',
+        entityId: user.id,
+        after: { email, firstName, lastName, hourlyRate },
+        metadata: { viaImport: 'vas/csv' },
+      })
+
+      result.created++
+    } catch (e) {
+      result.skipped.push({ row: rowNum, reason: e instanceof Error ? e.message : 'Failed to create' })
+    }
+  }
+
+  if (result.created > 0) {
+    revalidatePath('/vas')
+    revalidateTag(CACHE_TAGS.vas, 'default')
+    revalidateTag(CACHE_TAGS.users, 'default')
+  }
+
+  return result
+}
+
 export async function updateVAProfile(vaProfileId: string, formData: FormData) {
   const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER')
 
