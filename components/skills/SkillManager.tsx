@@ -146,16 +146,16 @@ export function SkillManager({
                   <span className="text-xs font-semibold">{dept.name}</span>
                   <Badge variant="secondary" className="text-[10px] py-0 px-1.5">{items.length}</Badge>
                 </div>
-                <Table className="text-xs">
+                <Table className="text-xs table-fixed">
                   <TableHeader>
                     <TableRow className="bg-muted/10">
-                      <TableHead className="px-3 py-2.5">Name</TableHead>
-                      <TableHead className="px-3 py-2.5 hidden sm:table-cell">Short</TableHead>
-                      <TableHead className="px-3 py-2.5 hidden md:table-cell">Acronym</TableHead>
-                      <TableHead className="px-3 py-2.5">Category</TableHead>
-                      <TableHead className="px-3 py-2.5">VAs</TableHead>
-                      <TableHead className="px-3 py-2.5">Status</TableHead>
-                      {canEdit && <TableHead className="px-3 py-2.5 w-0"> </TableHead>}
+                      <TableHead className="px-3 py-2.5 w-[30%]">Name</TableHead>
+                      <TableHead className="px-3 py-2.5 w-[18%] hidden sm:table-cell">Short</TableHead>
+                      <TableHead className="px-3 py-2.5 w-[14%] hidden md:table-cell">Acronym</TableHead>
+                      <TableHead className="px-3 py-2.5 w-[14%]">Category</TableHead>
+                      <TableHead className="px-3 py-2.5 w-[8%]">VAs</TableHead>
+                      <TableHead className="px-3 py-2.5 w-[12%]">Status</TableHead>
+                      {canEdit && <TableHead className="px-3 py-2.5 w-[4%]"> </TableHead>}
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -198,16 +198,16 @@ export function SkillManager({
                 <span className="text-xs font-semibold">Unassigned</span>
                 <Badge variant="secondary" className="text-[10px] py-0 px-1.5">{byDept.get('__unassigned__')!.length}</Badge>
               </div>
-              <Table className="text-xs">
+              <Table className="text-xs table-fixed">
                 <TableHeader>
                   <TableRow className="bg-muted/10">
-                    <TableHead className="px-3 py-2.5">Name</TableHead>
-                    <TableHead className="px-3 py-2.5 hidden sm:table-cell">Short</TableHead>
-                    <TableHead className="px-3 py-2.5 hidden md:table-cell">Acronym</TableHead>
-                    <TableHead className="px-3 py-2.5">Category</TableHead>
-                    <TableHead className="px-3 py-2.5">VAs</TableHead>
-                    <TableHead className="px-3 py-2.5">Status</TableHead>
-                    {canEdit && <TableHead className="px-3 py-2.5 w-0"> </TableHead>}
+                    <TableHead className="px-3 py-2.5 w-[30%]">Name</TableHead>
+                    <TableHead className="px-3 py-2.5 w-[18%] hidden sm:table-cell">Short</TableHead>
+                    <TableHead className="px-3 py-2.5 w-[14%] hidden md:table-cell">Acronym</TableHead>
+                    <TableHead className="px-3 py-2.5 w-[14%]">Category</TableHead>
+                    <TableHead className="px-3 py-2.5 w-[8%]">VAs</TableHead>
+                    <TableHead className="px-3 py-2.5 w-[12%]">Status</TableHead>
+                    {canEdit && <TableHead className="px-3 py-2.5 w-[4%]"> </TableHead>}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -286,11 +286,13 @@ function SkillRow({
 
   return (
     <TableRow className={`group border-l-4 ${skill.isActive ? 'border-l-emerald-500' : 'border-l-muted-foreground/30'}`}>
-      <TableCell className="px-3 py-2.5">
-        <span className="font-medium">{skill.name}</span>
+      <TableCell className="px-3 py-2.5 overflow-hidden">
+        <span className="font-medium truncate block" title={skill.name}>{skill.name}</span>
       </TableCell>
-      <TableCell className="px-3 py-2.5 text-muted-foreground hidden sm:table-cell">{skill.shortName ?? '—'}</TableCell>
-      <TableCell className="px-3 py-2.5 hidden md:table-cell">
+      <TableCell className="px-3 py-2.5 text-muted-foreground hidden sm:table-cell overflow-hidden">
+        <span className="truncate block" title={skill.shortName ?? undefined}>{skill.shortName ?? '—'}</span>
+      </TableCell>
+      <TableCell className="px-3 py-2.5 hidden md:table-cell overflow-hidden">
         {skill.acronym ? (
           <code className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-muted">{skill.acronym}</code>
         ) : '—'}
