@@ -62,7 +62,8 @@ export default async function VADetailPage({
   const editorData = {
     vaProfile: {
       id: va.id,
-      isActive: va.status === 'ACTIVE',
+      status: va.status,
+      engagementStatus: va.engagementStatus ?? null,
       hybrid: va.hybrid,
       hourlyRate: va.hourlyRate ? Number(va.hourlyRate) : null,
       baseRate: va.baseRate ? Number(va.baseRate) : null,

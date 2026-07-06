@@ -28,7 +28,7 @@ import { AddressFields } from '@/components/vas/AddressFields'
 
 type VAData = {
   vaProfile: {
-    id: string; isActive: boolean; hybrid: boolean
+    id: string; status: string; engagementStatus: string | null; hybrid: boolean
     hourlyRate: number | null; baseRate: number | null
     vaaPosition: string | null; level: string | null
     availabilityStatus: string; preferredWorkHours: number | null
@@ -165,6 +165,8 @@ export function VAProfileEditor({
       </div>
 
       <div className="space-y-4">
+        <StatusCard vaProfileId={data.vaProfile.id} status={data.vaProfile.status} engagementStatus={data.vaProfile.engagementStatus} />
+
         <div className="rounded-2xl border bg-card p-4 shadow-sm">
           <p className="text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wider">Overview</p>
           <div className="grid grid-cols-2 gap-3">
@@ -622,6 +624,94 @@ function DocBadge({ icon: Icon, label, url, highlighted }: { icon: React.Compone
       ) : (
         <span className="text-muted-foreground">Missing</span>
       )}
+    </div>
+  )
+}
+
+const GENERAL_STATUS_OPTIONS = [
+  { value: 'ACTIVE', label: 'Active' },
+  { value: 'ON_HOLD', label: 'On Hold' },
+  { value: 'INACTIVE', label: 'Inactive' },
+]
+
+const ENGAGEMENT_STATUS_OPTIONS = [
+  { value: 'EMPLOYED', label: 'Employed' },
+  { value: 'ENGAGED', label: 'Engaged' },
+  { value: 'CONTRACTED', label: 'Contracted' },
+  { value: 'END_OF_CONTRACT', label: 'End of Contract' },
+  { value: 'TRANSFERRED', label: 'Transferred' },
+  { value: 'RESIGNED', label: 'Resigned' },
+  { value: 'TERMINATED', label: 'Terminated' },
+  { value: 'BLACKLISTED', label: 'Blacklisted' },
+]
+
+function StatusCard({
+  vaProfileId,
+  status,
+  engagementStatus,
+}: {
+  vaProfileId: string
+  status: string
+  engagementStatus: string | null
+}) {
+  const [currentStatus, setCurrentStatus] = useState(status)
+  const [currentEngagement, setCurrentEngagement] = useState(engagementStatus ?? '')
+  const [savingField, setSavingField] = useState<'status' | 'engagementStatus' | null>(null)
+
+  const handleChange = async (field: 'status' | 'engagementStatus', value: string) => {
+    const previousStatus = currentStatus
+    const previousEngagement = currentEngagement
+
+    if (field === 'status') setCurrentStatus(value)
+    else setCurrentEngagement(value)
+
+    setSavingField(field)
+    try {
+      const fd = new FormData()
+      fd.set(field, value)
+      await updateVAProfile(vaProfileId, fd)
+      toast.success(field === 'status' ? 'Active status updated' : 'Engagement status updated')
+    } catch (err) {
+      if (field === 'status') setCurrentStatus(previousStatus)
+      else setCurrentEngagement(previousEngagement)
+      toast.error(err instanceof Error ? err.message : 'Failed to update status')
+    } finally {
+      setSavingField(null)
+    }
+  }
+
+  return (
+    <div className="rounded-2xl border bg-card p-4 shadow-sm">
+      <p className="text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wider">Statuses</p>
+      <div className="space-y-3">
+        <div>
+          <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Active Status</Label>
+          <select
+            value={currentStatus}
+            disabled={savingField === 'status'}
+            onChange={(e) => handleChange('status', e.target.value)}
+            className="w-full h-8 text-xs rounded-md border bg-background px-2 disabled:opacity-60"
+          >
+            {GENERAL_STATUS_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>{opt.label}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Engagement Status</Label>
+          <select
+            value={currentEngagement}
+            disabled={savingField === 'engagementStatus'}
+            onChange={(e) => handleChange('engagementStatus', e.target.value)}
+            className="w-full h-8 text-xs rounded-md border bg-background px-2 disabled:opacity-60"
+          >
+            <option value="">— Not set —</option>
+            {ENGAGEMENT_STATUS_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>{opt.label}</option>
+            ))}
+          </select>
+        </div>
+      </div>
     </div>
   )
 }

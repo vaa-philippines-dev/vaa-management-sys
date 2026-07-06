@@ -134,7 +134,8 @@ export async function updateVAProfile(vaProfileId: string, formData: FormData) {
   const data: Record<string, any> = {}
   const allowedFields = [
     'vaaPosition', 'level', 'baseRate', 'hourlyRate', 'notes',
-    'preferredWorkHours', 'availableSchedule', 'hybrid', 'isActive', 'availabilityStatus',
+    'preferredWorkHours', 'availableSchedule', 'hybrid', 'availabilityStatus',
+    'status', 'engagementStatus',
     'contractLink', 'folder201Link', 'file201Link', 'vaClientFileLink',
     'healthCheckFileLink', 'portfolioUrl', 'vaProfileLink', 'payoutSummaryLink', 'dept201FolderLink',
   ]
@@ -142,7 +143,7 @@ export async function updateVAProfile(vaProfileId: string, formData: FormData) {
   for (const field of allowedFields) {
     const value = formData.get(field)
     if (value !== null) {
-      if (field === 'hybrid' || field === 'isActive') {
+      if (field === 'hybrid') {
         data[field] = value === 'true'
       } else if (field === 'baseRate' || field === 'hourlyRate' || field === 'preferredWorkHours') {
         data[field] = value ? Number(value) : null
@@ -154,7 +155,7 @@ export async function updateVAProfile(vaProfileId: string, formData: FormData) {
 
   const before = await prisma.vAProfile.findUnique({
     where: { id: vaProfileId },
-    select: { vaaPosition: true, level: true, baseRate: true, hourlyRate: true, preferredWorkHours: true, availabilityStatus: true, hybrid: true, status: true },
+    select: { vaaPosition: true, level: true, baseRate: true, hourlyRate: true, preferredWorkHours: true, availabilityStatus: true, hybrid: true, status: true, engagementStatus: true },
   })
 
   await prisma.vAProfile.update({ where: { id: vaProfileId }, data })

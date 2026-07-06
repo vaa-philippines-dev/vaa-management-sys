@@ -3,7 +3,7 @@
 import { useRef, useState, useTransition } from 'react'
 import { Modal } from '@/components/ui/modal'
 import { Button } from '@/components/ui/button'
-import { UploadCloud, Loader2, FileText, X } from 'lucide-react'
+import { UploadCloud, Loader2, FileText, X, Download } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { bulkImportVAs, type VACsvRow, type VACsvImportResult } from '@/app/(dashboard)/vas/actions'
@@ -103,6 +103,20 @@ export function ImportVACsvModal({ open, onClose }: { open: boolean; onClose: ()
     onClose()
   }
 
+  const handleDownloadTemplate = () => {
+    const csvContent = [
+      'name,email,hourlyRate,notes',
+      'Juan Dela Cruz,juan@example.com,5.50,Sample VA row — replace or delete me',
+    ].join('\n')
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'va-import-template.csv'
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+
   return (
     <Modal
       open={open}
@@ -128,6 +142,13 @@ export function ImportVACsvModal({ open, onClose }: { open: boolean; onClose: ()
       }
     >
       <div className="space-y-3">
+        {!fileName && !result && (
+          <Button type="button" variant="outline" size="sm" className="h-8 w-full" onClick={handleDownloadTemplate}>
+            <Download className="h-3.5 w-3.5 mr-1.5" />
+            Download CSV Template
+          </Button>
+        )}
+
         {!fileName ? (
           <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-xl p-8 cursor-pointer hover:bg-muted/40 transition-colors">
             <UploadCloud className="h-6 w-6 text-muted-foreground" />
