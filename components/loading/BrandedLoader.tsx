@@ -32,18 +32,6 @@ export function BrandedLoader() {
     <div className="flex flex-col items-center justify-center min-h-[80vh] gap-10 overflow-hidden">
       <div className="relative flex items-center justify-center">
         <div
-          className="absolute rounded-full blur-2xl transition-all ease-out"
-          style={{
-            width: 220,
-            height: 220,
-            opacity: stage === 'settle' ? 1 : 0,
-            transform: stage === 'settle' ? 'scale(1)' : 'scale(0.6)',
-            background: 'radial-gradient(circle, rgba(30,105,145,0.25) 0%, rgba(245,155,25,0.12) 60%, transparent 80%)',
-            transitionDuration: '900ms',
-          }}
-        />
-
-        <div
           className="relative transition-all ease-out"
           style={{
             transform: stage === 'settle' ? 'scale(1) rotate(0deg)' : 'scale(0.35) rotate(-8deg)',
@@ -58,7 +46,6 @@ export function BrandedLoader() {
             width={200}
             height={200}
             priority
-            className="drop-shadow-2xl"
           />
         </div>
       </div>
