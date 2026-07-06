@@ -52,14 +52,18 @@ export function BrandedLoader() {
             transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
           }}
         >
-          <Image
-            src="/vaalogo.svg"
-            alt="VAA Philippines"
-            width={200}
-            height={200}
-            priority
-            className="drop-shadow-2xl"
-          />
+          <div className="relative z-10 flex flex-col items-center">
+            <Image
+              src="/vaalogo.svg"
+              alt="VAA Philippines Logo"
+              width={140}
+              height={140}
+              className="drop-shadow-2xl mb-8"
+            />
+            <p className="mt-3 text-lg text-white/80" style={{ fontFamily: 'var(--font-montserrat)' }}>
+              Our <span style={{ color: '#F59B19' }}>E</span>xperts . Your Growth
+            </p>
+          </div>
         </div>
       </div>
 
@@ -73,7 +77,6 @@ export function BrandedLoader() {
           transitionDelay: '150ms',
         }}
       >
-        {renderTagline()}
       </p>
 
       <div className="flex gap-2">
