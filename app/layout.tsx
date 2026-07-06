@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Montserrat } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
 import { PostLoginGate } from "@/components/loading/PostLoginGate";
 
@@ -29,11 +30,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${inter.variable} ${montserrat.variable} h-full antialiased`}
     >
       <body className="min-h-full font-sans">
-        <PostLoginGate>{children}</PostLoginGate>
-        <Toaster />
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <PostLoginGate>{children}</PostLoginGate>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );
