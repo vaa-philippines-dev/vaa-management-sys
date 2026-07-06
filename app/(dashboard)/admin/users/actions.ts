@@ -47,6 +47,34 @@ export async function updateUserRole(userId: string, systemRole: string) {
   revalidateTag(CACHE_TAGS.users, 'default')
 }
 
+export async function updateUserName(userId: string, firstName: string, lastName: string) {
+  const admin = await getAdmin()
+
+  const cleanFirst = firstName.trim()
+  const cleanLast = lastName.trim()
+  if (!cleanFirst || !cleanLast) throw new Error('First and last name are required')
+
+  const before = await prisma.user.findUnique({ where: { id: userId }, select: { firstName: true, lastName: true, email: true } })
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: { firstName: cleanFirst, lastName: cleanLast },
+  })
+
+  await logAudit({
+    actorId: admin.id,
+    action: 'UPDATE',
+    entityType: ENTITY_USER,
+    entityId: userId,
+    before: before ? { firstName: before.firstName, lastName: before.lastName } : undefined,
+    after: { firstName: cleanFirst, lastName: cleanLast },
+    metadata: { email: before?.email },
+  })
+
+  revalidatePath('/admin/users')
+  revalidateTag(CACHE_TAGS.users, 'default')
+}
+
 export async function updateUserType(userId: string, userType: string) {
   const admin = await getAdmin()
   const before = await prisma.user.findUnique({ where: { id: userId }, select: { userType: true, email: true } })
@@ -494,6 +522,12 @@ export async function createUser(formData: FormData) {
   revalidateTag(CACHE_TAGS.users, 'default')
   revalidatePath('/admin')
   revalidateTag(CACHE_TAGS.admin, 'default')
+}
+
+export async function updateUserNameByForm(id: string, formData: FormData) {
+  const firstName = formData.get('firstName') as string
+  const lastName = formData.get('lastName') as string
+  if (firstName && lastName) await updateUserName(id, firstName, lastName)
 }
 
 export async function updateUserRoleByForm(id: string, formData: FormData) {

@@ -7,6 +7,7 @@ import {
   toggleUserActive,
   removeDepartmentMembership,
   revokeTemporaryRole,
+  updateUserNameByForm,
   updateUserRoleByForm,
   updateUserTypeByForm,
   assignDeptByForm,
@@ -144,6 +145,28 @@ export function UserCard({
           {!canEdit && (
             <div className="rounded-md bg-amber-500/10 border border-amber-500/20 px-3 py-2 text-xs text-amber-700">
               View-only mode — Executive role cannot modify user records.
+            </div>
+          )}
+          {canEdit && (
+            <div>
+              <label className="text-[11px] font-medium text-muted-foreground mb-1 block">Name</label>
+              <form key={`name-${user.id}-${user.firstName}-${user.lastName}`} action={updateUserNameByForm.bind(null, user.id)} className="flex gap-1.5">
+                <input
+                  name="firstName"
+                  defaultValue={user.firstName}
+                  placeholder="First name"
+                  className="flex-1 px-2 py-1 text-xs border rounded-md bg-background h-7"
+                  required
+                />
+                <input
+                  name="lastName"
+                  defaultValue={user.lastName}
+                  placeholder="Last name"
+                  className="flex-1 px-2 py-1 text-xs border rounded-md bg-background h-7"
+                  required
+                />
+                <Button type="submit" size="sm" variant="outline" className="text-xs h-7 px-2 shrink-0">Save</Button>
+              </form>
             </div>
           )}
           <div className="grid gap-2.5 sm:grid-cols-2">
