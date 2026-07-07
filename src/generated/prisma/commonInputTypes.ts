@@ -399,6 +399,23 @@ export type EnumEmploymentStatusNullableWithAggregatesFilter<$PrismaModel = neve
   _max?: Prisma.NestedEnumEmploymentStatusNullableFilter<$PrismaModel>
 }
 
+export type EnumVAStatusTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.VAStatusType | Prisma.EnumVAStatusTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.VAStatusType[] | Prisma.ListEnumVAStatusTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VAStatusType[] | Prisma.ListEnumVAStatusTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVAStatusTypeFilter<$PrismaModel> | $Enums.VAStatusType
+}
+
+export type EnumVAStatusTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VAStatusType | Prisma.EnumVAStatusTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.VAStatusType[] | Prisma.ListEnumVAStatusTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VAStatusType[] | Prisma.ListEnumVAStatusTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVAStatusTypeWithAggregatesFilter<$PrismaModel> | $Enums.VAStatusType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVAStatusTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVAStatusTypeFilter<$PrismaModel>
+}
+
 export type EnumSkillCategoryFilter<$PrismaModel = never> = {
   equals?: $Enums.SkillCategory | Prisma.EnumSkillCategoryFieldRefInput<$PrismaModel>
   in?: $Enums.SkillCategory[] | Prisma.ListEnumSkillCategoryFieldRefInput<$PrismaModel>
@@ -1094,6 +1111,23 @@ export type NestedEnumEmploymentStatusNullableWithAggregatesFilter<$PrismaModel 
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedEnumEmploymentStatusNullableFilter<$PrismaModel>
   _max?: Prisma.NestedEnumEmploymentStatusNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumVAStatusTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.VAStatusType | Prisma.EnumVAStatusTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.VAStatusType[] | Prisma.ListEnumVAStatusTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VAStatusType[] | Prisma.ListEnumVAStatusTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVAStatusTypeFilter<$PrismaModel> | $Enums.VAStatusType
+}
+
+export type NestedEnumVAStatusTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VAStatusType | Prisma.EnumVAStatusTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.VAStatusType[] | Prisma.ListEnumVAStatusTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VAStatusType[] | Prisma.ListEnumVAStatusTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVAStatusTypeWithAggregatesFilter<$PrismaModel> | $Enums.VAStatusType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVAStatusTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVAStatusTypeFilter<$PrismaModel>
 }
 
 export type NestedEnumSkillCategoryFilter<$PrismaModel = never> = {

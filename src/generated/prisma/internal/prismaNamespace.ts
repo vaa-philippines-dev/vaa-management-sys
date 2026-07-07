@@ -392,6 +392,7 @@ export const ModelName = {
   EmploymentRecord: 'EmploymentRecord',
   RoleAssignment: 'RoleAssignment',
   VAProfile: 'VAProfile',
+  VAStatusHistory: 'VAStatusHistory',
   Skill: 'Skill',
   DepartmentSkill: 'DepartmentSkill',
   VASkill: 'VASkill',
@@ -418,7 +419,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveRequest" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "auditLog"
+    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAStatusHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveRequest" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "auditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1011,6 +1012,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.VAProfileCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.VAProfileCountAggregateOutputType> | number
+        }
+      }
+    }
+    VAStatusHistory: {
+      payload: Prisma.$VAStatusHistoryPayload<ExtArgs>
+      fields: Prisma.VAStatusHistoryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VAStatusHistoryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAStatusHistoryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VAStatusHistoryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAStatusHistoryPayload>
+        }
+        findFirst: {
+          args: Prisma.VAStatusHistoryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAStatusHistoryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VAStatusHistoryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAStatusHistoryPayload>
+        }
+        findMany: {
+          args: Prisma.VAStatusHistoryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAStatusHistoryPayload>[]
+        }
+        create: {
+          args: Prisma.VAStatusHistoryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAStatusHistoryPayload>
+        }
+        createMany: {
+          args: Prisma.VAStatusHistoryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VAStatusHistoryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAStatusHistoryPayload>[]
+        }
+        delete: {
+          args: Prisma.VAStatusHistoryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAStatusHistoryPayload>
+        }
+        update: {
+          args: Prisma.VAStatusHistoryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAStatusHistoryPayload>
+        }
+        deleteMany: {
+          args: Prisma.VAStatusHistoryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VAStatusHistoryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VAStatusHistoryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAStatusHistoryPayload>[]
+        }
+        upsert: {
+          args: Prisma.VAStatusHistoryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAStatusHistoryPayload>
+        }
+        aggregate: {
+          args: Prisma.VAStatusHistoryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVAStatusHistory>
+        }
+        groupBy: {
+          args: Prisma.VAStatusHistoryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VAStatusHistoryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VAStatusHistoryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VAStatusHistoryCountAggregateOutputType> | number
         }
       }
     }
@@ -2046,6 +2121,21 @@ export const VAProfileScalarFieldEnum = {
 export type VAProfileScalarFieldEnum = (typeof VAProfileScalarFieldEnum)[keyof typeof VAProfileScalarFieldEnum]
 
 
+export const VAStatusHistoryScalarFieldEnum = {
+  id: 'id',
+  vaProfileId: 'vaProfileId',
+  statusType: 'statusType',
+  oldValue: 'oldValue',
+  newValue: 'newValue',
+  effectiveDate: 'effectiveDate',
+  reason: 'reason',
+  changedById: 'changedById',
+  createdAt: 'createdAt'
+} as const
+
+export type VAStatusHistoryScalarFieldEnum = (typeof VAStatusHistoryScalarFieldEnum)[keyof typeof VAStatusHistoryScalarFieldEnum]
+
+
 export const SkillScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -2465,6 +2555,20 @@ export type ListEnumAvailabilityFieldRefInput<$PrismaModel> = FieldRefInputType<
 
 
 /**
+ * Reference to a field of type 'VAStatusType'
+ */
+export type EnumVAStatusTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VAStatusType'>
+    
+
+
+/**
+ * Reference to a field of type 'VAStatusType[]'
+ */
+export type ListEnumVAStatusTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VAStatusType[]'>
+    
+
+
+/**
  * Reference to a field of type 'SkillCategory'
  */
 export type EnumSkillCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SkillCategory'>
@@ -2791,6 +2895,7 @@ export type GlobalOmitConfig = {
   employmentRecord?: Prisma.EmploymentRecordOmit
   roleAssignment?: Prisma.RoleAssignmentOmit
   vAProfile?: Prisma.VAProfileOmit
+  vAStatusHistory?: Prisma.VAStatusHistoryOmit
   skill?: Prisma.SkillOmit
   departmentSkill?: Prisma.DepartmentSkillOmit
   vASkill?: Prisma.VASkillOmit

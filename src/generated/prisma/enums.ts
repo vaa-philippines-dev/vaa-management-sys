@@ -61,6 +61,14 @@ export const EmploymentStatus = {
 export type EmploymentStatus = (typeof EmploymentStatus)[keyof typeof EmploymentStatus]
 
 
+export const VAStatusType = {
+  GENERAL: 'GENERAL',
+  ENGAGEMENT: 'ENGAGEMENT'
+} as const
+
+export type VAStatusType = (typeof VAStatusType)[keyof typeof VAStatusType]
+
+
 export const Availability = {
   AVAILABLE: 'AVAILABLE',
   PARTIALLY_ASSIGNED: 'PARTIALLY_ASSIGNED',

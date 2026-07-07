@@ -46,12 +46,44 @@ export type VACsvRow = {
   name: string
   email?: string
   hourlyRate?: string
+  baseRate?: string
+  vaaPosition?: string
+  level?: string
+  department?: string
+  availabilityStatus?: string
+  status?: string
+  engagementStatus?: string
+  hybrid?: string
+  preferredWorkHours?: string
+  availableSchedule?: string
+  phone?: string
+  personalEmail?: string
+  workEmail?: string
+  gender?: string
+  birthDate?: string
+  address?: string
+  emergencyContactName?: string
+  emergencyContactPhone?: string
+  emergencyContactRelation?: string
+  facebookName?: string
+  facebookUrl?: string
+  linkedinUrl?: string
   notes?: string
 }
 
 export type VACsvImportResult = {
   created: number
   skipped: { row: number; reason: string }[]
+}
+
+const CSV_AVAILABILITY_VALUES = ['AVAILABLE', 'PARTIALLY_ASSIGNED', 'FULLY_ASSIGNED', 'ON_LEAVE', 'UNAVAILABLE']
+const CSV_STATUS_VALUES = ['ACTIVE', 'INACTIVE', 'ON_HOLD']
+const CSV_ENGAGEMENT_VALUES = ['EMPLOYED', 'ENGAGED', 'CONTRACTED', 'END_OF_CONTRACT', 'TRANSFERRED', 'RESIGNED', 'TERMINATED', 'BLACKLISTED']
+
+function normalizeEnum(value: string | undefined, allowed: string[]): string | null {
+  if (!value) return null
+  const normalized = value.trim().toUpperCase().replace(/[\s-]+/g, '_')
+  return allowed.includes(normalized) ? normalized : null
 }
 
 export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult> {
@@ -61,10 +93,13 @@ export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult
 
   for (let i = 0; i < rows.length; i++) {
     const rowNum = i + 2 // account for header row, 1-indexed
-    const name = (rows[i].name || '').trim()
-    const emailInput = (rows[i].email || '').trim().toLowerCase()
-    const hourlyRateInput = (rows[i].hourlyRate || '').trim()
-    const notes = (rows[i].notes || '').trim() || null
+    const row = rows[i]
+    const name = (row.name || '').trim()
+    const emailInput = (row.email || '').trim().toLowerCase()
+    const hourlyRateInput = (row.hourlyRate || '').trim()
+    const baseRateInput = (row.baseRate || '').trim()
+    const preferredWorkHoursInput = (row.preferredWorkHours || '').trim()
+    const notes = (row.notes || '').trim() || null
 
     if (!name) {
       result.skipped.push({ row: rowNum, reason: 'Missing name' })
@@ -77,6 +112,14 @@ export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult
     const email = emailInput || `${firstName.toLowerCase().replace(/[^a-z0-9]/g, '')}-va-${Date.now()}-${i}@placeholder.vaa`
 
     const hourlyRate = hourlyRateInput && !Number.isNaN(Number(hourlyRateInput)) ? Number(hourlyRateInput) : null
+    const baseRate = baseRateInput && !Number.isNaN(Number(baseRateInput)) ? Number(baseRateInput) : null
+    const preferredWorkHours = preferredWorkHoursInput && !Number.isNaN(Number(preferredWorkHoursInput)) ? Number(preferredWorkHoursInput) : null
+    const hybrid = (row.hybrid || '').trim().toLowerCase() === 'true' || (row.hybrid || '').trim().toLowerCase() === 'yes'
+    const birthDate = (row.birthDate || '').trim() ? new Date((row.birthDate || '').trim()) : null
+
+    const availabilityStatus = normalizeEnum(row.availabilityStatus, CSV_AVAILABILITY_VALUES)
+    const status = normalizeEnum(row.status, CSV_STATUS_VALUES)
+    const engagementStatus = normalizeEnum(row.engagementStatus, CSV_ENGAGEMENT_VALUES)
 
     if (emailInput) {
       const existing = await prisma.user.findUnique({ where: { email: emailInput } })
@@ -84,6 +127,15 @@ export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult
         result.skipped.push({ row: rowNum, reason: `Email already exists: ${emailInput}` })
         continue
       }
+    }
+
+    let departmentId: string | null = null
+    const departmentInput = (row.department || '').trim()
+    if (departmentInput) {
+      const dept = await prisma.department.findFirst({
+        where: { name: { equals: departmentInput, mode: 'insensitive' } },
+      })
+      departmentId = dept?.id ?? null
     }
 
     try {
@@ -97,9 +149,35 @@ export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult
           vaProfile: {
             create: {
               hourlyRate,
+              baseRate,
+              vaaPosition: (row.vaaPosition || '').trim() || null,
+              level: (row.level || '').trim() || null,
+              availabilityStatus: (availabilityStatus as any) ?? undefined,
+              status: (status as any) ?? undefined,
+              engagementStatus: (engagementStatus as any) ?? undefined,
+              hybrid,
+              preferredWorkHours,
+              availableSchedule: (row.availableSchedule || '').trim() || null,
               notes,
             },
           },
+          profile: {
+            create: {
+              phone: (row.phone || '').trim() || null,
+              personalEmail: (row.personalEmail || '').trim() || null,
+              workEmail: (row.workEmail || '').trim() || null,
+              gender: (row.gender || '').trim() || null,
+              birthDate,
+              address: (row.address || '').trim() || null,
+              emergencyContactName: (row.emergencyContactName || '').trim() || null,
+              emergencyContactPhone: (row.emergencyContactPhone || '').trim() || null,
+              emergencyContactRelation: (row.emergencyContactRelation || '').trim() || null,
+              facebookName: (row.facebookName || '').trim() || null,
+              facebookUrl: (row.facebookUrl || '').trim() || null,
+              linkedinUrl: (row.linkedinUrl || '').trim() || null,
+            },
+          },
+          ...(departmentId ? { memberships: { create: { departmentId, isPrimary: true } } } : {}),
         },
         include: { vaProfile: true },
       })
@@ -109,7 +187,7 @@ export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult
         action: 'CREATE',
         entityType: 'User',
         entityId: user.id,
-        after: { email, firstName, lastName, hourlyRate },
+        after: { email, firstName, lastName, hourlyRate, department: departmentInput || null },
         metadata: { viaImport: 'vas/csv' },
       })
 
@@ -174,6 +252,57 @@ export async function updateVAProfile(vaProfileId: string, formData: FormData) {
   revalidateTag(CACHE_TAGS.vas, 'default')
   revalidatePath('/vas')
   revalidateTag(CACHE_TAGS.vas, 'default')
+}
+
+export async function changeVAStatus(
+  vaProfileId: string,
+  statusType: 'GENERAL' | 'ENGAGEMENT',
+  newValue: string,
+  effectiveDate?: string,
+  reason?: string
+) {
+  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER')
+
+  const field = statusType === 'GENERAL' ? 'status' : 'engagementStatus'
+  const before = await prisma.vAProfile.findUnique({
+    where: { id: vaProfileId },
+    select: { status: true, engagementStatus: true },
+  })
+  if (!before) throw new Error('VA profile not found')
+
+  const oldValue = statusType === 'GENERAL' ? before.status : before.engagementStatus
+
+  const effective = effectiveDate ? new Date(effectiveDate) : new Date()
+  if (Number.isNaN(effective.getTime())) throw new Error('Invalid effective date')
+
+  await prisma.$transaction([
+    prisma.vAProfile.update({ where: { id: vaProfileId }, data: { [field]: newValue } }),
+    prisma.vAStatusHistory.create({
+      data: {
+        vaProfileId,
+        statusType,
+        oldValue: oldValue ?? null,
+        newValue,
+        effectiveDate: effective,
+        reason: reason?.trim() || null,
+        changedById: actor.id,
+      },
+    }),
+  ])
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'STATUS_CHANGE',
+    entityType: 'VAProfile',
+    entityId: vaProfileId,
+    before: { [field]: oldValue },
+    after: { [field]: newValue },
+    metadata: { statusType, effectiveDate: effective.toISOString(), reason: reason?.trim() || undefined },
+  })
+
+  revalidatePath(`/vas/${vaProfileId}`)
+  revalidateTag(CACHE_TAGS.vas, 'default')
+  revalidatePath('/vas')
 }
 
 export async function updateUserProfile(userId: string, formData: FormData) {

@@ -21,7 +21,8 @@ import {
   Wallet,
   User,
 } from 'lucide-react'
-import { updateVAProfile, updateUserProfileAction, updateEmployment, updateUserProfileFiles } from '@/app/(dashboard)/vas/actions'
+import { updateUserProfileAction, updateEmployment, updateUserProfileFiles, changeVAStatus } from '@/app/(dashboard)/vas/actions'
+import { Modal } from '@/components/ui/modal'
 import { format } from 'date-fns'
 import type { DriveFile } from '@/lib/google/drive'
 import { AddressFields } from '@/components/vas/AddressFields'
@@ -671,27 +672,36 @@ function StatusCard({
 }) {
   const [currentStatus, setCurrentStatus] = useState(status)
   const [currentEngagement, setCurrentEngagement] = useState(engagementStatus ?? '')
-  const [savingField, setSavingField] = useState<'status' | 'engagementStatus' | null>(null)
+  const [pending, setPending] = useState<{ field: 'status' | 'engagementStatus'; value: string } | null>(null)
+  const [effectiveDate, setEffectiveDate] = useState('')
+  const [reason, setReason] = useState('')
+  const [saving, setSaving] = useState(false)
 
-  const handleChange = async (field: 'status' | 'engagementStatus', value: string) => {
-    const previousStatus = currentStatus
-    const previousEngagement = currentEngagement
+  const openConfirm = (field: 'status' | 'engagementStatus', value: string) => {
+    setPending({ field, value })
+    setEffectiveDate(format(new Date(), 'yyyy-MM-dd'))
+    setReason('')
+  }
 
-    if (field === 'status') setCurrentStatus(value)
-    else setCurrentEngagement(value)
-
-    setSavingField(field)
+  const handleConfirm = async () => {
+    if (!pending) return
+    setSaving(true)
     try {
-      const fd = new FormData()
-      fd.set(field, value)
-      await updateVAProfile(vaProfileId, fd)
-      toast.success(field === 'status' ? 'Active status updated' : 'Engagement status updated')
+      await changeVAStatus(
+        vaProfileId,
+        pending.field === 'status' ? 'GENERAL' : 'ENGAGEMENT',
+        pending.value,
+        effectiveDate || undefined,
+        reason || undefined
+      )
+      if (pending.field === 'status') setCurrentStatus(pending.value)
+      else setCurrentEngagement(pending.value)
+      toast.success(pending.field === 'status' ? 'Active status updated' : 'Engagement status updated')
+      setPending(null)
     } catch (err) {
-      if (field === 'status') setCurrentStatus(previousStatus)
-      else setCurrentEngagement(previousEngagement)
       toast.error(err instanceof Error ? err.message : 'Failed to update status')
     } finally {
-      setSavingField(null)
+      setSaving(false)
     }
   }
 
@@ -703,8 +713,8 @@ function StatusCard({
           <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Active Status</Label>
           <select
             value={currentStatus}
-            disabled={!canEdit || savingField === 'status'}
-            onChange={(e) => handleChange('status', e.target.value)}
+            disabled={!canEdit}
+            onChange={(e) => openConfirm('status', e.target.value)}
             className="w-full h-8 text-xs rounded-md border bg-background px-2 disabled:opacity-60"
           >
             {GENERAL_STATUS_OPTIONS.map((opt) => (
@@ -716,8 +726,8 @@ function StatusCard({
           <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Engagement Status</Label>
           <select
             value={currentEngagement}
-            disabled={!canEdit || savingField === 'engagementStatus'}
-            onChange={(e) => handleChange('engagementStatus', e.target.value)}
+            disabled={!canEdit}
+            onChange={(e) => openConfirm('engagementStatus', e.target.value)}
             className="w-full h-8 text-xs rounded-md border bg-background px-2 disabled:opacity-60"
           >
             <option value="">— Not set —</option>
@@ -727,6 +737,35 @@ function StatusCard({
           </select>
         </div>
       </div>
+
+      <Modal
+        open={!!pending}
+        onOpenChange={(o) => !o && setPending(null)}
+        title={pending?.field === 'status' ? 'Change Active Status' : 'Change Engagement Status'}
+        description="Choose the date this status change took effect."
+        size="sm"
+        footer={
+          <>
+            <button type="button" onClick={() => setPending(null)} className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors">
+              Cancel
+            </button>
+            <Button type="button" size="sm" className="text-xs h-8" disabled={saving || !effectiveDate} onClick={handleConfirm}>
+              {saving ? <><Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> Saving...</> : 'Confirm'}
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-3">
+          <div>
+            <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Effective Date</Label>
+            <Input type="date" value={effectiveDate} onChange={(e) => setEffectiveDate(e.target.value)} className="h-8 text-xs" />
+          </div>
+          <div>
+            <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Reason (optional)</Label>
+            <Input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="e.g. Client contract ended" className="h-8 text-xs" />
+          </div>
+        </div>
+      </Modal>
     </div>
   )
 }

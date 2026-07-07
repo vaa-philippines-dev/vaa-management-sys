@@ -246,6 +246,7 @@ export type UserWhereInput = {
   assignedTickets?: Prisma.TicketListRelationFilter
   ticketConversations?: Prisma.TicketConversationListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
+  vaStatusChanges?: Prisma.VAStatusHistoryListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -276,6 +277,7 @@ export type UserOrderByWithRelationInput = {
   assignedTickets?: Prisma.TicketOrderByRelationAggregateInput
   ticketConversations?: Prisma.TicketConversationOrderByRelationAggregateInput
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
+  vaStatusChanges?: Prisma.VAStatusHistoryOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -309,6 +311,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   assignedTickets?: Prisma.TicketListRelationFilter
   ticketConversations?: Prisma.TicketConversationListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
+  vaStatusChanges?: Prisma.VAStatusHistoryListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -373,6 +376,7 @@ export type UserCreateInput = {
   assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -403,6 +407,7 @@ export type UserUncheckedCreateInput = {
   assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUpdateInput = {
@@ -433,6 +438,7 @@ export type UserUpdateInput = {
   assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -463,6 +469,7 @@ export type UserUncheckedUpdateInput = {
   assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -683,6 +690,20 @@ export type UserUpdateOneRequiredWithoutVaProfileNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVaProfileInput, Prisma.UserUpdateWithoutVaProfileInput>, Prisma.UserUncheckedUpdateWithoutVaProfileInput>
 }
 
+export type UserCreateNestedOneWithoutVaStatusChangesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVaStatusChangesInput, Prisma.UserUncheckedCreateWithoutVaStatusChangesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVaStatusChangesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutVaStatusChangesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVaStatusChangesInput, Prisma.UserUncheckedCreateWithoutVaStatusChangesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVaStatusChangesInput
+  upsert?: Prisma.UserUpsertWithoutVaStatusChangesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVaStatusChangesInput, Prisma.UserUpdateWithoutVaStatusChangesInput>, Prisma.UserUncheckedUpdateWithoutVaStatusChangesInput>
+}
+
 export type UserCreateNestedOneWithoutUploadedDocumentsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutUploadedDocumentsInput, Prisma.UserUncheckedCreateWithoutUploadedDocumentsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutUploadedDocumentsInput
@@ -828,6 +849,7 @@ export type UserCreateWithoutDepartmentHeadInput = {
   assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateWithoutDepartmentHeadInput = {
@@ -857,6 +879,7 @@ export type UserUncheckedCreateWithoutDepartmentHeadInput = {
   assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserCreateOrConnectWithoutDepartmentHeadInput = {
@@ -902,6 +925,7 @@ export type UserUpdateWithoutDepartmentHeadInput = {
   assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDepartmentHeadInput = {
@@ -931,6 +955,7 @@ export type UserUncheckedUpdateWithoutDepartmentHeadInput = {
   assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserCreateWithoutMembershipsInput = {
@@ -960,6 +985,7 @@ export type UserCreateWithoutMembershipsInput = {
   assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateWithoutMembershipsInput = {
@@ -989,6 +1015,7 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserCreateOrConnectWithoutMembershipsInput = {
@@ -1034,6 +1061,7 @@ export type UserUpdateWithoutMembershipsInput = {
   assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMembershipsInput = {
@@ -1063,6 +1091,7 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserCreateWithoutProfileInput = {
@@ -1092,6 +1121,7 @@ export type UserCreateWithoutProfileInput = {
   assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateWithoutProfileInput = {
@@ -1121,6 +1151,7 @@ export type UserUncheckedCreateWithoutProfileInput = {
   assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserCreateOrConnectWithoutProfileInput = {
@@ -1166,6 +1197,7 @@ export type UserUpdateWithoutProfileInput = {
   assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProfileInput = {
@@ -1195,6 +1227,7 @@ export type UserUncheckedUpdateWithoutProfileInput = {
   assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserCreateWithoutEmploymentRecordsInput = {
@@ -1224,6 +1257,7 @@ export type UserCreateWithoutEmploymentRecordsInput = {
   assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateWithoutEmploymentRecordsInput = {
@@ -1253,6 +1287,7 @@ export type UserUncheckedCreateWithoutEmploymentRecordsInput = {
   assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserCreateOrConnectWithoutEmploymentRecordsInput = {
@@ -1287,6 +1322,7 @@ export type UserCreateWithoutEmploymentRecordsInitiatedInput = {
   assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateWithoutEmploymentRecordsInitiatedInput = {
@@ -1316,6 +1352,7 @@ export type UserUncheckedCreateWithoutEmploymentRecordsInitiatedInput = {
   assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserCreateOrConnectWithoutEmploymentRecordsInitiatedInput = {
@@ -1361,6 +1398,7 @@ export type UserUpdateWithoutEmploymentRecordsInput = {
   assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmploymentRecordsInput = {
@@ -1390,6 +1428,7 @@ export type UserUncheckedUpdateWithoutEmploymentRecordsInput = {
   assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUpsertWithoutEmploymentRecordsInitiatedInput = {
@@ -1430,6 +1469,7 @@ export type UserUpdateWithoutEmploymentRecordsInitiatedInput = {
   assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmploymentRecordsInitiatedInput = {
@@ -1459,6 +1499,7 @@ export type UserUncheckedUpdateWithoutEmploymentRecordsInitiatedInput = {
   assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserCreateWithoutRoleAssignmentsInput = {
@@ -1488,6 +1529,7 @@ export type UserCreateWithoutRoleAssignmentsInput = {
   assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateWithoutRoleAssignmentsInput = {
@@ -1517,6 +1559,7 @@ export type UserUncheckedCreateWithoutRoleAssignmentsInput = {
   assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserCreateOrConnectWithoutRoleAssignmentsInput = {
@@ -1551,6 +1594,7 @@ export type UserCreateWithoutGrantedRoleAssignmentsInput = {
   assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateWithoutGrantedRoleAssignmentsInput = {
@@ -1580,6 +1624,7 @@ export type UserUncheckedCreateWithoutGrantedRoleAssignmentsInput = {
   assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserCreateOrConnectWithoutGrantedRoleAssignmentsInput = {
@@ -1625,6 +1670,7 @@ export type UserUpdateWithoutRoleAssignmentsInput = {
   assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRoleAssignmentsInput = {
@@ -1654,6 +1700,7 @@ export type UserUncheckedUpdateWithoutRoleAssignmentsInput = {
   assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUpsertWithoutGrantedRoleAssignmentsInput = {
@@ -1694,6 +1741,7 @@ export type UserUpdateWithoutGrantedRoleAssignmentsInput = {
   assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGrantedRoleAssignmentsInput = {
@@ -1723,6 +1771,7 @@ export type UserUncheckedUpdateWithoutGrantedRoleAssignmentsInput = {
   assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserCreateWithoutVaProfileInput = {
@@ -1752,6 +1801,7 @@ export type UserCreateWithoutVaProfileInput = {
   assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateWithoutVaProfileInput = {
@@ -1781,6 +1831,7 @@ export type UserUncheckedCreateWithoutVaProfileInput = {
   assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserCreateOrConnectWithoutVaProfileInput = {
@@ -1826,6 +1877,7 @@ export type UserUpdateWithoutVaProfileInput = {
   assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVaProfileInput = {
@@ -1841,6 +1893,143 @@ export type UserUncheckedUpdateWithoutVaProfileInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  departmentHead?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUncheckedUpdateManyWithoutUserNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutUserNestedInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutInitiatorNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
+  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
+  createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
+  assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
+  ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+}
+
+export type UserCreateWithoutVaStatusChangesInput = {
+  id?: string
+  email: string
+  firstName: string
+  lastName: string
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  status?: $Enums.GeneralStatus
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
+  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+}
+
+export type UserUncheckedCreateWithoutVaStatusChangesInput = {
+  id?: string
+  email: string
+  firstName: string
+  lastName: string
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  status?: $Enums.GeneralStatus
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileUncheckedCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipUncheckedCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
+  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+}
+
+export type UserCreateOrConnectWithoutVaStatusChangesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutVaStatusChangesInput, Prisma.UserUncheckedCreateWithoutVaStatusChangesInput>
+}
+
+export type UserUpsertWithoutVaStatusChangesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutVaStatusChangesInput, Prisma.UserUncheckedUpdateWithoutVaStatusChangesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutVaStatusChangesInput, Prisma.UserUncheckedCreateWithoutVaStatusChangesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutVaStatusChangesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutVaStatusChangesInput, Prisma.UserUncheckedUpdateWithoutVaStatusChangesInput>
+}
+
+export type UserUpdateWithoutVaStatusChangesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  vaProfile?: Prisma.VAProfileUpdateOneWithoutUserNestedInput
+  departmentHead?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUpdateManyWithoutUserNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutUserNestedInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUpdateManyWithoutInitiatorNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
+  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
+  uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
+  createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
+  assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
+  ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutVaStatusChangesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  vaProfile?: Prisma.VAProfileUncheckedUpdateOneWithoutUserNestedInput
   departmentHead?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   memberships?: Prisma.DepartmentMembershipUncheckedUpdateManyWithoutUserNestedInput
   employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutUserNestedInput
@@ -1884,6 +2073,7 @@ export type UserCreateWithoutUploadedDocumentsInput = {
   assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateWithoutUploadedDocumentsInput = {
@@ -1913,6 +2103,7 @@ export type UserUncheckedCreateWithoutUploadedDocumentsInput = {
   assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserCreateOrConnectWithoutUploadedDocumentsInput = {
@@ -1958,6 +2149,7 @@ export type UserUpdateWithoutUploadedDocumentsInput = {
   assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadedDocumentsInput = {
@@ -1987,6 +2179,7 @@ export type UserUncheckedUpdateWithoutUploadedDocumentsInput = {
   assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserCreateWithoutLeaveRequestsInput = {
@@ -2016,6 +2209,7 @@ export type UserCreateWithoutLeaveRequestsInput = {
   assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateWithoutLeaveRequestsInput = {
@@ -2045,6 +2239,7 @@ export type UserUncheckedCreateWithoutLeaveRequestsInput = {
   assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserCreateOrConnectWithoutLeaveRequestsInput = {
@@ -2079,6 +2274,7 @@ export type UserCreateWithoutApprovedLeavesInput = {
   assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateWithoutApprovedLeavesInput = {
@@ -2108,6 +2304,7 @@ export type UserUncheckedCreateWithoutApprovedLeavesInput = {
   assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserCreateOrConnectWithoutApprovedLeavesInput = {
@@ -2153,6 +2350,7 @@ export type UserUpdateWithoutLeaveRequestsInput = {
   assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLeaveRequestsInput = {
@@ -2182,6 +2380,7 @@ export type UserUncheckedUpdateWithoutLeaveRequestsInput = {
   assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUpsertWithoutApprovedLeavesInput = {
@@ -2222,6 +2421,7 @@ export type UserUpdateWithoutApprovedLeavesInput = {
   assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApprovedLeavesInput = {
@@ -2251,6 +2451,7 @@ export type UserUncheckedUpdateWithoutApprovedLeavesInput = {
   assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserCreateWithoutManagedClientsInput = {
@@ -2280,6 +2481,7 @@ export type UserCreateWithoutManagedClientsInput = {
   assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateWithoutManagedClientsInput = {
@@ -2309,6 +2511,7 @@ export type UserUncheckedCreateWithoutManagedClientsInput = {
   assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserCreateOrConnectWithoutManagedClientsInput = {
@@ -2354,6 +2557,7 @@ export type UserUpdateWithoutManagedClientsInput = {
   assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutManagedClientsInput = {
@@ -2383,6 +2587,7 @@ export type UserUncheckedUpdateWithoutManagedClientsInput = {
   assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserCreateWithoutCreatedTicketsInput = {
@@ -2412,6 +2617,7 @@ export type UserCreateWithoutCreatedTicketsInput = {
   assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedTicketsInput = {
@@ -2441,6 +2647,7 @@ export type UserUncheckedCreateWithoutCreatedTicketsInput = {
   assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedTicketsInput = {
@@ -2475,6 +2682,7 @@ export type UserCreateWithoutAssignedTicketsInput = {
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
   ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateWithoutAssignedTicketsInput = {
@@ -2504,6 +2712,7 @@ export type UserUncheckedCreateWithoutAssignedTicketsInput = {
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
   ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserCreateOrConnectWithoutAssignedTicketsInput = {
@@ -2549,6 +2758,7 @@ export type UserUpdateWithoutCreatedTicketsInput = {
   assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedTicketsInput = {
@@ -2578,6 +2788,7 @@ export type UserUncheckedUpdateWithoutCreatedTicketsInput = {
   assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUpsertWithoutAssignedTicketsInput = {
@@ -2618,6 +2829,7 @@ export type UserUpdateWithoutAssignedTicketsInput = {
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
   ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssignedTicketsInput = {
@@ -2647,6 +2859,7 @@ export type UserUncheckedUpdateWithoutAssignedTicketsInput = {
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
   ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserCreateWithoutTicketConversationsInput = {
@@ -2676,6 +2889,7 @@ export type UserCreateWithoutTicketConversationsInput = {
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
   assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateWithoutTicketConversationsInput = {
@@ -2705,6 +2919,7 @@ export type UserUncheckedCreateWithoutTicketConversationsInput = {
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
   assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserCreateOrConnectWithoutTicketConversationsInput = {
@@ -2750,6 +2965,7 @@ export type UserUpdateWithoutTicketConversationsInput = {
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
   assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTicketConversationsInput = {
@@ -2779,6 +2995,7 @@ export type UserUncheckedUpdateWithoutTicketConversationsInput = {
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
   assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserCreateWithoutAuditLogsInput = {
@@ -2808,6 +3025,7 @@ export type UserCreateWithoutAuditLogsInput = {
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
   assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
+  vaStatusChanges?: Prisma.VAStatusHistoryCreateNestedManyWithoutChangedByInput
 }
 
 export type UserUncheckedCreateWithoutAuditLogsInput = {
@@ -2837,6 +3055,7 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
   assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
   ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
 }
 
 export type UserCreateOrConnectWithoutAuditLogsInput = {
@@ -2882,6 +3101,7 @@ export type UserUpdateWithoutAuditLogsInput = {
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
   assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUpdateManyWithoutChangedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuditLogsInput = {
@@ -2911,6 +3131,7 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
   assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
+  vaStatusChanges?: Prisma.VAStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
 }
 
 
@@ -2933,6 +3154,7 @@ export type UserCountOutputType = {
   assignedTickets: number
   ticketConversations: number
   auditLogs: number
+  vaStatusChanges: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2950,6 +3172,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   assignedTickets?: boolean | UserCountOutputTypeCountAssignedTicketsArgs
   ticketConversations?: boolean | UserCountOutputTypeCountTicketConversationsArgs
   auditLogs?: boolean | UserCountOutputTypeCountAuditLogsArgs
+  vaStatusChanges?: boolean | UserCountOutputTypeCountVaStatusChangesArgs
 }
 
 /**
@@ -3060,6 +3283,13 @@ export type UserCountOutputTypeCountAuditLogsArgs<ExtArgs extends runtime.Types.
   where?: Prisma.AuditLogWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountVaStatusChangesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VAStatusHistoryWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3089,6 +3319,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   assignedTickets?: boolean | Prisma.User$assignedTicketsArgs<ExtArgs>
   ticketConversations?: boolean | Prisma.User$ticketConversationsArgs<ExtArgs>
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
+  vaStatusChanges?: boolean | Prisma.User$vaStatusChangesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -3152,6 +3383,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   assignedTickets?: boolean | Prisma.User$assignedTicketsArgs<ExtArgs>
   ticketConversations?: boolean | Prisma.User$ticketConversationsArgs<ExtArgs>
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
+  vaStatusChanges?: boolean | Prisma.User$vaStatusChangesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -3176,6 +3408,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     assignedTickets: Prisma.$TicketPayload<ExtArgs>[]
     ticketConversations: Prisma.$TicketConversationPayload<ExtArgs>[]
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
+    vaStatusChanges: Prisma.$VAStatusHistoryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3599,6 +3832,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   assignedTickets<T extends Prisma.User$assignedTicketsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$assignedTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   ticketConversations<T extends Prisma.User$ticketConversationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ticketConversationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TicketConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditLogs<T extends Prisma.User$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vaStatusChanges<T extends Prisma.User$vaStatusChangesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vaStatusChangesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VAStatusHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4403,6 +4637,30 @@ export type User$auditLogsArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.AuditLogScalarFieldEnum | Prisma.AuditLogScalarFieldEnum[]
+}
+
+/**
+ * User.vaStatusChanges
+ */
+export type User$vaStatusChangesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VAStatusHistory
+   */
+  select?: Prisma.VAStatusHistorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VAStatusHistory
+   */
+  omit?: Prisma.VAStatusHistoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VAStatusHistoryInclude<ExtArgs> | null
+  where?: Prisma.VAStatusHistoryWhereInput
+  orderBy?: Prisma.VAStatusHistoryOrderByWithRelationInput | Prisma.VAStatusHistoryOrderByWithRelationInput[]
+  cursor?: Prisma.VAStatusHistoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VAStatusHistoryScalarFieldEnum | Prisma.VAStatusHistoryScalarFieldEnum[]
 }
 
 /**

@@ -33,20 +33,68 @@ function parseCsv(text: string): VACsvRow[] {
   }
 
   const header = parseLine(lines[0]).map((h) => h.toLowerCase())
-  const nameIdx = header.findIndex((h) => h === 'name' || h === 'full name' || h === 'fullname')
-  const emailIdx = header.findIndex((h) => h === 'email')
-  const rateIdx = header.findIndex((h) => h === 'hourlyrate' || h === 'hourly rate' || h === 'rate')
-  const notesIdx = header.findIndex((h) => h === 'notes')
+  const idx = (...names: string[]) => header.findIndex((h) => names.includes(h))
+
+  const nameIdx = idx('name', 'full name', 'fullname')
+  const emailIdx = idx('email')
+  const rateIdx = idx('hourlyrate', 'hourly rate', 'rate')
+  const baseRateIdx = idx('baserate', 'base rate')
+  const positionIdx = idx('vaaposition', 'position', 'vaa position')
+  const levelIdx = idx('level')
+  const departmentIdx = idx('department')
+  const availabilityIdx = idx('availabilitystatus', 'availability status', 'availability')
+  const statusIdx = idx('status', 'active status')
+  const engagementIdx = idx('engagementstatus', 'engagement status')
+  const hybridIdx = idx('hybrid')
+  const preferredHoursIdx = idx('preferredworkhours', 'preferred work hours', 'preferred hours')
+  const scheduleIdx = idx('availableschedule', 'available schedule', 'schedule')
+  const phoneIdx = idx('phone')
+  const personalEmailIdx = idx('personalemail', 'personal email')
+  const workEmailIdx = idx('workemail', 'work email')
+  const genderIdx = idx('gender')
+  const birthDateIdx = idx('birthdate', 'birth date')
+  const addressIdx = idx('address')
+  const emergencyNameIdx = idx('emergencycontactname', 'emergency contact name')
+  const emergencyPhoneIdx = idx('emergencycontactphone', 'emergency contact phone')
+  const emergencyRelationIdx = idx('emergencycontactrelation', 'emergency contact relation')
+  const facebookNameIdx = idx('facebookname', 'facebook name')
+  const facebookUrlIdx = idx('facebookurl', 'facebook url')
+  const linkedinIdx = idx('linkedinurl', 'linkedin url', 'linkedin')
+  const notesIdx = idx('notes')
 
   if (nameIdx === -1) return []
+
+  const cell = (cells: string[], i: number) => (i !== -1 ? cells[i] : undefined)
 
   return lines.slice(1).map((line) => {
     const cells = parseLine(line)
     return {
       name: cells[nameIdx] || '',
-      email: emailIdx !== -1 ? cells[emailIdx] : undefined,
-      hourlyRate: rateIdx !== -1 ? cells[rateIdx] : undefined,
-      notes: notesIdx !== -1 ? cells[notesIdx] : undefined,
+      email: cell(cells, emailIdx),
+      hourlyRate: cell(cells, rateIdx),
+      baseRate: cell(cells, baseRateIdx),
+      vaaPosition: cell(cells, positionIdx),
+      level: cell(cells, levelIdx),
+      department: cell(cells, departmentIdx),
+      availabilityStatus: cell(cells, availabilityIdx),
+      status: cell(cells, statusIdx),
+      engagementStatus: cell(cells, engagementIdx),
+      hybrid: cell(cells, hybridIdx),
+      preferredWorkHours: cell(cells, preferredHoursIdx),
+      availableSchedule: cell(cells, scheduleIdx),
+      phone: cell(cells, phoneIdx),
+      personalEmail: cell(cells, personalEmailIdx),
+      workEmail: cell(cells, workEmailIdx),
+      gender: cell(cells, genderIdx),
+      birthDate: cell(cells, birthDateIdx),
+      address: cell(cells, addressIdx),
+      emergencyContactName: cell(cells, emergencyNameIdx),
+      emergencyContactPhone: cell(cells, emergencyPhoneIdx),
+      emergencyContactRelation: cell(cells, emergencyRelationIdx),
+      facebookName: cell(cells, facebookNameIdx),
+      facebookUrl: cell(cells, facebookUrlIdx),
+      linkedinUrl: cell(cells, linkedinIdx),
+      notes: cell(cells, notesIdx),
     }
   })
 }
@@ -105,8 +153,21 @@ export function ImportVACsvModal({ open, onClose }: { open: boolean; onClose: ()
 
   const handleDownloadTemplate = () => {
     const csvContent = [
-      'name,email,hourlyRate,notes',
-      'Juan Dela Cruz,juan@example.com,5.50,Sample VA row — replace or delete me',
+      [
+        'name', 'email', 'hourlyRate', 'baseRate', 'vaaPosition', 'level', 'department',
+        'availabilityStatus', 'status', 'engagementStatus', 'hybrid', 'preferredWorkHours', 'availableSchedule',
+        'phone', 'personalEmail', 'workEmail', 'gender', 'birthDate', 'address',
+        'emergencyContactName', 'emergencyContactPhone', 'emergencyContactRelation',
+        'facebookName', 'facebookUrl', 'linkedinUrl', 'notes',
+      ].join(','),
+      [
+        'Juan Dela Cruz', 'juan@example.com', '5.50', '350', 'Virtual Assistant', 'L1', 'Operations',
+        'AVAILABLE', 'ACTIVE', 'EMPLOYED', 'false', '40', 'Mon-Fri 9am-6pm',
+        '09171234567', 'juan.personal@example.com', 'juan.work@example.com', 'Male', '1995-01-15', '123 Sample St.',
+        'Maria Dela Cruz', '09179876543', 'Spouse',
+        'Juan Dela Cruz', 'https://facebook.com/juandelacruz', 'https://linkedin.com/in/juandelacruz',
+        'Sample VA row — replace or delete me',
+      ].join(','),
     ].join('\n')
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(blob)
@@ -122,7 +183,7 @@ export function ImportVACsvModal({ open, onClose }: { open: boolean; onClose: ()
       open={open}
       onOpenChange={(o) => !o && handleClose()}
       title="Import VAs from CSV"
-      description="Columns: name (required), email, hourlyRate, notes"
+      description="Columns: name (required), email, hourlyRate, baseRate, vaaPosition, level, department, availabilityStatus, status, engagementStatus, hybrid, preferredWorkHours, availableSchedule, phone, personalEmail, workEmail, gender, birthDate, address, emergencyContactName/Phone/Relation, facebookName, facebookUrl, linkedinUrl, notes"
       size="md"
       footer={
         <>
@@ -188,6 +249,8 @@ export function ImportVACsvModal({ open, onClose }: { open: boolean; onClose: ()
                   <th className="text-left px-2 py-1.5 font-medium">Name</th>
                   <th className="text-left px-2 py-1.5 font-medium">Email</th>
                   <th className="text-left px-2 py-1.5 font-medium">Rate</th>
+                  <th className="text-left px-2 py-1.5 font-medium">Department</th>
+                  <th className="text-left px-2 py-1.5 font-medium">Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -196,6 +259,8 @@ export function ImportVACsvModal({ open, onClose }: { open: boolean; onClose: ()
                     <td className="px-2 py-1 truncate max-w-[140px]">{r.name || <span className="text-muted-foreground">—</span>}</td>
                     <td className="px-2 py-1 text-muted-foreground truncate max-w-[160px]">{r.email || 'auto-generated'}</td>
                     <td className="px-2 py-1 text-muted-foreground">{r.hourlyRate || '—'}</td>
+                    <td className="px-2 py-1 text-muted-foreground truncate max-w-[120px]">{r.department || '—'}</td>
+                    <td className="px-2 py-1 text-muted-foreground">{r.status || '—'}</td>
                   </tr>
                 ))}
               </tbody>

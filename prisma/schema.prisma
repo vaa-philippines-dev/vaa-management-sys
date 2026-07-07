@@ -48,6 +48,11 @@ enum EmploymentStatus {
   BLACKLISTED
 }
 
+enum VAStatusType {
+  GENERAL
+  ENGAGEMENT
+}
+
 enum Availability {
   AVAILABLE
   PARTIALLY_ASSIGNED
@@ -312,6 +317,7 @@ model User {
   assignedTickets    Ticket[]           @relation("TicketAssignee")
   ticketConversations TicketConversation[]
   auditLogs          AuditLog[]
+  vaStatusChanges    VAStatusHistory[]
 
   @@index([email])
   @@index([systemRole])
@@ -435,13 +441,31 @@ model VAProfile {
   createdAt           DateTime        @default(now())  @map("created_at")
   updatedAt           DateTime        @updatedAt       @map("updated_at")
 
-  assignments Assignment[]
-  workLogs    WorkLog[]
-  vaSkills    VASkill[]
-  documents   VADocument[]
+  assignments   Assignment[]
+  workLogs      WorkLog[]
+  vaSkills      VASkill[]
+  documents     VADocument[]
+  statusHistory VAStatusHistory[]
 
   @@index([availabilityStatus])
   @@map("va_profiles")
+}
+
+model VAStatusHistory {
+  id            String       @id @default(cuid())
+  vaProfileId   String       @map("va_profile_id")
+  vaProfile     VAProfile    @relation(fields: [vaProfileId], references: [id], onDelete: Cascade)
+  statusType    VAStatusType @map("status_type")
+  oldValue      String?      @map("old_value")
+  newValue      String       @map("new_value")
+  effectiveDate DateTime     @map("effective_date")
+  reason        String?
+  changedById   String       @map("changed_by_id")
+  changedBy     User         @relation(fields: [changedById], references: [id], onDelete: Cascade)
+  createdAt     DateTime     @default(now()) @map("created_at")
+
+  @@index([vaProfileId, effectiveDate])
+  @@map("va_status_history")
 }
 
 model Skill {

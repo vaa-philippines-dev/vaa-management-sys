@@ -49,6 +49,10 @@ export default async function VADetailPage({
           orderBy: { startDate: 'desc' },
         },
         documents: { orderBy: { createdAt: 'desc' } },
+        statusHistory: {
+          include: { changedBy: { select: { firstName: true, lastName: true } } },
+          orderBy: { effectiveDate: 'desc' },
+        },
       },
     })
   )
@@ -152,6 +156,17 @@ export default async function VADetailPage({
     status: a.status,
   }))
 
+  const statusHistoryData = va.statusHistory.map((h) => ({
+    id: h.id,
+    statusType: h.statusType,
+    oldValue: h.oldValue,
+    newValue: h.newValue,
+    effectiveDate: toDateString(h.effectiveDate)!,
+    reason: h.reason,
+    changedByName: `${h.changedBy.firstName} ${h.changedBy.lastName}`.trim(),
+    createdAt: toDateString(h.createdAt)!,
+  }))
+
   const docData = va.documents.map((d) => ({
     id: d.id,
     documentType: d.documentType,
@@ -194,6 +209,42 @@ export default async function VADetailPage({
         currentUserId={currentUser.id}
         canEdit={canEdit}
       />
+
+      {/* Status Change History */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">Status Change History ({statusHistoryData.length})</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          {statusHistoryData.length === 0 ? (
+            <p className="text-sm text-muted-foreground px-6 pb-4">No status changes recorded yet.</p>
+          ) : (
+            <div className="divide-y">
+              {statusHistoryData.map((h) => (
+                <div key={h.id} className="flex items-start justify-between gap-3 px-6 py-3">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Badge variant="outline" className="text-[10px] py-0 px-1.5">
+                        {h.statusType === 'GENERAL' ? 'Active Status' : 'Engagement Status'}
+                      </Badge>
+                      <span className="text-xs">
+                        {h.oldValue ? `${h.oldValue.replace(/_/g, ' ')} → ` : ''}
+                        <span className="font-medium">{h.newValue.replace(/_/g, ' ')}</span>
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">
+                      by {h.changedByName || 'Unknown'}{h.reason ? ` — ${h.reason}` : ''}
+                    </p>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground whitespace-nowrap shrink-0">
+                    {format(new Date(h.effectiveDate), 'MMM dd, yyyy')}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Skills */}
       {va.vaSkills.length > 0 && (
