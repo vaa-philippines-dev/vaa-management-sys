@@ -35,7 +35,10 @@ function parseCsv(text: string): VACsvRow[] {
   const header = parseLine(lines[0]).map((h) => h.toLowerCase())
   const idx = (...names: string[]) => header.findIndex((h) => names.includes(h))
 
-  const nameIdx = idx('name', 'full name', 'fullname')
+  const firstNameIdx = idx('firstname', 'first name')
+  const middleNameIdx = idx('middlename', 'middle name')
+  const lastNameIdx = idx('lastname', 'last name')
+  const extNameIdx = idx('extname', 'ext. name', 'ext name', 'suffix')
   const emailIdx = idx('email')
   const rateIdx = idx('hourlyrate', 'hourly rate', 'rate')
   const baseRateIdx = idx('baserate', 'base rate')
@@ -43,6 +46,7 @@ function parseCsv(text: string): VACsvRow[] {
   const levelIdx = idx('level')
   const departmentIdx = idx('department')
   const availabilityIdx = idx('availabilitystatus', 'availability status', 'availability')
+  const recommendabilityIdx = idx('recommendability')
   const statusIdx = idx('status', 'active status')
   const engagementIdx = idx('engagementstatus', 'engagement status')
   const hybridIdx = idx('hybrid')
@@ -53,7 +57,14 @@ function parseCsv(text: string): VACsvRow[] {
   const workEmailIdx = idx('workemail', 'work email')
   const genderIdx = idx('gender')
   const birthDateIdx = idx('birthdate', 'birth date')
-  const addressIdx = idx('address')
+  const birthdayCelebrantIdx = idx('birthdaycelebrant', 'birthday celebrant')
+  const addressLineIdx = idx('addressline', 'address line')
+  const barangayIdx = idx('barangay')
+  const cityMunicipalityIdx = idx('citymunicipality', 'city/municipality', 'city municipality', 'city')
+  const provinceIdx = idx('province')
+  const zipCodeIdx = idx('zipcode', 'zip code', 'zip')
+  const landmarkIdx = idx('landmark')
+  const gcashNumberIdx = idx('gcashnumber', 'gcash number', 'gcash')
   const emergencyNameIdx = idx('emergencycontactname', 'emergency contact name')
   const emergencyPhoneIdx = idx('emergencycontactphone', 'emergency contact phone')
   const emergencyRelationIdx = idx('emergencycontactrelation', 'emergency contact relation')
@@ -62,14 +73,17 @@ function parseCsv(text: string): VACsvRow[] {
   const linkedinIdx = idx('linkedinurl', 'linkedin url', 'linkedin')
   const notesIdx = idx('notes')
 
-  if (nameIdx === -1) return []
+  if (firstNameIdx === -1) return []
 
   const cell = (cells: string[], i: number) => (i !== -1 ? cells[i] : undefined)
 
   return lines.slice(1).map((line) => {
     const cells = parseLine(line)
     return {
-      name: cells[nameIdx] || '',
+      firstName: cells[firstNameIdx] || '',
+      middleName: cell(cells, middleNameIdx),
+      lastName: cell(cells, lastNameIdx),
+      extName: cell(cells, extNameIdx),
       email: cell(cells, emailIdx),
       hourlyRate: cell(cells, rateIdx),
       baseRate: cell(cells, baseRateIdx),
@@ -77,6 +91,7 @@ function parseCsv(text: string): VACsvRow[] {
       level: cell(cells, levelIdx),
       department: cell(cells, departmentIdx),
       availabilityStatus: cell(cells, availabilityIdx),
+      recommendability: cell(cells, recommendabilityIdx),
       status: cell(cells, statusIdx),
       engagementStatus: cell(cells, engagementIdx),
       hybrid: cell(cells, hybridIdx),
@@ -87,7 +102,14 @@ function parseCsv(text: string): VACsvRow[] {
       workEmail: cell(cells, workEmailIdx),
       gender: cell(cells, genderIdx),
       birthDate: cell(cells, birthDateIdx),
-      address: cell(cells, addressIdx),
+      birthdayCelebrant: cell(cells, birthdayCelebrantIdx),
+      addressLine: cell(cells, addressLineIdx),
+      barangay: cell(cells, barangayIdx),
+      cityMunicipality: cell(cells, cityMunicipalityIdx),
+      province: cell(cells, provinceIdx),
+      zipCode: cell(cells, zipCodeIdx),
+      landmark: cell(cells, landmarkIdx),
+      gcashNumber: cell(cells, gcashNumberIdx),
       emergencyContactName: cell(cells, emergencyNameIdx),
       emergencyContactPhone: cell(cells, emergencyPhoneIdx),
       emergencyContactRelation: cell(cells, emergencyRelationIdx),
@@ -119,7 +141,7 @@ export function ImportVACsvModal({ open, onClose }: { open: boolean; onClose: ()
     const text = await file.text()
     const parsed = parseCsv(text)
     if (parsed.length === 0) {
-      toast.error('Could not find a "name" column, or file is empty')
+      toast.error('Could not find a "firstName" column, or file is empty')
       return
     }
     setFileName(file.name)
@@ -154,16 +176,18 @@ export function ImportVACsvModal({ open, onClose }: { open: boolean; onClose: ()
   const handleDownloadTemplate = () => {
     const csvContent = [
       [
-        'name', 'email', 'hourlyRate', 'baseRate', 'vaaPosition', 'level', 'department',
-        'availabilityStatus', 'status', 'engagementStatus', 'hybrid', 'preferredWorkHours', 'availableSchedule',
-        'phone', 'personalEmail', 'workEmail', 'gender', 'birthDate', 'address',
+        'firstName', 'middleName', 'lastName', 'extName', 'email', 'hourlyRate', 'baseRate', 'vaaPosition', 'level', 'department',
+        'availabilityStatus', 'recommendability', 'status', 'engagementStatus', 'hybrid', 'preferredWorkHours', 'availableSchedule',
+        'phone', 'personalEmail', 'workEmail', 'gender', 'birthDate', 'birthdayCelebrant',
+        'addressLine', 'barangay', 'cityMunicipality', 'province', 'zipCode', 'landmark', 'gcashNumber',
         'emergencyContactName', 'emergencyContactPhone', 'emergencyContactRelation',
         'facebookName', 'facebookUrl', 'linkedinUrl', 'notes',
       ].join(','),
       [
-        'Juan Dela Cruz', 'juan@example.com', '5.50', '350', 'Virtual Assistant', 'L1', 'Operations',
-        'AVAILABLE', 'ACTIVE', 'EMPLOYED', 'false', '40', 'Mon-Fri 9am-6pm',
-        '09171234567', 'juan.personal@example.com', 'juan.work@example.com', 'Male', '1995-01-15', '123 Sample St.',
+        'Juan', 'Santos', 'Dela Cruz', 'Jr.', 'juan@example.com', '5.50', '350', 'Virtual Assistant', 'L1', 'Operations',
+        'AVAILABLE', 'Highly Recommended', 'ACTIVE', 'EMPLOYED', 'false', '40', 'Mon-Fri 9am-6pm',
+        '09171234567', 'juan.personal@example.com', 'juan.work@example.com', 'Male', '1995-01-15', 'true',
+        '123 Sample St.', 'Barangay Sample', 'Quezon City', 'Metro Manila', '1100', 'Near sample landmark', '09171234567',
         'Maria Dela Cruz', '09179876543', 'Spouse',
         'Juan Dela Cruz', 'https://facebook.com/juandelacruz', 'https://linkedin.com/in/juandelacruz',
         'Sample VA row — replace or delete me',
@@ -183,7 +207,7 @@ export function ImportVACsvModal({ open, onClose }: { open: boolean; onClose: ()
       open={open}
       onOpenChange={(o) => !o && handleClose()}
       title="Import VAs from CSV"
-      description="Columns: name (required), email, hourlyRate, baseRate, vaaPosition, level, department, availabilityStatus, status, engagementStatus, hybrid, preferredWorkHours, availableSchedule, phone, personalEmail, workEmail, gender, birthDate, address, emergencyContactName/Phone/Relation, facebookName, facebookUrl, linkedinUrl, notes"
+      description="Columns: firstName (required), middleName, lastName, extName, email, hourlyRate, baseRate, vaaPosition, level, department, availabilityStatus, recommendability, status, engagementStatus, hybrid, preferredWorkHours, availableSchedule, phone, personalEmail, workEmail, gender, birthDate, birthdayCelebrant, addressLine, barangay, cityMunicipality, province, zipCode, landmark, gcashNumber, emergencyContactName/Phone/Relation, facebookName, facebookUrl, linkedinUrl, notes"
       size="md"
       footer={
         <>
@@ -211,7 +235,7 @@ export function ImportVACsvModal({ open, onClose }: { open: boolean; onClose: ()
         )}
 
         {!fileName ? (
-          <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-xl p-8 cursor-pointer hover:bg-muted/40 transition-colors">
+          <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-lg p-8 cursor-pointer hover:bg-muted/40 transition-colors">
             <UploadCloud className="h-6 w-6 text-muted-foreground" />
             <span className="text-sm font-medium">Click to select a CSV file</span>
             <span className="text-[11px] text-muted-foreground">or drag and drop</span>
@@ -256,7 +280,9 @@ export function ImportVACsvModal({ open, onClose }: { open: boolean; onClose: ()
               <tbody>
                 {rows.slice(0, 20).map((r, i) => (
                   <tr key={i} className="border-t">
-                    <td className="px-2 py-1 truncate max-w-[140px]">{r.name || <span className="text-muted-foreground">—</span>}</td>
+                    <td className="px-2 py-1 truncate max-w-[140px]">
+                      {[r.firstName, r.middleName, r.lastName, r.extName].filter(Boolean).join(' ') || <span className="text-muted-foreground">—</span>}
+                    </td>
                     <td className="px-2 py-1 text-muted-foreground truncate max-w-[160px]">{r.email || 'auto-generated'}</td>
                     <td className="px-2 py-1 text-muted-foreground">{r.hourlyRate || '—'}</td>
                     <td className="px-2 py-1 text-muted-foreground truncate max-w-[120px]">{r.department || '—'}</td>

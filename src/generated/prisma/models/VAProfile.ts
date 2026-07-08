@@ -48,6 +48,7 @@ export type VAProfileMinAggregateOutputType = {
   vaaPosition: string | null
   level: string | null
   availabilityStatus: $Enums.Availability | null
+  recommendability: string | null
   totalCapacityHours: runtime.Decimal | null
   preferredWorkHours: runtime.Decimal | null
   availableSchedule: string | null
@@ -78,6 +79,7 @@ export type VAProfileMaxAggregateOutputType = {
   vaaPosition: string | null
   level: string | null
   availabilityStatus: $Enums.Availability | null
+  recommendability: string | null
   totalCapacityHours: runtime.Decimal | null
   preferredWorkHours: runtime.Decimal | null
   availableSchedule: string | null
@@ -108,6 +110,7 @@ export type VAProfileCountAggregateOutputType = {
   vaaPosition: number
   level: number
   availabilityStatus: number
+  recommendability: number
   totalCapacityHours: number
   preferredWorkHours: number
   availableSchedule: number
@@ -154,6 +157,7 @@ export type VAProfileMinAggregateInputType = {
   vaaPosition?: true
   level?: true
   availabilityStatus?: true
+  recommendability?: true
   totalCapacityHours?: true
   preferredWorkHours?: true
   availableSchedule?: true
@@ -184,6 +188,7 @@ export type VAProfileMaxAggregateInputType = {
   vaaPosition?: true
   level?: true
   availabilityStatus?: true
+  recommendability?: true
   totalCapacityHours?: true
   preferredWorkHours?: true
   availableSchedule?: true
@@ -214,6 +219,7 @@ export type VAProfileCountAggregateInputType = {
   vaaPosition?: true
   level?: true
   availabilityStatus?: true
+  recommendability?: true
   totalCapacityHours?: true
   preferredWorkHours?: true
   availableSchedule?: true
@@ -331,6 +337,7 @@ export type VAProfileGroupByOutputType = {
   vaaPosition: string | null
   level: string | null
   availabilityStatus: $Enums.Availability
+  recommendability: string | null
   totalCapacityHours: runtime.Decimal | null
   preferredWorkHours: runtime.Decimal | null
   availableSchedule: string | null
@@ -384,6 +391,7 @@ export type VAProfileWhereInput = {
   vaaPosition?: Prisma.StringNullableFilter<"VAProfile"> | string | null
   level?: Prisma.StringNullableFilter<"VAProfile"> | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFilter<"VAProfile"> | $Enums.Availability
+  recommendability?: Prisma.StringNullableFilter<"VAProfile"> | string | null
   totalCapacityHours?: Prisma.DecimalNullableFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.DecimalNullableFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.StringNullableFilter<"VAProfile"> | string | null
@@ -419,6 +427,7 @@ export type VAProfileOrderByWithRelationInput = {
   vaaPosition?: Prisma.SortOrderInput | Prisma.SortOrder
   level?: Prisma.SortOrderInput | Prisma.SortOrder
   availabilityStatus?: Prisma.SortOrder
+  recommendability?: Prisma.SortOrderInput | Prisma.SortOrder
   totalCapacityHours?: Prisma.SortOrderInput | Prisma.SortOrder
   preferredWorkHours?: Prisma.SortOrderInput | Prisma.SortOrder
   availableSchedule?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -457,6 +466,7 @@ export type VAProfileWhereUniqueInput = Prisma.AtLeast<{
   vaaPosition?: Prisma.StringNullableFilter<"VAProfile"> | string | null
   level?: Prisma.StringNullableFilter<"VAProfile"> | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFilter<"VAProfile"> | $Enums.Availability
+  recommendability?: Prisma.StringNullableFilter<"VAProfile"> | string | null
   totalCapacityHours?: Prisma.DecimalNullableFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.DecimalNullableFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.StringNullableFilter<"VAProfile"> | string | null
@@ -492,6 +502,7 @@ export type VAProfileOrderByWithAggregationInput = {
   vaaPosition?: Prisma.SortOrderInput | Prisma.SortOrder
   level?: Prisma.SortOrderInput | Prisma.SortOrder
   availabilityStatus?: Prisma.SortOrder
+  recommendability?: Prisma.SortOrderInput | Prisma.SortOrder
   totalCapacityHours?: Prisma.SortOrderInput | Prisma.SortOrder
   preferredWorkHours?: Prisma.SortOrderInput | Prisma.SortOrder
   availableSchedule?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -530,6 +541,7 @@ export type VAProfileScalarWhereWithAggregatesInput = {
   vaaPosition?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
   level?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
   availabilityStatus?: Prisma.EnumAvailabilityWithAggregatesFilter<"VAProfile"> | $Enums.Availability
+  recommendability?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
   totalCapacityHours?: Prisma.DecimalNullableWithAggregatesFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.DecimalNullableWithAggregatesFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
@@ -559,6 +571,7 @@ export type VAProfileCreateInput = {
   vaaPosition?: string | null
   level?: string | null
   availabilityStatus?: $Enums.Availability
+  recommendability?: string | null
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
@@ -594,6 +607,7 @@ export type VAProfileUncheckedCreateInput = {
   vaaPosition?: string | null
   level?: string | null
   availabilityStatus?: $Enums.Availability
+  recommendability?: string | null
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
@@ -627,6 +641,7 @@ export type VAProfileUpdateInput = {
   vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
+  recommendability?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -662,6 +677,7 @@ export type VAProfileUncheckedUpdateInput = {
   vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
+  recommendability?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -696,6 +712,7 @@ export type VAProfileCreateManyInput = {
   vaaPosition?: string | null
   level?: string | null
   availabilityStatus?: $Enums.Availability
+  recommendability?: string | null
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
@@ -725,6 +742,7 @@ export type VAProfileUpdateManyMutationInput = {
   vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
+  recommendability?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -755,6 +773,7 @@ export type VAProfileUncheckedUpdateManyInput = {
   vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
+  recommendability?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -790,6 +809,7 @@ export type VAProfileCountOrderByAggregateInput = {
   vaaPosition?: Prisma.SortOrder
   level?: Prisma.SortOrder
   availabilityStatus?: Prisma.SortOrder
+  recommendability?: Prisma.SortOrder
   totalCapacityHours?: Prisma.SortOrder
   preferredWorkHours?: Prisma.SortOrder
   availableSchedule?: Prisma.SortOrder
@@ -827,6 +847,7 @@ export type VAProfileMaxOrderByAggregateInput = {
   vaaPosition?: Prisma.SortOrder
   level?: Prisma.SortOrder
   availabilityStatus?: Prisma.SortOrder
+  recommendability?: Prisma.SortOrder
   totalCapacityHours?: Prisma.SortOrder
   preferredWorkHours?: Prisma.SortOrder
   availableSchedule?: Prisma.SortOrder
@@ -857,6 +878,7 @@ export type VAProfileMinOrderByAggregateInput = {
   vaaPosition?: Prisma.SortOrder
   level?: Prisma.SortOrder
   availabilityStatus?: Prisma.SortOrder
+  recommendability?: Prisma.SortOrder
   totalCapacityHours?: Prisma.SortOrder
   preferredWorkHours?: Prisma.SortOrder
   availableSchedule?: Prisma.SortOrder
@@ -994,6 +1016,7 @@ export type VAProfileCreateWithoutUserInput = {
   vaaPosition?: string | null
   level?: string | null
   availabilityStatus?: $Enums.Availability
+  recommendability?: string | null
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
@@ -1027,6 +1050,7 @@ export type VAProfileUncheckedCreateWithoutUserInput = {
   vaaPosition?: string | null
   level?: string | null
   availabilityStatus?: $Enums.Availability
+  recommendability?: string | null
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
@@ -1076,6 +1100,7 @@ export type VAProfileUpdateWithoutUserInput = {
   vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
+  recommendability?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1109,6 +1134,7 @@ export type VAProfileUncheckedUpdateWithoutUserInput = {
   vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
+  recommendability?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1142,6 +1168,7 @@ export type VAProfileCreateWithoutVaSkillsInput = {
   vaaPosition?: string | null
   level?: string | null
   availabilityStatus?: $Enums.Availability
+  recommendability?: string | null
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
@@ -1176,6 +1203,7 @@ export type VAProfileUncheckedCreateWithoutVaSkillsInput = {
   vaaPosition?: string | null
   level?: string | null
   availabilityStatus?: $Enums.Availability
+  recommendability?: string | null
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
@@ -1224,6 +1252,7 @@ export type VAProfileUpdateWithoutVaSkillsInput = {
   vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
+  recommendability?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1258,6 +1287,7 @@ export type VAProfileUncheckedUpdateWithoutVaSkillsInput = {
   vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
+  recommendability?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1290,6 +1320,7 @@ export type VAProfileCreateWithoutDocumentsInput = {
   vaaPosition?: string | null
   level?: string | null
   availabilityStatus?: $Enums.Availability
+  recommendability?: string | null
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
@@ -1324,6 +1355,7 @@ export type VAProfileUncheckedCreateWithoutDocumentsInput = {
   vaaPosition?: string | null
   level?: string | null
   availabilityStatus?: $Enums.Availability
+  recommendability?: string | null
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
@@ -1372,6 +1404,7 @@ export type VAProfileUpdateWithoutDocumentsInput = {
   vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
+  recommendability?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1406,6 +1439,7 @@ export type VAProfileUncheckedUpdateWithoutDocumentsInput = {
   vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
+  recommendability?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1438,6 +1472,7 @@ export type VAProfileCreateWithoutAssignmentsInput = {
   vaaPosition?: string | null
   level?: string | null
   availabilityStatus?: $Enums.Availability
+  recommendability?: string | null
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
@@ -1472,6 +1507,7 @@ export type VAProfileUncheckedCreateWithoutAssignmentsInput = {
   vaaPosition?: string | null
   level?: string | null
   availabilityStatus?: $Enums.Availability
+  recommendability?: string | null
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
@@ -1520,6 +1556,7 @@ export type VAProfileUpdateWithoutAssignmentsInput = {
   vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
+  recommendability?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1554,6 +1591,7 @@ export type VAProfileUncheckedUpdateWithoutAssignmentsInput = {
   vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
+  recommendability?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1586,6 +1624,7 @@ export type VAProfileCreateWithoutWorkLogsInput = {
   vaaPosition?: string | null
   level?: string | null
   availabilityStatus?: $Enums.Availability
+  recommendability?: string | null
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
@@ -1620,6 +1659,7 @@ export type VAProfileUncheckedCreateWithoutWorkLogsInput = {
   vaaPosition?: string | null
   level?: string | null
   availabilityStatus?: $Enums.Availability
+  recommendability?: string | null
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
@@ -1668,6 +1708,7 @@ export type VAProfileUpdateWithoutWorkLogsInput = {
   vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
+  recommendability?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1702,6 +1743,7 @@ export type VAProfileUncheckedUpdateWithoutWorkLogsInput = {
   vaaPosition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   availabilityStatus?: Prisma.EnumAvailabilityFieldUpdateOperationsInput | $Enums.Availability
+  recommendability?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1793,6 +1835,7 @@ export type VAProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   vaaPosition?: boolean
   level?: boolean
   availabilityStatus?: boolean
+  recommendability?: boolean
   totalCapacityHours?: boolean
   preferredWorkHours?: boolean
   availableSchedule?: boolean
@@ -1829,6 +1872,7 @@ export type VAProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   vaaPosition?: boolean
   level?: boolean
   availabilityStatus?: boolean
+  recommendability?: boolean
   totalCapacityHours?: boolean
   preferredWorkHours?: boolean
   availableSchedule?: boolean
@@ -1860,6 +1904,7 @@ export type VAProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   vaaPosition?: boolean
   level?: boolean
   availabilityStatus?: boolean
+  recommendability?: boolean
   totalCapacityHours?: boolean
   preferredWorkHours?: boolean
   availableSchedule?: boolean
@@ -1891,6 +1936,7 @@ export type VAProfileSelectScalar = {
   vaaPosition?: boolean
   level?: boolean
   availabilityStatus?: boolean
+  recommendability?: boolean
   totalCapacityHours?: boolean
   preferredWorkHours?: boolean
   availableSchedule?: boolean
@@ -1913,7 +1959,7 @@ export type VAProfileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type VAProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "hourlyRate" | "baseRate" | "vaaPosition" | "level" | "availabilityStatus" | "totalCapacityHours" | "preferredWorkHours" | "availableSchedule" | "hybrid" | "onboardingFolderUrl" | "portfolioUrl" | "contractLink" | "folder201Link" | "file201Link" | "vaClientFileLink" | "healthCheckFileLink" | "vaProfileLink" | "payoutSummaryLink" | "dept201FolderLink" | "notes" | "status" | "engagementStatus" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["vAProfile"]>
+export type VAProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "hourlyRate" | "baseRate" | "vaaPosition" | "level" | "availabilityStatus" | "recommendability" | "totalCapacityHours" | "preferredWorkHours" | "availableSchedule" | "hybrid" | "onboardingFolderUrl" | "portfolioUrl" | "contractLink" | "folder201Link" | "file201Link" | "vaClientFileLink" | "healthCheckFileLink" | "vaProfileLink" | "payoutSummaryLink" | "dept201FolderLink" | "notes" | "status" | "engagementStatus" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["vAProfile"]>
 export type VAProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   assignments?: boolean | Prisma.VAProfile$assignmentsArgs<ExtArgs>
@@ -1946,6 +1992,7 @@ export type $VAProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     vaaPosition: string | null
     level: string | null
     availabilityStatus: $Enums.Availability
+    recommendability: string | null
     totalCapacityHours: runtime.Decimal | null
     preferredWorkHours: runtime.Decimal | null
     availableSchedule: string | null
@@ -2401,6 +2448,7 @@ export interface VAProfileFieldRefs {
   readonly vaaPosition: Prisma.FieldRef<"VAProfile", 'String'>
   readonly level: Prisma.FieldRef<"VAProfile", 'String'>
   readonly availabilityStatus: Prisma.FieldRef<"VAProfile", 'Availability'>
+  readonly recommendability: Prisma.FieldRef<"VAProfile", 'String'>
   readonly totalCapacityHours: Prisma.FieldRef<"VAProfile", 'Decimal'>
   readonly preferredWorkHours: Prisma.FieldRef<"VAProfile", 'Decimal'>
   readonly availableSchedule: Prisma.FieldRef<"VAProfile", 'String'>

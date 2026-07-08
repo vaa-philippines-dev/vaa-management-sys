@@ -97,7 +97,10 @@ export async function addVASkill(vaProfileId: string, skillId: string, proficien
 }
 
 export type VACsvRow = {
-  name: string
+  firstName: string
+  middleName?: string
+  lastName?: string
+  extName?: string
   email?: string
   hourlyRate?: string
   baseRate?: string
@@ -105,6 +108,7 @@ export type VACsvRow = {
   level?: string
   department?: string
   availabilityStatus?: string
+  recommendability?: string
   status?: string
   engagementStatus?: string
   hybrid?: string
@@ -115,7 +119,14 @@ export type VACsvRow = {
   workEmail?: string
   gender?: string
   birthDate?: string
-  address?: string
+  birthdayCelebrant?: string
+  addressLine?: string
+  barangay?: string
+  cityMunicipality?: string
+  province?: string
+  zipCode?: string
+  landmark?: string
+  gcashNumber?: string
   emergencyContactName?: string
   emergencyContactPhone?: string
   emergencyContactRelation?: string
@@ -148,21 +159,21 @@ export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult
   for (let i = 0; i < rows.length; i++) {
     const rowNum = i + 2 // account for header row, 1-indexed
     const row = rows[i]
-    const name = (row.name || '').trim()
+    const firstName = (row.firstName || '').trim()
+    const middleName = (row.middleName || '').trim() || null
+    const lastName = (row.lastName || '').trim() || '-'
+    const extName = (row.extName || '').trim() || null
     const emailInput = (row.email || '').trim().toLowerCase()
     const hourlyRateInput = (row.hourlyRate || '').trim()
     const baseRateInput = (row.baseRate || '').trim()
     const preferredWorkHoursInput = (row.preferredWorkHours || '').trim()
     const notes = (row.notes || '').trim() || null
 
-    if (!name) {
-      result.skipped.push({ row: rowNum, reason: 'Missing name' })
+    if (!firstName) {
+      result.skipped.push({ row: rowNum, reason: 'Missing first name' })
       continue
     }
 
-    const parts = name.split(' ').filter(Boolean)
-    const firstName = parts[0] || name
-    const lastName = parts.slice(1).join(' ') || '-'
     const email = emailInput || `${firstName.toLowerCase().replace(/[^a-z0-9]/g, '')}-va-${Date.now()}-${i}@placeholder.vaa`
 
     const hourlyRate = hourlyRateInput && !Number.isNaN(Number(hourlyRateInput)) ? Number(hourlyRateInput) : null
@@ -170,6 +181,8 @@ export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult
     const preferredWorkHours = preferredWorkHoursInput && !Number.isNaN(Number(preferredWorkHoursInput)) ? Number(preferredWorkHoursInput) : null
     const hybrid = (row.hybrid || '').trim().toLowerCase() === 'true' || (row.hybrid || '').trim().toLowerCase() === 'yes'
     const birthDate = (row.birthDate || '').trim() ? new Date((row.birthDate || '').trim()) : null
+    const birthdayCelebrantInput = (row.birthdayCelebrant || '').trim().toLowerCase()
+    const birthdayCelebrant = birthdayCelebrantInput ? (birthdayCelebrantInput === 'true' || birthdayCelebrantInput === 'yes') : undefined
 
     const availabilityStatus = normalizeEnum(row.availabilityStatus, CSV_AVAILABILITY_VALUES)
     const status = normalizeEnum(row.status, CSV_STATUS_VALUES)
@@ -197,7 +210,9 @@ export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult
         data: {
           email,
           firstName,
+          middleName,
           lastName,
+          extName,
           systemRole: 'VA',
           userType: 'VIRTUAL_ASSISTANT',
           vaProfile: {
@@ -207,6 +222,7 @@ export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult
               vaaPosition: (row.vaaPosition || '').trim() || null,
               level: (row.level || '').trim() || null,
               availabilityStatus: (availabilityStatus as any) ?? undefined,
+              recommendability: (row.recommendability || '').trim() || null,
               status: (status as any) ?? undefined,
               engagementStatus: (engagementStatus as any) ?? undefined,
               hybrid,
@@ -222,7 +238,14 @@ export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult
               workEmail: (row.workEmail || '').trim() || null,
               gender: (row.gender || '').trim() || null,
               birthDate,
-              address: (row.address || '').trim() || null,
+              birthdayCelebrant,
+              addressLine: (row.addressLine || '').trim() || null,
+              barangay: (row.barangay || '').trim() || null,
+              cityMunicipality: (row.cityMunicipality || '').trim() || null,
+              province: (row.province || '').trim() || null,
+              zipCode: (row.zipCode || '').trim() || null,
+              landmark: (row.landmark || '').trim() || null,
+              gcashNumber: (row.gcashNumber || '').trim() || null,
               emergencyContactName: (row.emergencyContactName || '').trim() || null,
               emergencyContactPhone: (row.emergencyContactPhone || '').trim() || null,
               emergencyContactRelation: (row.emergencyContactRelation || '').trim() || null,
