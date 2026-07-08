@@ -151,31 +151,111 @@ function normalizeEnum(value: string | undefined, allowed: string[]): string | n
   return allowed.includes(normalized) ? normalized : null
 }
 
+const CSV_IMPORT_BATCH_SIZE = 20
+
 export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult> {
   const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER')
 
   const result: VACsvImportResult = { created: 0, skipped: [] }
 
+  // Pre-fetch lookups once instead of per-row to avoid thousands of sequential round-trips.
+  const emailInputs = rows
+    .map((row) => (row.email || '').trim().toLowerCase())
+    .filter(Boolean)
+  const existingEmails = new Set(
+    emailInputs.length > 0
+      ? (
+          await prisma.user.findMany({
+            where: { email: { in: Array.from(new Set(emailInputs)) } },
+            select: { email: true },
+          })
+        ).map((u) => u.email)
+      : [],
+  )
+
+  const departmentNames = Array.from(
+    new Set(rows.map((row) => (row.department || '').trim()).filter(Boolean)),
+  )
+  const departments = departmentNames.length > 0
+    ? await prisma.department.findMany({
+        where: { name: { in: departmentNames, mode: 'insensitive' } },
+      })
+    : []
+  const departmentIdByName = new Map(
+    departments.map((d) => [d.name.toLowerCase(), d.id]),
+  )
+
+  type PreparedRow = {
+    rowNum: number
+    email: string
+    firstName: string
+    middleName: string | null
+    lastName: string
+    extName: string | null
+    hourlyRate: number | null
+    baseRate: number | null
+    vaaPosition: string | null
+    level: string | null
+    availabilityStatus: string | null
+    recommendability: string | null
+    status: string | null
+    engagementStatus: string | null
+    hybrid: boolean
+    preferredWorkHours: number | null
+    availableSchedule: string | null
+    notes: string | null
+    phone: string | null
+    personalEmail: string | null
+    workEmail: string | null
+    gender: string | null
+    birthDate: Date | null
+    birthdayCelebrant: boolean | undefined
+    addressLine: string | null
+    barangay: string | null
+    cityMunicipality: string | null
+    province: string | null
+    zipCode: string | null
+    landmark: string | null
+    gcashNumber: string | null
+    emergencyContactName: string | null
+    emergencyContactPhone: string | null
+    emergencyContactRelation: string | null
+    facebookName: string | null
+    facebookUrl: string | null
+    linkedinUrl: string | null
+    departmentInput: string
+    departmentId: string | null
+  }
+
+  const prepared: PreparedRow[] = []
+  const seenEmails = new Set<string>()
+
   for (let i = 0; i < rows.length; i++) {
     const rowNum = i + 2 // account for header row, 1-indexed
     const row = rows[i]
     const firstName = (row.firstName || '').trim()
-    const middleName = (row.middleName || '').trim() || null
-    const lastName = (row.lastName || '').trim() || '-'
-    const extName = (row.extName || '').trim() || null
-    const emailInput = (row.email || '').trim().toLowerCase()
-    const hourlyRateInput = (row.hourlyRate || '').trim()
-    const baseRateInput = (row.baseRate || '').trim()
-    const preferredWorkHoursInput = (row.preferredWorkHours || '').trim()
-    const notes = (row.notes || '').trim() || null
 
     if (!firstName) {
       result.skipped.push({ row: rowNum, reason: 'Missing first name' })
       continue
     }
 
+    const emailInput = (row.email || '').trim().toLowerCase()
+    if (emailInput && existingEmails.has(emailInput)) {
+      result.skipped.push({ row: rowNum, reason: `Email already exists: ${emailInput}` })
+      continue
+    }
+    if (emailInput && seenEmails.has(emailInput)) {
+      result.skipped.push({ row: rowNum, reason: `Duplicate email in file: ${emailInput}` })
+      continue
+    }
+    if (emailInput) seenEmails.add(emailInput)
+
     const email = emailInput || `${firstName.toLowerCase().replace(/[^a-z0-9]/g, '')}-va-${Date.now()}-${i}@placeholder.vaa`
 
+    const hourlyRateInput = (row.hourlyRate || '').trim()
+    const baseRateInput = (row.baseRate || '').trim()
+    const preferredWorkHoursInput = (row.preferredWorkHours || '').trim()
     const hourlyRate = hourlyRateInput && !Number.isNaN(Number(hourlyRateInput)) ? Number(hourlyRateInput) : null
     const baseRate = baseRateInput && !Number.isNaN(Number(baseRateInput)) ? Number(baseRateInput) : null
     const preferredWorkHours = preferredWorkHoursInput && !Number.isNaN(Number(preferredWorkHoursInput)) ? Number(preferredWorkHoursInput) : null
@@ -184,107 +264,139 @@ export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult
     const birthdayCelebrantInput = (row.birthdayCelebrant || '').trim().toLowerCase()
     const birthdayCelebrant = birthdayCelebrantInput ? (birthdayCelebrantInput === 'true' || birthdayCelebrantInput === 'yes') : undefined
 
-    const availabilityStatus = normalizeEnum(row.availabilityStatus, CSV_AVAILABILITY_VALUES)
-    const status = normalizeEnum(row.status, CSV_STATUS_VALUES)
-    const engagementStatus = normalizeEnum(row.engagementStatus, CSV_ENGAGEMENT_VALUES)
-
-    if (emailInput) {
-      const existing = await prisma.user.findUnique({ where: { email: emailInput } })
-      if (existing) {
-        result.skipped.push({ row: rowNum, reason: `Email already exists: ${emailInput}` })
-        continue
-      }
-    }
-
-    let departmentId: string | null = null
     const departmentInput = (row.department || '').trim()
-    if (departmentInput) {
-      const dept = await prisma.department.findFirst({
-        where: { name: { equals: departmentInput, mode: 'insensitive' } },
-      })
-      departmentId = dept?.id ?? null
-    }
+    const departmentId = departmentInput ? departmentIdByName.get(departmentInput.toLowerCase()) ?? null : null
 
+    prepared.push({
+      rowNum,
+      email,
+      firstName,
+      middleName: (row.middleName || '').trim() || null,
+      lastName: (row.lastName || '').trim() || '-',
+      extName: (row.extName || '').trim() || null,
+      hourlyRate,
+      baseRate,
+      vaaPosition: (row.vaaPosition || '').trim() || null,
+      level: (row.level || '').trim() || null,
+      availabilityStatus: normalizeEnum(row.availabilityStatus, CSV_AVAILABILITY_VALUES),
+      recommendability: (row.recommendability || '').trim() || null,
+      status: normalizeEnum(row.status, CSV_STATUS_VALUES),
+      engagementStatus: normalizeEnum(row.engagementStatus, CSV_ENGAGEMENT_VALUES),
+      hybrid,
+      preferredWorkHours,
+      availableSchedule: (row.availableSchedule || '').trim() || null,
+      notes: (row.notes || '').trim() || null,
+      phone: (row.phone || '').trim() || null,
+      personalEmail: (row.personalEmail || '').trim() || null,
+      workEmail: (row.workEmail || '').trim() || null,
+      gender: (row.gender || '').trim() || null,
+      birthDate,
+      birthdayCelebrant,
+      addressLine: (row.addressLine || '').trim() || null,
+      barangay: (row.barangay || '').trim() || null,
+      cityMunicipality: (row.cityMunicipality || '').trim() || null,
+      province: (row.province || '').trim() || null,
+      zipCode: (row.zipCode || '').trim() || null,
+      landmark: (row.landmark || '').trim() || null,
+      gcashNumber: (row.gcashNumber || '').trim() || null,
+      emergencyContactName: (row.emergencyContactName || '').trim() || null,
+      emergencyContactPhone: (row.emergencyContactPhone || '').trim() || null,
+      emergencyContactRelation: (row.emergencyContactRelation || '').trim() || null,
+      facebookName: (row.facebookName || '').trim() || null,
+      facebookUrl: (row.facebookUrl || '').trim() || null,
+      linkedinUrl: (row.linkedinUrl || '').trim() || null,
+      departmentInput,
+      departmentId,
+    })
+  }
+
+  const createOne = async (p: PreparedRow) => {
     try {
       const user = await prisma.user.create({
         data: {
-          email,
-          firstName,
-          middleName,
-          lastName,
-          extName,
+          email: p.email,
+          firstName: p.firstName,
+          middleName: p.middleName,
+          lastName: p.lastName,
+          extName: p.extName,
           systemRole: 'VA',
           userType: 'VIRTUAL_ASSISTANT',
           vaProfile: {
             create: {
-              hourlyRate,
-              baseRate,
-              vaaPosition: (row.vaaPosition || '').trim() || null,
-              level: (row.level || '').trim() || null,
-              availabilityStatus: (availabilityStatus as any) ?? undefined,
-              recommendability: (row.recommendability || '').trim() || null,
-              status: (status as any) ?? undefined,
-              engagementStatus: (engagementStatus as any) ?? undefined,
-              hybrid,
-              preferredWorkHours,
-              availableSchedule: (row.availableSchedule || '').trim() || null,
-              notes,
+              hourlyRate: p.hourlyRate,
+              baseRate: p.baseRate,
+              vaaPosition: p.vaaPosition,
+              level: p.level,
+              availabilityStatus: (p.availabilityStatus as any) ?? undefined,
+              recommendability: p.recommendability,
+              status: (p.status as any) ?? undefined,
+              engagementStatus: (p.engagementStatus as any) ?? undefined,
+              hybrid: p.hybrid,
+              preferredWorkHours: p.preferredWorkHours,
+              availableSchedule: p.availableSchedule,
+              notes: p.notes,
             },
           },
           profile: {
             create: {
-              phone: (row.phone || '').trim() || null,
-              personalEmail: (row.personalEmail || '').trim() || null,
-              workEmail: (row.workEmail || '').trim() || null,
-              gender: (row.gender || '').trim() || null,
-              birthDate,
-              birthdayCelebrant,
-              addressLine: (row.addressLine || '').trim() || null,
-              barangay: (row.barangay || '').trim() || null,
-              cityMunicipality: (row.cityMunicipality || '').trim() || null,
-              province: (row.province || '').trim() || null,
-              zipCode: (row.zipCode || '').trim() || null,
-              landmark: (row.landmark || '').trim() || null,
-              gcashNumber: (row.gcashNumber || '').trim() || null,
-              emergencyContactName: (row.emergencyContactName || '').trim() || null,
-              emergencyContactPhone: (row.emergencyContactPhone || '').trim() || null,
-              emergencyContactRelation: (row.emergencyContactRelation || '').trim() || null,
-              facebookName: (row.facebookName || '').trim() || null,
-              facebookUrl: (row.facebookUrl || '').trim() || null,
-              linkedinUrl: (row.linkedinUrl || '').trim() || null,
+              phone: p.phone,
+              personalEmail: p.personalEmail,
+              workEmail: p.workEmail,
+              gender: p.gender,
+              birthDate: p.birthDate,
+              birthdayCelebrant: p.birthdayCelebrant,
+              addressLine: p.addressLine,
+              barangay: p.barangay,
+              cityMunicipality: p.cityMunicipality,
+              province: p.province,
+              zipCode: p.zipCode,
+              landmark: p.landmark,
+              gcashNumber: p.gcashNumber,
+              emergencyContactName: p.emergencyContactName,
+              emergencyContactPhone: p.emergencyContactPhone,
+              emergencyContactRelation: p.emergencyContactRelation,
+              facebookName: p.facebookName,
+              facebookUrl: p.facebookUrl,
+              linkedinUrl: p.linkedinUrl,
             },
           },
-          ...(departmentId ? { memberships: { create: { departmentId, isPrimary: true } } } : {}),
+          ...(p.departmentId ? { memberships: { create: { departmentId: p.departmentId, isPrimary: true } } } : {}),
         },
         include: { vaProfile: true },
       })
 
-      await logAudit({
-        actorId: actor.id,
-        action: 'CREATE',
-        entityType: 'User',
-        entityId: user.id,
-        after: { email, firstName, lastName, hourlyRate, department: departmentInput || null },
-        metadata: { viaImport: 'vas/csv' },
-      })
-
-      await prisma.employmentRecord.create({
-        data: {
-          userId: user.id,
-          departmentId,
-          contractType: 'REGULAR',
-          employmentStatus: (engagementStatus as EmploymentStatus | null) ?? 'EMPLOYED',
-          startDate: new Date(),
-          effectiveDate: new Date(),
-          isCurrent: true,
-          initiatedBy: actor.id,
-        },
-      })
+      await Promise.all([
+        logAudit({
+          actorId: actor.id,
+          action: 'CREATE',
+          entityType: 'User',
+          entityId: user.id,
+          after: { email: p.email, firstName: p.firstName, lastName: p.lastName, hourlyRate: p.hourlyRate, department: p.departmentInput || null },
+          metadata: { viaImport: 'vas/csv' },
+        }),
+        prisma.employmentRecord.create({
+          data: {
+            userId: user.id,
+            departmentId: p.departmentId,
+            contractType: 'REGULAR',
+            employmentStatus: (p.engagementStatus as EmploymentStatus | null) ?? 'EMPLOYED',
+            startDate: new Date(),
+            effectiveDate: new Date(),
+            isCurrent: true,
+            initiatedBy: actor.id,
+          },
+        }),
+      ])
 
       result.created++
     } catch (e) {
-      result.skipped.push({ row: rowNum, reason: e instanceof Error ? e.message : 'Failed to create' })
+      result.skipped.push({ row: p.rowNum, reason: e instanceof Error ? e.message : 'Failed to create' })
     }
+  }
+
+  for (let i = 0; i < prepared.length; i += CSV_IMPORT_BATCH_SIZE) {
+    const batch = prepared.slice(i, i + CSV_IMPORT_BATCH_SIZE)
+    await Promise.all(batch.map(createOne))
   }
 
   if (result.created > 0) {
@@ -293,6 +405,7 @@ export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult
     revalidateTag(CACHE_TAGS.users, 'default')
   }
 
+  result.skipped.sort((a, b) => a.row - b.row)
   return result
 }
 
