@@ -181,7 +181,7 @@ export function ServiceSelector({
               <span className="text-[11px] text-muted-foreground">
                 {selected.size} service{selected.size !== 1 ? 's' : ''} selected
                 {isDirty && canEdit && (
-                  <span className="text-amber-600 ml-1">· unsaved</span>
+                  <span className="text-warning ml-1">· unsaved</span>
                 )}
               </span>
               <div className="flex gap-2">

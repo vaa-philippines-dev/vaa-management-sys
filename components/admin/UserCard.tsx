@@ -109,7 +109,7 @@ export function UserCard({
               {user.firstName} {user.lastName}
             </span>
             {user.status && user.status !== 'ACTIVE' && (
-              <Badge variant="outline" className={`text-[10px] py-0 px-1.5 ${user.status === 'ON_HOLD' ? 'bg-amber-500/10 text-amber-700 border-amber-500/20' : 'bg-red-500/10 text-red-600 border-red-500/20'}`}>
+              <Badge variant="outline" className={`text-[10px] py-0 px-1.5 ${user.status === 'ON_HOLD' ? 'bg-warning/10 text-warning border-warning/20' : 'bg-destructive/10 text-destructive border-destructive/20'}`}>
                 {user.status === 'ON_HOLD' ? 'On Hold' : 'Disabled'}
               </Badge>
             )}
@@ -143,7 +143,7 @@ export function UserCard({
       {open && (
         <div className="border-t p-3 space-y-3">
           {!canEdit && (
-            <div className="rounded-md bg-amber-500/10 border border-amber-500/20 px-3 py-2 text-xs text-amber-700">
+            <div className="rounded-md bg-warning/10 border border-warning/20 px-3 py-2 text-xs text-warning">
               View-only mode — Executive role cannot modify user records.
             </div>
           )}

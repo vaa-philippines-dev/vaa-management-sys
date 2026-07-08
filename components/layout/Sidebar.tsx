@@ -23,6 +23,38 @@ import {
 } from 'lucide-react'
 import Image from 'next/image'
 
+function NavButton({
+  href,
+  isActive,
+  icon: Icon,
+  children,
+}: {
+  href: string
+  isActive: boolean
+  icon: React.ComponentType<{ className?: string }>
+  children: React.ReactNode
+}) {
+  return (
+    <Link href={href}>
+      <Button
+        variant="ghost"
+        className={cn(
+          'relative w-full justify-start gap-3 rounded-lg text-sm font-medium transition-colors',
+          isActive
+            ? 'bg-sidebar-accent text-sidebar-accent-foreground'
+            : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
+        )}
+      >
+        {isActive && (
+          <span className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-r-full bg-sidebar-primary" />
+        )}
+        <Icon className="h-4 w-4 shrink-0" />
+        {children}
+      </Button>
+    </Link>
+  )
+}
+
 const managerRoutes = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { label: 'Clients', href: '/clients', icon: Building2 },
@@ -69,26 +101,14 @@ export function Sidebar({ role = 'MANAGER', isAdmin = false }: { role?: 'MANAGER
       <ScrollArea className="flex-1 px-3 py-4">
         <nav className="flex flex-col gap-1">
           {routes.map((route) => {
-            const Icon = route.icon
             const isActive =
               route.href === '/dashboard'
                 ? pathname === '/dashboard'
                 : pathname.startsWith(route.href)
             return (
-              <Link key={route.href} href={route.href}>
-                <Button
-                  variant="ghost"
-                  className={cn(
-                    'w-full justify-start gap-3 rounded-lg text-sm font-medium transition-colors',
-                    isActive
-                      ? 'bg-sidebar-accent text-sidebar-accent-foreground'
-                      : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
-                  )}
-                >
-                  <Icon className="h-4 w-4 shrink-0" />
-                  {route.label}
-                </Button>
-              </Link>
+              <NavButton key={route.href} href={route.href} isActive={isActive} icon={route.icon}>
+                {route.label}
+              </NavButton>
             )
           })}
 
@@ -98,90 +118,24 @@ export function Sidebar({ role = 'MANAGER', isAdmin = false }: { role?: 'MANAGER
               <p className="px-3 py-1 text-[10px] uppercase tracking-wider text-sidebar-foreground/50 font-semibold">
                 Admin
               </p>
-              <Link href="/admin">
-                <Button
-                  variant="ghost"
-                  className={cn(
-                    'w-full justify-start gap-3 rounded-lg text-sm font-medium transition-colors',
-                    pathname === '/admin'
-                      ? 'bg-sidebar-accent text-sidebar-accent-foreground'
-                      : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
-                  )}
-                >
-                  <LayoutDashboard className="h-4 w-4 shrink-0" />
-                  Admin Panel
-                </Button>
-              </Link>
-              <Link href="/admin/users">
-                <Button
-                  variant="ghost"
-                  className={cn(
-                    'w-full justify-start gap-3 rounded-lg text-sm font-medium transition-colors',
-                    pathname.startsWith('/admin/users')
-                      ? 'bg-sidebar-accent text-sidebar-accent-foreground'
-                      : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
-                  )}
-                >
-                  <UserPlus className="h-4 w-4 shrink-0" />
-                  Manage Users
-                </Button>
-              </Link>
-              <Link href="/admin/departments">
-                <Button
-                  variant="ghost"
-                  className={cn(
-                    'w-full justify-start gap-3 rounded-lg text-sm font-medium transition-colors',
-                    pathname.startsWith('/admin/departments')
-                      ? 'bg-sidebar-accent text-sidebar-accent-foreground'
-                      : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
-                  )}
-                >
-                  <Network className="h-4 w-4 shrink-0" />
-                  Manage Departments
-                </Button>
-              </Link>
-              <Link href="/departments">
-                <Button
-                  variant="ghost"
-                  className={cn(
-                    'w-full justify-start gap-3 rounded-lg text-sm font-medium transition-colors',
-                    pathname === '/departments'
-                      ? 'bg-sidebar-accent text-sidebar-accent-foreground'
-                      : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
-                  )}
-                >
-                  <Building2 className="h-4 w-4 shrink-0" />
-                  Departments
-                </Button>
-              </Link>
-              <Link href="/admin/audit">
-                <Button
-                  variant="ghost"
-                  className={cn(
-                    'w-full justify-start gap-3 rounded-lg text-sm font-medium transition-colors',
-                    pathname.startsWith('/admin/audit')
-                      ? 'bg-sidebar-accent text-sidebar-accent-foreground'
-                      : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
-                  )}
-                >
-                  <ClipboardList className="h-4 w-4 shrink-0" />
-                  Audit Log
-                </Button>
-              </Link>
-              <Link href="/admin/history">
-                <Button
-                  variant="ghost"
-                  className={cn(
-                    'w-full justify-start gap-3 rounded-lg text-sm font-medium transition-colors',
-                    pathname.startsWith('/admin/history')
-                      ? 'bg-sidebar-accent text-sidebar-accent-foreground'
-                      : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
-                  )}
-                >
-                  <History className="h-4 w-4 shrink-0" />
-                  History
-                </Button>
-              </Link>
+              <NavButton href="/admin" isActive={pathname === '/admin'} icon={LayoutDashboard}>
+                Admin Panel
+              </NavButton>
+              <NavButton href="/admin/users" isActive={pathname.startsWith('/admin/users')} icon={UserPlus}>
+                Manage Users
+              </NavButton>
+              <NavButton href="/admin/departments" isActive={pathname.startsWith('/admin/departments')} icon={Network}>
+                Manage Departments
+              </NavButton>
+              <NavButton href="/departments" isActive={pathname === '/departments'} icon={Building2}>
+                Departments
+              </NavButton>
+              <NavButton href="/admin/audit" isActive={pathname.startsWith('/admin/audit')} icon={ClipboardList}>
+                Audit Log
+              </NavButton>
+              <NavButton href="/admin/history" isActive={pathname.startsWith('/admin/history')} icon={History}>
+                History
+              </NavButton>
             </>
           )}
         </nav>

@@ -58,10 +58,10 @@ type Dept = {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  ACTIVE: 'bg-green-500/15 text-green-700 border-green-500/20',
+  ACTIVE: 'bg-success/15 text-success border-success/20',
   MERGED: 'bg-gray-500/15 text-gray-700 border-gray-500/20',
-  SPLIT: 'bg-orange-500/15 text-orange-700 border-orange-500/20',
-  INACTIVE: 'bg-red-500/15 text-red-600 border-red-500/20',
+  SPLIT: 'bg-warning/15 text-warning border-warning/20',
+  INACTIVE: 'bg-destructive/15 text-destructive border-destructive/20',
 }
 
 const LEVEL_COLORS: Record<string, string> = {
@@ -467,7 +467,7 @@ function DeptNode({
               onClick={() => onToggle(dept.id, dept.status)}
               disabled={isPending}
             >
-              {dept.status === 'ACTIVE' ? <ToggleRight className="h-3 w-3 text-green-600" /> : <ToggleLeft className="h-3 w-3" />}
+              {dept.status === 'ACTIVE' ? <ToggleRight className="h-3 w-3 text-success" /> : <ToggleLeft className="h-3 w-3" />}
               {dept.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
             </Button>
           )}
@@ -475,7 +475,7 @@ function DeptNode({
             <Button
               variant="outline"
               size="sm"
-              className="h-6 text-[10px] px-1.5 gap-1 text-red-600 hover:text-red-700 border-red-200 hover:border-red-300"
+              className="h-6 text-[10px] px-1.5 gap-1 text-destructive hover:text-destructive border-destructive/30 hover:border-destructive/50"
               onClick={() => onDelete(dept.id, dept.name)}
               disabled={isPending}
             >
@@ -518,12 +518,12 @@ function DeptNode({
           )}
           {canToggle && (
             <Button variant="outline" size="sm" className="h-6 text-[10px] px-1.5 gap-1" onClick={() => onToggle(dept.id, dept.status)} disabled={isPending}>
-              {dept.status === 'ACTIVE' ? <ToggleRight className="h-3 w-3 text-green-600" /> : <ToggleLeft className="h-3 w-3" />}
+              {dept.status === 'ACTIVE' ? <ToggleRight className="h-3 w-3 text-success" /> : <ToggleLeft className="h-3 w-3" />}
               {dept.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
             </Button>
           )}
           {canDelete && (
-            <Button variant="outline" size="sm" className="h-6 text-[10px] px-1.5 gap-1 text-red-600" onClick={() => onDelete(dept.id, dept.name)} disabled={isPending}>
+            <Button variant="outline" size="sm" className="h-6 text-[10px] px-1.5 gap-1 text-destructive" onClick={() => onDelete(dept.id, dept.name)} disabled={isPending}>
               <Trash2 className="h-3 w-3" /> Delete
             </Button>
           )}

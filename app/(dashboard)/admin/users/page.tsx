@@ -85,7 +85,7 @@ export default async function AdminUsersPage({
           </div>
         </div>
         {!canEdit && (
-          <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded bg-amber-500/10 text-amber-700 border border-amber-500/20">
+          <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded bg-warning/10 text-warning border border-warning/20">
             View Only
           </span>
         )}

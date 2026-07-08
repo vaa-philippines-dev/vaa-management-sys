@@ -26,20 +26,20 @@ const ACTION_LABELS: Record<string, string> = {
 }
 
 const ACTION_COLORS: Record<string, string> = {
-  CREATE: 'bg-green-500/10 text-green-600 border-green-500/20',
+  CREATE: 'bg-success/10 text-success border-success/20',
   UPDATE: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
-  DELETE: 'bg-red-500/10 text-red-600 border-red-500/20',
-  STATUS_CHANGE: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20',
+  DELETE: 'bg-destructive/10 text-destructive border-destructive/20',
+  STATUS_CHANGE: 'bg-warning/10 text-warning border-warning/20',
   TRANSFER: 'bg-purple-500/10 text-purple-600 border-purple-500/20',
-  APPROVE: 'bg-green-500/10 text-green-600 border-green-500/20',
-  REJECT: 'bg-red-500/10 text-red-600 border-red-500/20',
+  APPROVE: 'bg-success/10 text-success border-success/20',
+  REJECT: 'bg-destructive/10 text-destructive border-destructive/20',
   FILE_UPLOAD: 'bg-cyan-500/10 text-cyan-600 border-cyan-500/20',
   SIGN_IN: 'bg-indigo-500/10 text-indigo-600 border-indigo-500/20',
   SIGN_OUT: 'bg-gray-500/10 text-gray-600 border-gray-500/20',
   MEMBER_ADD: 'bg-teal-500/10 text-teal-600 border-teal-500/20',
   MEMBER_REMOVE: 'bg-orange-500/10 text-orange-600 border-orange-500/20',
   ROLE_CHANGE: 'bg-pink-500/10 text-pink-600 border-pink-500/20',
-  LOGIN_FAILED: 'bg-red-500/10 text-red-600 border-red-500/20',
+  LOGIN_FAILED: 'bg-destructive/10 text-destructive border-destructive/20',
 }
 
 export default async function AuditLogPage({
@@ -167,13 +167,13 @@ export default async function AuditLogPage({
                           Changed fields
                         </summary>
                         <div className="mt-1 grid grid-cols-2 gap-1 text-[10px]">
-                          <div className="bg-red-50 p-1.5 rounded">
-                            <span className="font-medium text-red-700">Before:</span>
-                            <pre className="text-red-600 mt-0.5 whitespace-pre-wrap">{JSON.stringify(log.oldValues, null, 1)}</pre>
+                          <div className="bg-destructive/10 p-1.5 rounded">
+                            <span className="font-medium text-destructive">Before:</span>
+                            <pre className="text-destructive mt-0.5 whitespace-pre-wrap">{JSON.stringify(log.oldValues, null, 1)}</pre>
                           </div>
-                          <div className="bg-green-50 p-1.5 rounded">
-                            <span className="font-medium text-green-700">After:</span>
-                            <pre className="text-green-600 mt-0.5 whitespace-pre-wrap">{JSON.stringify(log.newValues, null, 1)}</pre>
+                          <div className="bg-success/10 p-1.5 rounded">
+                            <span className="font-medium text-success">After:</span>
+                            <pre className="text-success mt-0.5 whitespace-pre-wrap">{JSON.stringify(log.newValues, null, 1)}</pre>
                           </div>
                         </div>
                       </details>

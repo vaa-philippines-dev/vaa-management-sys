@@ -41,7 +41,7 @@ export function Modal({ open, onOpenChange, title, description, size = 'md', chi
       aria-label={title}
     >
       <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-in fade-in-0 duration-200"
+        className="absolute inset-0 bg-overlay backdrop-blur-sm animate-in fade-in-0 duration-200"
         onClick={() => onOpenChange(false)}
       />
       <div

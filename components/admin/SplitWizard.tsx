@@ -344,7 +344,7 @@ export function SplitWizard({
       {(unassignedMembers.length > 0 || unassignedClients.length > 0 || unassignedChildren.length > 0 || unassignedServices.length > 0) && (
         <Card>
           <CardContent className="py-3">
-            <div className="flex items-center gap-2 text-xs text-amber-700 bg-amber-500/10 border border-amber-500/20 rounded p-2">
+            <div className="flex items-center gap-2 text-xs text-warning bg-warning/10 border border-warning/20 rounded p-2">
               <AlertTriangle className="h-4 w-4 shrink-0" />
               <div>
                 <span className="font-medium">Unassigned items will remain with the source (which will be marked SPLIT):</span>{' '}
@@ -357,12 +357,12 @@ export function SplitWizard({
 
       <Card>
         <CardContent className="pt-4 space-y-3">
-          <div className="rounded-lg bg-yellow-500/10 border border-yellow-500/20 p-3 space-y-1">
-            <div className="flex items-center gap-2 text-sm font-medium text-yellow-700">
+          <div className="rounded-lg bg-warning/10 border border-warning/20 p-3 space-y-1">
+            <div className="flex items-center gap-2 text-sm font-medium text-warning">
               <AlertTriangle className="h-4 w-4" />
               This split is permanent
             </div>
-            <p className="text-xs text-yellow-700">
+            <p className="text-xs text-warning">
               The source department <Badge variant="outline" className="text-[10px] py-0 px-1 mx-0.5">{source.name}</Badge> will be marked as SPLIT and become read-only. Its split history remains in audit logs.
             </p>
           </div>
@@ -380,7 +380,7 @@ export function SplitWizard({
           </label>
 
           {error && (
-            <p className="text-sm text-red-600">{error}</p>
+            <p className="text-sm text-destructive">{error}</p>
           )}
 
           <div className="flex items-center justify-end gap-2 pt-2 border-t">

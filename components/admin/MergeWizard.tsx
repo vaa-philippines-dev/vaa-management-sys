@@ -57,7 +57,7 @@ export function MergeWizard({ source, targets }: { source: Source; targets: Targ
     return (
       <Card>
         <CardContent className="py-10 text-center space-y-2">
-          <AlertTriangle className="h-8 w-8 text-orange-500 mx-auto" />
+          <AlertTriangle className="h-8 w-8 text-warning mx-auto" />
           <p className="text-sm font-medium">No eligible targets</p>
           <p className="text-xs text-muted-foreground">
             There are no other active {source.level} departments to merge into. Create another {source.level} department first.
@@ -120,7 +120,7 @@ export function MergeWizard({ source, targets }: { source: Source; targets: Targ
 
       {preview && !preview.sameLevel && (
         <Card>
-          <CardContent className="py-6 flex items-center gap-3 text-sm text-red-600">
+          <CardContent className="py-6 flex items-center gap-3 text-sm text-destructive">
             <AlertTriangle className="h-5 w-5" />
             Source and target are at different levels. Merges must be between same-level departments.
           </CardContent>
@@ -169,12 +169,12 @@ export function MergeWizard({ source, targets }: { source: Source; targets: Targ
               </div>
             </div>
 
-            <div className="rounded-lg bg-yellow-500/10 border border-yellow-500/20 p-3 space-y-1">
-              <div className="flex items-center gap-2 text-sm font-medium text-yellow-700">
+            <div className="rounded-lg bg-warning/10 border border-warning/20 p-3 space-y-1">
+              <div className="flex items-center gap-2 text-sm font-medium text-warning">
                 <AlertTriangle className="h-4 w-4" />
                 This action is not reversible through the UI
               </div>
-              <p className="text-xs text-yellow-700">
+              <p className="text-xs text-warning">
                 The source department will be marked as MERGED and become read-only. Its history will remain in audit logs.
               </p>
             </div>
@@ -192,7 +192,7 @@ export function MergeWizard({ source, targets }: { source: Source; targets: Targ
             </label>
 
             {error && (
-              <p className="text-sm text-red-600">{error}</p>
+              <p className="text-sm text-destructive">{error}</p>
             )}
 
             <div className="flex items-center justify-end gap-2 pt-2 border-t">

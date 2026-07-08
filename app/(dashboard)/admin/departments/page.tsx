@@ -57,7 +57,7 @@ export default async function AdminDepartmentsPage() {
           </p>
         </div>
         {!canEdit && (
-          <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded bg-amber-500/10 text-amber-700 border border-amber-500/20">
+          <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded bg-warning/10 text-warning border border-warning/20">
             View Only
           </span>
         )}
@@ -109,9 +109,9 @@ async function StatsHeader() {
       <div className="rounded-xl border bg-card p-3.5">
         <div className="flex items-center justify-between mb-1">
           <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">Active</span>
-          <CheckCircle2 className="h-3.5 w-3.5 text-green-600" />
+          <CheckCircle2 className="h-3.5 w-3.5 text-success" />
         </div>
-        <p className="text-2xl font-bold leading-none text-green-700">{stats.active}</p>
+        <p className="text-2xl font-bold leading-none text-success">{stats.active}</p>
         <p className="text-[10px] text-muted-foreground mt-1">In use</p>
       </div>
       <div className="rounded-xl border bg-card p-3.5">

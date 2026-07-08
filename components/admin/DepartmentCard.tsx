@@ -57,7 +57,7 @@ export function DepartmentCard({
                 {dept.name}
               </Link>
               {dept.status !== 'ACTIVE' && (
-                <Badge variant="outline" className="text-xs bg-red-500/10 text-red-600 border-red-500/20">{dept.status}</Badge>
+                <Badge variant="outline" className="text-xs bg-destructive/10 text-destructive border-destructive/20">{dept.status}</Badge>
               )}
             </div>
             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -75,7 +75,7 @@ export function DepartmentCard({
                   title={dept.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
                 >
                   {dept.status === 'ACTIVE' ? (
-                    <ToggleRight className="h-4 w-4 text-green-600" />
+                    <ToggleRight className="h-4 w-4 text-success" />
                   ) : (
                     <ToggleLeft className="h-4 w-4 text-muted-foreground" />
                   )}

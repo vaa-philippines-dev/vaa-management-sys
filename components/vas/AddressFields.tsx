@@ -224,7 +224,7 @@ export function AddressFields({ defaultValues, namePrefix = 'address', onChange 
         </div>
       </div>
 
-      {error && <p className="text-[10px] text-red-600">{error}</p>}
+      {error && <p className="text-[10px] text-destructive">{error}</p>}
       <p className="text-[10px] text-muted-foreground">
         Address data powered by the Philippine Standard Geographic Code (PSGC) API
       </p>

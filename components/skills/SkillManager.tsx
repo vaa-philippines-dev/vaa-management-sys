@@ -270,7 +270,7 @@ function SkillRow({
 
   if (isEditing && canEdit) {
     return (
-      <TableRow className="bg-amber-500/5">
+      <TableRow className="bg-warning/5">
         <TableCell colSpan={7} className="p-3 whitespace-normal">
           <AddEditForm
             mode="edit"
@@ -285,7 +285,7 @@ function SkillRow({
   }
 
   return (
-    <TableRow className={`group border-l-4 ${skill.isActive ? 'border-l-emerald-500' : 'border-l-muted-foreground/30'}`}>
+    <TableRow className={`group border-l-4 ${skill.isActive ? 'border-l-success' : 'border-l-muted-foreground/30'}`}>
       <TableCell className="px-3 py-2.5 overflow-hidden">
         <span className="font-medium truncate block" title={skill.name}>{skill.name}</span>
       </TableCell>
@@ -304,7 +304,7 @@ function SkillRow({
       </TableCell>
       <TableCell className="px-3 py-2.5 text-muted-foreground">{skill.vaCount}</TableCell>
       <TableCell className="px-3 py-2.5">
-        <Badge variant="outline" className={`text-[10px] py-0 px-1.5 ${skill.isActive ? 'bg-emerald-500/15 text-emerald-700 border-emerald-500/20' : 'bg-gray-500/15 text-gray-700 border-gray-500/20'}`}>
+        <Badge variant="outline" className={`text-[10px] py-0 px-1.5 ${skill.isActive ? 'bg-success/15 text-success border-success/20' : 'bg-gray-500/15 text-gray-700 border-gray-500/20'}`}>
           {skill.isActive ? 'Active' : 'Inactive'}
         </Badge>
       </TableCell>
@@ -315,7 +315,7 @@ function SkillRow({
               <Pencil className="h-3 w-3" />
             </Button>
             <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={onDelete} title="Delete">
-              <Trash2 className="h-3 w-3 text-red-500" />
+              <Trash2 className="h-3 w-3 text-destructive" />
             </Button>
           </div>
         </TableCell>

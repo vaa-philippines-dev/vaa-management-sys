@@ -578,7 +578,7 @@ function UploadRow({
     xhr.send(formData)
   }
 
-  const borderClass = recentlyUploaded ? 'border-green-400 ring-1 ring-green-300 bg-green-50' : error ? 'border-red-300 bg-red-50' : ''
+  const borderClass = recentlyUploaded ? 'border-success/40 ring-1 ring-success/30 bg-success/10' : error ? 'border-destructive/30 bg-destructive/10' : ''
 
   return (
     <div className={`rounded-lg border p-3 transition-colors ${borderClass}`}>
@@ -590,7 +590,7 @@ function UploadRow({
           <p className="text-xs font-medium flex items-center gap-2">
             {label}
             {recentlyUploaded && (
-              <span className="text-[10px] text-green-600 bg-green-100 px-1.5 py-0.5 rounded-full">Just uploaded</span>
+              <span className="text-[10px] text-success bg-success/15 px-1.5 py-0.5 rounded-full">Just uploaded</span>
             )}
           </p>
           {url && !uploading && (
@@ -600,7 +600,7 @@ function UploadRow({
             <span className="text-[11px] text-muted-foreground">No file uploaded</span>
           )}
           {error && (
-            <span className="text-[11px] text-red-600 flex items-center gap-1 mt-0.5">
+            <span className="text-[11px] text-destructive flex items-center gap-1 mt-0.5">
               <AlertCircle className="h-3 w-3" />{error}
             </span>
           )}
@@ -618,7 +618,7 @@ function UploadRow({
       </div>
       {uploading && (
         <div className="mt-2 h-1.5 w-full bg-muted rounded-full overflow-hidden">
-          <div className="h-full bg-blue-500 transition-all duration-200" style={{ width: `${progress}%` }} />
+          <div className="h-full bg-info transition-all duration-200" style={{ width: `${progress}%` }} />
         </div>
       )}
     </div>
@@ -626,7 +626,7 @@ function UploadRow({
 }
 
 function DocBadge({ icon: Icon, label, url, highlighted }: { icon: React.ComponentType<{ className?: string }>; label: string; url: string | null; highlighted?: boolean }) {
-  const borderClass = highlighted ? 'border-green-400 ring-1 ring-green-300 bg-green-50' : ''
+  const borderClass = highlighted ? 'border-success/40 ring-1 ring-success/30 bg-success/10' : ''
   return (
     <div className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-xs transition-all duration-300 ${borderClass}`}>
       <Icon className="h-3.5 w-3.5 text-muted-foreground" />

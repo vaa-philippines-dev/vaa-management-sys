@@ -183,19 +183,19 @@ async function ManagerAlerts({ deptId }: { deptId: string | null }) {
   return (
     <Card>
       <CardHeader className="pb-3">
-        <CardTitle className="text-base flex items-center gap-2"><AlertCircle className="h-4 w-4 text-orange-600" />Attention Needed</CardTitle>
+        <CardTitle className="text-base flex items-center gap-2"><AlertCircle className="h-4 w-4 text-warning" />Attention Needed</CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
         {overUtilized.map((a) => {
           const logged = a.workLogs.reduce((s, l) => s + Number(l.hours), 0)
           const target = a.monthlyHours ? Number(a.monthlyHours) : Number(a.agreedHours)
           return (
-            <div key={a.id} className="flex items-center justify-between p-3 rounded-lg bg-orange-500/10 border border-orange-500/20">
+            <div key={a.id} className="flex items-center justify-between p-3 rounded-lg bg-warning/10 border border-warning/20">
               <div>
                 <p className="text-sm font-medium">{a.client.name}</p>
                 <p className="text-xs text-muted-foreground">{a.vaProfile.user.firstName} — {logged.toFixed(1)}h / {target.toFixed(1)}h ({((logged/target)*100).toFixed(0)}%)</p>
               </div>
-              <Badge variant="outline" className="bg-orange-500/15 text-orange-700 border-orange-500/20">Over target</Badge>
+              <Badge variant="outline" className="bg-warning/15 text-warning border-warning/20">Over target</Badge>
             </div>
           )
         })}
@@ -203,12 +203,12 @@ async function ManagerAlerts({ deptId }: { deptId: string | null }) {
           const logged = a.workLogs.reduce((s, l) => s + Number(l.hours), 0)
           const target = a.monthlyHours ? Number(a.monthlyHours) : Number(a.agreedHours)
           return (
-            <div key={a.id} className="flex items-center justify-between p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
+            <div key={a.id} className="flex items-center justify-between p-3 rounded-lg bg-info/10 border border-info/20">
               <div>
                 <p className="text-sm font-medium">{a.client.name}</p>
                 <p className="text-xs text-muted-foreground">{a.vaProfile.user.firstName} — {logged.toFixed(1)}h / {target.toFixed(1)}h</p>
               </div>
-              <Badge variant="outline" className="bg-blue-500/15 text-blue-700 border-blue-500/20">Behind pace</Badge>
+              <Badge variant="outline" className="bg-info/15 text-info border-info/20">Behind pace</Badge>
             </div>
           )
         })}
@@ -295,7 +295,7 @@ async function VADashboard({ userId, vaProfileId }: { userId: string; vaProfileI
 
   const monthlyTarget = assignments.reduce((s, a) => s + (a.monthlyHours ? Number(a.monthlyHours) : Number(a.agreedHours)), 0)
   const monthPct = monthlyTarget > 0 ? Math.min((totalMonthHours / monthlyTarget) * 100, 100) : 0
-  const monthColor = monthPct > 100 ? 'text-orange-500' : monthPct >= 80 ? 'text-green-500' : 'text-blue-500'
+  const monthColor = monthPct > 100 ? 'text-warning' : monthPct >= 80 ? 'text-success' : 'text-info'
 
   return (
     <div className="space-y-6">
@@ -357,8 +357,8 @@ async function VADashboard({ userId, vaProfileId }: { userId: string; vaProfileI
                 const logged = a.workLogs.reduce((s, l) => s + Number(l.hours), 0)
                 const target = a.monthlyHours ? Number(a.monthlyHours) : Number(a.agreedHours)
                 const pct = target > 0 ? Math.min((logged / target) * 100, 100) : 0
-                const ringColor = pct > 100 ? 'text-orange-500' : pct >= 80 ? 'text-green-500' : 'text-blue-500'
-                const badgeClass = pct > 100 ? 'bg-orange-500/15 text-orange-700 border-orange-500/20' : pct >= 80 ? 'bg-green-500/15 text-green-700 border-green-500/20' : 'bg-blue-500/15 text-blue-700 border-blue-500/20'
+                const ringColor = pct > 100 ? 'text-warning' : pct >= 80 ? 'text-success' : 'text-info'
+                const badgeClass = pct > 100 ? 'bg-warning/15 text-warning border-warning/20' : pct >= 80 ? 'bg-success/15 text-success border-success/20' : 'bg-info/15 text-info border-info/20'
                 return (
                   <Link key={a.id} href={`/assignments/${a.id}`} className="flex items-center gap-4 p-4 rounded-lg border bg-card hover:bg-accent/30 transition-colors">
                     <CircularProgress value={pct} size={48} strokeWidth={4} colorClassName={ringColor} className="shrink-0">

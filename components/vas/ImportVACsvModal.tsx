@@ -276,7 +276,7 @@ export function ImportVACsvModal({ open, onClose }: { open: boolean; onClose: ()
         {result && (
           <div className="space-y-2">
             <p className="text-sm">
-              <span className="font-medium text-green-700">{result.created} created</span>
+              <span className="font-medium text-success">{result.created} created</span>
               {result.skipped.length > 0 && (
                 <span className="text-muted-foreground"> · {result.skipped.length} skipped</span>
               )}

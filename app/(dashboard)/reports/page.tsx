@@ -97,7 +97,7 @@ export default async function ReportsPage({
             <CardTitle className="text-sm font-medium text-muted-foreground">Over Target</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold text-orange-600">{overTarget}</p>
+            <p className="text-2xl font-bold text-warning">{overTarget}</p>
           </CardContent>
         </Card>
         <Card>
@@ -105,7 +105,7 @@ export default async function ReportsPage({
             <CardTitle className="text-sm font-medium text-muted-foreground">Under Target</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold text-blue-600">{underTarget}</p>
+            <p className="text-2xl font-bold text-info">{underTarget}</p>
           </CardContent>
         </Card>
       </div>
@@ -164,9 +164,9 @@ export default async function ReportsPage({
                       <span
                         className={
                           variance > 0
-                            ? 'text-sm font-medium text-orange-600'
+                            ? 'text-sm font-medium text-warning'
                             : variance < 0
-                              ? 'text-sm font-medium text-blue-600'
+                              ? 'text-sm font-medium text-info'
                               : 'text-sm text-muted-foreground'
                         }
                       >
@@ -179,11 +179,11 @@ export default async function ReportsPage({
                           <div
                             className={
                               utilization > 100
-                                ? 'h-full bg-orange-500'
+                                ? 'h-full bg-warning'
                                 : utilization >= 80
-                                  ? 'h-full bg-green-500'
+                                  ? 'h-full bg-success'
                                   : utilization > 0
-                                    ? 'h-full bg-blue-500'
+                                    ? 'h-full bg-info'
                                     : 'h-full bg-muted'
                             }
                             style={{ width: `${Math.min(utilization, 100)}%` }}

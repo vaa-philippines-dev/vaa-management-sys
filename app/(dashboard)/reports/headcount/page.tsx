@@ -131,7 +131,7 @@ export default async function HeadcountReportPage({
             <CardTitle className="text-sm font-medium text-muted-foreground">New This Month</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold text-green-600">{totals.vaHires + totals.staffHires}</p>
+            <p className="text-2xl font-bold text-success">{totals.vaHires + totals.staffHires}</p>
             <p className="text-xs text-muted-foreground mt-1">{totals.vaHires} VA · {totals.staffHires} Staff</p>
           </CardContent>
         </Card>
@@ -140,7 +140,7 @@ export default async function HeadcountReportPage({
             <CardTitle className="text-sm font-medium text-muted-foreground">EOC / Terminated This Month</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold text-red-600">{totals.vaEocs + totals.staffEocs}</p>
+            <p className="text-2xl font-bold text-destructive">{totals.vaEocs + totals.staffEocs}</p>
             <p className="text-xs text-muted-foreground mt-1">{totals.vaEocs} VA · {totals.staffEocs} Staff</p>
           </CardContent>
         </Card>
@@ -178,7 +178,7 @@ export default async function HeadcountReportPage({
                     </TableCell>
                     <TableCell className="text-right">
                       {(r.vaHires + r.staffHires) > 0 ? (
-                        <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/20">
+                        <Badge variant="outline" className="bg-success/10 text-success border-success/20">
                           +{r.vaHires + r.staffHires}
                         </Badge>
                       ) : (
@@ -187,7 +187,7 @@ export default async function HeadcountReportPage({
                     </TableCell>
                     <TableCell className="text-right">
                       {(r.vaEocs + r.staffEocs) > 0 ? (
-                        <Badge variant="outline" className="bg-red-500/10 text-red-600 border-red-500/20">
+                        <Badge variant="outline" className="bg-destructive/10 text-destructive border-destructive/20">
                           -{r.vaEocs + r.staffEocs}
                         </Badge>
                       ) : (

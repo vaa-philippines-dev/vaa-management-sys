@@ -7,6 +7,13 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Briefcase } from 'lucide-react'
 import { format } from 'date-fns'
+import { ClientDetailPanel } from '@/components/clients/ClientDetailPanel'
+
+const STATUS_DOT: Record<string, string> = {
+  ACTIVE: 'bg-success',
+  ON_HOLD: 'bg-warning',
+  INACTIVE: 'bg-destructive',
+}
 
 const PLATFORM_META: Record<string, { label: string; color: string }> = {
   AMAZON: { label: 'Amazon', color: 'bg-orange-500/15 text-orange-700 border-orange-500/20' },
@@ -71,94 +78,84 @@ export default async function ClientDetailPage({
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Contact Email</CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm">{client.contactEmail ?? '-'}</CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Industry</CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm">{client.industry ?? '-'}</CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Active Assignments</CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm">
-            {client.assignments.filter((a) => a.status === 'ACTIVE').length}
-          </CardContent>
-        </Card>
-      </div>
-
-      {client.requiredSkills.length > 0 && (
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">Required Skills</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-2">
-              {client.requiredSkills.map((s) => (
-                <Badge key={s} variant="outline">{s}</Badge>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      <Card>
-        <CardHeader className="pb-3 flex flex-row items-center justify-between">
-          <CardTitle className="text-base">Assignments</CardTitle>
-          <Link href={`/assignments/new?clientId=${client.id}`}>
-            <Button size="sm">Assign VA</Button>
-          </Link>
-        </CardHeader>
-        <CardContent>
-          {client.assignments.length === 0 ? (
-            <div className="flex flex-col items-center py-8 text-muted-foreground">
-              <Briefcase className="h-8 w-8 mb-2 opacity-50" />
-              <p className="text-sm">No assignments yet.</p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {client.assignments.map((a) => (
-                <Link
-                  key={a.id}
-                  href={`/assignments/${a.id}`}
-                  className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/30 transition-colors"
-                >
-                  <div>
-                    <p className="text-sm font-medium">
-                      {a.vaProfile.user.firstName || a.vaProfile.user.email}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {a.type} • {Number(a.agreedHours)}h agreed • {format(a.startDate, 'MMM dd, yyyy')}
-                      {a.endDate && ` → ${format(a.endDate, 'MMM dd, yyyy')}`}
-                    </p>
-                  </div>
-                  <Badge variant={a.status === 'ACTIVE' ? 'default' : 'secondary'}>
-                    {a.status}
-                  </Badge>
-                </Link>
-              ))}
-            </div>
+      <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex-1 min-w-0 space-y-6">
+          {client.requiredSkills.length > 0 && (
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Required Skills</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {client.requiredSkills.map((s) => (
+                    <Badge key={s} variant="outline">{s}</Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           )}
-        </CardContent>
-      </Card>
 
-      {client.notes && (
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">Notes</CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm text-muted-foreground whitespace-pre-wrap">
-            {client.notes}
-          </CardContent>
-        </Card>
-      )}
+          <Card>
+            <CardHeader className="pb-3 flex flex-row items-center justify-between">
+              <CardTitle className="text-base">Assignments</CardTitle>
+              <Link href={`/assignments/new?clientId=${client.id}`}>
+                <Button size="sm">Assign VA</Button>
+              </Link>
+            </CardHeader>
+            <CardContent>
+              {client.assignments.length === 0 ? (
+                <div className="flex flex-col items-center py-8 text-muted-foreground">
+                  <Briefcase className="h-8 w-8 mb-2 opacity-50" />
+                  <p className="text-sm">No assignments yet.</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {client.assignments.map((a) => (
+                    <Link
+                      key={a.id}
+                      href={`/assignments/${a.id}`}
+                      className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/30 transition-colors"
+                    >
+                      <div>
+                        <p className="text-sm font-medium">
+                          {a.vaProfile.user.firstName || a.vaProfile.user.email}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {a.type} • {Number(a.agreedHours)}h agreed • {format(a.startDate, 'MMM dd, yyyy')}
+                          {a.endDate && ` → ${format(a.endDate, 'MMM dd, yyyy')}`}
+                        </p>
+                      </div>
+                      <Badge variant={a.status === 'ACTIVE' ? 'default' : 'secondary'}>
+                        {a.status}
+                      </Badge>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {client.notes && (
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Notes</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-muted-foreground whitespace-pre-wrap">
+                {client.notes}
+              </CardContent>
+            </Card>
+          )}
+        </div>
+
+        <ClientDetailPanel
+          statusLabel={client.status === 'ACTIVE' ? 'Active' : client.status === 'ON_HOLD' ? 'On Hold' : 'Inactive'}
+          statusDotClassName={STATUS_DOT[client.status] ?? 'bg-muted-foreground'}
+          contactName={client.contactName ?? null}
+          contactEmail={client.contactEmail ?? null}
+          industry={client.industry ?? null}
+          activeAssignments={client.assignments.filter((a) => a.status === 'ACTIVE').length}
+        />
+      </div>
     </div>
   )
 }

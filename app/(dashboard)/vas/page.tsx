@@ -22,27 +22,27 @@ import {
 } from 'lucide-react'
 
 const AVAILABILITY_COLORS: Record<string, string> = {
-  AVAILABLE: 'bg-green-500/15 text-green-700 border-green-500/20',
-  PARTIALLY_ASSIGNED: 'bg-yellow-500/15 text-yellow-700 border-yellow-500/20',
-  FULLY_ASSIGNED: 'bg-blue-500/15 text-blue-700 border-blue-500/20',
-  ON_LEAVE: 'bg-orange-500/15 text-orange-700 border-orange-500/20',
-  UNAVAILABLE: 'bg-red-500/15 text-red-700 border-red-500/20',
+  AVAILABLE: 'bg-success/15 text-success border-success/20',
+  PARTIALLY_ASSIGNED: 'bg-warning/15 text-warning border-warning/20',
+  FULLY_ASSIGNED: 'bg-info/15 text-info border-info/20',
+  ON_LEAVE: 'bg-warning/15 text-warning border-warning/20',
+  UNAVAILABLE: 'bg-destructive/15 text-destructive border-destructive/20',
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  ACTIVE: 'bg-green-500/15 text-green-700 border-green-500/20',
-  ON_HOLD: 'bg-amber-500/15 text-amber-700 border-amber-500/20',
-  INACTIVE: 'bg-red-500/15 text-red-600 border-red-500/20',
+  ACTIVE: 'bg-success/15 text-success border-success/20',
+  ON_HOLD: 'bg-warning/15 text-warning border-warning/20',
+  INACTIVE: 'bg-destructive/15 text-destructive border-destructive/20',
 }
 
 const EMPLOYMENT_COLORS: Record<string, string> = {
-  EMPLOYED: 'bg-green-500/15 text-green-700 border-green-500/20',
-  ENGAGED: 'bg-blue-500/15 text-blue-700 border-blue-500/20',
-  CONTRACTED: 'bg-purple-500/15 text-purple-700 border-purple-500/20',
-  END_OF_CONTRACT: 'bg-orange-500/15 text-orange-700 border-orange-500/20',
-  TRANSFERRED: 'bg-yellow-500/15 text-yellow-700 border-yellow-500/20',
-  RESIGNED: 'bg-red-500/15 text-red-700 border-red-500/20',
-  TERMINATED: 'bg-red-500/15 text-red-700 border-red-500/20',
+  EMPLOYED: 'bg-success/15 text-success border-success/20',
+  ENGAGED: 'bg-info/15 text-info border-info/20',
+  CONTRACTED: 'bg-info/15 text-info border-info/20',
+  END_OF_CONTRACT: 'bg-warning/15 text-warning border-warning/20',
+  TRANSFERRED: 'bg-warning/15 text-warning border-warning/20',
+  RESIGNED: 'bg-destructive/15 text-destructive border-destructive/20',
+  TERMINATED: 'bg-destructive/15 text-destructive border-destructive/20',
   BLACKLISTED: 'bg-gray-500/15 text-gray-700 border-gray-500/20',
 }
 
@@ -78,7 +78,7 @@ export default async function VAPage({
             <div className="flex items-center gap-3">
               <h2 className="text-lg font-bold tracking-tight">VA Roster</h2>
               {isHRE && (
-                <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-blue-500/10 text-blue-700 border-blue-500/20">HR View</Badge>
+                <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-info/10 text-info border-info/20">HR View</Badge>
               )}
             </div>
           }
@@ -97,7 +97,7 @@ export default async function VAPage({
             <div className="flex items-center gap-3">
               <h2 className="text-lg font-bold tracking-tight">VA Roster</h2>
               {isHRE && (
-                <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-blue-500/10 text-blue-700 border-blue-500/20">HR View</Badge>
+                <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-info/10 text-info border-info/20">HR View</Badge>
               )}
             </div>
           </div>
@@ -292,7 +292,7 @@ async function VATableSection({
                 const emp = va.user.employmentRecords?.[0]
                 const primaryMem = va.user.memberships?.find((m) => m.isPrimary) ?? va.user.memberships?.[0]
 
-                const accentColor = va.status === 'ACTIVE' ? 'border-l-green-500' : va.status === 'ON_HOLD' ? 'border-l-amber-500' : 'border-l-red-500/60'
+                const accentColor = va.status === 'ACTIVE' ? 'border-l-success' : va.status === 'ON_HOLD' ? 'border-l-warning' : 'border-l-destructive/60'
 
                 return (
                   <TableRow key={va.id} className={`hover:bg-primary/5 group border-l-4 ${accentColor}`}>
@@ -340,7 +340,7 @@ async function VATableSection({
                     <TableCell className="px-3 py-2.5">
                       <Link href={`/vas/${va.id}`}>
                         {isHRE ? (
-                          <Button variant="outline" size="sm" className="h-6 text-[10px] px-2 gap-1 bg-blue-500/5 hover:bg-blue-500/10 border-blue-200 text-blue-700">
+                          <Button variant="outline" size="sm" className="h-6 text-[10px] px-2 gap-1 bg-info/5 hover:bg-info/10 border-info/30 text-info">
                             <Pencil className="h-3 w-3" />
                             Edit
                           </Button>

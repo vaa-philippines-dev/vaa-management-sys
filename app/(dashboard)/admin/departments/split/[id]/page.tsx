@@ -28,7 +28,7 @@ export default async function SplitPage({ params }: { params: Promise<{ id: stri
         </Link>
         <Card>
           <CardContent className="py-10 text-center space-y-2">
-            <AlertCircle className="h-8 w-8 text-orange-500 mx-auto" />
+            <AlertCircle className="h-8 w-8 text-warning mx-auto" />
             <p className="text-sm font-medium">Cannot split this department</p>
             <p className="text-xs text-muted-foreground">
               {LEVEL_RECORD_NAMES.includes(source.name)

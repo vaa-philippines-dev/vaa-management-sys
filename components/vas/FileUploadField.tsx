@@ -121,7 +121,7 @@ export function FileUploadField({
           </div>
         ) : uploadedUrl ? (
           <div className="flex items-center gap-2 flex-1 min-w-0">
-            <Check className="h-3 w-3 shrink-0 text-green-600" />
+            <Check className="h-3 w-3 shrink-0 text-success" />
             <a
               href={uploadedUrl}
               target="_blank"
@@ -135,7 +135,7 @@ export function FileUploadField({
           <span className="text-xs text-muted-foreground">No file uploaded</span>
         )}
         {error && (
-          <div className="flex items-center gap-1 text-red-600">
+          <div className="flex items-center gap-1 text-destructive">
             <AlertCircle className="h-3 w-3" />
             <span className="text-xs">{error}</span>
             <button onClick={clearFile} className="ml-1"><X className="h-3 w-3" /></button>
