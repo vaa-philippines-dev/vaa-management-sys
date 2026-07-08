@@ -117,3 +117,8 @@ export type TicketConversation = Prisma.TicketConversationModel
  * 
  */
 export type AuditLog = Prisma.AuditLogModel
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel

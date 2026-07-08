@@ -177,6 +177,11 @@ enum Priority {
 
 // ── Audit ────────────────────────────────────────────────────────
 
+enum NotificationType {
+  NEW_ASSIGNMENT
+  HOURS_SHORTFALL
+}
+
 enum AuditAction {
   CREATE
   UPDATE
@@ -339,6 +344,7 @@ model User {
   auditLogs          AuditLog[]
   vaHistoryEvents    VAHistory[]        @relation("VAHistoryUser")
   vaHistoryChanges   VAHistory[]        @relation("VAHistoryChangedBy")
+  notifications      Notification[]
 
   @@index([email])
   @@index([systemRole])
@@ -732,4 +738,20 @@ model AuditLog {
   @@index([entityType, entityId, createdAt])
   @@index([actorId, createdAt])
   @@map("audit_logs")
+}
+
+model Notification {
+  id           String           @id @default(cuid())
+  recipientId  String           @map("recipient_id")
+  recipient    User             @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  type         NotificationType
+  title        String
+  message      String
+  entityType   String?          @map("entity_type")
+  entityId     String?          @map("entity_id")
+  read         Boolean          @default(false)
+  createdAt    DateTime         @default(now()) @map("created_at")
+
+  @@index([recipientId, read, createdAt])
+  @@map("notifications")
 }

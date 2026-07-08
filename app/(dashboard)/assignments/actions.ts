@@ -6,6 +6,7 @@ import { CACHE_TAGS } from '@/lib/cache'
 import { redirect } from 'next/navigation'
 import { requireRole, ASSIGNMENT_MUTATOR_ROLES } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
+import { notify } from '@/lib/notifications'
 
 export async function createAssignment(formData: FormData) {
   const actor = await requireRole(...ASSIGNMENT_MUTATOR_ROLES)
@@ -32,6 +33,10 @@ export async function createAssignment(formData: FormData) {
       monthlyHours,
       notes,
     },
+    include: {
+      client: { select: { name: true } },
+      vaProfile: { select: { userId: true } },
+    },
   })
 
   await logAudit({
@@ -40,6 +45,15 @@ export async function createAssignment(formData: FormData) {
     entityType: 'Assignment',
     entityId: assignment.id,
     after: { clientId, vaProfileId, type, agreedHours, startDate: startDate.toISOString(), endDate: endDate?.toISOString() ?? null, monthlyHours },
+  })
+
+  await notify({
+    recipientId: assignment.vaProfile.userId,
+    type: 'NEW_ASSIGNMENT',
+    title: 'New client assignment',
+    message: `You've been assigned to ${assignment.client.name}.`,
+    entityType: 'Assignment',
+    entityId: assignment.id,
   })
 
   revalidatePath('/assignments')

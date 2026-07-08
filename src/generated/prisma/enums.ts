@@ -229,6 +229,14 @@ export const Priority = {
 export type Priority = (typeof Priority)[keyof typeof Priority]
 
 
+export const NotificationType = {
+  NEW_ASSIGNMENT: 'NEW_ASSIGNMENT',
+  HOURS_SHORTFALL: 'HOURS_SHORTFALL'
+} as const
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
+
+
 export const AuditAction = {
   CREATE: 'CREATE',
   UPDATE: 'UPDATE',
