@@ -101,10 +101,6 @@
   --info: #1C87B8;
   --info-foreground: #FFFFFF;
   --overlay: rgba(20, 20, 25, 0.45);
-
-  /* Ambient glow — used only by .app-glow (dashboard shell background) */
-  --glow-sky: rgba(111, 198, 238, 0.05);
-  --glow-gold: rgba(253, 187, 48, 0.03);
 }
 
 .dark {
@@ -148,9 +144,6 @@
   --info: #6FC6EE;
   --info-foreground: #0B0C0E;
   --overlay: rgba(8, 9, 11, 0.6);
-
-  --glow-sky: rgba(111, 198, 238, 0.1);
-  --glow-gold: rgba(253, 187, 48, 0.06);
 }
 
 @layer base {
@@ -163,27 +156,6 @@
   html {
     @apply font-sans;
   }
-}
-
-/* Ambient glow — soft radial light from the brand's two hues, applied behind
-   the dashboard shell so dark mode reads as lit rather than flat charcoal.
-   Nearly invisible in light mode (paper catching light, not a colored wash). */
-.app-glow {
-  position: relative;
-}
-.app-glow::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background:
-    radial-gradient(ellipse 1000px 520px at 15% -10%, var(--glow-sky), transparent 60%),
-    radial-gradient(ellipse 800px 480px at 92% -5%, var(--glow-gold), transparent 55%);
-}
-.app-glow > * {
-  position: relative;
-  z-index: 1;
 }
 
 /* Button and link click feedback */

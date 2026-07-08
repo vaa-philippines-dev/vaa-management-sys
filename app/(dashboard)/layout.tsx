@@ -14,7 +14,7 @@ export default async function DashboardLayout({
 
   return (
     <RealtimeProvider>
-      <div className="app-glow flex h-screen bg-background">
+      <div className="flex h-screen bg-background">
         <Sidebar role={role} isAdmin={isAdmin} />
         <div className="flex flex-1 flex-col overflow-hidden">
           <Navbar />
