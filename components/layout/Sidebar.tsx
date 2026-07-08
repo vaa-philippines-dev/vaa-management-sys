@@ -1,11 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import {
-  LogOut,
   LayoutDashboard,
   Building2,
   Users,
@@ -39,7 +38,7 @@ function NavButton({
       className={cn(
         'flex items-center gap-2 rounded-md px-2 py-[5px] text-[12.5px] font-medium transition-colors',
         isActive
-          ? 'bg-sidebar-accent text-sidebar-accent-foreground'
+          ? 'bg-sidebar-active text-sidebar-active-foreground'
           : 'text-sidebar-foreground hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground'
       )}
     >
@@ -67,19 +66,7 @@ const vaRoutes = [
 
 export function Sidebar({ role = 'MANAGER', isAdmin = false }: { role?: 'MANAGER' | 'VA'; isAdmin?: boolean }) {
   const pathname = usePathname()
-  const router = useRouter()
   const routes = role === 'VA' ? vaRoutes : managerRoutes
-
-  const handleLogout = async () => {
-    try {
-      const { createClient } = await import('@/lib/supabase/client')
-      const supabase = createClient()
-      await supabase.auth.signOut()
-    } catch {
-      // Supabase not configured — just redirect
-    }
-    router.push('/login')
-  }
 
   return (
     <div className="flex h-full w-[212px] flex-col bg-sidebar px-2 py-2.5">
@@ -133,14 +120,6 @@ export function Sidebar({ role = 'MANAGER', isAdmin = false }: { role?: 'MANAGER
           )}
         </nav>
       </ScrollArea>
-      <button
-        type="button"
-        onClick={handleLogout}
-        className="flex items-center gap-2 rounded-md px-2 py-[5px] text-[12.5px] font-medium text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-destructive transition-colors"
-      >
-        <LogOut className="h-3.5 w-3.5 shrink-0 opacity-75" />
-        Sign Out
-      </button>
     </div>
   )
 }
