@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import {
   Search,
+  X,
   LayoutDashboard,
   Building2,
   Users,
@@ -152,6 +153,14 @@ export function CommandPalette({ isAdmin, isVA }: { isAdmin: boolean; isVA: bool
                 placeholder="Type to search pages..."
                 className="h-12 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
               />
+              <button
+                type="button"
+                onClick={close}
+                aria-label="Close search"
+                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
             </div>
 
             <div className="max-h-80 overflow-y-auto p-1.5">
