@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import type { Prisma } from '@/src/generated/prisma/client'
 import { getCurrentUser, canMutate } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import Link from 'next/link'
@@ -13,6 +14,7 @@ import { QuickAddVABtn } from '@/components/vas/QuickAddVABtn'
 import { VABulkSelectToggle } from '@/components/vas/VABulkSelectToggle'
 import { VARowCheckbox } from '@/components/vas/VARowCheckbox'
 import { VASelectAllCheckbox } from '@/components/vas/VASelectAllCheckbox'
+import { Pagination } from '@/components/ui/pagination'
 import {
   Users,
   UserCog,
@@ -20,7 +22,10 @@ import {
   Clock,
   Pencil,
   Eye,
+  LayoutList,
 } from 'lucide-react'
+
+const PAGE_SIZE = 20
 
 type Tone = 'success' | 'warning' | 'destructive' | 'info' | 'neutral'
 
@@ -66,10 +71,12 @@ export default async function VAPage({
   const avail = typeof params.avail === 'string' ? params.avail : undefined
   const empStatus = typeof params.emp === 'string' ? params.emp : undefined
   const sort = typeof params.sort === 'string' ? params.sort : 'az'
+  const viewAll = params.view === 'all'
+  const page = Math.max(1, parseInt(typeof params.page === 'string' ? params.page : '1', 10) || 1)
 
   const tableSection = (
-    <Suspense fallback={<TableSkeleton />}>
-      <VATableSection q={q} dept={dept} avail={avail} empStatus={empStatus} sort={sort} isHRE={isHRE} isAdmin={isAdmin} />
+    <Suspense key={`${q}-${dept}-${avail}-${empStatus}-${sort}-${viewAll}-${page}`} fallback={<TableSkeleton />}>
+      <VATableSection q={q} dept={dept} avail={avail} empStatus={empStatus} sort={sort} isHRE={isHRE} isAdmin={isAdmin} viewAll={viewAll} page={page} />
     </Suspense>
   )
 
@@ -178,6 +185,8 @@ async function VATableSection({
   sort,
   isHRE,
   isAdmin,
+  viewAll,
+  page,
 }: {
   q?: string
   dept?: string
@@ -186,6 +195,8 @@ async function VATableSection({
   sort: string
   isHRE: boolean
   isAdmin: boolean
+  viewAll: boolean
+  page: number
 }) {
   const userWhere: Record<string, unknown> = {}
   if (q) {
@@ -198,6 +209,9 @@ async function VATableSection({
   if (dept) {
     userWhere.memberships = { some: { departmentId: dept, endedAt: null } }
   }
+  if (empStatus) {
+    userWhere.employmentRecords = { some: { isCurrent: true, employmentStatus: empStatus } }
+  }
 
   const vaWhere: Record<string, unknown> = {}
   if (avail) vaWhere.availabilityStatus = avail
@@ -208,13 +222,17 @@ async function VATableSection({
     sort === 'oldest' ? { createdAt: 'asc' } :
     { firstName: 'asc' }
 
-  const [vas, allVAs] = await Promise.all([
-    cached('vas:list', [CACHE_TAGS.vas], 60, () =>
+  const where: Prisma.VAProfileWhereInput = {
+    user: { userType: 'VIRTUAL_ASSISTANT', ...userWhere },
+    ...vaWhere,
+  }
+
+  const cacheKey = `vas:list:${JSON.stringify({ q, dept, avail, empStatus, sort, viewAll, page })}`
+
+  const [filteredVAs, filteredCount, allVAs] = await Promise.all([
+    cached(cacheKey, [CACHE_TAGS.vas], 60, () =>
       prisma.vAProfile.findMany({
-        where: {
-          user: { userType: 'VIRTUAL_ASSISTANT', ...userWhere },
-          ...vaWhere,
-        },
+        where,
         include: {
           user: {
             include: {
@@ -230,39 +248,84 @@ async function VATableSection({
           assignments: { where: { status: 'ACTIVE' }, include: { client: true } },
         },
         orderBy: { user: orderBy },
+        ...(viewAll ? {} : { take: PAGE_SIZE, skip: (page - 1) * PAGE_SIZE }),
       })
     ),
-    cached('vas:count', [CACHE_TAGS.vas], 60, () =>
+    cached(`vas:count:${JSON.stringify({ q, dept, avail, empStatus })}`, [CACHE_TAGS.vas], 60, () =>
+      prisma.vAProfile.count({ where })
+    ),
+    cached('vas:count:all', [CACHE_TAGS.vas], 60, () =>
       prisma.vAProfile.count({ where: { user: { userType: 'VIRTUAL_ASSISTANT' } } })
     ),
   ])
 
-  const filteredVAs = empStatus
-    ? vas.filter((va) => {
-        const emp = va.user.employmentRecords?.[0]
-        return emp?.employmentStatus === empStatus
-      })
-    : vas
-
   const activeCount = filteredVAs.filter((v) => v.status === 'ACTIVE').length
   const availableCount = filteredVAs.filter((v) => v.availabilityStatus === 'AVAILABLE').length
   const hasFilters = !!(q || dept || avail || empStatus)
+  const pageCount = Math.max(1, Math.ceil(filteredCount / PAGE_SIZE))
+
+  const buildHref = (targetPage: number) => {
+    const sp = new URLSearchParams()
+    if (q) sp.set('q', q)
+    if (dept) sp.set('dept', dept)
+    if (avail) sp.set('avail', avail)
+    if (empStatus) sp.set('emp', empStatus)
+    if (sort) sp.set('sort', sort)
+    if (targetPage > 1) sp.set('page', String(targetPage))
+    return `?${sp.toString()}`
+  }
+
+  const viewAllHref = (() => {
+    const sp = new URLSearchParams()
+    if (q) sp.set('q', q)
+    if (dept) sp.set('dept', dept)
+    if (avail) sp.set('avail', avail)
+    if (empStatus) sp.set('emp', empStatus)
+    if (sort) sp.set('sort', sort)
+    sp.set('view', 'all')
+    return `?${sp.toString()}`
+  })()
+
+  const paginatedHref = (() => {
+    const sp = new URLSearchParams()
+    if (q) sp.set('q', q)
+    if (dept) sp.set('dept', dept)
+    if (avail) sp.set('avail', avail)
+    if (empStatus) sp.set('emp', empStatus)
+    if (sort) sp.set('sort', sort)
+    return `?${sp.toString()}`
+  })()
 
   return (
     <>
-      <div className="flex items-center gap-3 px-3 py-2 rounded-lg border bg-muted/30 text-xs text-muted-foreground">
-        <span className="flex items-center gap-1.5">
-          <Users className="h-3 w-3" />
-          {hasFilters ? `${filteredVAs.length} / ${allVAs}` : allVAs} VAs
-        </span>
-        <span className="flex items-center gap-1.5">
-          <UserCog className="h-3 w-3" />
-          {activeCount} active
-        </span>
-        <span className="flex items-center gap-1.5">
-          <Clock className="h-3 w-3" />
-          {availableCount} available
-        </span>
+      <div className="flex items-center justify-between gap-3 px-3 py-2 rounded-lg border bg-muted/30 text-xs text-muted-foreground">
+        <div className="flex items-center gap-3">
+          <span className="flex items-center gap-1.5">
+            <Users className="h-3 w-3" />
+            {hasFilters ? `${filteredCount} / ${allVAs}` : allVAs} VAs
+          </span>
+          <span className="flex items-center gap-1.5">
+            <UserCog className="h-3 w-3" />
+            {activeCount} active
+          </span>
+          <span className="flex items-center gap-1.5">
+            <Clock className="h-3 w-3" />
+            {availableCount} available
+          </span>
+        </div>
+        {viewAll ? (
+          <Link href={paginatedHref} className="flex items-center gap-1.5 font-medium text-primary hover:underline">
+            <LayoutList className="h-3 w-3" />
+            Paginate ({PAGE_SIZE}/page)
+          </Link>
+        ) : (
+          filteredCount > PAGE_SIZE && (
+            <Link href={viewAllHref} className="flex items-center gap-1.5 font-medium text-primary hover:underline">
+              <LayoutList className="h-3 w-3" />
+              View All
+            </Link>
+          )
+        )}
       </div>
 
       <div className="rounded-lg border bg-card overflow-hidden">
@@ -360,6 +423,10 @@ async function VATableSection({
           </Table>
         )}
       </div>
+
+      {!viewAll && (
+        <Pagination page={page} pageCount={pageCount} buildHref={buildHref} />
+      )}
     </>
   )
 }

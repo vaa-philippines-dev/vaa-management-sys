@@ -1,12 +1,16 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser, canMutate } from '@/lib/auth'
-import { Users } from 'lucide-react'
+import { Users, LayoutList } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import { UserCard } from '@/components/admin/UserCard'
 import { AddUserPanel } from '@/components/admin/AddUserPanel'
 import { FilterBar } from '@/components/filters/FilterBar'
 import { Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Pagination } from '@/components/ui/pagination'
+import Link from 'next/link'
+
+const PAGE_SIZE = 20
 
 export default async function AdminUsersPage({
   searchParams,
@@ -25,6 +29,8 @@ export default async function AdminUsersPage({
   const type = typeof params.type === 'string' ? params.type : undefined
   const dept = typeof params.dept === 'string' ? params.dept : undefined
   const sort = typeof params.sort === 'string' ? params.sort : 'newest'
+  const viewAll = params.view === 'all'
+  const page = Math.max(1, parseInt(typeof params.page === 'string' ? params.page : '1', 10) || 1)
 
   const orderBy: Record<string, string> =
     sort === 'az' ? { firstName: 'asc' } :
@@ -46,7 +52,7 @@ export default async function AdminUsersPage({
     where.memberships = { some: { departmentId: dept, endedAt: null } }
   }
 
-  const [users, departments, positions, totalUsers] = await Promise.all([
+  const [users, departments, positions, filteredCount, totalUsers] = await Promise.all([
     prisma.user.findMany({
       where,
       orderBy,
@@ -55,6 +61,7 @@ export default async function AdminUsersPage({
         memberships: { include: { department: true, position: true } },
         roleAssignments: { where: { status: 'ACTIVE' }, include: { department: true } },
       },
+      ...(viewAll ? {} : { take: PAGE_SIZE, skip: (page - 1) * PAGE_SIZE }),
     }),
     prisma.department.findMany({
       where: { status: 'ACTIVE', parentId: { not: null } },
@@ -65,10 +72,44 @@ export default async function AdminUsersPage({
       where: { status: 'ACTIVE' },
       orderBy: { sortOrder: 'asc' },
     }),
+    prisma.user.count({ where }),
     prisma.user.count(),
   ])
 
   const hasFilters = !!(q || role || type || dept)
+  const pageCount = Math.max(1, Math.ceil(filteredCount / PAGE_SIZE))
+
+  const buildHref = (targetPage: number) => {
+    const sp = new URLSearchParams()
+    if (q) sp.set('q', q)
+    if (role) sp.set('role', role)
+    if (type) sp.set('type', type)
+    if (dept) sp.set('dept', dept)
+    if (sort) sp.set('sort', sort)
+    if (targetPage > 1) sp.set('page', String(targetPage))
+    return `?${sp.toString()}`
+  }
+
+  const viewAllHref = (() => {
+    const sp = new URLSearchParams()
+    if (q) sp.set('q', q)
+    if (role) sp.set('role', role)
+    if (type) sp.set('type', type)
+    if (dept) sp.set('dept', dept)
+    if (sort) sp.set('sort', sort)
+    sp.set('view', 'all')
+    return `?${sp.toString()}`
+  })()
+
+  const paginatedHref = (() => {
+    const sp = new URLSearchParams()
+    if (q) sp.set('q', q)
+    if (role) sp.set('role', role)
+    if (type) sp.set('type', type)
+    if (dept) sp.set('dept', dept)
+    if (sort) sp.set('sort', sort)
+    return `?${sp.toString()}`
+  })()
 
   return (
     <div className="space-y-4">
@@ -79,16 +120,31 @@ export default async function AdminUsersPage({
             <h2 className="text-lg font-bold tracking-tight">Users</h2>
             <p className="text-xs text-muted-foreground">
               {hasFilters
-                ? `${users.length} of ${totalUsers} user${totalUsers !== 1 ? 's' : ''}`
+                ? `${filteredCount} of ${totalUsers} user${totalUsers !== 1 ? 's' : ''}`
                 : `${totalUsers} user${totalUsers !== 1 ? 's' : ''} registered`}
             </p>
           </div>
         </div>
-        {!canEdit && (
-          <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded bg-warning/10 text-warning border border-warning/20">
-            View Only
-          </span>
-        )}
+        <div className="flex items-center gap-3">
+          {viewAll ? (
+            <Link href={paginatedHref} className="flex items-center gap-1.5 text-xs font-medium text-primary hover:underline">
+              <LayoutList className="h-3 w-3" />
+              Paginate ({PAGE_SIZE}/page)
+            </Link>
+          ) : (
+            filteredCount > PAGE_SIZE && (
+              <Link href={viewAllHref} className="flex items-center gap-1.5 text-xs font-medium text-primary hover:underline">
+                <LayoutList className="h-3 w-3" />
+                View All
+              </Link>
+            )
+          )}
+          {!canEdit && (
+            <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded bg-warning/10 text-warning border border-warning/20">
+              View Only
+            </span>
+          )}
+        </div>
       </div>
 
       <AddUserPanel canEdit={canEdit} />
@@ -181,6 +237,10 @@ export default async function AdminUsersPage({
             />
           ))}
         </div>
+      )}
+
+      {!viewAll && (
+        <Pagination page={page} pageCount={pageCount} buildHref={buildHref} />
       )}
     </div>
   )
