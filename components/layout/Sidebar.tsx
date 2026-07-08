@@ -70,13 +70,13 @@ export function Sidebar({ role = 'MANAGER', isAdmin = false }: { role?: 'MANAGER
 
   return (
     <div className="flex h-full w-[212px] flex-col bg-sidebar px-2 py-2.5">
-      <div className="flex items-center gap-2 px-2 pb-3">
+      <div className="flex items-center justify-center px-2 pb-3">
         <Image
           src="/vaalogo.svg"
           alt="VAA Philippines"
-          width={180}
-          height={63}
-          className="h-auto w-full shrink-0"
+          width={112}
+          height={39}
+          className="h-auto w-auto shrink-0"
         />
       </div>
       <ScrollArea className="flex-1">
