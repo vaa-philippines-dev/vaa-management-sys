@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { CACHE_TAGS } from '@/lib/cache'
 import { redirect } from 'next/navigation'
-import { requireRole } from '@/lib/auth'
+import { requireRole, requireAdminMutator } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
 import type { Proficiency, EmploymentStatus } from '@/src/generated/prisma/enums'
 
@@ -635,4 +635,71 @@ export async function updateUserProfileFiles(
   revalidateTag(CACHE_TAGS.users, 'default')
   revalidatePath('/vas')
   revalidateTag(CACHE_TAGS.users, 'default')
+}
+
+export type BulkDeleteVAsResult = {
+  deactivated: number
+  failed: { vaProfileId: string; reason: string }[]
+}
+
+export async function bulkDeleteVAs(vaProfileIds: string[]): Promise<BulkDeleteVAsResult> {
+  const actor = await requireAdminMutator()
+
+  const result: BulkDeleteVAsResult = { deactivated: 0, failed: [] }
+  const uniqueIds = Array.from(new Set(vaProfileIds))
+
+  for (const vaProfileId of uniqueIds) {
+    const va = await prisma.vAProfile.findUnique({
+      where: { id: vaProfileId },
+      select: { userId: true, status: true, engagementStatus: true },
+    })
+    if (!va) {
+      result.failed.push({ vaProfileId, reason: 'VA not found' })
+      continue
+    }
+
+    const effective = new Date()
+
+    await prisma.$transaction([
+      prisma.vAProfile.update({
+        where: { id: vaProfileId },
+        data: { status: 'INACTIVE' },
+      }),
+      prisma.user.update({
+        where: { id: va.userId },
+        data: { isActive: false, status: 'INACTIVE' },
+      }),
+      prisma.vAHistory.create({
+        data: {
+          userId: va.userId,
+          eventType: 'STATUS_CHANGE',
+          oldValue: va.status,
+          newValue: 'INACTIVE',
+          effectiveDate: effective,
+          reason: 'Bulk deactivation by admin',
+          changedById: actor.id,
+        },
+      }),
+    ])
+
+    await logAudit({
+      actorId: actor.id,
+      action: 'DELETE',
+      entityType: 'VAProfile',
+      entityId: vaProfileId,
+      before: { status: va.status },
+      after: { status: 'INACTIVE' },
+      metadata: { bulk: true },
+    })
+
+    result.deactivated++
+  }
+
+  if (result.deactivated > 0) {
+    revalidatePath('/vas')
+    revalidateTag(CACHE_TAGS.vas, 'default')
+    revalidateTag(CACHE_TAGS.users, 'default')
+  }
+
+  return result
 }

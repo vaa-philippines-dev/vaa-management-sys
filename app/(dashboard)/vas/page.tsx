@@ -9,6 +9,9 @@ import { Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table'
 import { QuickAddVABtn } from '@/components/vas/QuickAddVABtn'
+import { VABulkSelectToggle } from '@/components/vas/VABulkSelectToggle'
+import { VARowCheckbox } from '@/components/vas/VARowCheckbox'
+import { VASelectAllCheckbox } from '@/components/vas/VASelectAllCheckbox'
 import {
   Users,
   UserCog,
@@ -61,27 +64,53 @@ export default async function VAPage({
   const empStatus = typeof params.emp === 'string' ? params.emp : undefined
   const sort = typeof params.sort === 'string' ? params.sort : 'az'
 
+  const tableSection = (
+    <Suspense fallback={<TableSkeleton />}>
+      <VATableSection q={q} dept={dept} avail={avail} empStatus={empStatus} sort={sort} isHRE={isHRE} isAdmin={isAdmin} />
+    </Suspense>
+  )
+
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <h2 className="text-lg font-bold tracking-tight">VA Roster</h2>
-          {isHRE && (
-            <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-blue-500/10 text-blue-700 border-blue-500/20">HR View</Badge>
-          )}
-        </div>
-        {isAdmin && <QuickAddVABtn />}
-      </div>
+      {isAdmin ? (
+        <VABulkSelectToggle
+          headerActions={
+            <div className="flex items-center gap-3">
+              <h2 className="text-lg font-bold tracking-tight">VA Roster</h2>
+              {isHRE && (
+                <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-blue-500/10 text-blue-700 border-blue-500/20">HR View</Badge>
+              )}
+            </div>
+          }
+          extraActions={<QuickAddVABtn />}
+        >
+          <div className="rounded-xl border bg-card p-2.5">
+            <Suspense fallback={<Skeleton className="h-8 w-full rounded-md" />}>
+              <FilterWrapper />
+            </Suspense>
+          </div>
+          {tableSection}
+        </VABulkSelectToggle>
+      ) : (
+        <>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <h2 className="text-lg font-bold tracking-tight">VA Roster</h2>
+              {isHRE && (
+                <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-blue-500/10 text-blue-700 border-blue-500/20">HR View</Badge>
+              )}
+            </div>
+          </div>
 
-      <div className="rounded-xl border bg-card p-2.5">
-        <Suspense fallback={<Skeleton className="h-8 w-full rounded-md" />}>
-          <FilterWrapper />
-        </Suspense>
-      </div>
+          <div className="rounded-xl border bg-card p-2.5">
+            <Suspense fallback={<Skeleton className="h-8 w-full rounded-md" />}>
+              <FilterWrapper />
+            </Suspense>
+          </div>
 
-      <Suspense fallback={<TableSkeleton />}>
-        <VATableSection q={q} dept={dept} avail={avail} empStatus={empStatus} sort={sort} isHRE={isHRE} />
-      </Suspense>
+          {tableSection}
+        </>
+      )}
     </div>
   )
 }
@@ -145,6 +174,7 @@ async function VATableSection({
   empStatus,
   sort,
   isHRE,
+  isAdmin,
 }: {
   q?: string
   dept?: string
@@ -152,6 +182,7 @@ async function VATableSection({
   empStatus?: string
   sort: string
   isHRE: boolean
+  isAdmin: boolean
 }) {
   const userWhere: Record<string, unknown> = {}
   if (q) {
@@ -241,6 +272,11 @@ async function VATableSection({
           <Table className="text-xs">
             <TableHeader>
               <TableRow className="bg-muted/30">
+                {isAdmin && (
+                  <TableHead className="px-3 py-2.5 w-0">
+                    <VASelectAllCheckbox ids={filteredVAs.map((va) => va.id)} />
+                  </TableHead>
+                )}
                 <TableHead className="px-3 py-2.5 sticky left-0 bg-muted/30 z-10">Name</TableHead>
                 <TableHead className="px-3 py-2.5 hidden md:table-cell">Email</TableHead>
                 <TableHead className="px-3 py-2.5 hidden lg:table-cell">Department</TableHead>
@@ -260,6 +296,11 @@ async function VATableSection({
 
                 return (
                   <TableRow key={va.id} className={`hover:bg-primary/5 group border-l-4 ${accentColor}`}>
+                    {isAdmin && (
+                      <TableCell className="px-3 py-2.5">
+                        <VARowCheckbox id={va.id} />
+                      </TableCell>
+                    )}
                     <TableCell className="px-3 py-2.5 sticky left-0 bg-card group-hover:bg-primary/5 z-10 transition-colors">
                       <Link href={`/vas/${va.id}`} className="flex items-center gap-2 hover:text-primary transition-colors">
                         <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-[10px] font-medium text-primary shrink-0">
