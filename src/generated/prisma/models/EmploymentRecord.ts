@@ -37,6 +37,7 @@ export type EmploymentRecordSumAggregateOutputType = {
 export type EmploymentRecordMinAggregateOutputType = {
   id: string | null
   userId: string | null
+  departmentId: string | null
   contractType: $Enums.ContractType | null
   employmentStatus: $Enums.EmploymentStatus | null
   startDate: Date | null
@@ -54,6 +55,7 @@ export type EmploymentRecordMinAggregateOutputType = {
 export type EmploymentRecordMaxAggregateOutputType = {
   id: string | null
   userId: string | null
+  departmentId: string | null
   contractType: $Enums.ContractType | null
   employmentStatus: $Enums.EmploymentStatus | null
   startDate: Date | null
@@ -71,6 +73,7 @@ export type EmploymentRecordMaxAggregateOutputType = {
 export type EmploymentRecordCountAggregateOutputType = {
   id: number
   userId: number
+  departmentId: number
   contractType: number
   employmentStatus: number
   startDate: number
@@ -98,6 +101,7 @@ export type EmploymentRecordSumAggregateInputType = {
 export type EmploymentRecordMinAggregateInputType = {
   id?: true
   userId?: true
+  departmentId?: true
   contractType?: true
   employmentStatus?: true
   startDate?: true
@@ -115,6 +119,7 @@ export type EmploymentRecordMinAggregateInputType = {
 export type EmploymentRecordMaxAggregateInputType = {
   id?: true
   userId?: true
+  departmentId?: true
   contractType?: true
   employmentStatus?: true
   startDate?: true
@@ -132,6 +137,7 @@ export type EmploymentRecordMaxAggregateInputType = {
 export type EmploymentRecordCountAggregateInputType = {
   id?: true
   userId?: true
+  departmentId?: true
   contractType?: true
   employmentStatus?: true
   startDate?: true
@@ -236,6 +242,7 @@ export type EmploymentRecordGroupByArgs<ExtArgs extends runtime.Types.Extensions
 export type EmploymentRecordGroupByOutputType = {
   id: string
   userId: string
+  departmentId: string | null
   contractType: $Enums.ContractType
   employmentStatus: $Enums.EmploymentStatus
   startDate: Date
@@ -276,6 +283,7 @@ export type EmploymentRecordWhereInput = {
   NOT?: Prisma.EmploymentRecordWhereInput | Prisma.EmploymentRecordWhereInput[]
   id?: Prisma.StringFilter<"EmploymentRecord"> | string
   userId?: Prisma.StringFilter<"EmploymentRecord"> | string
+  departmentId?: Prisma.StringNullableFilter<"EmploymentRecord"> | string | null
   contractType?: Prisma.EnumContractTypeFilter<"EmploymentRecord"> | $Enums.ContractType
   employmentStatus?: Prisma.EnumEmploymentStatusFilter<"EmploymentRecord"> | $Enums.EmploymentStatus
   startDate?: Prisma.DateTimeFilter<"EmploymentRecord"> | Date | string
@@ -289,12 +297,14 @@ export type EmploymentRecordWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"EmploymentRecord"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmploymentRecord"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  department?: Prisma.XOR<Prisma.DepartmentNullableScalarRelationFilter, Prisma.DepartmentWhereInput> | null
   initiator?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
 
 export type EmploymentRecordOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  departmentId?: Prisma.SortOrderInput | Prisma.SortOrder
   contractType?: Prisma.SortOrder
   employmentStatus?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
@@ -308,6 +318,7 @@ export type EmploymentRecordOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  department?: Prisma.DepartmentOrderByWithRelationInput
   initiator?: Prisma.UserOrderByWithRelationInput
 }
 
@@ -317,6 +328,7 @@ export type EmploymentRecordWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.EmploymentRecordWhereInput[]
   NOT?: Prisma.EmploymentRecordWhereInput | Prisma.EmploymentRecordWhereInput[]
   userId?: Prisma.StringFilter<"EmploymentRecord"> | string
+  departmentId?: Prisma.StringNullableFilter<"EmploymentRecord"> | string | null
   contractType?: Prisma.EnumContractTypeFilter<"EmploymentRecord"> | $Enums.ContractType
   employmentStatus?: Prisma.EnumEmploymentStatusFilter<"EmploymentRecord"> | $Enums.EmploymentStatus
   startDate?: Prisma.DateTimeFilter<"EmploymentRecord"> | Date | string
@@ -330,12 +342,14 @@ export type EmploymentRecordWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"EmploymentRecord"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmploymentRecord"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  department?: Prisma.XOR<Prisma.DepartmentNullableScalarRelationFilter, Prisma.DepartmentWhereInput> | null
   initiator?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }, "id">
 
 export type EmploymentRecordOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  departmentId?: Prisma.SortOrderInput | Prisma.SortOrder
   contractType?: Prisma.SortOrder
   employmentStatus?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
@@ -361,6 +375,7 @@ export type EmploymentRecordScalarWhereWithAggregatesInput = {
   NOT?: Prisma.EmploymentRecordScalarWhereWithAggregatesInput | Prisma.EmploymentRecordScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"EmploymentRecord"> | string
   userId?: Prisma.StringWithAggregatesFilter<"EmploymentRecord"> | string
+  departmentId?: Prisma.StringNullableWithAggregatesFilter<"EmploymentRecord"> | string | null
   contractType?: Prisma.EnumContractTypeWithAggregatesFilter<"EmploymentRecord"> | $Enums.ContractType
   employmentStatus?: Prisma.EnumEmploymentStatusWithAggregatesFilter<"EmploymentRecord"> | $Enums.EmploymentStatus
   startDate?: Prisma.DateTimeWithAggregatesFilter<"EmploymentRecord"> | Date | string
@@ -389,12 +404,14 @@ export type EmploymentRecordCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutEmploymentRecordsInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmploymentRecordsInput
   initiator?: Prisma.UserCreateNestedOneWithoutEmploymentRecordsInitiatedInput
 }
 
 export type EmploymentRecordUncheckedCreateInput = {
   id?: string
   userId: string
+  departmentId?: string | null
   contractType: $Enums.ContractType
   employmentStatus: $Enums.EmploymentStatus
   startDate: Date | string
@@ -423,12 +440,14 @@ export type EmploymentRecordUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutEmploymentRecordsNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmploymentRecordsNestedInput
   initiator?: Prisma.UserUpdateOneWithoutEmploymentRecordsInitiatedNestedInput
 }
 
 export type EmploymentRecordUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contractType?: Prisma.EnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -446,6 +465,7 @@ export type EmploymentRecordUncheckedUpdateInput = {
 export type EmploymentRecordCreateManyInput = {
   id?: string
   userId: string
+  departmentId?: string | null
   contractType: $Enums.ContractType
   employmentStatus: $Enums.EmploymentStatus
   startDate: Date | string
@@ -478,6 +498,7 @@ export type EmploymentRecordUpdateManyMutationInput = {
 export type EmploymentRecordUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contractType?: Prisma.EnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -505,6 +526,7 @@ export type EmploymentRecordOrderByRelationAggregateInput = {
 export type EmploymentRecordCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  departmentId?: Prisma.SortOrder
   contractType?: Prisma.SortOrder
   employmentStatus?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
@@ -526,6 +548,7 @@ export type EmploymentRecordAvgOrderByAggregateInput = {
 export type EmploymentRecordMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  departmentId?: Prisma.SortOrder
   contractType?: Prisma.SortOrder
   employmentStatus?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
@@ -543,6 +566,7 @@ export type EmploymentRecordMaxOrderByAggregateInput = {
 export type EmploymentRecordMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  departmentId?: Prisma.SortOrder
   contractType?: Prisma.SortOrder
   employmentStatus?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
@@ -559,6 +583,48 @@ export type EmploymentRecordMinOrderByAggregateInput = {
 
 export type EmploymentRecordSumOrderByAggregateInput = {
   tenureDays?: Prisma.SortOrder
+}
+
+export type EmploymentRecordCreateNestedManyWithoutDepartmentInput = {
+  create?: Prisma.XOR<Prisma.EmploymentRecordCreateWithoutDepartmentInput, Prisma.EmploymentRecordUncheckedCreateWithoutDepartmentInput> | Prisma.EmploymentRecordCreateWithoutDepartmentInput[] | Prisma.EmploymentRecordUncheckedCreateWithoutDepartmentInput[]
+  connectOrCreate?: Prisma.EmploymentRecordCreateOrConnectWithoutDepartmentInput | Prisma.EmploymentRecordCreateOrConnectWithoutDepartmentInput[]
+  createMany?: Prisma.EmploymentRecordCreateManyDepartmentInputEnvelope
+  connect?: Prisma.EmploymentRecordWhereUniqueInput | Prisma.EmploymentRecordWhereUniqueInput[]
+}
+
+export type EmploymentRecordUncheckedCreateNestedManyWithoutDepartmentInput = {
+  create?: Prisma.XOR<Prisma.EmploymentRecordCreateWithoutDepartmentInput, Prisma.EmploymentRecordUncheckedCreateWithoutDepartmentInput> | Prisma.EmploymentRecordCreateWithoutDepartmentInput[] | Prisma.EmploymentRecordUncheckedCreateWithoutDepartmentInput[]
+  connectOrCreate?: Prisma.EmploymentRecordCreateOrConnectWithoutDepartmentInput | Prisma.EmploymentRecordCreateOrConnectWithoutDepartmentInput[]
+  createMany?: Prisma.EmploymentRecordCreateManyDepartmentInputEnvelope
+  connect?: Prisma.EmploymentRecordWhereUniqueInput | Prisma.EmploymentRecordWhereUniqueInput[]
+}
+
+export type EmploymentRecordUpdateManyWithoutDepartmentNestedInput = {
+  create?: Prisma.XOR<Prisma.EmploymentRecordCreateWithoutDepartmentInput, Prisma.EmploymentRecordUncheckedCreateWithoutDepartmentInput> | Prisma.EmploymentRecordCreateWithoutDepartmentInput[] | Prisma.EmploymentRecordUncheckedCreateWithoutDepartmentInput[]
+  connectOrCreate?: Prisma.EmploymentRecordCreateOrConnectWithoutDepartmentInput | Prisma.EmploymentRecordCreateOrConnectWithoutDepartmentInput[]
+  upsert?: Prisma.EmploymentRecordUpsertWithWhereUniqueWithoutDepartmentInput | Prisma.EmploymentRecordUpsertWithWhereUniqueWithoutDepartmentInput[]
+  createMany?: Prisma.EmploymentRecordCreateManyDepartmentInputEnvelope
+  set?: Prisma.EmploymentRecordWhereUniqueInput | Prisma.EmploymentRecordWhereUniqueInput[]
+  disconnect?: Prisma.EmploymentRecordWhereUniqueInput | Prisma.EmploymentRecordWhereUniqueInput[]
+  delete?: Prisma.EmploymentRecordWhereUniqueInput | Prisma.EmploymentRecordWhereUniqueInput[]
+  connect?: Prisma.EmploymentRecordWhereUniqueInput | Prisma.EmploymentRecordWhereUniqueInput[]
+  update?: Prisma.EmploymentRecordUpdateWithWhereUniqueWithoutDepartmentInput | Prisma.EmploymentRecordUpdateWithWhereUniqueWithoutDepartmentInput[]
+  updateMany?: Prisma.EmploymentRecordUpdateManyWithWhereWithoutDepartmentInput | Prisma.EmploymentRecordUpdateManyWithWhereWithoutDepartmentInput[]
+  deleteMany?: Prisma.EmploymentRecordScalarWhereInput | Prisma.EmploymentRecordScalarWhereInput[]
+}
+
+export type EmploymentRecordUncheckedUpdateManyWithoutDepartmentNestedInput = {
+  create?: Prisma.XOR<Prisma.EmploymentRecordCreateWithoutDepartmentInput, Prisma.EmploymentRecordUncheckedCreateWithoutDepartmentInput> | Prisma.EmploymentRecordCreateWithoutDepartmentInput[] | Prisma.EmploymentRecordUncheckedCreateWithoutDepartmentInput[]
+  connectOrCreate?: Prisma.EmploymentRecordCreateOrConnectWithoutDepartmentInput | Prisma.EmploymentRecordCreateOrConnectWithoutDepartmentInput[]
+  upsert?: Prisma.EmploymentRecordUpsertWithWhereUniqueWithoutDepartmentInput | Prisma.EmploymentRecordUpsertWithWhereUniqueWithoutDepartmentInput[]
+  createMany?: Prisma.EmploymentRecordCreateManyDepartmentInputEnvelope
+  set?: Prisma.EmploymentRecordWhereUniqueInput | Prisma.EmploymentRecordWhereUniqueInput[]
+  disconnect?: Prisma.EmploymentRecordWhereUniqueInput | Prisma.EmploymentRecordWhereUniqueInput[]
+  delete?: Prisma.EmploymentRecordWhereUniqueInput | Prisma.EmploymentRecordWhereUniqueInput[]
+  connect?: Prisma.EmploymentRecordWhereUniqueInput | Prisma.EmploymentRecordWhereUniqueInput[]
+  update?: Prisma.EmploymentRecordUpdateWithWhereUniqueWithoutDepartmentInput | Prisma.EmploymentRecordUpdateWithWhereUniqueWithoutDepartmentInput[]
+  updateMany?: Prisma.EmploymentRecordUpdateManyWithWhereWithoutDepartmentInput | Prisma.EmploymentRecordUpdateManyWithWhereWithoutDepartmentInput[]
+  deleteMany?: Prisma.EmploymentRecordScalarWhereInput | Prisma.EmploymentRecordScalarWhereInput[]
 }
 
 export type EmploymentRecordCreateNestedManyWithoutUserInput = {
@@ -661,6 +727,87 @@ export type NullableIntFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type EmploymentRecordCreateWithoutDepartmentInput = {
+  id?: string
+  contractType: $Enums.ContractType
+  employmentStatus: $Enums.EmploymentStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  effectiveDate?: Date | string
+  reason?: string | null
+  isCurrent?: boolean
+  tenureDays?: number | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutEmploymentRecordsInput
+  initiator?: Prisma.UserCreateNestedOneWithoutEmploymentRecordsInitiatedInput
+}
+
+export type EmploymentRecordUncheckedCreateWithoutDepartmentInput = {
+  id?: string
+  userId: string
+  contractType: $Enums.ContractType
+  employmentStatus: $Enums.EmploymentStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  effectiveDate?: Date | string
+  reason?: string | null
+  initiatedBy?: string | null
+  isCurrent?: boolean
+  tenureDays?: number | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type EmploymentRecordCreateOrConnectWithoutDepartmentInput = {
+  where: Prisma.EmploymentRecordWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmploymentRecordCreateWithoutDepartmentInput, Prisma.EmploymentRecordUncheckedCreateWithoutDepartmentInput>
+}
+
+export type EmploymentRecordCreateManyDepartmentInputEnvelope = {
+  data: Prisma.EmploymentRecordCreateManyDepartmentInput | Prisma.EmploymentRecordCreateManyDepartmentInput[]
+  skipDuplicates?: boolean
+}
+
+export type EmploymentRecordUpsertWithWhereUniqueWithoutDepartmentInput = {
+  where: Prisma.EmploymentRecordWhereUniqueInput
+  update: Prisma.XOR<Prisma.EmploymentRecordUpdateWithoutDepartmentInput, Prisma.EmploymentRecordUncheckedUpdateWithoutDepartmentInput>
+  create: Prisma.XOR<Prisma.EmploymentRecordCreateWithoutDepartmentInput, Prisma.EmploymentRecordUncheckedCreateWithoutDepartmentInput>
+}
+
+export type EmploymentRecordUpdateWithWhereUniqueWithoutDepartmentInput = {
+  where: Prisma.EmploymentRecordWhereUniqueInput
+  data: Prisma.XOR<Prisma.EmploymentRecordUpdateWithoutDepartmentInput, Prisma.EmploymentRecordUncheckedUpdateWithoutDepartmentInput>
+}
+
+export type EmploymentRecordUpdateManyWithWhereWithoutDepartmentInput = {
+  where: Prisma.EmploymentRecordScalarWhereInput
+  data: Prisma.XOR<Prisma.EmploymentRecordUpdateManyMutationInput, Prisma.EmploymentRecordUncheckedUpdateManyWithoutDepartmentInput>
+}
+
+export type EmploymentRecordScalarWhereInput = {
+  AND?: Prisma.EmploymentRecordScalarWhereInput | Prisma.EmploymentRecordScalarWhereInput[]
+  OR?: Prisma.EmploymentRecordScalarWhereInput[]
+  NOT?: Prisma.EmploymentRecordScalarWhereInput | Prisma.EmploymentRecordScalarWhereInput[]
+  id?: Prisma.StringFilter<"EmploymentRecord"> | string
+  userId?: Prisma.StringFilter<"EmploymentRecord"> | string
+  departmentId?: Prisma.StringNullableFilter<"EmploymentRecord"> | string | null
+  contractType?: Prisma.EnumContractTypeFilter<"EmploymentRecord"> | $Enums.ContractType
+  employmentStatus?: Prisma.EnumEmploymentStatusFilter<"EmploymentRecord"> | $Enums.EmploymentStatus
+  startDate?: Prisma.DateTimeFilter<"EmploymentRecord"> | Date | string
+  endDate?: Prisma.DateTimeNullableFilter<"EmploymentRecord"> | Date | string | null
+  effectiveDate?: Prisma.DateTimeFilter<"EmploymentRecord"> | Date | string
+  reason?: Prisma.StringNullableFilter<"EmploymentRecord"> | string | null
+  initiatedBy?: Prisma.StringNullableFilter<"EmploymentRecord"> | string | null
+  isCurrent?: Prisma.BoolFilter<"EmploymentRecord"> | boolean
+  tenureDays?: Prisma.IntNullableFilter<"EmploymentRecord"> | number | null
+  notes?: Prisma.StringNullableFilter<"EmploymentRecord"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"EmploymentRecord"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"EmploymentRecord"> | Date | string
+}
+
 export type EmploymentRecordCreateWithoutUserInput = {
   id?: string
   contractType: $Enums.ContractType
@@ -674,11 +821,13 @@ export type EmploymentRecordCreateWithoutUserInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmploymentRecordsInput
   initiator?: Prisma.UserCreateNestedOneWithoutEmploymentRecordsInitiatedInput
 }
 
 export type EmploymentRecordUncheckedCreateWithoutUserInput = {
   id?: string
+  departmentId?: string | null
   contractType: $Enums.ContractType
   employmentStatus: $Enums.EmploymentStatus
   startDate: Date | string
@@ -717,11 +866,13 @@ export type EmploymentRecordCreateWithoutInitiatorInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutEmploymentRecordsInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmploymentRecordsInput
 }
 
 export type EmploymentRecordUncheckedCreateWithoutInitiatorInput = {
   id?: string
   userId: string
+  departmentId?: string | null
   contractType: $Enums.ContractType
   employmentStatus: $Enums.EmploymentStatus
   startDate: Date | string
@@ -761,26 +912,6 @@ export type EmploymentRecordUpdateManyWithWhereWithoutUserInput = {
   data: Prisma.XOR<Prisma.EmploymentRecordUpdateManyMutationInput, Prisma.EmploymentRecordUncheckedUpdateManyWithoutUserInput>
 }
 
-export type EmploymentRecordScalarWhereInput = {
-  AND?: Prisma.EmploymentRecordScalarWhereInput | Prisma.EmploymentRecordScalarWhereInput[]
-  OR?: Prisma.EmploymentRecordScalarWhereInput[]
-  NOT?: Prisma.EmploymentRecordScalarWhereInput | Prisma.EmploymentRecordScalarWhereInput[]
-  id?: Prisma.StringFilter<"EmploymentRecord"> | string
-  userId?: Prisma.StringFilter<"EmploymentRecord"> | string
-  contractType?: Prisma.EnumContractTypeFilter<"EmploymentRecord"> | $Enums.ContractType
-  employmentStatus?: Prisma.EnumEmploymentStatusFilter<"EmploymentRecord"> | $Enums.EmploymentStatus
-  startDate?: Prisma.DateTimeFilter<"EmploymentRecord"> | Date | string
-  endDate?: Prisma.DateTimeNullableFilter<"EmploymentRecord"> | Date | string | null
-  effectiveDate?: Prisma.DateTimeFilter<"EmploymentRecord"> | Date | string
-  reason?: Prisma.StringNullableFilter<"EmploymentRecord"> | string | null
-  initiatedBy?: Prisma.StringNullableFilter<"EmploymentRecord"> | string | null
-  isCurrent?: Prisma.BoolFilter<"EmploymentRecord"> | boolean
-  tenureDays?: Prisma.IntNullableFilter<"EmploymentRecord"> | number | null
-  notes?: Prisma.StringNullableFilter<"EmploymentRecord"> | string | null
-  createdAt?: Prisma.DateTimeFilter<"EmploymentRecord"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"EmploymentRecord"> | Date | string
-}
-
 export type EmploymentRecordUpsertWithWhereUniqueWithoutInitiatorInput = {
   where: Prisma.EmploymentRecordWhereUniqueInput
   update: Prisma.XOR<Prisma.EmploymentRecordUpdateWithoutInitiatorInput, Prisma.EmploymentRecordUncheckedUpdateWithoutInitiatorInput>
@@ -797,8 +928,77 @@ export type EmploymentRecordUpdateManyWithWhereWithoutInitiatorInput = {
   data: Prisma.XOR<Prisma.EmploymentRecordUpdateManyMutationInput, Prisma.EmploymentRecordUncheckedUpdateManyWithoutInitiatorInput>
 }
 
+export type EmploymentRecordCreateManyDepartmentInput = {
+  id?: string
+  userId: string
+  contractType: $Enums.ContractType
+  employmentStatus: $Enums.EmploymentStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  effectiveDate?: Date | string
+  reason?: string | null
+  initiatedBy?: string | null
+  isCurrent?: boolean
+  tenureDays?: number | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type EmploymentRecordUpdateWithoutDepartmentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  contractType?: Prisma.EnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  tenureDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutEmploymentRecordsNestedInput
+  initiator?: Prisma.UserUpdateOneWithoutEmploymentRecordsInitiatedNestedInput
+}
+
+export type EmploymentRecordUncheckedUpdateWithoutDepartmentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  contractType?: Prisma.EnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  tenureDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type EmploymentRecordUncheckedUpdateManyWithoutDepartmentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  contractType?: Prisma.EnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  tenureDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type EmploymentRecordCreateManyUserInput = {
   id?: string
+  departmentId?: string | null
   contractType: $Enums.ContractType
   employmentStatus: $Enums.EmploymentStatus
   startDate: Date | string
@@ -816,6 +1016,7 @@ export type EmploymentRecordCreateManyUserInput = {
 export type EmploymentRecordCreateManyInitiatorInput = {
   id?: string
   userId: string
+  departmentId?: string | null
   contractType: $Enums.ContractType
   employmentStatus: $Enums.EmploymentStatus
   startDate: Date | string
@@ -842,11 +1043,13 @@ export type EmploymentRecordUpdateWithoutUserInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneWithoutEmploymentRecordsNestedInput
   initiator?: Prisma.UserUpdateOneWithoutEmploymentRecordsInitiatedNestedInput
 }
 
 export type EmploymentRecordUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contractType?: Prisma.EnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -863,6 +1066,7 @@ export type EmploymentRecordUncheckedUpdateWithoutUserInput = {
 
 export type EmploymentRecordUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contractType?: Prisma.EnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -891,11 +1095,13 @@ export type EmploymentRecordUpdateWithoutInitiatorInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutEmploymentRecordsNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmploymentRecordsNestedInput
 }
 
 export type EmploymentRecordUncheckedUpdateWithoutInitiatorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contractType?: Prisma.EnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -912,6 +1118,7 @@ export type EmploymentRecordUncheckedUpdateWithoutInitiatorInput = {
 export type EmploymentRecordUncheckedUpdateManyWithoutInitiatorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contractType?: Prisma.EnumContractTypeFieldUpdateOperationsInput | $Enums.ContractType
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -930,6 +1137,7 @@ export type EmploymentRecordUncheckedUpdateManyWithoutInitiatorInput = {
 export type EmploymentRecordSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
+  departmentId?: boolean
   contractType?: boolean
   employmentStatus?: boolean
   startDate?: boolean
@@ -943,12 +1151,14 @@ export type EmploymentRecordSelect<ExtArgs extends runtime.Types.Extensions.Inte
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  department?: boolean | Prisma.EmploymentRecord$departmentArgs<ExtArgs>
   initiator?: boolean | Prisma.EmploymentRecord$initiatorArgs<ExtArgs>
 }, ExtArgs["result"]["employmentRecord"]>
 
 export type EmploymentRecordSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
+  departmentId?: boolean
   contractType?: boolean
   employmentStatus?: boolean
   startDate?: boolean
@@ -962,12 +1172,14 @@ export type EmploymentRecordSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  department?: boolean | Prisma.EmploymentRecord$departmentArgs<ExtArgs>
   initiator?: boolean | Prisma.EmploymentRecord$initiatorArgs<ExtArgs>
 }, ExtArgs["result"]["employmentRecord"]>
 
 export type EmploymentRecordSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
+  departmentId?: boolean
   contractType?: boolean
   employmentStatus?: boolean
   startDate?: boolean
@@ -981,12 +1193,14 @@ export type EmploymentRecordSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  department?: boolean | Prisma.EmploymentRecord$departmentArgs<ExtArgs>
   initiator?: boolean | Prisma.EmploymentRecord$initiatorArgs<ExtArgs>
 }, ExtArgs["result"]["employmentRecord"]>
 
 export type EmploymentRecordSelectScalar = {
   id?: boolean
   userId?: boolean
+  departmentId?: boolean
   contractType?: boolean
   employmentStatus?: boolean
   startDate?: boolean
@@ -1001,17 +1215,20 @@ export type EmploymentRecordSelectScalar = {
   updatedAt?: boolean
 }
 
-export type EmploymentRecordOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "contractType" | "employmentStatus" | "startDate" | "endDate" | "effectiveDate" | "reason" | "initiatedBy" | "isCurrent" | "tenureDays" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["employmentRecord"]>
+export type EmploymentRecordOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "departmentId" | "contractType" | "employmentStatus" | "startDate" | "endDate" | "effectiveDate" | "reason" | "initiatedBy" | "isCurrent" | "tenureDays" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["employmentRecord"]>
 export type EmploymentRecordInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  department?: boolean | Prisma.EmploymentRecord$departmentArgs<ExtArgs>
   initiator?: boolean | Prisma.EmploymentRecord$initiatorArgs<ExtArgs>
 }
 export type EmploymentRecordIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  department?: boolean | Prisma.EmploymentRecord$departmentArgs<ExtArgs>
   initiator?: boolean | Prisma.EmploymentRecord$initiatorArgs<ExtArgs>
 }
 export type EmploymentRecordIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  department?: boolean | Prisma.EmploymentRecord$departmentArgs<ExtArgs>
   initiator?: boolean | Prisma.EmploymentRecord$initiatorArgs<ExtArgs>
 }
 
@@ -1019,11 +1236,13 @@ export type $EmploymentRecordPayload<ExtArgs extends runtime.Types.Extensions.In
   name: "EmploymentRecord"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
+    department: Prisma.$DepartmentPayload<ExtArgs> | null
     initiator: Prisma.$UserPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     userId: string
+    departmentId: string | null
     contractType: $Enums.ContractType
     employmentStatus: $Enums.EmploymentStatus
     startDate: Date
@@ -1431,6 +1650,7 @@ readonly fields: EmploymentRecordFieldRefs;
 export interface Prisma__EmploymentRecordClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  department<T extends Prisma.EmploymentRecord$departmentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmploymentRecord$departmentArgs<ExtArgs>>): Prisma.Prisma__DepartmentClient<runtime.Types.Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   initiator<T extends Prisma.EmploymentRecord$initiatorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmploymentRecord$initiatorArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1463,6 +1683,7 @@ export interface Prisma__EmploymentRecordClient<T, Null = never, ExtArgs extends
 export interface EmploymentRecordFieldRefs {
   readonly id: Prisma.FieldRef<"EmploymentRecord", 'String'>
   readonly userId: Prisma.FieldRef<"EmploymentRecord", 'String'>
+  readonly departmentId: Prisma.FieldRef<"EmploymentRecord", 'String'>
   readonly contractType: Prisma.FieldRef<"EmploymentRecord", 'ContractType'>
   readonly employmentStatus: Prisma.FieldRef<"EmploymentRecord", 'EmploymentStatus'>
   readonly startDate: Prisma.FieldRef<"EmploymentRecord", 'DateTime'>
@@ -1873,6 +2094,25 @@ export type EmploymentRecordDeleteManyArgs<ExtArgs extends runtime.Types.Extensi
    * Limit how many EmploymentRecords to delete.
    */
   limit?: number
+}
+
+/**
+ * EmploymentRecord.department
+ */
+export type EmploymentRecord$departmentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Department
+   */
+  select?: Prisma.DepartmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Department
+   */
+  omit?: Prisma.DepartmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DepartmentInclude<ExtArgs> | null
+  where?: Prisma.DepartmentWhereInput
 }
 
 /**

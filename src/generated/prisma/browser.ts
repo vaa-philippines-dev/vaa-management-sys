@@ -58,10 +58,10 @@ export type RoleAssignment = Prisma.RoleAssignmentModel
  */
 export type VAProfile = Prisma.VAProfileModel
 /**
- * Model VAStatusHistory
+ * Model VAHistory
  * 
  */
-export type VAStatusHistory = Prisma.VAStatusHistoryModel
+export type VAHistory = Prisma.VAHistoryModel
 /**
  * Model Skill
  * 

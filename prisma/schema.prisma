@@ -48,9 +48,19 @@ enum EmploymentStatus {
   BLACKLISTED
 }
 
-enum VAStatusType {
-  GENERAL
-  ENGAGEMENT
+enum HistoryEventType {
+  STATUS_CHANGE
+  ENGAGEMENT_CHANGE
+  UPSKILL
+  RATE_CHANGE
+  PROMOTION
+  DEPARTMENT_TRANSFER
+}
+
+enum TransferType {
+  ACTIVE
+  END_OF_CONTRACT
+  HYBRID
 }
 
 enum Availability {
@@ -233,13 +243,15 @@ model Department {
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
-  memberships     DepartmentMembership[]
-  positions       Position[]
-  clients         Client[]
-  tickets         Ticket[]
-  auditLogs       AuditLog[]
-  roleAssignments RoleAssignment[]
-  services        DepartmentSkill[]
+  memberships       DepartmentMembership[]
+  positions         Position[]
+  clients           Client[]
+  tickets           Ticket[]
+  auditLogs         AuditLog[]
+  roleAssignments   RoleAssignment[]
+  services          DepartmentSkill[]
+  vaHistoryEvents   VAHistory[]
+  employmentRecords EmploymentRecord[]
 
   @@unique([name, parentId])
   @@unique([acronym, parentId])
@@ -267,20 +279,26 @@ model Position {
 }
 
 model DepartmentMembership {
-  id           String   @id @default(cuid())
-  userId       String   @map("user_id")
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  departmentId String   @map("department_id")
-  department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
-  positionId   String?  @map("position_id")
-  position     Position? @relation(fields: [positionId], references: [id], onDelete: SetNull)
-  isPrimary    Boolean  @default(false) @map("is_primary")
-  startedAt    DateTime @default(now()) @map("started_at")
-  endedAt      DateTime? @map("ended_at")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  id              String        @id @default(cuid())
+  userId          String        @map("user_id")
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  departmentId    String        @map("department_id")
+  department      Department    @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  positionId      String?       @map("position_id")
+  position        Position?     @relation(fields: [positionId], references: [id], onDelete: SetNull)
+  isPrimary       Boolean       @default(false) @map("is_primary")
+  hourlyRate      Decimal?      @map("hourly_rate")
+  baseRate        Decimal?      @map("base_rate")
+  transferType    TransferType? @map("transfer_type")
+  transferredFromId String?     @map("transferred_from_id")
+  transferredFrom DepartmentMembership?  @relation("MembershipTransferChain", fields: [transferredFromId], references: [id], onDelete: SetNull)
+  transferredTo   DepartmentMembership[] @relation("MembershipTransferChain")
+  startedAt       DateTime      @default(now()) @map("started_at")
+  endedAt         DateTime?     @map("ended_at")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
 
-  @@unique([userId, departmentId])
+  @@index([userId, departmentId])
   @@map("department_memberships")
 }
 
@@ -317,7 +335,8 @@ model User {
   assignedTickets    Ticket[]           @relation("TicketAssignee")
   ticketConversations TicketConversation[]
   auditLogs          AuditLog[]
-  vaStatusChanges    VAStatusHistory[]
+  vaHistoryEvents    VAHistory[]        @relation("VAHistoryUser")
+  vaHistoryChanges   VAHistory[]        @relation("VAHistoryChangedBy")
 
   @@index([email])
   @@index([systemRole])
@@ -370,6 +389,8 @@ model EmploymentRecord {
   id               String           @id @default(cuid())
   userId           String           @map("user_id")
   user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  departmentId     String?          @map("department_id")
+  department       Department?      @relation(fields: [departmentId], references: [id], onDelete: SetNull)
   contractType     ContractType     @map("contract_type")
   employmentStatus EmploymentStatus @map("employment_status")
   startDate        DateTime         @map("start_date")
@@ -386,6 +407,7 @@ model EmploymentRecord {
 
   @@index([userId])
   @@index([employmentStatus])
+  @@index([departmentId, startDate])
   @@map("employment_records")
 }
 
@@ -445,27 +467,29 @@ model VAProfile {
   workLogs      WorkLog[]
   vaSkills      VASkill[]
   documents     VADocument[]
-  statusHistory VAStatusHistory[]
 
   @@index([availabilityStatus])
   @@map("va_profiles")
 }
 
-model VAStatusHistory {
-  id            String       @id @default(cuid())
-  vaProfileId   String       @map("va_profile_id")
-  vaProfile     VAProfile    @relation(fields: [vaProfileId], references: [id], onDelete: Cascade)
-  statusType    VAStatusType @map("status_type")
-  oldValue      String?      @map("old_value")
-  newValue      String       @map("new_value")
-  effectiveDate DateTime     @map("effective_date")
+model VAHistory {
+  id            String           @id @default(cuid())
+  userId        String           @map("user_id")
+  user          User             @relation("VAHistoryUser", fields: [userId], references: [id], onDelete: Cascade)
+  eventType     HistoryEventType @map("event_type")
+  oldValue      String?          @map("old_value")
+  newValue      String?          @map("new_value")
+  departmentId  String?          @map("department_id")
+  department    Department?      @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  effectiveDate DateTime         @map("effective_date")
   reason        String?
-  changedById   String       @map("changed_by_id")
-  changedBy     User         @relation(fields: [changedById], references: [id], onDelete: Cascade)
-  createdAt     DateTime     @default(now()) @map("created_at")
+  changedById   String           @map("changed_by_id")
+  changedBy     User             @relation("VAHistoryChangedBy", fields: [changedById], references: [id], onDelete: Cascade)
+  createdAt     DateTime         @default(now()) @map("created_at")
 
-  @@index([vaProfileId, effectiveDate])
-  @@map("va_status_history")
+  @@index([userId, effectiveDate])
+  @@index([eventType, effectiveDate])
+  @@map("va_history")
 }
 
 model Skill {

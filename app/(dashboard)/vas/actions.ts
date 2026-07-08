@@ -6,9 +6,10 @@ import { CACHE_TAGS } from '@/lib/cache'
 import { redirect } from 'next/navigation'
 import { requireRole } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
+import type { Proficiency, EmploymentStatus } from '@/src/generated/prisma/enums'
 
 export async function createVA(formData: FormData) {
-  await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER')
+  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER')
 
   const email = formData.get('email') as string
   const nameVal = (formData.get('name') as string) || ''
@@ -29,17 +30,70 @@ export async function createVA(formData: FormData) {
         create: {
           hourlyRate: hourlyRate ? Number(hourlyRate) : null,
           notes,
-          vaSkills: { connect: skillIds.map((id) => ({ id })) },
+          vaSkills: { create: skillIds.map((skillId) => ({ skillId })) },
         },
       },
     },
     include: { vaProfile: true },
   })
 
+  await logAudit({
+    actorId: actor.id,
+    action: 'CREATE',
+    entityType: 'User',
+    entityId: user.id,
+    after: { email, firstName, lastName },
+  })
+
+  await prisma.employmentRecord.create({
+    data: {
+      userId: user.id,
+      contractType: 'REGULAR',
+      employmentStatus: 'EMPLOYED',
+      startDate: new Date(),
+      effectiveDate: new Date(),
+      isCurrent: true,
+      initiatedBy: actor.id,
+    },
+  })
+
   revalidatePath('/vas')
   revalidateTag(CACHE_TAGS.vas, 'default')
   revalidateTag(CACHE_TAGS.users, 'default')
   redirect(`/vas/${user.vaProfile!.id}`)
+}
+
+export async function addVASkill(vaProfileId: string, skillId: string, proficiency: string, yearsExperience?: number) {
+  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER')
+
+  const va = await prisma.vAProfile.findUnique({ where: { id: vaProfileId }, select: { userId: true } })
+  if (!va) throw new Error('VA profile not found')
+
+  const skill = await prisma.skill.findUnique({ where: { id: skillId }, select: { name: true } })
+  if (!skill) throw new Error('Service not found')
+
+  await prisma.vASkill.create({
+    data: {
+      vaProfileId,
+      skillId,
+      proficiency: proficiency as Proficiency,
+      yearsExperience: yearsExperience ?? null,
+    },
+  })
+
+  await prisma.vAHistory.create({
+    data: {
+      userId: va.userId,
+      eventType: 'UPSKILL',
+      oldValue: null,
+      newValue: skill.name,
+      effectiveDate: new Date(),
+      changedById: actor.id,
+    },
+  })
+
+  revalidatePath(`/vas/${vaProfileId}`)
+  revalidateTag(CACHE_TAGS.vas, 'default')
 }
 
 export type VACsvRow = {
@@ -191,6 +245,19 @@ export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult
         metadata: { viaImport: 'vas/csv' },
       })
 
+      await prisma.employmentRecord.create({
+        data: {
+          userId: user.id,
+          departmentId,
+          contractType: 'REGULAR',
+          employmentStatus: (engagementStatus as EmploymentStatus | null) ?? 'EMPLOYED',
+          startDate: new Date(),
+          effectiveDate: new Date(),
+          isCurrent: true,
+          initiatedBy: actor.id,
+        },
+      })
+
       result.created++
     } catch (e) {
       result.skipped.push({ row: rowNum, reason: e instanceof Error ? e.message : 'Failed to create' })
@@ -233,7 +300,7 @@ export async function updateVAProfile(vaProfileId: string, formData: FormData) {
 
   const before = await prisma.vAProfile.findUnique({
     where: { id: vaProfileId },
-    select: { vaaPosition: true, level: true, baseRate: true, hourlyRate: true, preferredWorkHours: true, availabilityStatus: true, hybrid: true, status: true, engagementStatus: true },
+    select: { userId: true, vaaPosition: true, level: true, baseRate: true, hourlyRate: true, preferredWorkHours: true, availabilityStatus: true, hybrid: true, status: true, engagementStatus: true },
   })
 
   await prisma.vAProfile.update({ where: { id: vaProfileId }, data })
@@ -247,6 +314,28 @@ export async function updateVAProfile(vaProfileId: string, formData: FormData) {
     after: data,
     metadata: { fields: Object.keys(data) },
   })
+
+  if (before) {
+    const rateHistory: { field: 'hourlyRate' | 'baseRate'; old: number | null; next: number | null }[] = []
+    if ('hourlyRate' in data && Number(before.hourlyRate ?? null) !== Number(data.hourlyRate ?? null)) {
+      rateHistory.push({ field: 'hourlyRate', old: before.hourlyRate ? Number(before.hourlyRate) : null, next: data.hourlyRate })
+    }
+    if ('baseRate' in data && Number(before.baseRate ?? null) !== Number(data.baseRate ?? null)) {
+      rateHistory.push({ field: 'baseRate', old: before.baseRate ? Number(before.baseRate) : null, next: data.baseRate })
+    }
+    for (const change of rateHistory) {
+      await prisma.vAHistory.create({
+        data: {
+          userId: before.userId,
+          eventType: 'RATE_CHANGE',
+          oldValue: change.old != null ? `${change.field}:${change.old}` : null,
+          newValue: change.next != null ? `${change.field}:${change.next}` : null,
+          effectiveDate: new Date(),
+          changedById: actor.id,
+        },
+      })
+    }
+  }
 
   revalidatePath(`/vas/${vaProfileId}`)
   revalidateTag(CACHE_TAGS.vas, 'default')
@@ -266,7 +355,7 @@ export async function changeVAStatus(
   const field = statusType === 'GENERAL' ? 'status' : 'engagementStatus'
   const before = await prisma.vAProfile.findUnique({
     where: { id: vaProfileId },
-    select: { status: true, engagementStatus: true },
+    select: { userId: true, status: true, engagementStatus: true },
   })
   if (!before) throw new Error('VA profile not found')
 
@@ -277,10 +366,10 @@ export async function changeVAStatus(
 
   await prisma.$transaction([
     prisma.vAProfile.update({ where: { id: vaProfileId }, data: { [field]: newValue } }),
-    prisma.vAStatusHistory.create({
+    prisma.vAHistory.create({
       data: {
-        vaProfileId,
-        statusType,
+        userId: before.userId,
+        eventType: statusType === 'GENERAL' ? 'STATUS_CHANGE' : 'ENGAGEMENT_CHANGE',
         oldValue: oldValue ?? null,
         newValue,
         effectiveDate: effective,
@@ -300,9 +389,141 @@ export async function changeVAStatus(
     metadata: { statusType, effectiveDate: effective.toISOString(), reason: reason?.trim() || undefined },
   })
 
+  const TERMINAL_ENGAGEMENT_VALUES = ['END_OF_CONTRACT', 'RESIGNED', 'TERMINATED', 'BLACKLISTED']
+  if (statusType === 'ENGAGEMENT' && TERMINAL_ENGAGEMENT_VALUES.includes(newValue)) {
+    const currentRecord = await prisma.employmentRecord.findFirst({
+      where: { userId: before.userId, isCurrent: true },
+    })
+    if (currentRecord) {
+      await prisma.employmentRecord.update({
+        where: { id: currentRecord.id },
+        data: { isCurrent: false, endDate: effective, employmentStatus: newValue as EmploymentStatus },
+      })
+    }
+  }
+
   revalidatePath(`/vas/${vaProfileId}`)
   revalidateTag(CACHE_TAGS.vas, 'default')
   revalidatePath('/vas')
+}
+
+export async function transferVA(
+  vaProfileId: string,
+  transferType: 'ACTIVE' | 'END_OF_CONTRACT' | 'HYBRID',
+  newDepartmentId: string,
+  newPositionId: string | null,
+  effectiveDate: string,
+  reason?: string,
+  newHourlyRate?: number,
+  newBaseRate?: number
+) {
+  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER')
+
+  const va = await prisma.vAProfile.findUnique({
+    where: { id: vaProfileId },
+    select: { userId: true },
+  })
+  if (!va) throw new Error('VA profile not found')
+
+  const effective = new Date(effectiveDate)
+  if (Number.isNaN(effective.getTime())) throw new Error('Invalid effective date')
+
+  const currentMembership = await prisma.departmentMembership.findFirst({
+    where: { userId: va.userId, endedAt: null, isPrimary: true },
+    include: { department: { select: { name: true } } },
+  })
+
+  const newDept = await prisma.department.findUnique({ where: { id: newDepartmentId }, select: { name: true } })
+  if (!newDept) throw new Error('Department not found')
+
+  const alreadyInDept = await prisma.departmentMembership.findFirst({
+    where: { userId: va.userId, departmentId: newDepartmentId, endedAt: null },
+  })
+  if (alreadyInDept) throw new Error('VA already has an active membership in that department')
+
+  await prisma.$transaction(async (tx) => {
+    if (transferType !== 'HYBRID' && currentMembership) {
+      await tx.departmentMembership.update({
+        where: { id: currentMembership.id },
+        data: { endedAt: effective },
+      })
+    }
+
+    const created = await tx.departmentMembership.create({
+      data: {
+        userId: va.userId,
+        departmentId: newDepartmentId,
+        positionId: newPositionId,
+        isPrimary: transferType !== 'HYBRID',
+        hourlyRate: newHourlyRate ?? null,
+        baseRate: newBaseRate ?? null,
+        transferType,
+        transferredFromId: currentMembership?.id ?? null,
+        startedAt: effective,
+      },
+    })
+
+    if (transferType === 'END_OF_CONTRACT' && currentMembership) {
+      await tx.vAProfile.update({
+        where: { id: vaProfileId },
+        data: { engagementStatus: 'END_OF_CONTRACT' },
+      })
+      await tx.vAHistory.create({
+        data: {
+          userId: va.userId,
+          eventType: 'ENGAGEMENT_CHANGE',
+          oldValue: null,
+          newValue: 'END_OF_CONTRACT',
+          departmentId: currentMembership.departmentId,
+          effectiveDate: effective,
+          reason: reason?.trim() || null,
+          changedById: actor.id,
+        },
+      })
+    }
+
+    await tx.vAHistory.create({
+      data: {
+        userId: va.userId,
+        eventType: 'DEPARTMENT_TRANSFER',
+        oldValue: currentMembership?.department.name ?? null,
+        newValue: newDept.name,
+        departmentId: newDepartmentId,
+        effectiveDate: effective,
+        reason: reason?.trim() || null,
+        changedById: actor.id,
+      },
+    })
+
+    const priorRecord = await tx.employmentRecord.findFirst({ where: { userId: va.userId, isCurrent: true } })
+    if (priorRecord) {
+      await tx.employmentRecord.update({
+        where: { id: priorRecord.id },
+        data: { isCurrent: transferType === 'HYBRID' ? priorRecord.isCurrent : false, endDate: transferType === 'HYBRID' ? priorRecord.endDate : effective },
+      })
+    }
+    await tx.employmentRecord.create({
+      data: {
+        userId: va.userId,
+        departmentId: newDepartmentId,
+        contractType: 'REGULAR',
+        employmentStatus: transferType === 'END_OF_CONTRACT' ? 'TRANSFERRED' : 'EMPLOYED',
+        startDate: effective,
+        effectiveDate: effective,
+        isCurrent: true,
+        initiatedBy: actor.id,
+        reason: reason?.trim() || null,
+      },
+    })
+
+    return created
+  })
+
+  revalidatePath(`/vas/${vaProfileId}`)
+  revalidateTag(CACHE_TAGS.vas, 'default')
+  revalidatePath('/vas')
+  revalidateTag(CACHE_TAGS.users, 'default')
+  revalidateTag(CACHE_TAGS.departments, 'default')
 }
 
 export async function updateUserProfile(userId: string, formData: FormData) {

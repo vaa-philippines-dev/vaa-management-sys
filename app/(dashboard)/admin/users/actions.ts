@@ -43,6 +43,19 @@ export async function updateUserRole(userId: string, systemRole: string) {
     metadata: { email: before?.email, name: `${before?.firstName} ${before?.lastName}` },
   })
 
+  if (before && before.systemRole !== systemRole) {
+    await prisma.vAHistory.create({
+      data: {
+        userId,
+        eventType: 'PROMOTION',
+        oldValue: before.systemRole,
+        newValue: systemRole,
+        effectiveDate: new Date(),
+        changedById: admin.id,
+      },
+    })
+  }
+
   revalidatePath('/admin/users')
   revalidateTag(CACHE_TAGS.users, 'default')
 }
@@ -129,8 +142,8 @@ export async function assignDepartmentMembership(
 ) {
   const admin = await getAdmin()
 
-  const existing = await prisma.departmentMembership.findUnique({
-    where: { userId_departmentId: { userId, departmentId } },
+  const existing = await prisma.departmentMembership.findFirst({
+    where: { userId, departmentId, endedAt: null },
   })
 
   let membershipId: string

@@ -19,6 +19,7 @@ import {
   ClipboardList,
   UserPlus,
   Network,
+  History,
 } from 'lucide-react'
 import Image from 'next/image'
 
@@ -165,6 +166,20 @@ export function Sidebar({ role = 'MANAGER', isAdmin = false }: { role?: 'MANAGER
                 >
                   <ClipboardList className="h-4 w-4 shrink-0" />
                   Audit Log
+                </Button>
+              </Link>
+              <Link href="/admin/history">
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    'w-full justify-start gap-3 rounded-lg text-sm font-medium transition-colors',
+                    pathname.startsWith('/admin/history')
+                      ? 'bg-sidebar-accent text-sidebar-accent-foreground'
+                      : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
+                  )}
+                >
+                  <History className="h-4 w-4 shrink-0" />
+                  History
                 </Button>
               </Link>
             </>

@@ -392,7 +392,7 @@ export const ModelName = {
   EmploymentRecord: 'EmploymentRecord',
   RoleAssignment: 'RoleAssignment',
   VAProfile: 'VAProfile',
-  VAStatusHistory: 'VAStatusHistory',
+  VAHistory: 'VAHistory',
   Skill: 'Skill',
   DepartmentSkill: 'DepartmentSkill',
   VASkill: 'VASkill',
@@ -419,7 +419,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAStatusHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveRequest" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "auditLog"
+    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveRequest" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "auditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1015,77 +1015,77 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    VAStatusHistory: {
-      payload: Prisma.$VAStatusHistoryPayload<ExtArgs>
-      fields: Prisma.VAStatusHistoryFieldRefs
+    VAHistory: {
+      payload: Prisma.$VAHistoryPayload<ExtArgs>
+      fields: Prisma.VAHistoryFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.VAStatusHistoryFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAStatusHistoryPayload> | null
+          args: Prisma.VAHistoryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAHistoryPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.VAStatusHistoryFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAStatusHistoryPayload>
+          args: Prisma.VAHistoryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAHistoryPayload>
         }
         findFirst: {
-          args: Prisma.VAStatusHistoryFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAStatusHistoryPayload> | null
+          args: Prisma.VAHistoryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAHistoryPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.VAStatusHistoryFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAStatusHistoryPayload>
+          args: Prisma.VAHistoryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAHistoryPayload>
         }
         findMany: {
-          args: Prisma.VAStatusHistoryFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAStatusHistoryPayload>[]
+          args: Prisma.VAHistoryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAHistoryPayload>[]
         }
         create: {
-          args: Prisma.VAStatusHistoryCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAStatusHistoryPayload>
+          args: Prisma.VAHistoryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAHistoryPayload>
         }
         createMany: {
-          args: Prisma.VAStatusHistoryCreateManyArgs<ExtArgs>
+          args: Prisma.VAHistoryCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.VAStatusHistoryCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAStatusHistoryPayload>[]
+          args: Prisma.VAHistoryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAHistoryPayload>[]
         }
         delete: {
-          args: Prisma.VAStatusHistoryDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAStatusHistoryPayload>
+          args: Prisma.VAHistoryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAHistoryPayload>
         }
         update: {
-          args: Prisma.VAStatusHistoryUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAStatusHistoryPayload>
+          args: Prisma.VAHistoryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAHistoryPayload>
         }
         deleteMany: {
-          args: Prisma.VAStatusHistoryDeleteManyArgs<ExtArgs>
+          args: Prisma.VAHistoryDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.VAStatusHistoryUpdateManyArgs<ExtArgs>
+          args: Prisma.VAHistoryUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.VAStatusHistoryUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAStatusHistoryPayload>[]
+          args: Prisma.VAHistoryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAHistoryPayload>[]
         }
         upsert: {
-          args: Prisma.VAStatusHistoryUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAStatusHistoryPayload>
+          args: Prisma.VAHistoryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAHistoryPayload>
         }
         aggregate: {
-          args: Prisma.VAStatusHistoryAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateVAStatusHistory>
+          args: Prisma.VAHistoryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVAHistory>
         }
         groupBy: {
-          args: Prisma.VAStatusHistoryGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.VAStatusHistoryGroupByOutputType>[]
+          args: Prisma.VAHistoryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VAHistoryGroupByOutputType>[]
         }
         count: {
-          args: Prisma.VAStatusHistoryCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.VAStatusHistoryCountAggregateOutputType> | number
+          args: Prisma.VAHistoryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VAHistoryCountAggregateOutputType> | number
         }
       }
     }
@@ -1985,6 +1985,10 @@ export const DepartmentMembershipScalarFieldEnum = {
   departmentId: 'departmentId',
   positionId: 'positionId',
   isPrimary: 'isPrimary',
+  hourlyRate: 'hourlyRate',
+  baseRate: 'baseRate',
+  transferType: 'transferType',
+  transferredFromId: 'transferredFromId',
   startedAt: 'startedAt',
   endedAt: 'endedAt',
   createdAt: 'createdAt',
@@ -2055,6 +2059,7 @@ export type UserProfileScalarFieldEnum = (typeof UserProfileScalarFieldEnum)[key
 export const EmploymentRecordScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  departmentId: 'departmentId',
   contractType: 'contractType',
   employmentStatus: 'employmentStatus',
   startDate: 'startDate',
@@ -2121,19 +2126,20 @@ export const VAProfileScalarFieldEnum = {
 export type VAProfileScalarFieldEnum = (typeof VAProfileScalarFieldEnum)[keyof typeof VAProfileScalarFieldEnum]
 
 
-export const VAStatusHistoryScalarFieldEnum = {
+export const VAHistoryScalarFieldEnum = {
   id: 'id',
-  vaProfileId: 'vaProfileId',
-  statusType: 'statusType',
+  userId: 'userId',
+  eventType: 'eventType',
   oldValue: 'oldValue',
   newValue: 'newValue',
+  departmentId: 'departmentId',
   effectiveDate: 'effectiveDate',
   reason: 'reason',
   changedById: 'changedById',
   createdAt: 'createdAt'
 } as const
 
-export type VAStatusHistoryScalarFieldEnum = (typeof VAStatusHistoryScalarFieldEnum)[keyof typeof VAStatusHistoryScalarFieldEnum]
+export type VAHistoryScalarFieldEnum = (typeof VAHistoryScalarFieldEnum)[keyof typeof VAHistoryScalarFieldEnum]
 
 
 export const SkillScalarFieldEnum = {
@@ -2457,6 +2463,34 @@ export type ListEnumGeneralStatusFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
+ * Reference to a field of type 'Decimal'
+ */
+export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+/**
+ * Reference to a field of type 'Decimal[]'
+ */
+export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
+    
+
+
+/**
+ * Reference to a field of type 'TransferType'
+ */
+export type EnumTransferTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransferType'>
+    
+
+
+/**
+ * Reference to a field of type 'TransferType[]'
+ */
+export type ListEnumTransferTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransferType[]'>
+    
+
+
+/**
  * Reference to a field of type 'SystemRole'
  */
 export type EnumSystemRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SystemRole'>
@@ -2527,20 +2561,6 @@ export type ListEnumTemporaryRoleFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
- * Reference to a field of type 'Decimal'
- */
-export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
-    
-
-
-/**
- * Reference to a field of type 'Decimal[]'
- */
-export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
-    
-
-
-/**
  * Reference to a field of type 'Availability'
  */
 export type EnumAvailabilityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Availability'>
@@ -2555,16 +2575,16 @@ export type ListEnumAvailabilityFieldRefInput<$PrismaModel> = FieldRefInputType<
 
 
 /**
- * Reference to a field of type 'VAStatusType'
+ * Reference to a field of type 'HistoryEventType'
  */
-export type EnumVAStatusTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VAStatusType'>
+export type EnumHistoryEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'HistoryEventType'>
     
 
 
 /**
- * Reference to a field of type 'VAStatusType[]'
+ * Reference to a field of type 'HistoryEventType[]'
  */
-export type ListEnumVAStatusTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VAStatusType[]'>
+export type ListEnumHistoryEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'HistoryEventType[]'>
     
 
 
@@ -2895,7 +2915,7 @@ export type GlobalOmitConfig = {
   employmentRecord?: Prisma.EmploymentRecordOmit
   roleAssignment?: Prisma.RoleAssignmentOmit
   vAProfile?: Prisma.VAProfileOmit
-  vAStatusHistory?: Prisma.VAStatusHistoryOmit
+  vAHistory?: Prisma.VAHistoryOmit
   skill?: Prisma.SkillOmit
   departmentSkill?: Prisma.DepartmentSkillOmit
   vASkill?: Prisma.VASkillOmit

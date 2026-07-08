@@ -61,12 +61,25 @@ export const EmploymentStatus = {
 export type EmploymentStatus = (typeof EmploymentStatus)[keyof typeof EmploymentStatus]
 
 
-export const VAStatusType = {
-  GENERAL: 'GENERAL',
-  ENGAGEMENT: 'ENGAGEMENT'
+export const HistoryEventType = {
+  STATUS_CHANGE: 'STATUS_CHANGE',
+  ENGAGEMENT_CHANGE: 'ENGAGEMENT_CHANGE',
+  UPSKILL: 'UPSKILL',
+  RATE_CHANGE: 'RATE_CHANGE',
+  PROMOTION: 'PROMOTION',
+  DEPARTMENT_TRANSFER: 'DEPARTMENT_TRANSFER'
 } as const
 
-export type VAStatusType = (typeof VAStatusType)[keyof typeof VAStatusType]
+export type HistoryEventType = (typeof HistoryEventType)[keyof typeof HistoryEventType]
+
+
+export const TransferType = {
+  ACTIVE: 'ACTIVE',
+  END_OF_CONTRACT: 'END_OF_CONTRACT',
+  HYBRID: 'HYBRID'
+} as const
+
+export type TransferType = (typeof TransferType)[keyof typeof TransferType]
 
 
 export const Availability = {

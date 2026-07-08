@@ -20,8 +20,20 @@ export type DepartmentMembershipModel = runtime.Types.Result.DefaultSelection<Pr
 
 export type AggregateDepartmentMembership = {
   _count: DepartmentMembershipCountAggregateOutputType | null
+  _avg: DepartmentMembershipAvgAggregateOutputType | null
+  _sum: DepartmentMembershipSumAggregateOutputType | null
   _min: DepartmentMembershipMinAggregateOutputType | null
   _max: DepartmentMembershipMaxAggregateOutputType | null
+}
+
+export type DepartmentMembershipAvgAggregateOutputType = {
+  hourlyRate: runtime.Decimal | null
+  baseRate: runtime.Decimal | null
+}
+
+export type DepartmentMembershipSumAggregateOutputType = {
+  hourlyRate: runtime.Decimal | null
+  baseRate: runtime.Decimal | null
 }
 
 export type DepartmentMembershipMinAggregateOutputType = {
@@ -30,6 +42,10 @@ export type DepartmentMembershipMinAggregateOutputType = {
   departmentId: string | null
   positionId: string | null
   isPrimary: boolean | null
+  hourlyRate: runtime.Decimal | null
+  baseRate: runtime.Decimal | null
+  transferType: $Enums.TransferType | null
+  transferredFromId: string | null
   startedAt: Date | null
   endedAt: Date | null
   createdAt: Date | null
@@ -42,6 +58,10 @@ export type DepartmentMembershipMaxAggregateOutputType = {
   departmentId: string | null
   positionId: string | null
   isPrimary: boolean | null
+  hourlyRate: runtime.Decimal | null
+  baseRate: runtime.Decimal | null
+  transferType: $Enums.TransferType | null
+  transferredFromId: string | null
   startedAt: Date | null
   endedAt: Date | null
   createdAt: Date | null
@@ -54,6 +74,10 @@ export type DepartmentMembershipCountAggregateOutputType = {
   departmentId: number
   positionId: number
   isPrimary: number
+  hourlyRate: number
+  baseRate: number
+  transferType: number
+  transferredFromId: number
   startedAt: number
   endedAt: number
   createdAt: number
@@ -62,12 +86,26 @@ export type DepartmentMembershipCountAggregateOutputType = {
 }
 
 
+export type DepartmentMembershipAvgAggregateInputType = {
+  hourlyRate?: true
+  baseRate?: true
+}
+
+export type DepartmentMembershipSumAggregateInputType = {
+  hourlyRate?: true
+  baseRate?: true
+}
+
 export type DepartmentMembershipMinAggregateInputType = {
   id?: true
   userId?: true
   departmentId?: true
   positionId?: true
   isPrimary?: true
+  hourlyRate?: true
+  baseRate?: true
+  transferType?: true
+  transferredFromId?: true
   startedAt?: true
   endedAt?: true
   createdAt?: true
@@ -80,6 +118,10 @@ export type DepartmentMembershipMaxAggregateInputType = {
   departmentId?: true
   positionId?: true
   isPrimary?: true
+  hourlyRate?: true
+  baseRate?: true
+  transferType?: true
+  transferredFromId?: true
   startedAt?: true
   endedAt?: true
   createdAt?: true
@@ -92,6 +134,10 @@ export type DepartmentMembershipCountAggregateInputType = {
   departmentId?: true
   positionId?: true
   isPrimary?: true
+  hourlyRate?: true
+  baseRate?: true
+  transferType?: true
+  transferredFromId?: true
   startedAt?: true
   endedAt?: true
   createdAt?: true
@@ -137,6 +183,18 @@ export type DepartmentMembershipAggregateArgs<ExtArgs extends runtime.Types.Exte
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: DepartmentMembershipAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: DepartmentMembershipSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: DepartmentMembershipMinAggregateInputType
@@ -167,6 +225,8 @@ export type DepartmentMembershipGroupByArgs<ExtArgs extends runtime.Types.Extens
   take?: number
   skip?: number
   _count?: DepartmentMembershipCountAggregateInputType | true
+  _avg?: DepartmentMembershipAvgAggregateInputType
+  _sum?: DepartmentMembershipSumAggregateInputType
   _min?: DepartmentMembershipMinAggregateInputType
   _max?: DepartmentMembershipMaxAggregateInputType
 }
@@ -177,11 +237,17 @@ export type DepartmentMembershipGroupByOutputType = {
   departmentId: string
   positionId: string | null
   isPrimary: boolean
+  hourlyRate: runtime.Decimal | null
+  baseRate: runtime.Decimal | null
+  transferType: $Enums.TransferType | null
+  transferredFromId: string | null
   startedAt: Date
   endedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: DepartmentMembershipCountAggregateOutputType | null
+  _avg: DepartmentMembershipAvgAggregateOutputType | null
+  _sum: DepartmentMembershipSumAggregateOutputType | null
   _min: DepartmentMembershipMinAggregateOutputType | null
   _max: DepartmentMembershipMaxAggregateOutputType | null
 }
@@ -210,6 +276,10 @@ export type DepartmentMembershipWhereInput = {
   departmentId?: Prisma.StringFilter<"DepartmentMembership"> | string
   positionId?: Prisma.StringNullableFilter<"DepartmentMembership"> | string | null
   isPrimary?: Prisma.BoolFilter<"DepartmentMembership"> | boolean
+  hourlyRate?: Prisma.DecimalNullableFilter<"DepartmentMembership"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.DecimalNullableFilter<"DepartmentMembership"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: Prisma.EnumTransferTypeNullableFilter<"DepartmentMembership"> | $Enums.TransferType | null
+  transferredFromId?: Prisma.StringNullableFilter<"DepartmentMembership"> | string | null
   startedAt?: Prisma.DateTimeFilter<"DepartmentMembership"> | Date | string
   endedAt?: Prisma.DateTimeNullableFilter<"DepartmentMembership"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"DepartmentMembership"> | Date | string
@@ -217,6 +287,8 @@ export type DepartmentMembershipWhereInput = {
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   department?: Prisma.XOR<Prisma.DepartmentScalarRelationFilter, Prisma.DepartmentWhereInput>
   position?: Prisma.XOR<Prisma.PositionNullableScalarRelationFilter, Prisma.PositionWhereInput> | null
+  transferredFrom?: Prisma.XOR<Prisma.DepartmentMembershipNullableScalarRelationFilter, Prisma.DepartmentMembershipWhereInput> | null
+  transferredTo?: Prisma.DepartmentMembershipListRelationFilter
 }
 
 export type DepartmentMembershipOrderByWithRelationInput = {
@@ -225,6 +297,10 @@ export type DepartmentMembershipOrderByWithRelationInput = {
   departmentId?: Prisma.SortOrder
   positionId?: Prisma.SortOrderInput | Prisma.SortOrder
   isPrimary?: Prisma.SortOrder
+  hourlyRate?: Prisma.SortOrderInput | Prisma.SortOrder
+  baseRate?: Prisma.SortOrderInput | Prisma.SortOrder
+  transferType?: Prisma.SortOrderInput | Prisma.SortOrder
+  transferredFromId?: Prisma.SortOrderInput | Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   endedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -232,11 +308,12 @@ export type DepartmentMembershipOrderByWithRelationInput = {
   user?: Prisma.UserOrderByWithRelationInput
   department?: Prisma.DepartmentOrderByWithRelationInput
   position?: Prisma.PositionOrderByWithRelationInput
+  transferredFrom?: Prisma.DepartmentMembershipOrderByWithRelationInput
+  transferredTo?: Prisma.DepartmentMembershipOrderByRelationAggregateInput
 }
 
 export type DepartmentMembershipWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  userId_departmentId?: Prisma.DepartmentMembershipUserIdDepartmentIdCompoundUniqueInput
   AND?: Prisma.DepartmentMembershipWhereInput | Prisma.DepartmentMembershipWhereInput[]
   OR?: Prisma.DepartmentMembershipWhereInput[]
   NOT?: Prisma.DepartmentMembershipWhereInput | Prisma.DepartmentMembershipWhereInput[]
@@ -244,6 +321,10 @@ export type DepartmentMembershipWhereUniqueInput = Prisma.AtLeast<{
   departmentId?: Prisma.StringFilter<"DepartmentMembership"> | string
   positionId?: Prisma.StringNullableFilter<"DepartmentMembership"> | string | null
   isPrimary?: Prisma.BoolFilter<"DepartmentMembership"> | boolean
+  hourlyRate?: Prisma.DecimalNullableFilter<"DepartmentMembership"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.DecimalNullableFilter<"DepartmentMembership"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: Prisma.EnumTransferTypeNullableFilter<"DepartmentMembership"> | $Enums.TransferType | null
+  transferredFromId?: Prisma.StringNullableFilter<"DepartmentMembership"> | string | null
   startedAt?: Prisma.DateTimeFilter<"DepartmentMembership"> | Date | string
   endedAt?: Prisma.DateTimeNullableFilter<"DepartmentMembership"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"DepartmentMembership"> | Date | string
@@ -251,7 +332,9 @@ export type DepartmentMembershipWhereUniqueInput = Prisma.AtLeast<{
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   department?: Prisma.XOR<Prisma.DepartmentScalarRelationFilter, Prisma.DepartmentWhereInput>
   position?: Prisma.XOR<Prisma.PositionNullableScalarRelationFilter, Prisma.PositionWhereInput> | null
-}, "id" | "userId_departmentId">
+  transferredFrom?: Prisma.XOR<Prisma.DepartmentMembershipNullableScalarRelationFilter, Prisma.DepartmentMembershipWhereInput> | null
+  transferredTo?: Prisma.DepartmentMembershipListRelationFilter
+}, "id">
 
 export type DepartmentMembershipOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -259,13 +342,19 @@ export type DepartmentMembershipOrderByWithAggregationInput = {
   departmentId?: Prisma.SortOrder
   positionId?: Prisma.SortOrderInput | Prisma.SortOrder
   isPrimary?: Prisma.SortOrder
+  hourlyRate?: Prisma.SortOrderInput | Prisma.SortOrder
+  baseRate?: Prisma.SortOrderInput | Prisma.SortOrder
+  transferType?: Prisma.SortOrderInput | Prisma.SortOrder
+  transferredFromId?: Prisma.SortOrderInput | Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   endedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.DepartmentMembershipCountOrderByAggregateInput
+  _avg?: Prisma.DepartmentMembershipAvgOrderByAggregateInput
   _max?: Prisma.DepartmentMembershipMaxOrderByAggregateInput
   _min?: Prisma.DepartmentMembershipMinOrderByAggregateInput
+  _sum?: Prisma.DepartmentMembershipSumOrderByAggregateInput
 }
 
 export type DepartmentMembershipScalarWhereWithAggregatesInput = {
@@ -277,6 +366,10 @@ export type DepartmentMembershipScalarWhereWithAggregatesInput = {
   departmentId?: Prisma.StringWithAggregatesFilter<"DepartmentMembership"> | string
   positionId?: Prisma.StringNullableWithAggregatesFilter<"DepartmentMembership"> | string | null
   isPrimary?: Prisma.BoolWithAggregatesFilter<"DepartmentMembership"> | boolean
+  hourlyRate?: Prisma.DecimalNullableWithAggregatesFilter<"DepartmentMembership"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.DecimalNullableWithAggregatesFilter<"DepartmentMembership"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: Prisma.EnumTransferTypeNullableWithAggregatesFilter<"DepartmentMembership"> | $Enums.TransferType | null
+  transferredFromId?: Prisma.StringNullableWithAggregatesFilter<"DepartmentMembership"> | string | null
   startedAt?: Prisma.DateTimeWithAggregatesFilter<"DepartmentMembership"> | Date | string
   endedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"DepartmentMembership"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"DepartmentMembership"> | Date | string
@@ -286,6 +379,9 @@ export type DepartmentMembershipScalarWhereWithAggregatesInput = {
 export type DepartmentMembershipCreateInput = {
   id?: string
   isPrimary?: boolean
+  hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: $Enums.TransferType | null
   startedAt?: Date | string
   endedAt?: Date | string | null
   createdAt?: Date | string
@@ -293,6 +389,8 @@ export type DepartmentMembershipCreateInput = {
   user: Prisma.UserCreateNestedOneWithoutMembershipsInput
   department: Prisma.DepartmentCreateNestedOneWithoutMembershipsInput
   position?: Prisma.PositionCreateNestedOneWithoutMembershipsInput
+  transferredFrom?: Prisma.DepartmentMembershipCreateNestedOneWithoutTransferredToInput
+  transferredTo?: Prisma.DepartmentMembershipCreateNestedManyWithoutTransferredFromInput
 }
 
 export type DepartmentMembershipUncheckedCreateInput = {
@@ -301,15 +399,23 @@ export type DepartmentMembershipUncheckedCreateInput = {
   departmentId: string
   positionId?: string | null
   isPrimary?: boolean
+  hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: $Enums.TransferType | null
+  transferredFromId?: string | null
   startedAt?: Date | string
   endedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  transferredTo?: Prisma.DepartmentMembershipUncheckedCreateNestedManyWithoutTransferredFromInput
 }
 
 export type DepartmentMembershipUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: Prisma.NullableEnumTransferTypeFieldUpdateOperationsInput | $Enums.TransferType | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -317,6 +423,8 @@ export type DepartmentMembershipUpdateInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
   department?: Prisma.DepartmentUpdateOneRequiredWithoutMembershipsNestedInput
   position?: Prisma.PositionUpdateOneWithoutMembershipsNestedInput
+  transferredFrom?: Prisma.DepartmentMembershipUpdateOneWithoutTransferredToNestedInput
+  transferredTo?: Prisma.DepartmentMembershipUpdateManyWithoutTransferredFromNestedInput
 }
 
 export type DepartmentMembershipUncheckedUpdateInput = {
@@ -325,10 +433,15 @@ export type DepartmentMembershipUncheckedUpdateInput = {
   departmentId?: Prisma.StringFieldUpdateOperationsInput | string
   positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: Prisma.NullableEnumTransferTypeFieldUpdateOperationsInput | $Enums.TransferType | null
+  transferredFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  transferredTo?: Prisma.DepartmentMembershipUncheckedUpdateManyWithoutTransferredFromNestedInput
 }
 
 export type DepartmentMembershipCreateManyInput = {
@@ -337,6 +450,10 @@ export type DepartmentMembershipCreateManyInput = {
   departmentId: string
   positionId?: string | null
   isPrimary?: boolean
+  hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: $Enums.TransferType | null
+  transferredFromId?: string | null
   startedAt?: Date | string
   endedAt?: Date | string | null
   createdAt?: Date | string
@@ -346,6 +463,9 @@ export type DepartmentMembershipCreateManyInput = {
 export type DepartmentMembershipUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: Prisma.NullableEnumTransferTypeFieldUpdateOperationsInput | $Enums.TransferType | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -358,6 +478,10 @@ export type DepartmentMembershipUncheckedUpdateManyInput = {
   departmentId?: Prisma.StringFieldUpdateOperationsInput | string
   positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: Prisma.NullableEnumTransferTypeFieldUpdateOperationsInput | $Enums.TransferType | null
+  transferredFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -374,9 +498,9 @@ export type DepartmentMembershipOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type DepartmentMembershipUserIdDepartmentIdCompoundUniqueInput = {
-  userId: string
-  departmentId: string
+export type DepartmentMembershipNullableScalarRelationFilter = {
+  is?: Prisma.DepartmentMembershipWhereInput | null
+  isNot?: Prisma.DepartmentMembershipWhereInput | null
 }
 
 export type DepartmentMembershipCountOrderByAggregateInput = {
@@ -385,10 +509,19 @@ export type DepartmentMembershipCountOrderByAggregateInput = {
   departmentId?: Prisma.SortOrder
   positionId?: Prisma.SortOrder
   isPrimary?: Prisma.SortOrder
+  hourlyRate?: Prisma.SortOrder
+  baseRate?: Prisma.SortOrder
+  transferType?: Prisma.SortOrder
+  transferredFromId?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   endedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type DepartmentMembershipAvgOrderByAggregateInput = {
+  hourlyRate?: Prisma.SortOrder
+  baseRate?: Prisma.SortOrder
 }
 
 export type DepartmentMembershipMaxOrderByAggregateInput = {
@@ -397,6 +530,10 @@ export type DepartmentMembershipMaxOrderByAggregateInput = {
   departmentId?: Prisma.SortOrder
   positionId?: Prisma.SortOrder
   isPrimary?: Prisma.SortOrder
+  hourlyRate?: Prisma.SortOrder
+  baseRate?: Prisma.SortOrder
+  transferType?: Prisma.SortOrder
+  transferredFromId?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   endedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -409,10 +546,19 @@ export type DepartmentMembershipMinOrderByAggregateInput = {
   departmentId?: Prisma.SortOrder
   positionId?: Prisma.SortOrder
   isPrimary?: Prisma.SortOrder
+  hourlyRate?: Prisma.SortOrder
+  baseRate?: Prisma.SortOrder
+  transferType?: Prisma.SortOrder
+  transferredFromId?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   endedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type DepartmentMembershipSumOrderByAggregateInput = {
+  hourlyRate?: Prisma.SortOrder
+  baseRate?: Prisma.SortOrder
 }
 
 export type DepartmentMembershipCreateNestedManyWithoutDepartmentInput = {
@@ -499,8 +645,78 @@ export type DepartmentMembershipUncheckedUpdateManyWithoutPositionNestedInput = 
   deleteMany?: Prisma.DepartmentMembershipScalarWhereInput | Prisma.DepartmentMembershipScalarWhereInput[]
 }
 
+export type DepartmentMembershipCreateNestedOneWithoutTransferredToInput = {
+  create?: Prisma.XOR<Prisma.DepartmentMembershipCreateWithoutTransferredToInput, Prisma.DepartmentMembershipUncheckedCreateWithoutTransferredToInput>
+  connectOrCreate?: Prisma.DepartmentMembershipCreateOrConnectWithoutTransferredToInput
+  connect?: Prisma.DepartmentMembershipWhereUniqueInput
+}
+
+export type DepartmentMembershipCreateNestedManyWithoutTransferredFromInput = {
+  create?: Prisma.XOR<Prisma.DepartmentMembershipCreateWithoutTransferredFromInput, Prisma.DepartmentMembershipUncheckedCreateWithoutTransferredFromInput> | Prisma.DepartmentMembershipCreateWithoutTransferredFromInput[] | Prisma.DepartmentMembershipUncheckedCreateWithoutTransferredFromInput[]
+  connectOrCreate?: Prisma.DepartmentMembershipCreateOrConnectWithoutTransferredFromInput | Prisma.DepartmentMembershipCreateOrConnectWithoutTransferredFromInput[]
+  createMany?: Prisma.DepartmentMembershipCreateManyTransferredFromInputEnvelope
+  connect?: Prisma.DepartmentMembershipWhereUniqueInput | Prisma.DepartmentMembershipWhereUniqueInput[]
+}
+
+export type DepartmentMembershipUncheckedCreateNestedManyWithoutTransferredFromInput = {
+  create?: Prisma.XOR<Prisma.DepartmentMembershipCreateWithoutTransferredFromInput, Prisma.DepartmentMembershipUncheckedCreateWithoutTransferredFromInput> | Prisma.DepartmentMembershipCreateWithoutTransferredFromInput[] | Prisma.DepartmentMembershipUncheckedCreateWithoutTransferredFromInput[]
+  connectOrCreate?: Prisma.DepartmentMembershipCreateOrConnectWithoutTransferredFromInput | Prisma.DepartmentMembershipCreateOrConnectWithoutTransferredFromInput[]
+  createMany?: Prisma.DepartmentMembershipCreateManyTransferredFromInputEnvelope
+  connect?: Prisma.DepartmentMembershipWhereUniqueInput | Prisma.DepartmentMembershipWhereUniqueInput[]
+}
+
+export type NullableDecimalFieldUpdateOperationsInput = {
+  set?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
+}
+
+export type NullableEnumTransferTypeFieldUpdateOperationsInput = {
+  set?: $Enums.TransferType | null
+}
+
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
+}
+
+export type DepartmentMembershipUpdateOneWithoutTransferredToNestedInput = {
+  create?: Prisma.XOR<Prisma.DepartmentMembershipCreateWithoutTransferredToInput, Prisma.DepartmentMembershipUncheckedCreateWithoutTransferredToInput>
+  connectOrCreate?: Prisma.DepartmentMembershipCreateOrConnectWithoutTransferredToInput
+  upsert?: Prisma.DepartmentMembershipUpsertWithoutTransferredToInput
+  disconnect?: Prisma.DepartmentMembershipWhereInput | boolean
+  delete?: Prisma.DepartmentMembershipWhereInput | boolean
+  connect?: Prisma.DepartmentMembershipWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DepartmentMembershipUpdateToOneWithWhereWithoutTransferredToInput, Prisma.DepartmentMembershipUpdateWithoutTransferredToInput>, Prisma.DepartmentMembershipUncheckedUpdateWithoutTransferredToInput>
+}
+
+export type DepartmentMembershipUpdateManyWithoutTransferredFromNestedInput = {
+  create?: Prisma.XOR<Prisma.DepartmentMembershipCreateWithoutTransferredFromInput, Prisma.DepartmentMembershipUncheckedCreateWithoutTransferredFromInput> | Prisma.DepartmentMembershipCreateWithoutTransferredFromInput[] | Prisma.DepartmentMembershipUncheckedCreateWithoutTransferredFromInput[]
+  connectOrCreate?: Prisma.DepartmentMembershipCreateOrConnectWithoutTransferredFromInput | Prisma.DepartmentMembershipCreateOrConnectWithoutTransferredFromInput[]
+  upsert?: Prisma.DepartmentMembershipUpsertWithWhereUniqueWithoutTransferredFromInput | Prisma.DepartmentMembershipUpsertWithWhereUniqueWithoutTransferredFromInput[]
+  createMany?: Prisma.DepartmentMembershipCreateManyTransferredFromInputEnvelope
+  set?: Prisma.DepartmentMembershipWhereUniqueInput | Prisma.DepartmentMembershipWhereUniqueInput[]
+  disconnect?: Prisma.DepartmentMembershipWhereUniqueInput | Prisma.DepartmentMembershipWhereUniqueInput[]
+  delete?: Prisma.DepartmentMembershipWhereUniqueInput | Prisma.DepartmentMembershipWhereUniqueInput[]
+  connect?: Prisma.DepartmentMembershipWhereUniqueInput | Prisma.DepartmentMembershipWhereUniqueInput[]
+  update?: Prisma.DepartmentMembershipUpdateWithWhereUniqueWithoutTransferredFromInput | Prisma.DepartmentMembershipUpdateWithWhereUniqueWithoutTransferredFromInput[]
+  updateMany?: Prisma.DepartmentMembershipUpdateManyWithWhereWithoutTransferredFromInput | Prisma.DepartmentMembershipUpdateManyWithWhereWithoutTransferredFromInput[]
+  deleteMany?: Prisma.DepartmentMembershipScalarWhereInput | Prisma.DepartmentMembershipScalarWhereInput[]
+}
+
+export type DepartmentMembershipUncheckedUpdateManyWithoutTransferredFromNestedInput = {
+  create?: Prisma.XOR<Prisma.DepartmentMembershipCreateWithoutTransferredFromInput, Prisma.DepartmentMembershipUncheckedCreateWithoutTransferredFromInput> | Prisma.DepartmentMembershipCreateWithoutTransferredFromInput[] | Prisma.DepartmentMembershipUncheckedCreateWithoutTransferredFromInput[]
+  connectOrCreate?: Prisma.DepartmentMembershipCreateOrConnectWithoutTransferredFromInput | Prisma.DepartmentMembershipCreateOrConnectWithoutTransferredFromInput[]
+  upsert?: Prisma.DepartmentMembershipUpsertWithWhereUniqueWithoutTransferredFromInput | Prisma.DepartmentMembershipUpsertWithWhereUniqueWithoutTransferredFromInput[]
+  createMany?: Prisma.DepartmentMembershipCreateManyTransferredFromInputEnvelope
+  set?: Prisma.DepartmentMembershipWhereUniqueInput | Prisma.DepartmentMembershipWhereUniqueInput[]
+  disconnect?: Prisma.DepartmentMembershipWhereUniqueInput | Prisma.DepartmentMembershipWhereUniqueInput[]
+  delete?: Prisma.DepartmentMembershipWhereUniqueInput | Prisma.DepartmentMembershipWhereUniqueInput[]
+  connect?: Prisma.DepartmentMembershipWhereUniqueInput | Prisma.DepartmentMembershipWhereUniqueInput[]
+  update?: Prisma.DepartmentMembershipUpdateWithWhereUniqueWithoutTransferredFromInput | Prisma.DepartmentMembershipUpdateWithWhereUniqueWithoutTransferredFromInput[]
+  updateMany?: Prisma.DepartmentMembershipUpdateManyWithWhereWithoutTransferredFromInput | Prisma.DepartmentMembershipUpdateManyWithWhereWithoutTransferredFromInput[]
+  deleteMany?: Prisma.DepartmentMembershipScalarWhereInput | Prisma.DepartmentMembershipScalarWhereInput[]
 }
 
 export type DepartmentMembershipCreateNestedManyWithoutUserInput = {
@@ -548,12 +764,17 @@ export type DepartmentMembershipUncheckedUpdateManyWithoutUserNestedInput = {
 export type DepartmentMembershipCreateWithoutDepartmentInput = {
   id?: string
   isPrimary?: boolean
+  hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: $Enums.TransferType | null
   startedAt?: Date | string
   endedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutMembershipsInput
   position?: Prisma.PositionCreateNestedOneWithoutMembershipsInput
+  transferredFrom?: Prisma.DepartmentMembershipCreateNestedOneWithoutTransferredToInput
+  transferredTo?: Prisma.DepartmentMembershipCreateNestedManyWithoutTransferredFromInput
 }
 
 export type DepartmentMembershipUncheckedCreateWithoutDepartmentInput = {
@@ -561,10 +782,15 @@ export type DepartmentMembershipUncheckedCreateWithoutDepartmentInput = {
   userId: string
   positionId?: string | null
   isPrimary?: boolean
+  hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: $Enums.TransferType | null
+  transferredFromId?: string | null
   startedAt?: Date | string
   endedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  transferredTo?: Prisma.DepartmentMembershipUncheckedCreateNestedManyWithoutTransferredFromInput
 }
 
 export type DepartmentMembershipCreateOrConnectWithoutDepartmentInput = {
@@ -602,6 +828,10 @@ export type DepartmentMembershipScalarWhereInput = {
   departmentId?: Prisma.StringFilter<"DepartmentMembership"> | string
   positionId?: Prisma.StringNullableFilter<"DepartmentMembership"> | string | null
   isPrimary?: Prisma.BoolFilter<"DepartmentMembership"> | boolean
+  hourlyRate?: Prisma.DecimalNullableFilter<"DepartmentMembership"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.DecimalNullableFilter<"DepartmentMembership"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: Prisma.EnumTransferTypeNullableFilter<"DepartmentMembership"> | $Enums.TransferType | null
+  transferredFromId?: Prisma.StringNullableFilter<"DepartmentMembership"> | string | null
   startedAt?: Prisma.DateTimeFilter<"DepartmentMembership"> | Date | string
   endedAt?: Prisma.DateTimeNullableFilter<"DepartmentMembership"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"DepartmentMembership"> | Date | string
@@ -611,12 +841,17 @@ export type DepartmentMembershipScalarWhereInput = {
 export type DepartmentMembershipCreateWithoutPositionInput = {
   id?: string
   isPrimary?: boolean
+  hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: $Enums.TransferType | null
   startedAt?: Date | string
   endedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutMembershipsInput
   department: Prisma.DepartmentCreateNestedOneWithoutMembershipsInput
+  transferredFrom?: Prisma.DepartmentMembershipCreateNestedOneWithoutTransferredToInput
+  transferredTo?: Prisma.DepartmentMembershipCreateNestedManyWithoutTransferredFromInput
 }
 
 export type DepartmentMembershipUncheckedCreateWithoutPositionInput = {
@@ -624,10 +859,15 @@ export type DepartmentMembershipUncheckedCreateWithoutPositionInput = {
   userId: string
   departmentId: string
   isPrimary?: boolean
+  hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: $Enums.TransferType | null
+  transferredFromId?: string | null
   startedAt?: Date | string
   endedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  transferredTo?: Prisma.DepartmentMembershipUncheckedCreateNestedManyWithoutTransferredFromInput
 }
 
 export type DepartmentMembershipCreateOrConnectWithoutPositionInput = {
@@ -656,15 +896,158 @@ export type DepartmentMembershipUpdateManyWithWhereWithoutPositionInput = {
   data: Prisma.XOR<Prisma.DepartmentMembershipUpdateManyMutationInput, Prisma.DepartmentMembershipUncheckedUpdateManyWithoutPositionInput>
 }
 
+export type DepartmentMembershipCreateWithoutTransferredToInput = {
+  id?: string
+  isPrimary?: boolean
+  hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: $Enums.TransferType | null
+  startedAt?: Date | string
+  endedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutMembershipsInput
+  department: Prisma.DepartmentCreateNestedOneWithoutMembershipsInput
+  position?: Prisma.PositionCreateNestedOneWithoutMembershipsInput
+  transferredFrom?: Prisma.DepartmentMembershipCreateNestedOneWithoutTransferredToInput
+}
+
+export type DepartmentMembershipUncheckedCreateWithoutTransferredToInput = {
+  id?: string
+  userId: string
+  departmentId: string
+  positionId?: string | null
+  isPrimary?: boolean
+  hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: $Enums.TransferType | null
+  transferredFromId?: string | null
+  startedAt?: Date | string
+  endedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type DepartmentMembershipCreateOrConnectWithoutTransferredToInput = {
+  where: Prisma.DepartmentMembershipWhereUniqueInput
+  create: Prisma.XOR<Prisma.DepartmentMembershipCreateWithoutTransferredToInput, Prisma.DepartmentMembershipUncheckedCreateWithoutTransferredToInput>
+}
+
+export type DepartmentMembershipCreateWithoutTransferredFromInput = {
+  id?: string
+  isPrimary?: boolean
+  hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: $Enums.TransferType | null
+  startedAt?: Date | string
+  endedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutMembershipsInput
+  department: Prisma.DepartmentCreateNestedOneWithoutMembershipsInput
+  position?: Prisma.PositionCreateNestedOneWithoutMembershipsInput
+  transferredTo?: Prisma.DepartmentMembershipCreateNestedManyWithoutTransferredFromInput
+}
+
+export type DepartmentMembershipUncheckedCreateWithoutTransferredFromInput = {
+  id?: string
+  userId: string
+  departmentId: string
+  positionId?: string | null
+  isPrimary?: boolean
+  hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: $Enums.TransferType | null
+  startedAt?: Date | string
+  endedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  transferredTo?: Prisma.DepartmentMembershipUncheckedCreateNestedManyWithoutTransferredFromInput
+}
+
+export type DepartmentMembershipCreateOrConnectWithoutTransferredFromInput = {
+  where: Prisma.DepartmentMembershipWhereUniqueInput
+  create: Prisma.XOR<Prisma.DepartmentMembershipCreateWithoutTransferredFromInput, Prisma.DepartmentMembershipUncheckedCreateWithoutTransferredFromInput>
+}
+
+export type DepartmentMembershipCreateManyTransferredFromInputEnvelope = {
+  data: Prisma.DepartmentMembershipCreateManyTransferredFromInput | Prisma.DepartmentMembershipCreateManyTransferredFromInput[]
+  skipDuplicates?: boolean
+}
+
+export type DepartmentMembershipUpsertWithoutTransferredToInput = {
+  update: Prisma.XOR<Prisma.DepartmentMembershipUpdateWithoutTransferredToInput, Prisma.DepartmentMembershipUncheckedUpdateWithoutTransferredToInput>
+  create: Prisma.XOR<Prisma.DepartmentMembershipCreateWithoutTransferredToInput, Prisma.DepartmentMembershipUncheckedCreateWithoutTransferredToInput>
+  where?: Prisma.DepartmentMembershipWhereInput
+}
+
+export type DepartmentMembershipUpdateToOneWithWhereWithoutTransferredToInput = {
+  where?: Prisma.DepartmentMembershipWhereInput
+  data: Prisma.XOR<Prisma.DepartmentMembershipUpdateWithoutTransferredToInput, Prisma.DepartmentMembershipUncheckedUpdateWithoutTransferredToInput>
+}
+
+export type DepartmentMembershipUpdateWithoutTransferredToInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: Prisma.NullableEnumTransferTypeFieldUpdateOperationsInput | $Enums.TransferType | null
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
+  department?: Prisma.DepartmentUpdateOneRequiredWithoutMembershipsNestedInput
+  position?: Prisma.PositionUpdateOneWithoutMembershipsNestedInput
+  transferredFrom?: Prisma.DepartmentMembershipUpdateOneWithoutTransferredToNestedInput
+}
+
+export type DepartmentMembershipUncheckedUpdateWithoutTransferredToInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: Prisma.NullableEnumTransferTypeFieldUpdateOperationsInput | $Enums.TransferType | null
+  transferredFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type DepartmentMembershipUpsertWithWhereUniqueWithoutTransferredFromInput = {
+  where: Prisma.DepartmentMembershipWhereUniqueInput
+  update: Prisma.XOR<Prisma.DepartmentMembershipUpdateWithoutTransferredFromInput, Prisma.DepartmentMembershipUncheckedUpdateWithoutTransferredFromInput>
+  create: Prisma.XOR<Prisma.DepartmentMembershipCreateWithoutTransferredFromInput, Prisma.DepartmentMembershipUncheckedCreateWithoutTransferredFromInput>
+}
+
+export type DepartmentMembershipUpdateWithWhereUniqueWithoutTransferredFromInput = {
+  where: Prisma.DepartmentMembershipWhereUniqueInput
+  data: Prisma.XOR<Prisma.DepartmentMembershipUpdateWithoutTransferredFromInput, Prisma.DepartmentMembershipUncheckedUpdateWithoutTransferredFromInput>
+}
+
+export type DepartmentMembershipUpdateManyWithWhereWithoutTransferredFromInput = {
+  where: Prisma.DepartmentMembershipScalarWhereInput
+  data: Prisma.XOR<Prisma.DepartmentMembershipUpdateManyMutationInput, Prisma.DepartmentMembershipUncheckedUpdateManyWithoutTransferredFromInput>
+}
+
 export type DepartmentMembershipCreateWithoutUserInput = {
   id?: string
   isPrimary?: boolean
+  hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: $Enums.TransferType | null
   startedAt?: Date | string
   endedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutMembershipsInput
   position?: Prisma.PositionCreateNestedOneWithoutMembershipsInput
+  transferredFrom?: Prisma.DepartmentMembershipCreateNestedOneWithoutTransferredToInput
+  transferredTo?: Prisma.DepartmentMembershipCreateNestedManyWithoutTransferredFromInput
 }
 
 export type DepartmentMembershipUncheckedCreateWithoutUserInput = {
@@ -672,10 +1055,15 @@ export type DepartmentMembershipUncheckedCreateWithoutUserInput = {
   departmentId: string
   positionId?: string | null
   isPrimary?: boolean
+  hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: $Enums.TransferType | null
+  transferredFromId?: string | null
   startedAt?: Date | string
   endedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  transferredTo?: Prisma.DepartmentMembershipUncheckedCreateNestedManyWithoutTransferredFromInput
 }
 
 export type DepartmentMembershipCreateOrConnectWithoutUserInput = {
@@ -709,6 +1097,10 @@ export type DepartmentMembershipCreateManyDepartmentInput = {
   userId: string
   positionId?: string | null
   isPrimary?: boolean
+  hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: $Enums.TransferType | null
+  transferredFromId?: string | null
   startedAt?: Date | string
   endedAt?: Date | string | null
   createdAt?: Date | string
@@ -718,12 +1110,17 @@ export type DepartmentMembershipCreateManyDepartmentInput = {
 export type DepartmentMembershipUpdateWithoutDepartmentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: Prisma.NullableEnumTransferTypeFieldUpdateOperationsInput | $Enums.TransferType | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
   position?: Prisma.PositionUpdateOneWithoutMembershipsNestedInput
+  transferredFrom?: Prisma.DepartmentMembershipUpdateOneWithoutTransferredToNestedInput
+  transferredTo?: Prisma.DepartmentMembershipUpdateManyWithoutTransferredFromNestedInput
 }
 
 export type DepartmentMembershipUncheckedUpdateWithoutDepartmentInput = {
@@ -731,10 +1128,15 @@ export type DepartmentMembershipUncheckedUpdateWithoutDepartmentInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: Prisma.NullableEnumTransferTypeFieldUpdateOperationsInput | $Enums.TransferType | null
+  transferredFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  transferredTo?: Prisma.DepartmentMembershipUncheckedUpdateManyWithoutTransferredFromNestedInput
 }
 
 export type DepartmentMembershipUncheckedUpdateManyWithoutDepartmentInput = {
@@ -742,6 +1144,10 @@ export type DepartmentMembershipUncheckedUpdateManyWithoutDepartmentInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: Prisma.NullableEnumTransferTypeFieldUpdateOperationsInput | $Enums.TransferType | null
+  transferredFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -753,6 +1159,10 @@ export type DepartmentMembershipCreateManyPositionInput = {
   userId: string
   departmentId: string
   isPrimary?: boolean
+  hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: $Enums.TransferType | null
+  transferredFromId?: string | null
   startedAt?: Date | string
   endedAt?: Date | string | null
   createdAt?: Date | string
@@ -762,12 +1172,17 @@ export type DepartmentMembershipCreateManyPositionInput = {
 export type DepartmentMembershipUpdateWithoutPositionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: Prisma.NullableEnumTransferTypeFieldUpdateOperationsInput | $Enums.TransferType | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
   department?: Prisma.DepartmentUpdateOneRequiredWithoutMembershipsNestedInput
+  transferredFrom?: Prisma.DepartmentMembershipUpdateOneWithoutTransferredToNestedInput
+  transferredTo?: Prisma.DepartmentMembershipUpdateManyWithoutTransferredFromNestedInput
 }
 
 export type DepartmentMembershipUncheckedUpdateWithoutPositionInput = {
@@ -775,10 +1190,15 @@ export type DepartmentMembershipUncheckedUpdateWithoutPositionInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   departmentId?: Prisma.StringFieldUpdateOperationsInput | string
   isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: Prisma.NullableEnumTransferTypeFieldUpdateOperationsInput | $Enums.TransferType | null
+  transferredFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  transferredTo?: Prisma.DepartmentMembershipUncheckedUpdateManyWithoutTransferredFromNestedInput
 }
 
 export type DepartmentMembershipUncheckedUpdateManyWithoutPositionInput = {
@@ -786,6 +1206,72 @@ export type DepartmentMembershipUncheckedUpdateManyWithoutPositionInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   departmentId?: Prisma.StringFieldUpdateOperationsInput | string
   isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: Prisma.NullableEnumTransferTypeFieldUpdateOperationsInput | $Enums.TransferType | null
+  transferredFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type DepartmentMembershipCreateManyTransferredFromInput = {
+  id?: string
+  userId: string
+  departmentId: string
+  positionId?: string | null
+  isPrimary?: boolean
+  hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: $Enums.TransferType | null
+  startedAt?: Date | string
+  endedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type DepartmentMembershipUpdateWithoutTransferredFromInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: Prisma.NullableEnumTransferTypeFieldUpdateOperationsInput | $Enums.TransferType | null
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutMembershipsNestedInput
+  department?: Prisma.DepartmentUpdateOneRequiredWithoutMembershipsNestedInput
+  position?: Prisma.PositionUpdateOneWithoutMembershipsNestedInput
+  transferredTo?: Prisma.DepartmentMembershipUpdateManyWithoutTransferredFromNestedInput
+}
+
+export type DepartmentMembershipUncheckedUpdateWithoutTransferredFromInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: Prisma.NullableEnumTransferTypeFieldUpdateOperationsInput | $Enums.TransferType | null
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  transferredTo?: Prisma.DepartmentMembershipUncheckedUpdateManyWithoutTransferredFromNestedInput
+}
+
+export type DepartmentMembershipUncheckedUpdateManyWithoutTransferredFromInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: Prisma.NullableEnumTransferTypeFieldUpdateOperationsInput | $Enums.TransferType | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -797,6 +1283,10 @@ export type DepartmentMembershipCreateManyUserInput = {
   departmentId: string
   positionId?: string | null
   isPrimary?: boolean
+  hourlyRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: $Enums.TransferType | null
+  transferredFromId?: string | null
   startedAt?: Date | string
   endedAt?: Date | string | null
   createdAt?: Date | string
@@ -806,12 +1296,17 @@ export type DepartmentMembershipCreateManyUserInput = {
 export type DepartmentMembershipUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: Prisma.NullableEnumTransferTypeFieldUpdateOperationsInput | $Enums.TransferType | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutMembershipsNestedInput
   position?: Prisma.PositionUpdateOneWithoutMembershipsNestedInput
+  transferredFrom?: Prisma.DepartmentMembershipUpdateOneWithoutTransferredToNestedInput
+  transferredTo?: Prisma.DepartmentMembershipUpdateManyWithoutTransferredFromNestedInput
 }
 
 export type DepartmentMembershipUncheckedUpdateWithoutUserInput = {
@@ -819,10 +1314,15 @@ export type DepartmentMembershipUncheckedUpdateWithoutUserInput = {
   departmentId?: Prisma.StringFieldUpdateOperationsInput | string
   positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: Prisma.NullableEnumTransferTypeFieldUpdateOperationsInput | $Enums.TransferType | null
+  transferredFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  transferredTo?: Prisma.DepartmentMembershipUncheckedUpdateManyWithoutTransferredFromNestedInput
 }
 
 export type DepartmentMembershipUncheckedUpdateManyWithoutUserInput = {
@@ -830,12 +1330,45 @@ export type DepartmentMembershipUncheckedUpdateManyWithoutUserInput = {
   departmentId?: Prisma.StringFieldUpdateOperationsInput | string
   positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPrimary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  hourlyRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  transferType?: Prisma.NullableEnumTransferTypeFieldUpdateOperationsInput | $Enums.TransferType | null
+  transferredFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type DepartmentMembershipCountOutputType
+ */
+
+export type DepartmentMembershipCountOutputType = {
+  transferredTo: number
+}
+
+export type DepartmentMembershipCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  transferredTo?: boolean | DepartmentMembershipCountOutputTypeCountTransferredToArgs
+}
+
+/**
+ * DepartmentMembershipCountOutputType without action
+ */
+export type DepartmentMembershipCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DepartmentMembershipCountOutputType
+   */
+  select?: Prisma.DepartmentMembershipCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * DepartmentMembershipCountOutputType without action
+ */
+export type DepartmentMembershipCountOutputTypeCountTransferredToArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DepartmentMembershipWhereInput
+}
 
 
 export type DepartmentMembershipSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -844,6 +1377,10 @@ export type DepartmentMembershipSelect<ExtArgs extends runtime.Types.Extensions.
   departmentId?: boolean
   positionId?: boolean
   isPrimary?: boolean
+  hourlyRate?: boolean
+  baseRate?: boolean
+  transferType?: boolean
+  transferredFromId?: boolean
   startedAt?: boolean
   endedAt?: boolean
   createdAt?: boolean
@@ -851,6 +1388,9 @@ export type DepartmentMembershipSelect<ExtArgs extends runtime.Types.Extensions.
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
   position?: boolean | Prisma.DepartmentMembership$positionArgs<ExtArgs>
+  transferredFrom?: boolean | Prisma.DepartmentMembership$transferredFromArgs<ExtArgs>
+  transferredTo?: boolean | Prisma.DepartmentMembership$transferredToArgs<ExtArgs>
+  _count?: boolean | Prisma.DepartmentMembershipCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["departmentMembership"]>
 
 export type DepartmentMembershipSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -859,6 +1399,10 @@ export type DepartmentMembershipSelectCreateManyAndReturn<ExtArgs extends runtim
   departmentId?: boolean
   positionId?: boolean
   isPrimary?: boolean
+  hourlyRate?: boolean
+  baseRate?: boolean
+  transferType?: boolean
+  transferredFromId?: boolean
   startedAt?: boolean
   endedAt?: boolean
   createdAt?: boolean
@@ -866,6 +1410,7 @@ export type DepartmentMembershipSelectCreateManyAndReturn<ExtArgs extends runtim
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
   position?: boolean | Prisma.DepartmentMembership$positionArgs<ExtArgs>
+  transferredFrom?: boolean | Prisma.DepartmentMembership$transferredFromArgs<ExtArgs>
 }, ExtArgs["result"]["departmentMembership"]>
 
 export type DepartmentMembershipSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -874,6 +1419,10 @@ export type DepartmentMembershipSelectUpdateManyAndReturn<ExtArgs extends runtim
   departmentId?: boolean
   positionId?: boolean
   isPrimary?: boolean
+  hourlyRate?: boolean
+  baseRate?: boolean
+  transferType?: boolean
+  transferredFromId?: boolean
   startedAt?: boolean
   endedAt?: boolean
   createdAt?: boolean
@@ -881,6 +1430,7 @@ export type DepartmentMembershipSelectUpdateManyAndReturn<ExtArgs extends runtim
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
   position?: boolean | Prisma.DepartmentMembership$positionArgs<ExtArgs>
+  transferredFrom?: boolean | Prisma.DepartmentMembership$transferredFromArgs<ExtArgs>
 }, ExtArgs["result"]["departmentMembership"]>
 
 export type DepartmentMembershipSelectScalar = {
@@ -889,27 +1439,36 @@ export type DepartmentMembershipSelectScalar = {
   departmentId?: boolean
   positionId?: boolean
   isPrimary?: boolean
+  hourlyRate?: boolean
+  baseRate?: boolean
+  transferType?: boolean
+  transferredFromId?: boolean
   startedAt?: boolean
   endedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type DepartmentMembershipOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "departmentId" | "positionId" | "isPrimary" | "startedAt" | "endedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["departmentMembership"]>
+export type DepartmentMembershipOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "departmentId" | "positionId" | "isPrimary" | "hourlyRate" | "baseRate" | "transferType" | "transferredFromId" | "startedAt" | "endedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["departmentMembership"]>
 export type DepartmentMembershipInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
   position?: boolean | Prisma.DepartmentMembership$positionArgs<ExtArgs>
+  transferredFrom?: boolean | Prisma.DepartmentMembership$transferredFromArgs<ExtArgs>
+  transferredTo?: boolean | Prisma.DepartmentMembership$transferredToArgs<ExtArgs>
+  _count?: boolean | Prisma.DepartmentMembershipCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type DepartmentMembershipIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
   position?: boolean | Prisma.DepartmentMembership$positionArgs<ExtArgs>
+  transferredFrom?: boolean | Prisma.DepartmentMembership$transferredFromArgs<ExtArgs>
 }
 export type DepartmentMembershipIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
   position?: boolean | Prisma.DepartmentMembership$positionArgs<ExtArgs>
+  transferredFrom?: boolean | Prisma.DepartmentMembership$transferredFromArgs<ExtArgs>
 }
 
 export type $DepartmentMembershipPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -918,6 +1477,8 @@ export type $DepartmentMembershipPayload<ExtArgs extends runtime.Types.Extension
     user: Prisma.$UserPayload<ExtArgs>
     department: Prisma.$DepartmentPayload<ExtArgs>
     position: Prisma.$PositionPayload<ExtArgs> | null
+    transferredFrom: Prisma.$DepartmentMembershipPayload<ExtArgs> | null
+    transferredTo: Prisma.$DepartmentMembershipPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -925,6 +1486,10 @@ export type $DepartmentMembershipPayload<ExtArgs extends runtime.Types.Extension
     departmentId: string
     positionId: string | null
     isPrimary: boolean
+    hourlyRate: runtime.Decimal | null
+    baseRate: runtime.Decimal | null
+    transferType: $Enums.TransferType | null
+    transferredFromId: string | null
     startedAt: Date
     endedAt: Date | null
     createdAt: Date
@@ -1326,6 +1891,8 @@ export interface Prisma__DepartmentMembershipClient<T, Null = never, ExtArgs ext
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   department<T extends Prisma.DepartmentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DepartmentDefaultArgs<ExtArgs>>): Prisma.Prisma__DepartmentClient<runtime.Types.Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   position<T extends Prisma.DepartmentMembership$positionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DepartmentMembership$positionArgs<ExtArgs>>): Prisma.Prisma__PositionClient<runtime.Types.Result.GetResult<Prisma.$PositionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  transferredFrom<T extends Prisma.DepartmentMembership$transferredFromArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DepartmentMembership$transferredFromArgs<ExtArgs>>): Prisma.Prisma__DepartmentMembershipClient<runtime.Types.Result.GetResult<Prisma.$DepartmentMembershipPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  transferredTo<T extends Prisma.DepartmentMembership$transferredToArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DepartmentMembership$transferredToArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DepartmentMembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1360,6 +1927,10 @@ export interface DepartmentMembershipFieldRefs {
   readonly departmentId: Prisma.FieldRef<"DepartmentMembership", 'String'>
   readonly positionId: Prisma.FieldRef<"DepartmentMembership", 'String'>
   readonly isPrimary: Prisma.FieldRef<"DepartmentMembership", 'Boolean'>
+  readonly hourlyRate: Prisma.FieldRef<"DepartmentMembership", 'Decimal'>
+  readonly baseRate: Prisma.FieldRef<"DepartmentMembership", 'Decimal'>
+  readonly transferType: Prisma.FieldRef<"DepartmentMembership", 'TransferType'>
+  readonly transferredFromId: Prisma.FieldRef<"DepartmentMembership", 'String'>
   readonly startedAt: Prisma.FieldRef<"DepartmentMembership", 'DateTime'>
   readonly endedAt: Prisma.FieldRef<"DepartmentMembership", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"DepartmentMembership", 'DateTime'>
@@ -1781,6 +2352,49 @@ export type DepartmentMembership$positionArgs<ExtArgs extends runtime.Types.Exte
    */
   include?: Prisma.PositionInclude<ExtArgs> | null
   where?: Prisma.PositionWhereInput
+}
+
+/**
+ * DepartmentMembership.transferredFrom
+ */
+export type DepartmentMembership$transferredFromArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DepartmentMembership
+   */
+  select?: Prisma.DepartmentMembershipSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DepartmentMembership
+   */
+  omit?: Prisma.DepartmentMembershipOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DepartmentMembershipInclude<ExtArgs> | null
+  where?: Prisma.DepartmentMembershipWhereInput
+}
+
+/**
+ * DepartmentMembership.transferredTo
+ */
+export type DepartmentMembership$transferredToArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DepartmentMembership
+   */
+  select?: Prisma.DepartmentMembershipSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DepartmentMembership
+   */
+  omit?: Prisma.DepartmentMembershipOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DepartmentMembershipInclude<ExtArgs> | null
+  where?: Prisma.DepartmentMembershipWhereInput
+  orderBy?: Prisma.DepartmentMembershipOrderByWithRelationInput | Prisma.DepartmentMembershipOrderByWithRelationInput[]
+  cursor?: Prisma.DepartmentMembershipWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DepartmentMembershipScalarFieldEnum | Prisma.DepartmentMembershipScalarFieldEnum[]
 }
 
 /**

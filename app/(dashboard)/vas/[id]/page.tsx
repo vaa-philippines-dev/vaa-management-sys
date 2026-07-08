@@ -10,8 +10,19 @@ import { Button } from '@/components/ui/button'
 import { ArrowLeft, Mail } from 'lucide-react'
 import { format } from 'date-fns'
 import { VAProfileEditor } from '@/components/vas/VAProfileEditor'
+import { TransferVAModal } from '@/components/vas/TransferVAModal'
+import { AddSkillCard } from '@/components/vas/AddSkillCard'
 
 const hrgRoles = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'EXECUTIVE']
+
+const HISTORY_EVENT_LABELS: Record<string, string> = {
+  STATUS_CHANGE: 'Active Status',
+  ENGAGEMENT_CHANGE: 'Engagement Status',
+  UPSKILL: 'Upskill',
+  RATE_CHANGE: 'Rate Change',
+  PROMOTION: 'Promotion',
+  DEPARTMENT_TRANSFER: 'Department Transfer',
+}
 
 function toDateString(value: Date | string | null | undefined): string | null {
   if (!value) return null
@@ -49,10 +60,6 @@ export default async function VADetailPage({
           orderBy: { startDate: 'desc' },
         },
         documents: { orderBy: { createdAt: 'desc' } },
-        statusHistory: {
-          include: { changedBy: { select: { firstName: true, lastName: true } } },
-          orderBy: { effectiveDate: 'desc' },
-        },
       },
     })
   )
@@ -60,9 +67,32 @@ export default async function VADetailPage({
   if (!va) notFound()
   const profile = va.user.profile
   const emp = va.user.employmentRecords?.[0]
-  const primaryMem = va.user.memberships?.find((m) => m.isPrimary) ?? va.user.memberships?.[0]
+  const activeMemberships = va.user.memberships ?? []
+  const primaryMem = activeMemberships.find((m) => m.isPrimary) ?? activeMemberships[0]
   const canViewSensitive = isHRE || currentUser.id === va.user.id
   const canEdit = VA_MUTATOR_ROLES.includes(currentUser.systemRole)
+
+  const statusHistory = await cached(`vas:history:${va.user.id}`, [CACHE_TAGS.vas], 30, () =>
+    prisma.vAHistory.findMany({
+      where: { userId: va.user.id },
+      include: { changedBy: { select: { firstName: true, lastName: true } }, department: { select: { name: true } } },
+      orderBy: { effectiveDate: 'desc' },
+    })
+  )
+
+  const assignedSkillIds = new Set(va.vaSkills.map((s) => s.skillId))
+  const availableSkills = await cached('skills:catalog:active', [CACHE_TAGS.skills], 300, () =>
+    prisma.skill.findMany({ where: { isActive: true }, orderBy: { name: 'asc' }, select: { id: true, name: true } })
+  )
+  const skillOptions = availableSkills.filter((s) => !assignedSkillIds.has(s.id))
+
+  const allDepartments = await cached('departments:catalog:assignable', [CACHE_TAGS.departments], 300, () =>
+    prisma.department.findMany({
+      where: { status: 'ACTIVE', parentId: { not: null } },
+      orderBy: { name: 'asc' },
+      select: { id: true, name: true, positions: { where: { isActive: true }, select: { id: true, title: true } } },
+    })
+  )
 
   const driveFiles = await listDriveFiles().catch(() => [])
 
@@ -156,11 +186,12 @@ export default async function VADetailPage({
     status: a.status,
   }))
 
-  const statusHistoryData = va.statusHistory.map((h) => ({
+  const statusHistoryData = statusHistory.map((h) => ({
     id: h.id,
-    statusType: h.statusType,
+    eventType: h.eventType,
     oldValue: h.oldValue,
     newValue: h.newValue,
+    departmentName: h.department?.name ?? null,
     effectiveDate: toDateString(h.effectiveDate)!,
     reason: h.reason,
     changedByName: `${h.changedBy.firstName} ${h.changedBy.lastName}`.trim(),
@@ -193,11 +224,21 @@ export default async function VADetailPage({
               </div>
               <p className="text-xs text-muted-foreground mt-0.5">
                 <Mail className="h-3 w-3 inline mr-1" />{va.user.email}
-                {primaryMem && <> • {primaryMem.department.name}{primaryMem.position ? ` (${primaryMem.position.title})` : ''}</>}
+                {activeMemberships.length > 0 && (
+                  <> • {activeMemberships.map((m) => `${m.department.name}${m.position ? ` (${m.position.title})` : ''}`).join(' + ')}</>
+                )}
               </p>
             </div>
           </div>
         </div>
+        {canEdit && (
+          <TransferVAModal
+            vaProfileId={va.id}
+            currentDepartmentName={primaryMem?.department.name ?? null}
+            departments={allDepartments}
+            canEdit={canEdit}
+          />
+        )}
       </div>
 
       <VAProfileEditor
@@ -210,14 +251,14 @@ export default async function VADetailPage({
         canEdit={canEdit}
       />
 
-      {/* Status Change History */}
+      {/* History */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base">Status Change History ({statusHistoryData.length})</CardTitle>
+          <CardTitle className="text-base">History ({statusHistoryData.length})</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           {statusHistoryData.length === 0 ? (
-            <p className="text-sm text-muted-foreground px-6 pb-4">No status changes recorded yet.</p>
+            <p className="text-sm text-muted-foreground px-6 pb-4">No history recorded yet.</p>
           ) : (
             <div className="divide-y">
               {statusHistoryData.map((h) => (
@@ -225,12 +266,15 @@ export default async function VADetailPage({
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <Badge variant="outline" className="text-[10px] py-0 px-1.5">
-                        {h.statusType === 'GENERAL' ? 'Active Status' : 'Engagement Status'}
+                        {HISTORY_EVENT_LABELS[h.eventType] ?? h.eventType}
                       </Badge>
                       <span className="text-xs">
                         {h.oldValue ? `${h.oldValue.replace(/_/g, ' ')} → ` : ''}
-                        <span className="font-medium">{h.newValue.replace(/_/g, ' ')}</span>
+                        <span className="font-medium">{(h.newValue ?? '—').replace(/_/g, ' ')}</span>
                       </span>
+                      {h.departmentName && (
+                        <span className="text-[10px] text-muted-foreground">({h.departmentName})</span>
+                      )}
                     </div>
                     <p className="text-[11px] text-muted-foreground mt-0.5">
                       by {h.changedByName || 'Unknown'}{h.reason ? ` — ${h.reason}` : ''}
@@ -247,20 +291,23 @@ export default async function VADetailPage({
       </Card>
 
       {/* Skills */}
-      {va.vaSkills.length > 0 && (
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">Skills ({va.vaSkills.length})</CardTitle>
-          </CardHeader>
-          <CardContent>
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">Skills ({va.vaSkills.length})</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {va.vaSkills.length > 0 ? (
             <div className="flex flex-wrap gap-2">
               {va.vaSkills.map((s) => (
                 <Badge key={s.id} variant="outline">{s.skill.name} {s.proficiency && `— ${s.proficiency}`}</Badge>
               ))}
             </div>
-          </CardContent>
-        </Card>
-      )}
+          ) : (
+            <p className="text-sm text-muted-foreground">No services assigned yet.</p>
+          )}
+          {canEdit && <AddSkillCard vaProfileId={va.id} skillOptions={skillOptions} />}
+        </CardContent>
+      </Card>
 
       {/* Assignments */}
       <Card>

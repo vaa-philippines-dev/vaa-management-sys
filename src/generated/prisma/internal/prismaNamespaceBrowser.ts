@@ -59,7 +59,7 @@ export const ModelName = {
   EmploymentRecord: 'EmploymentRecord',
   RoleAssignment: 'RoleAssignment',
   VAProfile: 'VAProfile',
-  VAStatusHistory: 'VAStatusHistory',
+  VAHistory: 'VAHistory',
   Skill: 'Skill',
   DepartmentSkill: 'DepartmentSkill',
   VASkill: 'VASkill',
@@ -132,6 +132,10 @@ export const DepartmentMembershipScalarFieldEnum = {
   departmentId: 'departmentId',
   positionId: 'positionId',
   isPrimary: 'isPrimary',
+  hourlyRate: 'hourlyRate',
+  baseRate: 'baseRate',
+  transferType: 'transferType',
+  transferredFromId: 'transferredFromId',
   startedAt: 'startedAt',
   endedAt: 'endedAt',
   createdAt: 'createdAt',
@@ -202,6 +206,7 @@ export type UserProfileScalarFieldEnum = (typeof UserProfileScalarFieldEnum)[key
 export const EmploymentRecordScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  departmentId: 'departmentId',
   contractType: 'contractType',
   employmentStatus: 'employmentStatus',
   startDate: 'startDate',
@@ -268,19 +273,20 @@ export const VAProfileScalarFieldEnum = {
 export type VAProfileScalarFieldEnum = (typeof VAProfileScalarFieldEnum)[keyof typeof VAProfileScalarFieldEnum]
 
 
-export const VAStatusHistoryScalarFieldEnum = {
+export const VAHistoryScalarFieldEnum = {
   id: 'id',
-  vaProfileId: 'vaProfileId',
-  statusType: 'statusType',
+  userId: 'userId',
+  eventType: 'eventType',
   oldValue: 'oldValue',
   newValue: 'newValue',
+  departmentId: 'departmentId',
   effectiveDate: 'effectiveDate',
   reason: 'reason',
   changedById: 'changedById',
   createdAt: 'createdAt'
 } as const
 
-export type VAStatusHistoryScalarFieldEnum = (typeof VAStatusHistoryScalarFieldEnum)[keyof typeof VAStatusHistoryScalarFieldEnum]
+export type VAHistoryScalarFieldEnum = (typeof VAHistoryScalarFieldEnum)[keyof typeof VAHistoryScalarFieldEnum]
 
 
 export const SkillScalarFieldEnum = {
