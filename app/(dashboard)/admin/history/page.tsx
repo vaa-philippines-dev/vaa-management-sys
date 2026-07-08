@@ -144,6 +144,9 @@ export default async function HistoryPage({
                     <p className="text-[10px] text-muted-foreground whitespace-nowrap">
                       {new Date(ev.effectiveDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </p>
+                    <p className="text-[10px] text-muted-foreground whitespace-nowrap">
+                      {new Date(ev.effectiveDate).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
+                    </p>
                   </div>
                 </div>
               ))}
