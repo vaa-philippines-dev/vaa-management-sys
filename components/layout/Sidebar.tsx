@@ -74,9 +74,9 @@ export function Sidebar({ role = 'MANAGER', isAdmin = false }: { role?: 'MANAGER
         <Image
           src="/vaalogo.svg"
           alt="VAA Philippines"
-          width={112}
-          height={112}
-          className="shrink-0"
+          width={180}
+          height={63}
+          className="h-auto w-full shrink-0"
         />
       </div>
       <ScrollArea className="flex-1">
