@@ -6,8 +6,10 @@ import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { startOfMonth, endOfMonth, format } from 'date-fns'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { MonthlyReportControls } from '@/components/reports/MonthlyReportControls'
-import { BarChart3 } from 'lucide-react'
+import { buttonVariants } from '@/components/ui/button'
+import { BarChart3, PieChart } from 'lucide-react'
 
 const REPORTS_VIEW_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'STAFF']
 
@@ -62,17 +64,18 @@ export default async function ReportsPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <div className="flex items-center gap-2">
-            <h2 className="text-2xl font-bold tracking-tight">Monthly Hours Report</h2>
-            <a href="/reports/headcount" className="text-xs text-muted-foreground hover:text-foreground hover:underline">
-              Headcount Report →
-            </a>
-          </div>
+          <h2 className="text-2xl font-bold tracking-tight">Monthly Hours Report</h2>
           <p className="text-sm text-muted-foreground mt-1">
             {format(periodStart, 'MMMM yyyy')}
           </p>
         </div>
-        <MonthlyReportControls currentMonth={format(refDate, 'yyyy-MM')} />
+        <div className="flex items-center gap-2">
+          <Link href="/reports/headcount" className={buttonVariants({ variant: 'outline', size: 'sm' })}>
+            <PieChart data-icon="inline-start" />
+            View Headcount Report
+          </Link>
+          <MonthlyReportControls currentMonth={format(refDate, 'yyyy-MM')} />
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">

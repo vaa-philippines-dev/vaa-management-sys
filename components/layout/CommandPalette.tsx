@@ -140,7 +140,7 @@ export function CommandPalette({ isAdmin, isVA }: { isAdmin: boolean; isVA: bool
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-start justify-center pt-[12vh] px-4">
-          <div className="absolute inset-0 bg-overlay backdrop-blur-sm animate-in fade-in-0 duration-150" onClick={close} />
+          <div className="absolute inset-0 bg-background/50 backdrop-blur-[2px] animate-in fade-in-0 duration-150" onClick={close} />
           <div className="relative w-full max-w-lg rounded-xl border bg-popover text-popover-foreground shadow-2xl animate-in fade-in-0 zoom-in-95 duration-150 overflow-hidden">
             <div className="flex items-center gap-2 border-b px-3.5">
               <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
