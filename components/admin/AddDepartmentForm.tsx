@@ -66,7 +66,7 @@ export function AddDepartmentForm({
   }
 
   return (
-    <div className="rounded-xl border bg-card overflow-hidden">
+    <div className="rounded-lg border bg-card overflow-hidden">
       <button
         type="button"
         onClick={() => setOpen(!open)}

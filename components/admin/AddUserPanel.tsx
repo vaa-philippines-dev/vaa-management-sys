@@ -26,7 +26,7 @@ export function AddUserPanel({ canEdit = true }: { canEdit?: boolean }) {
 
   if (!canEdit) {
     return (
-      <div className="rounded-xl border bg-muted/30 p-3 text-center">
+      <div className="rounded-lg border bg-muted/30 p-3 text-center">
         <p className="text-xs text-muted-foreground">
           Add User panel is hidden in view-only mode
         </p>
@@ -35,7 +35,7 @@ export function AddUserPanel({ canEdit = true }: { canEdit?: boolean }) {
   }
 
   return (
-    <div className="rounded-xl border bg-card">
+    <div className="rounded-lg border bg-card">
       <button
         type="button"
         onClick={() => setOpen(!open)}

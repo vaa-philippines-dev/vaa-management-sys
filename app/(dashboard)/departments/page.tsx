@@ -161,7 +161,7 @@ export default async function DepartmentsPage() {
       </div>
 
       {totalDepartments === 0 && (
-        <div className="rounded-xl border bg-card p-12 text-center">
+        <div className="rounded-lg border bg-card p-12 text-center">
           <Building2 className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
           <p className="text-sm text-muted-foreground mb-4">
             No departments configured yet. Create departments from the Admin Panel.
@@ -232,7 +232,7 @@ export default async function DepartmentsPage() {
       <div className="grid gap-3 sm:grid-cols-3 pt-2 border-t">
         <Link
           href="/dashboard"
-          className="group rounded-xl border bg-card p-4 transition-all hover:border-primary/30 hover:shadow-sm"
+          className="group rounded-lg border bg-card p-4 transition-all hover:border-primary/30 hover:shadow-sm"
         >
           <div className="flex items-center justify-between mb-1.5">
             <LayoutDashboard className="h-4 w-4 text-primary" />
@@ -241,7 +241,7 @@ export default async function DepartmentsPage() {
           <p className="text-sm font-medium">Full Dashboard</p>
           <p className="text-xs text-muted-foreground mt-0.5">All departments at a glance</p>
         </Link>
-        <div className="rounded-xl border bg-card p-4">
+        <div className="rounded-lg border bg-card p-4">
           <div className="flex items-center justify-between mb-1.5">
             <Users className="h-4 w-4 text-blue-600" />
             <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-700">{totalMembers}</span>
@@ -249,7 +249,7 @@ export default async function DepartmentsPage() {
           <p className="text-sm font-medium">Active Members</p>
           <p className="text-xs text-muted-foreground mt-0.5">Across all departments</p>
         </div>
-        <div className="rounded-xl border bg-card p-4">
+        <div className="rounded-lg border bg-card p-4">
           <div className="flex items-center justify-between mb-1.5">
             <Briefcase className="h-4 w-4 text-emerald-600" />
             <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-700">{totalClients}</span>
@@ -273,7 +273,7 @@ function ServiceDepartmentCard({
 }) {
   const Icon = DEPARTMENT_ICONS[dept.name] ?? DEPARTMENT_ICONS.default
   return (
-    <div className="rounded-xl border bg-card overflow-hidden hover:shadow-md hover:border-primary/30 transition-all">
+    <div className="rounded-lg border bg-card overflow-hidden hover:shadow-md hover:border-primary/30 transition-all">
       <Link href={`/dashboard?dept=${dept.id}`} className="block p-4 group">
         <div className="flex items-start gap-3">
           <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 ${accent}`}>
@@ -339,7 +339,7 @@ function LeafDepartmentCard({ dept }: { dept: Dept }) {
   return (
     <Link
       href={`/dashboard?dept=${dept.id}`}
-      className="group rounded-xl border bg-card p-4 transition-all hover:shadow-md hover:border-primary/30"
+      className="group rounded-lg border bg-card p-4 transition-all hover:shadow-md hover:border-primary/30"
     >
       <div className="flex items-start gap-3">
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">

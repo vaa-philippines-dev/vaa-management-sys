@@ -11,11 +11,11 @@ export default function ClientDetailLoading() {
         </div>
       </div>
       <div className="grid gap-4 md:grid-cols-3">
-        <Skeleton className="h-24 w-full rounded-xl" />
-        <Skeleton className="h-24 w-full rounded-xl" />
-        <Skeleton className="h-24 w-full rounded-xl" />
+        <Skeleton className="h-24 w-full rounded-lg" />
+        <Skeleton className="h-24 w-full rounded-lg" />
+        <Skeleton className="h-24 w-full rounded-lg" />
       </div>
-      <div className="rounded-xl border bg-card p-5 space-y-3">
+      <div className="rounded-lg border bg-card p-5 space-y-3">
         <Skeleton className="h-5 w-36" />
         <Skeleton className="h-16 w-full rounded-lg" />
         <Skeleton className="h-16 w-full rounded-lg" />

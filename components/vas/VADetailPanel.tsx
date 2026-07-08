@@ -24,14 +24,14 @@ function DetailRow({
   href?: string
 }) {
   const content = (
-    <div className="flex items-center gap-2.5 py-1.5 text-sm text-foreground">
+    <div className="flex items-center gap-2 py-[7px] text-[12.5px] text-foreground">
       <Icon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
       <span className="truncate">{children}</span>
     </div>
   )
   if (href) {
     return (
-      <Link href={href} className="rounded-md -mx-1.5 px-1.5 hover:bg-accent/50 transition-colors">
+      <Link href={href} className="-mx-1 rounded px-1 hover:bg-accent/50 transition-colors">
         {content}
       </Link>
     )
@@ -52,10 +52,10 @@ export function VADetailPanel({
   location,
 }: VADetailPanelProps) {
   return (
-    <aside className="w-full lg:w-64 shrink-0 lg:border-l lg:pl-5">
-      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Details</p>
-      <div className="flex flex-col divide-y divide-border/60">
-        <div className="flex items-center gap-2.5 py-1.5 text-sm">
+    <aside className="w-full lg:w-[220px] shrink-0 lg:border-l lg:pl-[18px]">
+      <p className="text-[10.5px] font-semibold text-muted-foreground uppercase tracking-wide mb-2">Details</p>
+      <div className="flex flex-col">
+        <div className="flex items-center gap-2 py-[7px] text-[12.5px]">
           <span className={`h-2 w-2 rounded-full shrink-0 ${statusDotClassName}`} />
           <span>{statusLabel}</span>
         </div>
@@ -76,7 +76,7 @@ export function VADetailPanel({
         )}
         {hourlyRate != null && (
           <DetailRow icon={Wallet}>
-            ${hourlyRate.toFixed(2)}/hr
+            <span className="font-mono">${hourlyRate.toFixed(2)}/hr</span>
           </DetailRow>
         )}
         {location && (

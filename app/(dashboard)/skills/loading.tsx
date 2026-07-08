@@ -6,13 +6,13 @@ export default function SkillsLoading() {
       <Skeleton className="h-7 w-32" />
       <div className="grid gap-3 sm:grid-cols-4">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="rounded-xl border bg-card p-3.5 space-y-2">
+          <div key={i} className="rounded-lg border bg-card p-3.5 space-y-2">
             <Skeleton className="h-3 w-16" />
             <Skeleton className="h-7 w-12" />
           </div>
         ))}
       </div>
-      <div className="rounded-xl border bg-card p-3 space-y-2.5">
+      <div className="rounded-lg border bg-card p-3 space-y-2.5">
         <div className="flex gap-2">
           <Skeleton className="h-9 flex-1 rounded-md" />
           <Skeleton className="h-9 w-32 rounded-md" />
@@ -20,7 +20,7 @@ export default function SkillsLoading() {
           <Skeleton className="h-9 w-32 rounded-md" />
         </div>
       </div>
-      <div className="rounded-xl border bg-card overflow-hidden">
+      <div className="rounded-lg border bg-card overflow-hidden">
         <div className="p-2.5 space-y-2 border-b bg-muted/40">
           <div className="flex gap-4">
             <Skeleton className="h-3 w-24" />

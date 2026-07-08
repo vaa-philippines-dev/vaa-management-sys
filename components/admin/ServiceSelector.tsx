@@ -102,7 +102,7 @@ export function ServiceSelector({
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={handleCancel}>
           <div
-            className="bg-card border rounded-xl shadow-2xl w-full max-w-md mx-4 max-h-[80vh] flex flex-col"
+            className="bg-card border rounded-lg shadow-2xl w-full max-w-md mx-4 max-h-[80vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-4 border-b">

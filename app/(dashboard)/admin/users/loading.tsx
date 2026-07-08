@@ -8,7 +8,7 @@ export default function AdminUsersLoading() {
         <Skeleton className="h-4 w-72" />
       </div>
 
-      <div className="rounded-xl border p-5 space-y-3">
+      <div className="rounded-lg border p-5 space-y-3">
         <Skeleton className="h-5 w-24" />
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
           <Skeleton className="h-9 w-full rounded-lg lg:col-span-2" />
@@ -19,7 +19,7 @@ export default function AdminUsersLoading() {
         </div>
       </div>
 
-      <div className="rounded-xl border p-5 space-y-3">
+      <div className="rounded-lg border p-5 space-y-3">
         <Skeleton className="h-5 w-32" />
         <div className="space-y-2">
           {Array.from({ length: 6 }).map((_, i) => (

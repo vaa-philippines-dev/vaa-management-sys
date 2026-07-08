@@ -83,7 +83,7 @@ export default async function HistoryPage({
         </div>
       </div>
 
-      <div className="rounded-xl border bg-card p-3">
+      <div className="rounded-lg border bg-card p-3">
         <Suspense fallback={<Skeleton className="h-8 w-full rounded-md" />}>
           <FilterBar
             filters={[

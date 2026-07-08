@@ -9,28 +9,28 @@ export default function VALoading() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
-        <div className="rounded-xl border bg-card p-5 space-y-3">
+        <div className="rounded-lg border bg-card p-5 space-y-3">
           <div className="flex items-center justify-between">
             <Skeleton className="h-3 w-16" />
             <Skeleton className="h-4 w-4 rounded-full" />
           </div>
           <Skeleton className="h-8 w-12" />
         </div>
-        <div className="rounded-xl border bg-card p-5 space-y-3">
+        <div className="rounded-lg border bg-card p-5 space-y-3">
           <div className="flex items-center justify-between">
             <Skeleton className="h-3 w-16" />
             <Skeleton className="h-4 w-4 rounded-full" />
           </div>
           <Skeleton className="h-8 w-12" />
         </div>
-        <div className="rounded-xl border bg-card p-5 space-y-3">
+        <div className="rounded-lg border bg-card p-5 space-y-3">
           <div className="flex items-center justify-between">
             <Skeleton className="h-3 w-16" />
             <Skeleton className="h-4 w-4 rounded-full" />
           </div>
           <Skeleton className="h-8 w-12" />
         </div>
-        <div className="rounded-xl border bg-card p-5 space-y-3">
+        <div className="rounded-lg border bg-card p-5 space-y-3">
           <div className="flex items-center justify-between">
             <Skeleton className="h-3 w-16" />
             <Skeleton className="h-4 w-4 rounded-full" />
@@ -39,11 +39,11 @@ export default function VALoading() {
         </div>
       </div>
 
-      <div className="rounded-xl border p-3">
+      <div className="rounded-lg border p-3">
         <Skeleton className="h-8 w-full rounded-md" />
       </div>
 
-      <div className="rounded-xl border">
+      <div className="rounded-lg border">
         <div className="p-3 border-b bg-muted/40">
           <div className="flex gap-4">
             <Skeleton className="h-3 w-24" />

@@ -17,7 +17,7 @@ function DetailRow({
   children: React.ReactNode
 }) {
   return (
-    <div className="flex items-center gap-2.5 py-1.5 text-sm text-foreground">
+    <div className="flex items-center gap-2 py-[7px] text-[12.5px] text-foreground">
       <Icon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
       <span className="truncate">{children}</span>
     </div>
@@ -33,10 +33,10 @@ export function ClientDetailPanel({
   activeAssignments,
 }: ClientDetailPanelProps) {
   return (
-    <aside className="w-full lg:w-64 shrink-0 lg:border-l lg:pl-5">
-      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Details</p>
-      <div className="flex flex-col divide-y divide-border/60">
-        <div className="flex items-center gap-2.5 py-1.5 text-sm">
+    <aside className="w-full lg:w-[220px] shrink-0 lg:border-l lg:pl-[18px]">
+      <p className="text-[10.5px] font-semibold text-muted-foreground uppercase tracking-wide mb-2">Details</p>
+      <div className="flex flex-col">
+        <div className="flex items-center gap-2 py-[7px] text-[12.5px]">
           <span className={`h-2 w-2 rounded-full shrink-0 ${statusDotClassName}`} />
           <span>{statusLabel}</span>
         </div>
@@ -44,7 +44,7 @@ export function ClientDetailPanel({
         {contactEmail && <DetailRow icon={Mail}>{contactEmail}</DetailRow>}
         {industry && <DetailRow icon={ListChecks}>{industry}</DetailRow>}
         <DetailRow icon={Briefcase}>
-          {activeAssignments} active assignment{activeAssignments === 1 ? '' : 's'}
+          <span className="font-mono">{activeAssignments}</span> active assignment{activeAssignments === 1 ? '' : 's'}
         </DetailRow>
       </div>
     </aside>

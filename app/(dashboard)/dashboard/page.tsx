@@ -76,7 +76,7 @@ export default async function DashboardPage({
         <ManagerStats deptId={deptId ?? null} />
       </Suspense>
 
-      <Suspense fallback={<Skeleton className="h-32 rounded-xl" />}>
+      <Suspense fallback={<Skeleton className="h-32 rounded-lg" />}>
         <ManagerAlerts deptId={deptId ?? null} />
       </Suspense>
 
@@ -411,7 +411,7 @@ function StatsSkeleton() {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       {[1,2,3,4].map((i) => (
-        <div key={i} className="rounded-xl border bg-card p-5 space-y-3">
+        <div key={i} className="rounded-lg border bg-card p-5 space-y-3">
           <Skeleton className="h-3 w-20" /><Skeleton className="h-7 w-12" />
         </div>
       ))}
@@ -421,7 +421,7 @@ function StatsSkeleton() {
 
 function RecentAssignmentsSkeleton() {
   return (
-    <div className="rounded-xl border bg-card p-5 space-y-3">
+    <div className="rounded-lg border bg-card p-5 space-y-3">
       <Skeleton className="h-5 w-36" />
       {[1,2,3].map((i) => (
         <div key={i} className="flex items-center gap-3 p-3 rounded-lg border">
@@ -437,7 +437,7 @@ function VADashSkeleton() {
   return (
     <div className="space-y-6">
       <Skeleton className="h-8 w-48" />
-      <div className="rounded-xl bg-gray-800 p-6 flex items-center gap-5">
+      <div className="rounded-lg bg-gray-800 p-6 flex items-center gap-5">
         <Skeleton className="h-22 w-22 rounded-full bg-white/10 shrink-0" />
         <div className="space-y-3">
           <Skeleton className="h-4 w-24 bg-white/10" /><Skeleton className="h-10 w-20 bg-white/10" />
@@ -445,7 +445,7 @@ function VADashSkeleton() {
       </div>
       <div className="grid gap-4 md:grid-cols-3">
         {[1,2,3].map((i) => (
-          <div key={i} className="rounded-xl border p-5 space-y-2"><Skeleton className="h-3 w-20" /><Skeleton className="h-7 w-12" /></div>
+          <div key={i} className="rounded-lg border p-5 space-y-2"><Skeleton className="h-3 w-20" /><Skeleton className="h-7 w-12" /></div>
         ))}
       </div>
     </div>

@@ -8,6 +8,7 @@ import { FilterBar } from '@/components/filters/FilterBar'
 import { Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table'
+import { StatusIndicator } from '@/components/ui/status-indicator'
 import { QuickAddVABtn } from '@/components/vas/QuickAddVABtn'
 import { VABulkSelectToggle } from '@/components/vas/VABulkSelectToggle'
 import { VARowCheckbox } from '@/components/vas/VARowCheckbox'
@@ -21,29 +22,31 @@ import {
   Eye,
 } from 'lucide-react'
 
-const AVAILABILITY_COLORS: Record<string, string> = {
-  AVAILABLE: 'bg-success/15 text-success border-success/20',
-  PARTIALLY_ASSIGNED: 'bg-warning/15 text-warning border-warning/20',
-  FULLY_ASSIGNED: 'bg-info/15 text-info border-info/20',
-  ON_LEAVE: 'bg-warning/15 text-warning border-warning/20',
-  UNAVAILABLE: 'bg-destructive/15 text-destructive border-destructive/20',
+type Tone = 'success' | 'warning' | 'destructive' | 'info' | 'neutral'
+
+const AVAILABILITY_TONE: Record<string, Tone> = {
+  AVAILABLE: 'success',
+  PARTIALLY_ASSIGNED: 'warning',
+  FULLY_ASSIGNED: 'info',
+  ON_LEAVE: 'warning',
+  UNAVAILABLE: 'destructive',
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  ACTIVE: 'bg-success/15 text-success border-success/20',
-  ON_HOLD: 'bg-warning/15 text-warning border-warning/20',
-  INACTIVE: 'bg-destructive/15 text-destructive border-destructive/20',
+const STATUS_TONE: Record<string, Tone> = {
+  ACTIVE: 'success',
+  ON_HOLD: 'warning',
+  INACTIVE: 'destructive',
 }
 
-const EMPLOYMENT_COLORS: Record<string, string> = {
-  EMPLOYED: 'bg-success/15 text-success border-success/20',
-  ENGAGED: 'bg-info/15 text-info border-info/20',
-  CONTRACTED: 'bg-info/15 text-info border-info/20',
-  END_OF_CONTRACT: 'bg-warning/15 text-warning border-warning/20',
-  TRANSFERRED: 'bg-warning/15 text-warning border-warning/20',
-  RESIGNED: 'bg-destructive/15 text-destructive border-destructive/20',
-  TERMINATED: 'bg-destructive/15 text-destructive border-destructive/20',
-  BLACKLISTED: 'bg-gray-500/15 text-gray-700 border-gray-500/20',
+const EMPLOYMENT_TONE: Record<string, Tone> = {
+  EMPLOYED: 'success',
+  ENGAGED: 'info',
+  CONTRACTED: 'info',
+  END_OF_CONTRACT: 'warning',
+  TRANSFERRED: 'warning',
+  RESIGNED: 'destructive',
+  TERMINATED: 'destructive',
+  BLACKLISTED: 'neutral',
 }
 
 const hrgRoles = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'EXECUTIVE']
@@ -84,7 +87,7 @@ export default async function VAPage({
           }
           extraActions={<QuickAddVABtn />}
         >
-          <div className="rounded-xl border bg-card p-2.5">
+          <div className="rounded-lg border bg-card p-2.5">
             <Suspense fallback={<Skeleton className="h-8 w-full rounded-md" />}>
               <FilterWrapper />
             </Suspense>
@@ -102,7 +105,7 @@ export default async function VAPage({
             </div>
           </div>
 
-          <div className="rounded-xl border bg-card p-2.5">
+          <div className="rounded-lg border bg-card p-2.5">
             <Suspense fallback={<Skeleton className="h-8 w-full rounded-md" />}>
               <FilterWrapper />
             </Suspense>
@@ -247,7 +250,7 @@ async function VATableSection({
 
   return (
     <>
-      <div className="flex items-center gap-3 px-3 py-2 rounded-xl border bg-muted/30 text-xs text-muted-foreground">
+      <div className="flex items-center gap-3 px-3 py-2 rounded-lg border bg-muted/30 text-xs text-muted-foreground">
         <span className="flex items-center gap-1.5">
           <Users className="h-3 w-3" />
           {hasFilters ? `${filteredVAs.length} / ${allVAs}` : allVAs} VAs
@@ -262,7 +265,7 @@ async function VATableSection({
         </span>
       </div>
 
-      <div className="rounded-xl border bg-card overflow-hidden">
+      <div className="rounded-lg border bg-card overflow-hidden">
         {filteredVAs.length === 0 ? (
           <div className="p-10 text-center">
             <Users className="h-8 w-8 text-muted-foreground/40 mx-auto mb-2" />
@@ -292,16 +295,14 @@ async function VATableSection({
                 const emp = va.user.employmentRecords?.[0]
                 const primaryMem = va.user.memberships?.find((m) => m.isPrimary) ?? va.user.memberships?.[0]
 
-                const accentColor = va.status === 'ACTIVE' ? 'border-l-success' : va.status === 'ON_HOLD' ? 'border-l-warning' : 'border-l-destructive/60'
-
                 return (
-                  <TableRow key={va.id} className={`hover:bg-primary/5 group border-l-4 ${accentColor}`}>
+                  <TableRow key={va.id} className="hover:bg-accent/50 group">
                     {isAdmin && (
                       <TableCell className="px-3 py-2.5">
                         <VARowCheckbox id={va.id} />
                       </TableCell>
                     )}
-                    <TableCell className="px-3 py-2.5 sticky left-0 bg-card group-hover:bg-primary/5 z-10 transition-colors">
+                    <TableCell className="px-3 py-2.5 sticky left-0 bg-card group-hover:bg-accent/50 z-10 transition-colors">
                       <Link href={`/vas/${va.id}`} className="flex items-center gap-2 hover:text-primary transition-colors">
                         <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-[10px] font-medium text-primary shrink-0">
                           {(va.user.firstName || 'V')[0].toUpperCase()}
@@ -321,20 +322,20 @@ async function VATableSection({
                       {primaryMem?.position ? primaryMem.position.title : <span className="text-muted-foreground">—</span>}
                     </TableCell>
                     <TableCell className="px-3 py-2.5 hidden sm:table-cell">
-                      <Badge variant="outline" className={`text-[10px] py-0 px-1.5 ${AVAILABILITY_COLORS[va.availabilityStatus] || ''}`}>
+                      <StatusIndicator tone={AVAILABILITY_TONE[va.availabilityStatus] ?? 'neutral'}>
                         {va.availabilityStatus.replace(/_/g, ' ')}
-                      </Badge>
+                      </StatusIndicator>
                     </TableCell>
                     <TableCell className="px-3 py-2.5 hidden sm:table-cell">
-                      <Badge variant="outline" className={`text-[10px] py-0 px-1.5 ${STATUS_COLORS[va.status] || STATUS_COLORS.INACTIVE}`}>
+                      <StatusIndicator tone={STATUS_TONE[va.status] ?? 'destructive'}>
                         {va.status === 'ACTIVE' ? 'Active' : va.status === 'ON_HOLD' ? 'On Hold' : 'Inactive'}
-                      </Badge>
+                      </StatusIndicator>
                     </TableCell>
                     <TableCell className="px-3 py-2.5 hidden md:table-cell">
                       {emp ? (
-                        <Badge variant="outline" className={`text-[10px] py-0 px-1.5 ${EMPLOYMENT_COLORS[emp.employmentStatus] || ''}`}>
+                        <StatusIndicator tone={EMPLOYMENT_TONE[emp.employmentStatus] ?? 'neutral'}>
                           {emp.employmentStatus.replace(/_/g, ' ')}
-                        </Badge>
+                        </StatusIndicator>
                       ) : <span className="text-muted-foreground">—</span>}
                     </TableCell>
                     <TableCell className="px-3 py-2.5">
@@ -366,12 +367,12 @@ async function VATableSection({
 function TableSkeleton() {
   return (
     <>
-      <div className="flex items-center gap-3 px-3 py-2 rounded-xl border bg-muted/30">
+      <div className="flex items-center gap-3 px-3 py-2 rounded-lg border bg-muted/30">
         <Skeleton className="h-3 w-16" />
         <Skeleton className="h-3 w-20" />
         <Skeleton className="h-3 w-20" />
       </div>
-      <div className="rounded-xl border bg-card overflow-hidden">
+      <div className="rounded-lg border bg-card overflow-hidden">
         <div className="p-2 space-y-1">
           {[1, 2, 3, 4, 5].map((i) => (
             <div key={i} className="flex items-center gap-3 p-2">

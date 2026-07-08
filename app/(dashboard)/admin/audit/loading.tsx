@@ -8,11 +8,11 @@ export default function AuditLoading() {
         <Skeleton className="h-4 w-48" />
       </div>
 
-      <div className="rounded-xl border p-3">
+      <div className="rounded-lg border p-3">
         <Skeleton className="h-8 w-full rounded-md" />
       </div>
 
-      <div className="rounded-xl border divide-y">
+      <div className="rounded-lg border divide-y">
         {Array.from({ length: 10 }).map((_, i) => (
           <div key={i} className="flex items-start gap-3 p-3">
             <Skeleton className="h-8 w-8 rounded-full shrink-0" />

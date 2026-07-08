@@ -26,9 +26,9 @@ export default function DepartmentsLoading() {
             <Skeleton className="h-5 w-8 rounded-full" />
           </div>
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-            <Skeleton className="h-20 rounded-xl" />
-            <Skeleton className="h-20 rounded-xl" />
-            <Skeleton className="h-20 rounded-xl" />
+            <Skeleton className="h-20 rounded-lg" />
+            <Skeleton className="h-20 rounded-lg" />
+            <Skeleton className="h-20 rounded-lg" />
           </div>
         </div>
       ))}

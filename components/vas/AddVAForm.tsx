@@ -52,7 +52,7 @@ export function AddVAModal({ open, onClose }: { open: boolean; onClose: () => vo
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={onClose}>
       <div
-        className="bg-card border rounded-xl shadow-2xl w-full max-w-md mx-4"
+        className="bg-card border rounded-lg shadow-2xl w-full max-w-md mx-4"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between p-4 border-b">

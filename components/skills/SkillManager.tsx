@@ -82,7 +82,7 @@ export function SkillManager({
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center gap-3 px-3 py-2 rounded-xl border bg-muted/30 text-xs text-muted-foreground">
+      <div className="flex items-center gap-3 px-3 py-2 rounded-lg border bg-muted/30 text-xs text-muted-foreground">
         <span className="flex items-center gap-1.5">
           <Building2 className="h-3 w-3" />
           {totalCount} services
@@ -130,7 +130,7 @@ export function SkillManager({
       )}
 
       {filtered.length === 0 ? (
-        <div className="rounded-xl border bg-card p-10 text-center">
+        <div className="rounded-lg border bg-card p-10 text-center">
           <Building2 className="h-8 w-8 text-muted-foreground/40 mx-auto mb-2" />
           <p className="text-sm text-muted-foreground">No services match your search</p>
         </div>
@@ -140,7 +140,7 @@ export function SkillManager({
             const items = byDept.get(dept.id) || []
             if (items.length === 0) return null
             return (
-              <div key={dept.id} className="rounded-xl border bg-card overflow-hidden">
+              <div key={dept.id} className="rounded-lg border bg-card overflow-hidden">
                 <div className="flex items-center gap-2 px-4 py-2.5 bg-muted/20 border-b">
                   <Building2 className="h-3.5 w-3.5 text-muted-foreground" />
                   <span className="text-xs font-semibold">{dept.name}</span>
@@ -192,7 +192,7 @@ export function SkillManager({
           })}
 
           {(byDept.get('__unassigned__') || []).length > 0 && (
-            <div className="rounded-xl border bg-card overflow-hidden">
+            <div className="rounded-lg border bg-card overflow-hidden">
               <div className="flex items-center gap-2 px-4 py-2.5 bg-muted/20 border-b">
                 <Building2 className="h-3.5 w-3.5 text-muted-foreground" />
                 <span className="text-xs font-semibold">Unassigned</span>

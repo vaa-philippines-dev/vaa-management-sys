@@ -71,11 +71,11 @@ export default async function AdminDepartmentsPage() {
         />
       )}
 
-      <Suspense fallback={<Skeleton className="h-32 rounded-xl" />}>
+      <Suspense fallback={<Skeleton className="h-32 rounded-lg" />}>
         <StatsHeader />
       </Suspense>
 
-      <Suspense fallback={<Skeleton className="h-96 rounded-xl" />}>
+      <Suspense fallback={<Skeleton className="h-96 rounded-lg" />}>
         <DepartmentTree canEdit={canEdit} />
       </Suspense>
     </div>
@@ -98,7 +98,7 @@ async function StatsHeader() {
 
   return (
     <div className="grid gap-3 grid-cols-2 md:grid-cols-4 lg:grid-cols-7">
-      <div className="rounded-xl border bg-card p-3.5">
+      <div className="rounded-lg border bg-card p-3.5">
         <div className="flex items-center justify-between mb-1">
           <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">Total</span>
           <Building2 className="h-3.5 w-3.5 text-muted-foreground" />
@@ -106,7 +106,7 @@ async function StatsHeader() {
         <p className="text-2xl font-bold leading-none">{stats.total}</p>
         <p className="text-[10px] text-muted-foreground mt-1">All departments</p>
       </div>
-      <div className="rounded-xl border bg-card p-3.5">
+      <div className="rounded-lg border bg-card p-3.5">
         <div className="flex items-center justify-between mb-1">
           <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">Active</span>
           <CheckCircle2 className="h-3.5 w-3.5 text-success" />
@@ -114,7 +114,7 @@ async function StatsHeader() {
         <p className="text-2xl font-bold leading-none text-success">{stats.active}</p>
         <p className="text-[10px] text-muted-foreground mt-1">In use</p>
       </div>
-      <div className="rounded-xl border bg-card p-3.5">
+      <div className="rounded-lg border bg-card p-3.5">
         <div className="flex items-center justify-between mb-1">
           <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">Top-Level</span>
           <Shield className="h-3.5 w-3.5 text-amber-600" />
@@ -122,7 +122,7 @@ async function StatsHeader() {
         <p className="text-2xl font-bold leading-none">{stats.topLevel}</p>
         <p className="text-[10px] text-muted-foreground mt-1">Parent depts</p>
       </div>
-      <div className="rounded-xl border bg-card p-3.5">
+      <div className="rounded-lg border bg-card p-3.5">
         <div className="flex items-center justify-between mb-1">
           <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">With Teams</span>
           <Users className="h-3.5 w-3.5 text-blue-600" />
@@ -133,7 +133,7 @@ async function StatsHeader() {
       {(['EXECUTIVE', 'MANAGEMENT', 'SERVICE'] as const).map((lvl) => {
         const meta = LEVEL_META[lvl]
         return (
-          <div key={lvl} className="rounded-xl border bg-card p-3.5">
+          <div key={lvl} className="rounded-lg border bg-card p-3.5">
             <div className="flex items-center justify-between mb-1">
               <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">{meta.label}</span>
               <div className={`h-3.5 w-3.5 rounded-full ${meta.color}`} />

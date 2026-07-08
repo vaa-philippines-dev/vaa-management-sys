@@ -327,7 +327,7 @@ function StatsSkeleton() {
       <Skeleton className="h-4 w-20 mb-3" />
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="rounded-xl border bg-card p-5 space-y-3">
+          <div key={i} className="rounded-lg border bg-card p-5 space-y-3">
             <Skeleton className="h-3 w-20" />
             <Skeleton className="h-8 w-12" />
             <Skeleton className="h-3 w-28" />
@@ -341,7 +341,7 @@ function StatsSkeleton() {
 function DepartmentsSkeleton() {
   return (
     <div className="grid gap-6 lg:grid-cols-3">
-      <div className="lg:col-span-2 rounded-xl border bg-card p-5 space-y-3">
+      <div className="lg:col-span-2 rounded-lg border bg-card p-5 space-y-3">
         <Skeleton className="h-5 w-40" />
         <div className="grid gap-3 sm:grid-cols-2">
           {[1, 2, 3, 4].map((i) => (
@@ -350,7 +350,7 @@ function DepartmentsSkeleton() {
         </div>
         <Skeleton className="h-9 w-full rounded-md" />
       </div>
-      <div className="rounded-xl border bg-card p-5 space-y-4">
+      <div className="rounded-lg border bg-card p-5 space-y-4">
         <Skeleton className="h-5 w-32" />
         {[1, 2, 3, 4, 5, 6].map((i) => (
           <div key={i} className="flex items-center gap-2">
@@ -366,7 +366,7 @@ function DepartmentsSkeleton() {
 
 function RecentSkeleton() {
   return (
-    <div className="rounded-xl border bg-card p-5 space-y-3">
+    <div className="rounded-lg border bg-card p-5 space-y-3">
       <Skeleton className="h-5 w-32" />
       {[1, 2, 3, 4].map((i) => (
         <div key={i} className="flex items-center gap-3 p-3 rounded-lg border">

@@ -164,7 +164,7 @@ export function DeptTree({
 
   return (
     <div className="space-y-3">
-      <div className="rounded-xl border bg-card p-3 space-y-2.5">
+      <div className="rounded-lg border bg-card p-3 space-y-2.5">
         <div className="flex flex-col sm:flex-row gap-2">
           <div className="relative flex-1">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
@@ -226,7 +226,7 @@ export function DeptTree({
       </div>
 
       {filtered.length === 0 ? (
-        <div className="rounded-xl border bg-card p-10 text-center">
+        <div className="rounded-lg border bg-card p-10 text-center">
           <Filter className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
           <p className="text-sm text-muted-foreground">No departments match your filters.</p>
           {hasFilters && (

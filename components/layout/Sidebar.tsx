@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   LogOut,
@@ -35,22 +34,17 @@ function NavButton({
   children: React.ReactNode
 }) {
   return (
-    <Link href={href}>
-      <Button
-        variant="ghost"
-        className={cn(
-          'relative w-full justify-start gap-3 rounded-lg text-sm font-medium transition-colors',
-          isActive
-            ? 'bg-sidebar-accent text-sidebar-accent-foreground'
-            : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
-        )}
-      >
-        {isActive && (
-          <span className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-r-full bg-sidebar-primary" />
-        )}
-        <Icon className="h-4 w-4 shrink-0" />
-        {children}
-      </Button>
+    <Link
+      href={href}
+      className={cn(
+        'flex items-center gap-2 rounded-md px-2 py-[5px] text-[12.5px] font-medium transition-colors',
+        isActive
+          ? 'bg-sidebar-accent text-sidebar-accent-foreground'
+          : 'text-sidebar-foreground hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground'
+      )}
+    >
+      <Icon className={cn('h-3.5 w-3.5 shrink-0', isActive ? 'opacity-100' : 'opacity-75')} />
+      {children}
     </Link>
   )
 }
@@ -88,18 +82,18 @@ export function Sidebar({ role = 'MANAGER', isAdmin = false }: { role?: 'MANAGER
   }
 
   return (
-    <div className="flex h-full w-60 flex-col border-r bg-sidebar">
-      <div className="flex h-16 items-center gap-3 border-b px-5">
+    <div className="flex h-full w-[212px] flex-col bg-sidebar px-2 py-2.5">
+      <div className="flex items-center gap-2 px-2 pb-3">
         <Image
           src="/vaalogo.svg"
           alt="VAA Philippines"
-          width={150}
-          height={150}
+          width={112}
+          height={112}
           className="shrink-0"
         />
       </div>
-      <ScrollArea className="flex-1 px-3 py-4">
-        <nav className="flex flex-col gap-1">
+      <ScrollArea className="flex-1">
+        <nav className="flex flex-col gap-px pr-1">
           {routes.map((route) => {
             const isActive =
               route.href === '/dashboard'
@@ -114,8 +108,7 @@ export function Sidebar({ role = 'MANAGER', isAdmin = false }: { role?: 'MANAGER
 
           {isAdmin && (
             <>
-              <div className="my-2 border-t" />
-              <p className="px-3 py-1 text-[10px] uppercase tracking-wider text-sidebar-foreground/50 font-semibold">
+              <p className="px-2 pt-3.5 pb-1 text-[10.5px] tracking-wide text-sidebar-foreground/60">
                 Admin
               </p>
               <NavButton href="/admin" isActive={pathname === '/admin'} icon={LayoutDashboard}>
@@ -140,16 +133,14 @@ export function Sidebar({ role = 'MANAGER', isAdmin = false }: { role?: 'MANAGER
           )}
         </nav>
       </ScrollArea>
-      <div className="border-t p-3">
-        <Button
-          variant="ghost"
-          className="w-full justify-start gap-3 rounded-lg text-sm font-medium text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-destructive transition-colors"
-          onClick={handleLogout}
-        >
-          <LogOut className="h-4 w-4 shrink-0" />
-          Sign Out
-        </Button>
-      </div>
+      <button
+        type="button"
+        onClick={handleLogout}
+        className="flex items-center gap-2 rounded-md px-2 py-[5px] text-[12.5px] font-medium text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-destructive transition-colors"
+      >
+        <LogOut className="h-3.5 w-3.5 shrink-0 opacity-75" />
+        Sign Out
+      </button>
     </div>
   )
 }
