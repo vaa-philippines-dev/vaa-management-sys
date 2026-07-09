@@ -33,6 +33,7 @@ export type RoleAssignmentMinAggregateOutputType = {
   grantedBy: string | null
   expiresAt: Date | null
   status: $Enums.GeneralStatus | null
+  onHold: boolean | null
   isActive: boolean | null
   createdAt: Date | null
 }
@@ -46,6 +47,7 @@ export type RoleAssignmentMaxAggregateOutputType = {
   grantedBy: string | null
   expiresAt: Date | null
   status: $Enums.GeneralStatus | null
+  onHold: boolean | null
   isActive: boolean | null
   createdAt: Date | null
 }
@@ -59,6 +61,7 @@ export type RoleAssignmentCountAggregateOutputType = {
   grantedBy: number
   expiresAt: number
   status: number
+  onHold: number
   isActive: number
   createdAt: number
   _all: number
@@ -74,6 +77,7 @@ export type RoleAssignmentMinAggregateInputType = {
   grantedBy?: true
   expiresAt?: true
   status?: true
+  onHold?: true
   isActive?: true
   createdAt?: true
 }
@@ -87,6 +91,7 @@ export type RoleAssignmentMaxAggregateInputType = {
   grantedBy?: true
   expiresAt?: true
   status?: true
+  onHold?: true
   isActive?: true
   createdAt?: true
 }
@@ -100,6 +105,7 @@ export type RoleAssignmentCountAggregateInputType = {
   grantedBy?: true
   expiresAt?: true
   status?: true
+  onHold?: true
   isActive?: true
   createdAt?: true
   _all?: true
@@ -186,6 +192,7 @@ export type RoleAssignmentGroupByOutputType = {
   grantedBy: string
   expiresAt: Date | null
   status: $Enums.GeneralStatus
+  onHold: boolean
   isActive: boolean
   createdAt: Date
   _count: RoleAssignmentCountAggregateOutputType | null
@@ -220,6 +227,7 @@ export type RoleAssignmentWhereInput = {
   grantedBy?: Prisma.StringFilter<"RoleAssignment"> | string
   expiresAt?: Prisma.DateTimeNullableFilter<"RoleAssignment"> | Date | string | null
   status?: Prisma.EnumGeneralStatusFilter<"RoleAssignment"> | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFilter<"RoleAssignment"> | boolean
   isActive?: Prisma.BoolFilter<"RoleAssignment"> | boolean
   createdAt?: Prisma.DateTimeFilter<"RoleAssignment"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -236,6 +244,7 @@ export type RoleAssignmentOrderByWithRelationInput = {
   grantedBy?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -255,6 +264,7 @@ export type RoleAssignmentWhereUniqueInput = Prisma.AtLeast<{
   grantedBy?: Prisma.StringFilter<"RoleAssignment"> | string
   expiresAt?: Prisma.DateTimeNullableFilter<"RoleAssignment"> | Date | string | null
   status?: Prisma.EnumGeneralStatusFilter<"RoleAssignment"> | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFilter<"RoleAssignment"> | boolean
   isActive?: Prisma.BoolFilter<"RoleAssignment"> | boolean
   createdAt?: Prisma.DateTimeFilter<"RoleAssignment"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -271,6 +281,7 @@ export type RoleAssignmentOrderByWithAggregationInput = {
   grantedBy?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.RoleAssignmentCountOrderByAggregateInput
@@ -290,6 +301,7 @@ export type RoleAssignmentScalarWhereWithAggregatesInput = {
   grantedBy?: Prisma.StringWithAggregatesFilter<"RoleAssignment"> | string
   expiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"RoleAssignment"> | Date | string | null
   status?: Prisma.EnumGeneralStatusWithAggregatesFilter<"RoleAssignment"> | $Enums.GeneralStatus
+  onHold?: Prisma.BoolWithAggregatesFilter<"RoleAssignment"> | boolean
   isActive?: Prisma.BoolWithAggregatesFilter<"RoleAssignment"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"RoleAssignment"> | Date | string
 }
@@ -300,6 +312,7 @@ export type RoleAssignmentCreateInput = {
   module: string
   expiresAt?: Date | string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutRoleAssignmentsInput
@@ -316,6 +329,7 @@ export type RoleAssignmentUncheckedCreateInput = {
   grantedBy: string
   expiresAt?: Date | string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
 }
@@ -326,6 +340,7 @@ export type RoleAssignmentUpdateInput = {
   module?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutRoleAssignmentsNestedInput
@@ -342,6 +357,7 @@ export type RoleAssignmentUncheckedUpdateInput = {
   grantedBy?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -355,6 +371,7 @@ export type RoleAssignmentCreateManyInput = {
   grantedBy: string
   expiresAt?: Date | string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
 }
@@ -365,6 +382,7 @@ export type RoleAssignmentUpdateManyMutationInput = {
   module?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -378,6 +396,7 @@ export type RoleAssignmentUncheckedUpdateManyInput = {
   grantedBy?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -401,6 +420,7 @@ export type RoleAssignmentCountOrderByAggregateInput = {
   grantedBy?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -414,6 +434,7 @@ export type RoleAssignmentMaxOrderByAggregateInput = {
   grantedBy?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -427,6 +448,7 @@ export type RoleAssignmentMinOrderByAggregateInput = {
   grantedBy?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -567,6 +589,7 @@ export type RoleAssignmentCreateWithoutDepartmentInput = {
   module: string
   expiresAt?: Date | string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutRoleAssignmentsInput
@@ -581,6 +604,7 @@ export type RoleAssignmentUncheckedCreateWithoutDepartmentInput = {
   grantedBy: string
   expiresAt?: Date | string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
 }
@@ -623,6 +647,7 @@ export type RoleAssignmentScalarWhereInput = {
   grantedBy?: Prisma.StringFilter<"RoleAssignment"> | string
   expiresAt?: Prisma.DateTimeNullableFilter<"RoleAssignment"> | Date | string | null
   status?: Prisma.EnumGeneralStatusFilter<"RoleAssignment"> | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFilter<"RoleAssignment"> | boolean
   isActive?: Prisma.BoolFilter<"RoleAssignment"> | boolean
   createdAt?: Prisma.DateTimeFilter<"RoleAssignment"> | Date | string
 }
@@ -633,6 +658,7 @@ export type RoleAssignmentCreateWithoutUserInput = {
   module: string
   expiresAt?: Date | string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutRoleAssignmentsInput
@@ -647,6 +673,7 @@ export type RoleAssignmentUncheckedCreateWithoutUserInput = {
   grantedBy: string
   expiresAt?: Date | string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
 }
@@ -667,6 +694,7 @@ export type RoleAssignmentCreateWithoutGrantorInput = {
   module: string
   expiresAt?: Date | string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutRoleAssignmentsInput
@@ -681,6 +709,7 @@ export type RoleAssignmentUncheckedCreateWithoutGrantorInput = {
   departmentId?: string | null
   expiresAt?: Date | string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
 }
@@ -735,6 +764,7 @@ export type RoleAssignmentCreateManyDepartmentInput = {
   grantedBy: string
   expiresAt?: Date | string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
 }
@@ -745,6 +775,7 @@ export type RoleAssignmentUpdateWithoutDepartmentInput = {
   module?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutRoleAssignmentsNestedInput
@@ -759,6 +790,7 @@ export type RoleAssignmentUncheckedUpdateWithoutDepartmentInput = {
   grantedBy?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -771,6 +803,7 @@ export type RoleAssignmentUncheckedUpdateManyWithoutDepartmentInput = {
   grantedBy?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -783,6 +816,7 @@ export type RoleAssignmentCreateManyUserInput = {
   grantedBy: string
   expiresAt?: Date | string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
 }
@@ -795,6 +829,7 @@ export type RoleAssignmentCreateManyGrantorInput = {
   departmentId?: string | null
   expiresAt?: Date | string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
 }
@@ -805,6 +840,7 @@ export type RoleAssignmentUpdateWithoutUserInput = {
   module?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutRoleAssignmentsNestedInput
@@ -819,6 +855,7 @@ export type RoleAssignmentUncheckedUpdateWithoutUserInput = {
   grantedBy?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -831,6 +868,7 @@ export type RoleAssignmentUncheckedUpdateManyWithoutUserInput = {
   grantedBy?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -841,6 +879,7 @@ export type RoleAssignmentUpdateWithoutGrantorInput = {
   module?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutRoleAssignmentsNestedInput
@@ -855,6 +894,7 @@ export type RoleAssignmentUncheckedUpdateWithoutGrantorInput = {
   departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -867,6 +907,7 @@ export type RoleAssignmentUncheckedUpdateManyWithoutGrantorInput = {
   departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -882,6 +923,7 @@ export type RoleAssignmentSelect<ExtArgs extends runtime.Types.Extensions.Intern
   grantedBy?: boolean
   expiresAt?: boolean
   status?: boolean
+  onHold?: boolean
   isActive?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -898,6 +940,7 @@ export type RoleAssignmentSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   grantedBy?: boolean
   expiresAt?: boolean
   status?: boolean
+  onHold?: boolean
   isActive?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -914,6 +957,7 @@ export type RoleAssignmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   grantedBy?: boolean
   expiresAt?: boolean
   status?: boolean
+  onHold?: boolean
   isActive?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -930,11 +974,12 @@ export type RoleAssignmentSelectScalar = {
   grantedBy?: boolean
   expiresAt?: boolean
   status?: boolean
+  onHold?: boolean
   isActive?: boolean
   createdAt?: boolean
 }
 
-export type RoleAssignmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "role" | "module" | "departmentId" | "grantedBy" | "expiresAt" | "status" | "isActive" | "createdAt", ExtArgs["result"]["roleAssignment"]>
+export type RoleAssignmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "role" | "module" | "departmentId" | "grantedBy" | "expiresAt" | "status" | "onHold" | "isActive" | "createdAt", ExtArgs["result"]["roleAssignment"]>
 export type RoleAssignmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   department?: boolean | Prisma.RoleAssignment$departmentArgs<ExtArgs>
@@ -967,6 +1012,7 @@ export type $RoleAssignmentPayload<ExtArgs extends runtime.Types.Extensions.Inte
     grantedBy: string
     expiresAt: Date | null
     status: $Enums.GeneralStatus
+    onHold: boolean
     isActive: boolean
     createdAt: Date
   }, ExtArgs["result"]["roleAssignment"]>
@@ -1403,6 +1449,7 @@ export interface RoleAssignmentFieldRefs {
   readonly grantedBy: Prisma.FieldRef<"RoleAssignment", 'String'>
   readonly expiresAt: Prisma.FieldRef<"RoleAssignment", 'DateTime'>
   readonly status: Prisma.FieldRef<"RoleAssignment", 'GeneralStatus'>
+  readonly onHold: Prisma.FieldRef<"RoleAssignment", 'Boolean'>
   readonly isActive: Prisma.FieldRef<"RoleAssignment", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"RoleAssignment", 'DateTime'>
 }

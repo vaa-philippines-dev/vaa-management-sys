@@ -216,8 +216,12 @@ enum DepartmentLevel {
 
 enum GeneralStatus {
   ACTIVE
-  INACTIVE
-  ON_HOLD
+  PENDING
+  TRANSFERRED
+  RESIGNED
+  REMOVED
+  PROJECT_ENDED
+  CANCELLED
 }
 
 // ──────────────────────────────────────────────────────────────────
@@ -225,28 +229,28 @@ enum GeneralStatus {
 // ──────────────────────────────────────────────────────────────────
 
 model Department {
-  id           String   @id @default(cuid())
+  id           String           @id @default(cuid())
   name         String
-  shortName    String?  @map("short_name")
+  shortName    String?          @map("short_name")
   acronym      String?
   level        DepartmentLevel?
   status       DepartmentStatus @default(ACTIVE)
-  parentId     String?  @map("parent_id")
-  parent       Department?  @relation("DeptHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
-  children     Department[]  @relation("DeptHierarchy")
-  mergedIntoId String?  @map("merged_into_id")
-  mergedInto   Department?  @relation("DepartmentMerge", fields: [mergedIntoId], references: [id], onDelete: SetNull)
-  mergedFrom   Department[]  @relation("DepartmentMerge")
-  splitFromId  String?  @map("split_from_id")
-  splitFrom    Department?  @relation("DepartmentSplit", fields: [splitFromId], references: [id], onDelete: SetNull)
-  splitInto    Department[]  @relation("DepartmentSplit")
-  isParent     Boolean  @default(false) @map("is_parent")
+  parentId     String?          @map("parent_id")
+  parent       Department?      @relation("DeptHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children     Department[]     @relation("DeptHierarchy")
+  mergedIntoId String?          @map("merged_into_id")
+  mergedInto   Department?      @relation("DepartmentMerge", fields: [mergedIntoId], references: [id], onDelete: SetNull)
+  mergedFrom   Department[]     @relation("DepartmentMerge")
+  splitFromId  String?          @map("split_from_id")
+  splitFrom    Department?      @relation("DepartmentSplit", fields: [splitFromId], references: [id], onDelete: SetNull)
+  splitInto    Department[]     @relation("DepartmentSplit")
+  isParent     Boolean          @default(false) @map("is_parent")
   description  String?
-  headId       String?  @map("head_id")
-  head         User?    @relation("DeptHead", fields: [headId], references: [id], onDelete: SetNull)
-  sortOrder    Int      @default(0) @map("sort_order")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  headId       String?          @map("head_id")
+  head         User?            @relation("DeptHead", fields: [headId], references: [id], onDelete: SetNull)
+  sortOrder    Int              @default(0) @map("sort_order")
+  createdAt    DateTime         @default(now()) @map("created_at")
+  updatedAt    DateTime         @updatedAt @map("updated_at")
 
   memberships       DepartmentMembership[]
   positions         Position[]
@@ -264,16 +268,17 @@ model Department {
 }
 
 model Position {
-  id           String   @id @default(cuid())
+  id           String        @id @default(cuid())
   title        String
-  reportsToId  String?  @map("reports_to_id")
-  reportsTo    Position? @relation("PositionChain", fields: [reportsToId], references: [id], onDelete: SetNull)
-  subordinates Position[] @relation("PositionChain")
-  departmentId String?  @map("department_id")
-  department   Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  reportsToId  String?       @map("reports_to_id")
+  reportsTo    Position?     @relation("PositionChain", fields: [reportsToId], references: [id], onDelete: SetNull)
+  subordinates Position[]    @relation("PositionChain")
+  departmentId String?       @map("department_id")
+  department   Department?   @relation(fields: [departmentId], references: [id], onDelete: SetNull)
   isStaffRole  Boolean       @default(false) @map("is_staff_role")
   sortOrder    Int           @default(0) @map("sort_order")
   status       GeneralStatus @default(ACTIVE) @map("general_status")
+  onHold       Boolean       @default(false) @map("on_hold")
   isActive     Boolean       @default(true) @map("is_active")
   createdAt    DateTime      @default(now()) @map("created_at")
   updatedAt    DateTime      @updatedAt @map("updated_at")
@@ -284,24 +289,24 @@ model Position {
 }
 
 model DepartmentMembership {
-  id              String        @id @default(cuid())
-  userId          String        @map("user_id")
-  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  departmentId    String        @map("department_id")
-  department      Department    @relation(fields: [departmentId], references: [id], onDelete: Cascade)
-  positionId      String?       @map("position_id")
-  position        Position?     @relation(fields: [positionId], references: [id], onDelete: SetNull)
-  isPrimary       Boolean       @default(false) @map("is_primary")
-  hourlyRate      Decimal?      @map("hourly_rate")
-  baseRate        Decimal?      @map("base_rate")
-  transferType    TransferType? @map("transfer_type")
-  transferredFromId String?     @map("transferred_from_id")
-  transferredFrom DepartmentMembership?  @relation("MembershipTransferChain", fields: [transferredFromId], references: [id], onDelete: SetNull)
-  transferredTo   DepartmentMembership[] @relation("MembershipTransferChain")
-  startedAt       DateTime      @default(now()) @map("started_at")
-  endedAt         DateTime?     @map("ended_at")
-  createdAt       DateTime      @default(now()) @map("created_at")
-  updatedAt       DateTime      @updatedAt @map("updated_at")
+  id                String                 @id @default(cuid())
+  userId            String                 @map("user_id")
+  user              User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  departmentId      String                 @map("department_id")
+  department        Department             @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  positionId        String?                @map("position_id")
+  position          Position?              @relation(fields: [positionId], references: [id], onDelete: SetNull)
+  isPrimary         Boolean                @default(false) @map("is_primary")
+  hourlyRate        Decimal?               @map("hourly_rate")
+  baseRate          Decimal?               @map("base_rate")
+  transferType      TransferType?          @map("transfer_type")
+  transferredFromId String?                @map("transferred_from_id")
+  transferredFrom   DepartmentMembership?  @relation("MembershipTransferChain", fields: [transferredFromId], references: [id], onDelete: SetNull)
+  transferredTo     DepartmentMembership[] @relation("MembershipTransferChain")
+  startedAt         DateTime               @default(now()) @map("started_at")
+  endedAt           DateTime?              @map("ended_at")
+  createdAt         DateTime               @default(now()) @map("created_at")
+  updatedAt         DateTime               @updatedAt @map("updated_at")
 
   @@index([userId, departmentId])
   @@map("department_memberships")
@@ -312,8 +317,8 @@ model DepartmentMembership {
 // ──────────────────────────────────────────────────────────────────
 
 model User {
-  id         String     @id @default(cuid())
-  email      String     @unique
+  id         String        @id @default(cuid())
+  email      String        @unique
   firstName  String        @map("first_name")
   middleName String?       @map("middle_name")
   lastName   String        @map("last_name")
@@ -322,29 +327,31 @@ model User {
   userType   UserType      @map("user_type")
   avatarUrl  String?       @map("avatar_url")
   status     GeneralStatus @default(ACTIVE) @map("general_status")
+  onHold     Boolean       @default(false) @map("on_hold")
   isActive   Boolean       @default(true) @map("is_active")
   createdAt  DateTime      @default(now()) @map("created_at")
   updatedAt  DateTime      @updatedAt @map("updated_at")
 
-  profile            UserProfile?
-  vaProfile          VAProfile?
-  departmentHead     Department[]       @relation("DeptHead")
-  memberships        DepartmentMembership[]
-  employmentRecords  EmploymentRecord[]
-  employmentRecordsInitiated EmploymentRecord[] @relation("EmploymentInitiator")
-  roleAssignments    RoleAssignment[]
-  grantedRoleAssignments RoleAssignment[] @relation("RoleGranter")
-  leaveRequests      LeaveRequest[]     @relation("LeaveRequestor")
-  approvedLeaves     LeaveRequest[]     @relation("LeaveApprover")
-  managedClients     Client[]           @relation("ClientManager")
-  uploadedDocuments  VADocument[]       @relation("DocUploader")
-  createdTickets     Ticket[]           @relation("TicketCreator")
-  assignedTickets    Ticket[]           @relation("TicketAssignee")
-  ticketConversations TicketConversation[]
-  auditLogs          AuditLog[]
-  vaHistoryEvents    VAHistory[]        @relation("VAHistoryUser")
-  vaHistoryChanges   VAHistory[]        @relation("VAHistoryChangedBy")
-  notifications      Notification[]
+  profile                    UserProfile?
+  vaProfile                  VAProfile?
+  departmentHead             Department[]           @relation("DeptHead")
+  memberships                DepartmentMembership[]
+  employmentRecords          EmploymentRecord[]
+  employmentRecordsInitiated EmploymentRecord[]     @relation("EmploymentInitiator")
+  roleAssignments            RoleAssignment[]
+  grantedRoleAssignments     RoleAssignment[]       @relation("RoleGranter")
+  leaveRequests              LeaveRequest[]         @relation("LeaveRequestor")
+  approvedLeaves             LeaveRequest[]         @relation("LeaveApprover")
+  managedClients             Client[]               @relation("ClientManager")
+  uploadedDocuments          VADocument[]           @relation("DocUploader")
+  createdTickets             Ticket[]               @relation("TicketCreator")
+  assignedTickets            Ticket[]               @relation("TicketAssignee")
+  ticketConversations        TicketConversation[]
+  auditLogs                  AuditLog[]
+  vaHistoryEvents            VAHistory[]            @relation("VAHistoryUser")
+  vaHistoryChanges           VAHistory[]            @relation("VAHistoryChangedBy")
+  notifications              Notification[]
+  sidebarFavorites           SidebarFavorite[]
 
   @@index([email])
   @@index([systemRole])
@@ -353,44 +360,44 @@ model User {
 }
 
 model UserProfile {
-  id                       String   @id @default(cuid())
-  userId                   String   @unique @map("user_id")
-  user                     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                       String    @id @default(cuid())
+  userId                   String    @unique @map("user_id")
+  user                     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   phone                    String?
-  whatsappNumber           String?  @map("whatsapp_number")
+  whatsappNumber           String?   @map("whatsapp_number")
   gender                   String?
   birthDate                DateTime? @map("birth_date")
-  nonCelebrant             Boolean  @default(false) @map("non_celebrant")
-  birthdayCelebrant        Boolean  @default(true) @map("birthday_celebrant")
+  nonCelebrant             Boolean   @default(false) @map("non_celebrant")
+  birthdayCelebrant        Boolean   @default(true) @map("birthday_celebrant")
   barangay                 String?
-  cityMunicipality         String?  @map("city_municipality")
+  cityMunicipality         String?   @map("city_municipality")
   province                 String?
-  zipCode                  String?  @map("zip_code")
+  zipCode                  String?   @map("zip_code")
   landmark                 String?
   address                  String?
-  addressLine              String?  @map("address_line")
-  emergencyContactName     String?  @map("emergency_contact_name")
-  emergencyContactPhone    String?  @map("emergency_contact_phone")
-  emergencyContactRelation String?  @map("emergency_contact_relation")
-  gcashNumber              String?  @map("gcash_number")
-  personalEmail            String?  @map("personal_email")
-  workEmail                String?  @map("work_email")
-  regionCode               String?  @map("region_code")
-  provinceCode             String?  @map("province_code")
-  cityCode                 String?  @map("city_code")
-  barangayCode             String?  @map("barangay_code")
-  facebookName             String?  @map("facebook_name")
-  facebookUrl              String?  @map("facebook_url")
-  linkedinUrl              String?  @map("linkedin_url")
-  payoneerAccount          String?  @map("payoneer_account")
-  passportNumber           String?  @map("passport_number")
-  passportPhoto            String?  @map("passport_photo")
-  philhealthNumber         String?  @map("philhealth_number")
-  philhealthPhoto          String?  @map("philhealth_photo")
-  signedContract           String?  @map("signed_contract")
-  personalityTraits        String[] @map("personality_traits")
-  createdAt                DateTime @default(now()) @map("created_at")
-  updatedAt                DateTime @updatedAt @map("updated_at")
+  addressLine              String?   @map("address_line")
+  emergencyContactName     String?   @map("emergency_contact_name")
+  emergencyContactPhone    String?   @map("emergency_contact_phone")
+  emergencyContactRelation String?   @map("emergency_contact_relation")
+  gcashNumber              String?   @map("gcash_number")
+  personalEmail            String?   @map("personal_email")
+  workEmail                String?   @map("work_email")
+  regionCode               String?   @map("region_code")
+  provinceCode             String?   @map("province_code")
+  cityCode                 String?   @map("city_code")
+  barangayCode             String?   @map("barangay_code")
+  facebookName             String?   @map("facebook_name")
+  facebookUrl              String?   @map("facebook_url")
+  linkedinUrl              String?   @map("linkedin_url")
+  payoneerAccount          String?   @map("payoneer_account")
+  passportNumber           String?   @map("passport_number")
+  passportPhoto            String?   @map("passport_photo")
+  philhealthNumber         String?   @map("philhealth_number")
+  philhealthPhoto          String?   @map("philhealth_photo")
+  signedContract           String?   @map("signed_contract")
+  personalityTraits        String[]  @map("personality_traits")
+  createdAt                DateTime  @default(now()) @map("created_at")
+  updatedAt                DateTime  @updatedAt @map("updated_at")
 
   @@map("user_profiles")
 }
@@ -433,6 +440,7 @@ model RoleAssignment {
   grantor      User          @relation("RoleGranter", fields: [grantedBy], references: [id], onDelete: Cascade)
   expiresAt    DateTime?     @map("expires_at")
   status       GeneralStatus @default(ACTIVE) @map("general_status")
+  onHold       Boolean       @default(false) @map("on_hold")
   isActive     Boolean       @default(true) @map("is_active")
   createdAt    DateTime      @default(now()) @map("created_at")
 
@@ -444,40 +452,41 @@ model RoleAssignment {
 // ──────────────────────────────────────────────────────────────────
 
 model VAProfile {
-  id                  String       @id @default(cuid())
-  userId              String       @unique @map("user_id")
-  user                User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  hourlyRate          Decimal?     @map("hourly_rate")
-  baseRate            Decimal?     @map("base_rate")
-  vaaPosition         String?      @map("vaa_position")
+  id                  String            @id @default(cuid())
+  userId              String            @unique @map("user_id")
+  user                User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hourlyRate          Decimal?          @map("hourly_rate")
+  baseRate            Decimal?          @map("base_rate")
+  vaaPosition         String?           @map("vaa_position")
   level               String?
-  availabilityStatus  Availability @default(AVAILABLE) @map("availability_status")
-  recommendability    String?      @map("recommendability")
-  totalCapacityHours  Decimal?     @default(40) @map("total_capacity_hours")
-  preferredWorkHours  Decimal?     @map("preferred_work_hours")
-  availableSchedule   String?      @map("available_schedule")
-  hybrid              Boolean      @default(false)
-  onboardingFolderUrl String?      @map("onboarding_folder_url")
-  portfolioUrl        String?      @map("portfolio_url")
-  contractLink        String?      @map("contract_link")
-  folder201Link       String?      @map("folder_201_link")
-  file201Link         String?      @map("file_201_link")
-  vaClientFileLink    String?      @map("va_client_file_link")
-  healthCheckFileLink String?      @map("health_check_file_link")
-  vaProfileLink       String?      @map("va_profile_link")
-  payoutSummaryLink   String?      @map("payout_summary_link")
-  dept201FolderLink   String?      @map("dept_201_folder_link")
+  availabilityStatus  Availability      @default(AVAILABLE) @map("availability_status")
+  recommendability    String?           @map("recommendability")
+  totalCapacityHours  Decimal?          @default(40) @map("total_capacity_hours")
+  preferredWorkHours  Decimal?          @map("preferred_work_hours")
+  availableSchedule   String?           @map("available_schedule")
+  hybrid              Boolean           @default(false)
+  onboardingFolderUrl String?           @map("onboarding_folder_url")
+  portfolioUrl        String?           @map("portfolio_url")
+  contractLink        String?           @map("contract_link")
+  folder201Link       String?           @map("folder_201_link")
+  file201Link         String?           @map("file_201_link")
+  vaClientFileLink    String?           @map("va_client_file_link")
+  healthCheckFileLink String?           @map("health_check_file_link")
+  vaProfileLink       String?           @map("va_profile_link")
+  payoutSummaryLink   String?           @map("payout_summary_link")
+  dept201FolderLink   String?           @map("dept_201_folder_link")
   notes               String?
-  status              GeneralStatus  @default(ACTIVE)   @map("general_status")
-  engagementStatus    EmploymentStatus?               @map("engagement_status")
-  isActive            Boolean         @default(true)   @map("is_active")
-  createdAt           DateTime        @default(now())  @map("created_at")
-  updatedAt           DateTime        @updatedAt       @map("updated_at")
+  status              GeneralStatus     @default(ACTIVE) @map("general_status")
+  onHold              Boolean           @default(false) @map("on_hold")
+  engagementStatus    EmploymentStatus? @map("engagement_status")
+  isActive            Boolean           @default(true) @map("is_active")
+  createdAt           DateTime          @default(now()) @map("created_at")
+  updatedAt           DateTime          @updatedAt @map("updated_at")
 
-  assignments   Assignment[]
-  workLogs      WorkLog[]
-  vaSkills      VASkill[]
-  documents     VADocument[]
+  assignments Assignment[]
+  workLogs    WorkLog[]
+  vaSkills    VASkill[]
+  documents   VADocument[]
 
   @@index([availabilityStatus])
   @@map("va_profiles")
@@ -504,16 +513,16 @@ model VAHistory {
 }
 
 model Skill {
-  id              String        @id @default(cuid())
-  name            String        @unique
-  shortName       String?       @map("short_name")
-  acronym         String?       @unique
-  category        SkillCategory @default(STANDARD)
-  jobDescription  String?       @map("job_description")
-  attachmentUrl   String?       @map("attachment_url")
-  isActive        Boolean       @default(true) @map("is_active")
-  createdAt       DateTime      @default(now()) @map("created_at")
-  updatedAt       DateTime      @updatedAt @map("updated_at")
+  id             String        @id @default(cuid())
+  name           String        @unique
+  shortName      String?       @map("short_name")
+  acronym        String?       @unique
+  category       SkillCategory @default(STANDARD)
+  jobDescription String?       @map("job_description")
+  attachmentUrl  String?       @map("attachment_url")
+  isActive       Boolean       @default(true) @map("is_active")
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
 
   vaSkills    VASkill[]
   departments DepartmentSkill[]
@@ -568,22 +577,22 @@ model VADocument {
 }
 
 model LeaveRequest {
-  id              String      @id @default(cuid())
-  userId          String      @map("user_id")
-  user            User        @relation("LeaveRequestor", fields: [userId], references: [id], onDelete: Cascade)
-  leaveType       LeaveType   @map("leave_type")
-  startDate       DateTime    @map("start_date")
-  endDate         DateTime    @map("end_date")
-  totalDays       Decimal     @map("total_days")
-  reason          String?
-  status          LeaveStatus @default(PENDING)
-  approverId      String?     @map("approver_id")
-  approver        User?       @relation("LeaveApprover", fields: [approverId], references: [id], onDelete: SetNull)
-  approvedAt      DateTime?   @map("approved_at")
-  approverNote    String?     @map("approver_note")
-  notificationSent Boolean    @default(false) @map("notification_sent")
-  createdAt       DateTime    @default(now()) @map("created_at")
-  updatedAt       DateTime    @updatedAt @map("updated_at")
+  id               String      @id @default(cuid())
+  userId           String      @map("user_id")
+  user             User        @relation("LeaveRequestor", fields: [userId], references: [id], onDelete: Cascade)
+  leaveType        LeaveType   @map("leave_type")
+  startDate        DateTime    @map("start_date")
+  endDate          DateTime    @map("end_date")
+  totalDays        Decimal     @map("total_days")
+  reason           String?
+  status           LeaveStatus @default(PENDING)
+  approverId       String?     @map("approver_id")
+  approver         User?       @relation("LeaveApprover", fields: [approverId], references: [id], onDelete: SetNull)
+  approvedAt       DateTime?   @map("approved_at")
+  approverNote     String?     @map("approver_note")
+  notificationSent Boolean     @default(false) @map("notification_sent")
+  createdAt        DateTime    @default(now()) @map("created_at")
+  updatedAt        DateTime    @updatedAt @map("updated_at")
 
   @@index([userId])
   @@index([status])
@@ -605,6 +614,7 @@ model Client {
   timezone            String?        @default("America/New_York")
   notes               String?
   status              GeneralStatus  @default(ACTIVE) @map("general_status")
+  onHold              Boolean        @default(false) @map("on_hold")
   isActive            Boolean        @default(true) @map("is_active")
   managerId           String?        @map("manager_id")
   manager             User?          @relation("ClientManager", fields: [managerId], references: [id], onDelete: SetNull)
@@ -623,17 +633,17 @@ model Client {
 }
 
 model Assignment {
-  id               String           @id @default(cuid())
-  type             AssignmentType
-  status           AssignmentStatus @default(ACTIVE)
-  agreedHours      Decimal          @map("agreed_hours")
-  monthlyHours     Decimal?         @map("monthly_hours")
-  startDate        DateTime         @map("start_date")
-  endDate          DateTime?        @map("end_date")
-  notes            String?
+  id                String           @id @default(cuid())
+  type              AssignmentType
+  status            AssignmentStatus @default(ACTIVE)
+  agreedHours       Decimal          @map("agreed_hours")
+  monthlyHours      Decimal?         @map("monthly_hours")
+  startDate         DateTime         @map("start_date")
+  endDate           DateTime?        @map("end_date")
+  notes             String?
   skillRequirements String[]         @map("skill_requirements")
-  createdAt        DateTime         @default(now()) @map("created_at")
-  updatedAt        DateTime         @updatedAt @map("updated_at")
+  createdAt         DateTime         @default(now()) @map("created_at")
+  updatedAt         DateTime         @updatedAt @map("updated_at")
 
   vaProfileId String    @map("va_profile_id")
   vaProfile   VAProfile @relation(fields: [vaProfileId], references: [id], onDelete: Cascade)
@@ -722,18 +732,18 @@ model TicketConversation {
 // ──────────────────────────────────────────────────────────────────
 
 model AuditLog {
-  id           String     @id @default(cuid())
-  actorId      String     @map("actor_id")
-  actor        User       @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  id           String      @id @default(cuid())
+  actorId      String      @map("actor_id")
+  actor        User        @relation(fields: [actorId], references: [id], onDelete: Cascade)
   action       AuditAction
-  entityType   String     @map("entity_type")
-  entityId     String     @map("entity_id")
-  oldValues    Json?      @map("old_values")
-  newValues    Json?      @map("new_values")
+  entityType   String      @map("entity_type")
+  entityId     String      @map("entity_id")
+  oldValues    Json?       @map("old_values")
+  newValues    Json?       @map("new_values")
   metadata     Json?
-  departmentId String?    @map("department_id")
+  departmentId String?     @map("department_id")
   department   Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
-  createdAt    DateTime   @default(now()) @map("created_at")
+  createdAt    DateTime    @default(now()) @map("created_at")
 
   @@index([entityType, entityId, createdAt])
   @@index([actorId, createdAt])
@@ -741,17 +751,42 @@ model AuditLog {
 }
 
 model Notification {
-  id           String           @id @default(cuid())
-  recipientId  String           @map("recipient_id")
-  recipient    User             @relation(fields: [recipientId], references: [id], onDelete: Cascade)
-  type         NotificationType
-  title        String
-  message      String
-  entityType   String?          @map("entity_type")
-  entityId     String?          @map("entity_id")
-  read         Boolean          @default(false)
-  createdAt    DateTime         @default(now()) @map("created_at")
+  id          String           @id @default(cuid())
+  recipientId String           @map("recipient_id")
+  recipient   User             @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  type        NotificationType
+  title       String
+  message     String
+  entityType  String?          @map("entity_type")
+  entityId    String?          @map("entity_id")
+  read        Boolean          @default(false)
+  createdAt   DateTime         @default(now()) @map("created_at")
 
   @@index([recipientId, read, createdAt])
   @@map("notifications")
+}
+
+// ──────────────────────────────────────────────────────────────────
+// MODELS — Sidebar Favorites
+// ──────────────────────────────────────────────────────────────────
+
+enum FavoriteColor {
+  YELLOW
+  BLUE
+  RED
+}
+
+model SidebarFavorite {
+  id         String        @id @default(cuid())
+  userId     String        @map("user_id")
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  href       String
+  label      String
+  color      FavoriteColor
+  isFeatured Boolean       @default(false) @map("is_featured")
+  createdAt  DateTime      @default(now()) @map("created_at")
+
+  @@unique([userId, href])
+  @@index([userId])
+  @@map("sidebar_favorites")
 }

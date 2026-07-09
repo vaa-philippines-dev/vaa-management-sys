@@ -35,6 +35,7 @@ export type UserMinAggregateOutputType = {
   userType: $Enums.UserType | null
   avatarUrl: string | null
   status: $Enums.GeneralStatus | null
+  onHold: boolean | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -51,6 +52,7 @@ export type UserMaxAggregateOutputType = {
   userType: $Enums.UserType | null
   avatarUrl: string | null
   status: $Enums.GeneralStatus | null
+  onHold: boolean | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -67,6 +69,7 @@ export type UserCountAggregateOutputType = {
   userType: number
   avatarUrl: number
   status: number
+  onHold: number
   isActive: number
   createdAt: number
   updatedAt: number
@@ -85,6 +88,7 @@ export type UserMinAggregateInputType = {
   userType?: true
   avatarUrl?: true
   status?: true
+  onHold?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -101,6 +105,7 @@ export type UserMaxAggregateInputType = {
   userType?: true
   avatarUrl?: true
   status?: true
+  onHold?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -117,6 +122,7 @@ export type UserCountAggregateInputType = {
   userType?: true
   avatarUrl?: true
   status?: true
+  onHold?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -206,6 +212,7 @@ export type UserGroupByOutputType = {
   userType: $Enums.UserType
   avatarUrl: string | null
   status: $Enums.GeneralStatus
+  onHold: boolean
   isActive: boolean
   createdAt: Date
   updatedAt: Date
@@ -243,6 +250,7 @@ export type UserWhereInput = {
   userType?: Prisma.EnumUserTypeFilter<"User"> | $Enums.UserType
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   status?: Prisma.EnumGeneralStatusFilter<"User"> | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFilter<"User"> | boolean
   isActive?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -265,6 +273,7 @@ export type UserWhereInput = {
   vaHistoryEvents?: Prisma.VAHistoryListRelationFilter
   vaHistoryChanges?: Prisma.VAHistoryListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
+  sidebarFavorites?: Prisma.SidebarFavoriteListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -278,6 +287,7 @@ export type UserOrderByWithRelationInput = {
   userType?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -300,6 +310,7 @@ export type UserOrderByWithRelationInput = {
   vaHistoryEvents?: Prisma.VAHistoryOrderByRelationAggregateInput
   vaHistoryChanges?: Prisma.VAHistoryOrderByRelationAggregateInput
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
+  sidebarFavorites?: Prisma.SidebarFavoriteOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -316,6 +327,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   userType?: Prisma.EnumUserTypeFilter<"User"> | $Enums.UserType
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
   status?: Prisma.EnumGeneralStatusFilter<"User"> | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFilter<"User"> | boolean
   isActive?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -338,6 +350,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   vaHistoryEvents?: Prisma.VAHistoryListRelationFilter
   vaHistoryChanges?: Prisma.VAHistoryListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
+  sidebarFavorites?: Prisma.SidebarFavoriteListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -351,6 +364,7 @@ export type UserOrderByWithAggregationInput = {
   userType?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -373,6 +387,7 @@ export type UserScalarWhereWithAggregatesInput = {
   userType?: Prisma.EnumUserTypeWithAggregatesFilter<"User"> | $Enums.UserType
   avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   status?: Prisma.EnumGeneralStatusWithAggregatesFilter<"User"> | $Enums.GeneralStatus
+  onHold?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   isActive?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -389,6 +404,7 @@ export type UserCreateInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -411,6 +427,7 @@ export type UserCreateInput = {
   vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -424,6 +441,7 @@ export type UserUncheckedCreateInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -446,6 +464,7 @@ export type UserUncheckedCreateInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -459,6 +478,7 @@ export type UserUpdateInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -481,6 +501,7 @@ export type UserUpdateInput = {
   vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -494,6 +515,7 @@ export type UserUncheckedUpdateInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -516,6 +538,7 @@ export type UserUncheckedUpdateInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -529,6 +552,7 @@ export type UserCreateManyInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -545,6 +569,7 @@ export type UserUpdateManyMutationInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -561,6 +586,7 @@ export type UserUncheckedUpdateManyInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -587,6 +613,7 @@ export type UserCountOrderByAggregateInput = {
   userType?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -603,6 +630,7 @@ export type UserMaxOrderByAggregateInput = {
   userType?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -619,6 +647,7 @@ export type UserMinOrderByAggregateInput = {
   userType?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -908,6 +937,20 @@ export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutNotificationsInput, Prisma.UserUpdateWithoutNotificationsInput>, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
 }
 
+export type UserCreateNestedOneWithoutSidebarFavoritesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSidebarFavoritesInput, Prisma.UserUncheckedCreateWithoutSidebarFavoritesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSidebarFavoritesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSidebarFavoritesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSidebarFavoritesInput, Prisma.UserUncheckedCreateWithoutSidebarFavoritesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSidebarFavoritesInput
+  upsert?: Prisma.UserUpsertWithoutSidebarFavoritesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSidebarFavoritesInput, Prisma.UserUpdateWithoutSidebarFavoritesInput>, Prisma.UserUncheckedUpdateWithoutSidebarFavoritesInput>
+}
+
 export type UserCreateWithoutDepartmentHeadInput = {
   id?: string
   email: string
@@ -919,6 +962,7 @@ export type UserCreateWithoutDepartmentHeadInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -940,6 +984,7 @@ export type UserCreateWithoutDepartmentHeadInput = {
   vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDepartmentHeadInput = {
@@ -953,6 +998,7 @@ export type UserUncheckedCreateWithoutDepartmentHeadInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -974,6 +1020,7 @@ export type UserUncheckedCreateWithoutDepartmentHeadInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDepartmentHeadInput = {
@@ -1003,6 +1050,7 @@ export type UserUpdateWithoutDepartmentHeadInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1024,6 +1072,7 @@ export type UserUpdateWithoutDepartmentHeadInput = {
   vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDepartmentHeadInput = {
@@ -1037,6 +1086,7 @@ export type UserUncheckedUpdateWithoutDepartmentHeadInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1058,6 +1108,7 @@ export type UserUncheckedUpdateWithoutDepartmentHeadInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMembershipsInput = {
@@ -1071,6 +1122,7 @@ export type UserCreateWithoutMembershipsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1092,6 +1144,7 @@ export type UserCreateWithoutMembershipsInput = {
   vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMembershipsInput = {
@@ -1105,6 +1158,7 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1126,6 +1180,7 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMembershipsInput = {
@@ -1155,6 +1210,7 @@ export type UserUpdateWithoutMembershipsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1176,6 +1232,7 @@ export type UserUpdateWithoutMembershipsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMembershipsInput = {
@@ -1189,6 +1246,7 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1210,6 +1268,7 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutProfileInput = {
@@ -1223,6 +1282,7 @@ export type UserCreateWithoutProfileInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1244,6 +1304,7 @@ export type UserCreateWithoutProfileInput = {
   vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProfileInput = {
@@ -1257,6 +1318,7 @@ export type UserUncheckedCreateWithoutProfileInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1278,6 +1340,7 @@ export type UserUncheckedCreateWithoutProfileInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProfileInput = {
@@ -1307,6 +1370,7 @@ export type UserUpdateWithoutProfileInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1328,6 +1392,7 @@ export type UserUpdateWithoutProfileInput = {
   vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProfileInput = {
@@ -1341,6 +1406,7 @@ export type UserUncheckedUpdateWithoutProfileInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1362,6 +1428,7 @@ export type UserUncheckedUpdateWithoutProfileInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutEmploymentRecordsInput = {
@@ -1375,6 +1442,7 @@ export type UserCreateWithoutEmploymentRecordsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1396,6 +1464,7 @@ export type UserCreateWithoutEmploymentRecordsInput = {
   vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutEmploymentRecordsInput = {
@@ -1409,6 +1478,7 @@ export type UserUncheckedCreateWithoutEmploymentRecordsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1430,6 +1500,7 @@ export type UserUncheckedCreateWithoutEmploymentRecordsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutEmploymentRecordsInput = {
@@ -1448,6 +1519,7 @@ export type UserCreateWithoutEmploymentRecordsInitiatedInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1469,6 +1541,7 @@ export type UserCreateWithoutEmploymentRecordsInitiatedInput = {
   vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutEmploymentRecordsInitiatedInput = {
@@ -1482,6 +1555,7 @@ export type UserUncheckedCreateWithoutEmploymentRecordsInitiatedInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1503,6 +1577,7 @@ export type UserUncheckedCreateWithoutEmploymentRecordsInitiatedInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutEmploymentRecordsInitiatedInput = {
@@ -1532,6 +1607,7 @@ export type UserUpdateWithoutEmploymentRecordsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1553,6 +1629,7 @@ export type UserUpdateWithoutEmploymentRecordsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmploymentRecordsInput = {
@@ -1566,6 +1643,7 @@ export type UserUncheckedUpdateWithoutEmploymentRecordsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1587,6 +1665,7 @@ export type UserUncheckedUpdateWithoutEmploymentRecordsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutEmploymentRecordsInitiatedInput = {
@@ -1611,6 +1690,7 @@ export type UserUpdateWithoutEmploymentRecordsInitiatedInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1632,6 +1712,7 @@ export type UserUpdateWithoutEmploymentRecordsInitiatedInput = {
   vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmploymentRecordsInitiatedInput = {
@@ -1645,6 +1726,7 @@ export type UserUncheckedUpdateWithoutEmploymentRecordsInitiatedInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1666,6 +1748,7 @@ export type UserUncheckedUpdateWithoutEmploymentRecordsInitiatedInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRoleAssignmentsInput = {
@@ -1679,6 +1762,7 @@ export type UserCreateWithoutRoleAssignmentsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1700,6 +1784,7 @@ export type UserCreateWithoutRoleAssignmentsInput = {
   vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRoleAssignmentsInput = {
@@ -1713,6 +1798,7 @@ export type UserUncheckedCreateWithoutRoleAssignmentsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1734,6 +1820,7 @@ export type UserUncheckedCreateWithoutRoleAssignmentsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRoleAssignmentsInput = {
@@ -1752,6 +1839,7 @@ export type UserCreateWithoutGrantedRoleAssignmentsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1773,6 +1861,7 @@ export type UserCreateWithoutGrantedRoleAssignmentsInput = {
   vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutGrantedRoleAssignmentsInput = {
@@ -1786,6 +1875,7 @@ export type UserUncheckedCreateWithoutGrantedRoleAssignmentsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1807,6 +1897,7 @@ export type UserUncheckedCreateWithoutGrantedRoleAssignmentsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutGrantedRoleAssignmentsInput = {
@@ -1836,6 +1927,7 @@ export type UserUpdateWithoutRoleAssignmentsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1857,6 +1949,7 @@ export type UserUpdateWithoutRoleAssignmentsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRoleAssignmentsInput = {
@@ -1870,6 +1963,7 @@ export type UserUncheckedUpdateWithoutRoleAssignmentsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1891,6 +1985,7 @@ export type UserUncheckedUpdateWithoutRoleAssignmentsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutGrantedRoleAssignmentsInput = {
@@ -1915,6 +2010,7 @@ export type UserUpdateWithoutGrantedRoleAssignmentsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1936,6 +2032,7 @@ export type UserUpdateWithoutGrantedRoleAssignmentsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGrantedRoleAssignmentsInput = {
@@ -1949,6 +2046,7 @@ export type UserUncheckedUpdateWithoutGrantedRoleAssignmentsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1970,6 +2068,7 @@ export type UserUncheckedUpdateWithoutGrantedRoleAssignmentsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutVaProfileInput = {
@@ -1983,6 +2082,7 @@ export type UserCreateWithoutVaProfileInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2004,6 +2104,7 @@ export type UserCreateWithoutVaProfileInput = {
   vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutVaProfileInput = {
@@ -2017,6 +2118,7 @@ export type UserUncheckedCreateWithoutVaProfileInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2038,6 +2140,7 @@ export type UserUncheckedCreateWithoutVaProfileInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutVaProfileInput = {
@@ -2067,6 +2170,7 @@ export type UserUpdateWithoutVaProfileInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2088,6 +2192,7 @@ export type UserUpdateWithoutVaProfileInput = {
   vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVaProfileInput = {
@@ -2101,6 +2206,7 @@ export type UserUncheckedUpdateWithoutVaProfileInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2122,6 +2228,7 @@ export type UserUncheckedUpdateWithoutVaProfileInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutVaHistoryEventsInput = {
@@ -2135,6 +2242,7 @@ export type UserCreateWithoutVaHistoryEventsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2156,6 +2264,7 @@ export type UserCreateWithoutVaHistoryEventsInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
   vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutVaHistoryEventsInput = {
@@ -2169,6 +2278,7 @@ export type UserUncheckedCreateWithoutVaHistoryEventsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2190,6 +2300,7 @@ export type UserUncheckedCreateWithoutVaHistoryEventsInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutVaHistoryEventsInput = {
@@ -2208,6 +2319,7 @@ export type UserCreateWithoutVaHistoryChangesInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2229,6 +2341,7 @@ export type UserCreateWithoutVaHistoryChangesInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
   vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutVaHistoryChangesInput = {
@@ -2242,6 +2355,7 @@ export type UserUncheckedCreateWithoutVaHistoryChangesInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2263,6 +2377,7 @@ export type UserUncheckedCreateWithoutVaHistoryChangesInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
   vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutVaHistoryChangesInput = {
@@ -2292,6 +2407,7 @@ export type UserUpdateWithoutVaHistoryEventsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2313,6 +2429,7 @@ export type UserUpdateWithoutVaHistoryEventsInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVaHistoryEventsInput = {
@@ -2326,6 +2443,7 @@ export type UserUncheckedUpdateWithoutVaHistoryEventsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2347,6 +2465,7 @@ export type UserUncheckedUpdateWithoutVaHistoryEventsInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutVaHistoryChangesInput = {
@@ -2371,6 +2490,7 @@ export type UserUpdateWithoutVaHistoryChangesInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2392,6 +2512,7 @@ export type UserUpdateWithoutVaHistoryChangesInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
   vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVaHistoryChangesInput = {
@@ -2405,6 +2526,7 @@ export type UserUncheckedUpdateWithoutVaHistoryChangesInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2426,6 +2548,7 @@ export type UserUncheckedUpdateWithoutVaHistoryChangesInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
   vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutUploadedDocumentsInput = {
@@ -2439,6 +2562,7 @@ export type UserCreateWithoutUploadedDocumentsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2460,6 +2584,7 @@ export type UserCreateWithoutUploadedDocumentsInput = {
   vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUploadedDocumentsInput = {
@@ -2473,6 +2598,7 @@ export type UserUncheckedCreateWithoutUploadedDocumentsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2494,6 +2620,7 @@ export type UserUncheckedCreateWithoutUploadedDocumentsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUploadedDocumentsInput = {
@@ -2523,6 +2650,7 @@ export type UserUpdateWithoutUploadedDocumentsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2544,6 +2672,7 @@ export type UserUpdateWithoutUploadedDocumentsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadedDocumentsInput = {
@@ -2557,6 +2686,7 @@ export type UserUncheckedUpdateWithoutUploadedDocumentsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2578,6 +2708,7 @@ export type UserUncheckedUpdateWithoutUploadedDocumentsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLeaveRequestsInput = {
@@ -2591,6 +2722,7 @@ export type UserCreateWithoutLeaveRequestsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2612,6 +2744,7 @@ export type UserCreateWithoutLeaveRequestsInput = {
   vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLeaveRequestsInput = {
@@ -2625,6 +2758,7 @@ export type UserUncheckedCreateWithoutLeaveRequestsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2646,6 +2780,7 @@ export type UserUncheckedCreateWithoutLeaveRequestsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLeaveRequestsInput = {
@@ -2664,6 +2799,7 @@ export type UserCreateWithoutApprovedLeavesInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2685,6 +2821,7 @@ export type UserCreateWithoutApprovedLeavesInput = {
   vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutApprovedLeavesInput = {
@@ -2698,6 +2835,7 @@ export type UserUncheckedCreateWithoutApprovedLeavesInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2719,6 +2857,7 @@ export type UserUncheckedCreateWithoutApprovedLeavesInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutApprovedLeavesInput = {
@@ -2748,6 +2887,7 @@ export type UserUpdateWithoutLeaveRequestsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2769,6 +2909,7 @@ export type UserUpdateWithoutLeaveRequestsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLeaveRequestsInput = {
@@ -2782,6 +2923,7 @@ export type UserUncheckedUpdateWithoutLeaveRequestsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2803,6 +2945,7 @@ export type UserUncheckedUpdateWithoutLeaveRequestsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutApprovedLeavesInput = {
@@ -2827,6 +2970,7 @@ export type UserUpdateWithoutApprovedLeavesInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2848,6 +2992,7 @@ export type UserUpdateWithoutApprovedLeavesInput = {
   vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApprovedLeavesInput = {
@@ -2861,6 +3006,7 @@ export type UserUncheckedUpdateWithoutApprovedLeavesInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2882,6 +3028,7 @@ export type UserUncheckedUpdateWithoutApprovedLeavesInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutManagedClientsInput = {
@@ -2895,6 +3042,7 @@ export type UserCreateWithoutManagedClientsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2916,6 +3064,7 @@ export type UserCreateWithoutManagedClientsInput = {
   vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutManagedClientsInput = {
@@ -2929,6 +3078,7 @@ export type UserUncheckedCreateWithoutManagedClientsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2950,6 +3100,7 @@ export type UserUncheckedCreateWithoutManagedClientsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutManagedClientsInput = {
@@ -2979,6 +3130,7 @@ export type UserUpdateWithoutManagedClientsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3000,6 +3152,7 @@ export type UserUpdateWithoutManagedClientsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutManagedClientsInput = {
@@ -3013,6 +3166,7 @@ export type UserUncheckedUpdateWithoutManagedClientsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3034,6 +3188,7 @@ export type UserUncheckedUpdateWithoutManagedClientsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCreatedTicketsInput = {
@@ -3047,6 +3202,7 @@ export type UserCreateWithoutCreatedTicketsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3068,6 +3224,7 @@ export type UserCreateWithoutCreatedTicketsInput = {
   vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreatedTicketsInput = {
@@ -3081,6 +3238,7 @@ export type UserUncheckedCreateWithoutCreatedTicketsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3102,6 +3260,7 @@ export type UserUncheckedCreateWithoutCreatedTicketsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreatedTicketsInput = {
@@ -3120,6 +3279,7 @@ export type UserCreateWithoutAssignedTicketsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3141,6 +3301,7 @@ export type UserCreateWithoutAssignedTicketsInput = {
   vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAssignedTicketsInput = {
@@ -3154,6 +3315,7 @@ export type UserUncheckedCreateWithoutAssignedTicketsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3175,6 +3337,7 @@ export type UserUncheckedCreateWithoutAssignedTicketsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAssignedTicketsInput = {
@@ -3204,6 +3367,7 @@ export type UserUpdateWithoutCreatedTicketsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3225,6 +3389,7 @@ export type UserUpdateWithoutCreatedTicketsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedTicketsInput = {
@@ -3238,6 +3403,7 @@ export type UserUncheckedUpdateWithoutCreatedTicketsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3259,6 +3425,7 @@ export type UserUncheckedUpdateWithoutCreatedTicketsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutAssignedTicketsInput = {
@@ -3283,6 +3450,7 @@ export type UserUpdateWithoutAssignedTicketsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3304,6 +3472,7 @@ export type UserUpdateWithoutAssignedTicketsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssignedTicketsInput = {
@@ -3317,6 +3486,7 @@ export type UserUncheckedUpdateWithoutAssignedTicketsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3338,6 +3508,7 @@ export type UserUncheckedUpdateWithoutAssignedTicketsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTicketConversationsInput = {
@@ -3351,6 +3522,7 @@ export type UserCreateWithoutTicketConversationsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3372,6 +3544,7 @@ export type UserCreateWithoutTicketConversationsInput = {
   vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTicketConversationsInput = {
@@ -3385,6 +3558,7 @@ export type UserUncheckedCreateWithoutTicketConversationsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3406,6 +3580,7 @@ export type UserUncheckedCreateWithoutTicketConversationsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTicketConversationsInput = {
@@ -3435,6 +3610,7 @@ export type UserUpdateWithoutTicketConversationsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3456,6 +3632,7 @@ export type UserUpdateWithoutTicketConversationsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTicketConversationsInput = {
@@ -3469,6 +3646,7 @@ export type UserUncheckedUpdateWithoutTicketConversationsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3490,6 +3668,7 @@ export type UserUncheckedUpdateWithoutTicketConversationsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAuditLogsInput = {
@@ -3503,6 +3682,7 @@ export type UserCreateWithoutAuditLogsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3524,6 +3704,7 @@ export type UserCreateWithoutAuditLogsInput = {
   vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAuditLogsInput = {
@@ -3537,6 +3718,7 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3558,6 +3740,7 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAuditLogsInput = {
@@ -3587,6 +3770,7 @@ export type UserUpdateWithoutAuditLogsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3608,6 +3792,7 @@ export type UserUpdateWithoutAuditLogsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuditLogsInput = {
@@ -3621,6 +3806,7 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3642,6 +3828,7 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -3655,6 +3842,7 @@ export type UserCreateWithoutNotificationsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3676,6 +3864,7 @@ export type UserCreateWithoutNotificationsInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
   vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -3689,6 +3878,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   userType: $Enums.UserType
   avatarUrl?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3710,6 +3900,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
   vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -3739,6 +3930,7 @@ export type UserUpdateWithoutNotificationsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3760,6 +3952,7 @@ export type UserUpdateWithoutNotificationsInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
   vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -3773,6 +3966,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3794,6 +3988,167 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
   vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
   vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutSidebarFavoritesInput = {
+  id?: string
+  email: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  extName?: string | null
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
+  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
+  vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+}
+
+export type UserUncheckedCreateWithoutSidebarFavoritesInput = {
+  id?: string
+  email: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  extName?: string | null
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileUncheckedCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipUncheckedCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
+  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
+  vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+}
+
+export type UserCreateOrConnectWithoutSidebarFavoritesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSidebarFavoritesInput, Prisma.UserUncheckedCreateWithoutSidebarFavoritesInput>
+}
+
+export type UserUpsertWithoutSidebarFavoritesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSidebarFavoritesInput, Prisma.UserUncheckedUpdateWithoutSidebarFavoritesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSidebarFavoritesInput, Prisma.UserUncheckedCreateWithoutSidebarFavoritesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSidebarFavoritesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSidebarFavoritesInput, Prisma.UserUncheckedUpdateWithoutSidebarFavoritesInput>
+}
+
+export type UserUpdateWithoutSidebarFavoritesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  extName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  vaProfile?: Prisma.VAProfileUpdateOneWithoutUserNestedInput
+  departmentHead?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUpdateManyWithoutUserNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutUserNestedInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUpdateManyWithoutInitiatorNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
+  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
+  uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
+  createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
+  assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
+  ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
+  vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSidebarFavoritesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  extName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  vaProfile?: Prisma.VAProfileUncheckedUpdateOneWithoutUserNestedInput
+  departmentHead?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUncheckedUpdateManyWithoutUserNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutUserNestedInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutInitiatorNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
+  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
+  createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
+  assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
+  ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
+  vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
 }
 
 
@@ -3819,6 +4174,7 @@ export type UserCountOutputType = {
   vaHistoryEvents: number
   vaHistoryChanges: number
   notifications: number
+  sidebarFavorites: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3839,6 +4195,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   vaHistoryEvents?: boolean | UserCountOutputTypeCountVaHistoryEventsArgs
   vaHistoryChanges?: boolean | UserCountOutputTypeCountVaHistoryChangesArgs
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
+  sidebarFavorites?: boolean | UserCountOutputTypeCountSidebarFavoritesArgs
 }
 
 /**
@@ -3970,6 +4327,13 @@ export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.NotificationWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSidebarFavoritesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SidebarFavoriteWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3982,6 +4346,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   userType?: boolean
   avatarUrl?: boolean
   status?: boolean
+  onHold?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -4004,6 +4369,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   vaHistoryEvents?: boolean | Prisma.User$vaHistoryEventsArgs<ExtArgs>
   vaHistoryChanges?: boolean | Prisma.User$vaHistoryChangesArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
+  sidebarFavorites?: boolean | Prisma.User$sidebarFavoritesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -4018,6 +4384,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   userType?: boolean
   avatarUrl?: boolean
   status?: boolean
+  onHold?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -4034,6 +4401,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   userType?: boolean
   avatarUrl?: boolean
   status?: boolean
+  onHold?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -4050,12 +4418,13 @@ export type UserSelectScalar = {
   userType?: boolean
   avatarUrl?: boolean
   status?: boolean
+  onHold?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "firstName" | "middleName" | "lastName" | "extName" | "systemRole" | "userType" | "avatarUrl" | "status" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "firstName" | "middleName" | "lastName" | "extName" | "systemRole" | "userType" | "avatarUrl" | "status" | "onHold" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   profile?: boolean | Prisma.User$profileArgs<ExtArgs>
   vaProfile?: boolean | Prisma.User$vaProfileArgs<ExtArgs>
@@ -4076,6 +4445,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   vaHistoryEvents?: boolean | Prisma.User$vaHistoryEventsArgs<ExtArgs>
   vaHistoryChanges?: boolean | Prisma.User$vaHistoryChangesArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
+  sidebarFavorites?: boolean | Prisma.User$sidebarFavoritesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -4103,6 +4473,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     vaHistoryEvents: Prisma.$VAHistoryPayload<ExtArgs>[]
     vaHistoryChanges: Prisma.$VAHistoryPayload<ExtArgs>[]
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
+    sidebarFavorites: Prisma.$SidebarFavoritePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -4115,6 +4486,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     userType: $Enums.UserType
     avatarUrl: string | null
     status: $Enums.GeneralStatus
+    onHold: boolean
     isActive: boolean
     createdAt: Date
     updatedAt: Date
@@ -4531,6 +4903,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   vaHistoryEvents<T extends Prisma.User$vaHistoryEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vaHistoryEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VAHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   vaHistoryChanges<T extends Prisma.User$vaHistoryChangesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vaHistoryChangesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VAHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sidebarFavorites<T extends Prisma.User$sidebarFavoritesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sidebarFavoritesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SidebarFavoritePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4570,6 +4943,7 @@ export interface UserFieldRefs {
   readonly userType: Prisma.FieldRef<"User", 'UserType'>
   readonly avatarUrl: Prisma.FieldRef<"User", 'String'>
   readonly status: Prisma.FieldRef<"User", 'GeneralStatus'>
+  readonly onHold: Prisma.FieldRef<"User", 'Boolean'>
   readonly isActive: Prisma.FieldRef<"User", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
@@ -5409,6 +5783,30 @@ export type User$notificationsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.NotificationScalarFieldEnum | Prisma.NotificationScalarFieldEnum[]
+}
+
+/**
+ * User.sidebarFavorites
+ */
+export type User$sidebarFavoritesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SidebarFavorite
+   */
+  select?: Prisma.SidebarFavoriteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SidebarFavorite
+   */
+  omit?: Prisma.SidebarFavoriteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SidebarFavoriteInclude<ExtArgs> | null
+  where?: Prisma.SidebarFavoriteWhereInput
+  orderBy?: Prisma.SidebarFavoriteOrderByWithRelationInput | Prisma.SidebarFavoriteOrderByWithRelationInput[]
+  cursor?: Prisma.SidebarFavoriteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SidebarFavoriteScalarFieldEnum | Prisma.SidebarFavoriteScalarFieldEnum[]
 }
 
 /**

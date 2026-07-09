@@ -146,3 +146,8 @@ export type AuditLog = Prisma.AuditLogModel
  * 
  */
 export type Notification = Prisma.NotificationModel
+/**
+ * Model SidebarFavorite
+ * 
+ */
+export type SidebarFavorite = Prisma.SidebarFavoriteModel

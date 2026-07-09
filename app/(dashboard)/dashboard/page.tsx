@@ -1,6 +1,7 @@
 import { getCurrentUser } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { prisma } from '@/lib/prisma'
+import { getFeaturedFavorite } from '@/lib/favorites'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -39,6 +40,13 @@ export default async function DashboardPage({
         <p className="text-sm text-muted-foreground">Not authenticated.</p>
       </div>
     )
+  }
+
+  if (user.userType !== 'VIRTUAL_ASSISTANT' && !deptId) {
+    const featured = await getFeaturedFavorite(user.id)
+    if (featured && featured.href !== '/dashboard') {
+      redirect(featured.href)
+    }
   }
 
   if (['SUPER_ADMIN', 'SYSTEM_ADMIN'].includes(user.systemRole) && !deptId) {

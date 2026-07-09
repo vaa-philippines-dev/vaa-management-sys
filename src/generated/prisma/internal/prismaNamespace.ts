@@ -404,7 +404,8 @@ export const ModelName = {
   Ticket: 'Ticket',
   TicketConversation: 'TicketConversation',
   AuditLog: 'AuditLog',
-  Notification: 'Notification'
+  Notification: 'Notification',
+  SidebarFavorite: 'SidebarFavorite'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -420,7 +421,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveRequest" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "auditLog" | "notification"
+    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveRequest" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "auditLog" | "notification" | "sidebarFavorite"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1978,6 +1979,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    SidebarFavorite: {
+      payload: Prisma.$SidebarFavoritePayload<ExtArgs>
+      fields: Prisma.SidebarFavoriteFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SidebarFavoriteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SidebarFavoritePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SidebarFavoriteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SidebarFavoritePayload>
+        }
+        findFirst: {
+          args: Prisma.SidebarFavoriteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SidebarFavoritePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SidebarFavoriteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SidebarFavoritePayload>
+        }
+        findMany: {
+          args: Prisma.SidebarFavoriteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SidebarFavoritePayload>[]
+        }
+        create: {
+          args: Prisma.SidebarFavoriteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SidebarFavoritePayload>
+        }
+        createMany: {
+          args: Prisma.SidebarFavoriteCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SidebarFavoriteCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SidebarFavoritePayload>[]
+        }
+        delete: {
+          args: Prisma.SidebarFavoriteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SidebarFavoritePayload>
+        }
+        update: {
+          args: Prisma.SidebarFavoriteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SidebarFavoritePayload>
+        }
+        deleteMany: {
+          args: Prisma.SidebarFavoriteDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SidebarFavoriteUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SidebarFavoriteUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SidebarFavoritePayload>[]
+        }
+        upsert: {
+          args: Prisma.SidebarFavoriteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SidebarFavoritePayload>
+        }
+        aggregate: {
+          args: Prisma.SidebarFavoriteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSidebarFavorite>
+        }
+        groupBy: {
+          args: Prisma.SidebarFavoriteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SidebarFavoriteGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SidebarFavoriteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SidebarFavoriteCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2046,6 +2121,7 @@ export const PositionScalarFieldEnum = {
   isStaffRole: 'isStaffRole',
   sortOrder: 'sortOrder',
   status: 'status',
+  onHold: 'onHold',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -2084,6 +2160,7 @@ export const UserScalarFieldEnum = {
   userType: 'userType',
   avatarUrl: 'avatarUrl',
   status: 'status',
+  onHold: 'onHold',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -2165,6 +2242,7 @@ export const RoleAssignmentScalarFieldEnum = {
   grantedBy: 'grantedBy',
   expiresAt: 'expiresAt',
   status: 'status',
+  onHold: 'onHold',
   isActive: 'isActive',
   createdAt: 'createdAt'
 } as const
@@ -2197,6 +2275,7 @@ export const VAProfileScalarFieldEnum = {
   dept201FolderLink: 'dept201FolderLink',
   notes: 'notes',
   status: 'status',
+  onHold: 'onHold',
   engagementStatus: 'engagementStatus',
   isActive: 'isActive',
   createdAt: 'createdAt',
@@ -2309,6 +2388,7 @@ export const ClientScalarFieldEnum = {
   timezone: 'timezone',
   notes: 'notes',
   status: 'status',
+  onHold: 'onHold',
   isActive: 'isActive',
   managerId: 'managerId',
   departmentId: 'departmentId',
@@ -2417,6 +2497,19 @@ export const NotificationScalarFieldEnum = {
 } as const
 
 export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
+export const SidebarFavoriteScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  href: 'href',
+  label: 'label',
+  color: 'color',
+  isFeatured: 'isFeatured',
+  createdAt: 'createdAt'
+} as const
+
+export type SidebarFavoriteScalarFieldEnum = (typeof SidebarFavoriteScalarFieldEnum)[keyof typeof SidebarFavoriteScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2894,6 +2987,20 @@ export type ListEnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
+ * Reference to a field of type 'FavoriteColor'
+ */
+export type EnumFavoriteColorFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FavoriteColor'>
+    
+
+
+/**
+ * Reference to a field of type 'FavoriteColor[]'
+ */
+export type ListEnumFavoriteColorFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FavoriteColor[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -3037,6 +3144,7 @@ export type GlobalOmitConfig = {
   ticketConversation?: Prisma.TicketConversationOmit
   auditLog?: Prisma.AuditLogOmit
   notification?: Prisma.NotificationOmit
+  sidebarFavorite?: Prisma.SidebarFavoriteOmit
 }
 
 /* Types for Logging */

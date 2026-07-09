@@ -278,8 +278,21 @@ export type DepartmentLevel = (typeof DepartmentLevel)[keyof typeof DepartmentLe
 
 export const GeneralStatus = {
   ACTIVE: 'ACTIVE',
-  INACTIVE: 'INACTIVE',
-  ON_HOLD: 'ON_HOLD'
+  PENDING: 'PENDING',
+  TRANSFERRED: 'TRANSFERRED',
+  RESIGNED: 'RESIGNED',
+  REMOVED: 'REMOVED',
+  PROJECT_ENDED: 'PROJECT_ENDED',
+  CANCELLED: 'CANCELLED'
 } as const
 
 export type GeneralStatus = (typeof GeneralStatus)[keyof typeof GeneralStatus]
+
+
+export const FavoriteColor = {
+  YELLOW: 'YELLOW',
+  BLUE: 'BLUE',
+  RED: 'RED'
+} as const
+
+export type FavoriteColor = (typeof FavoriteColor)[keyof typeof FavoriteColor]

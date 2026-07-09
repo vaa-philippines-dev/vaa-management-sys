@@ -35,6 +35,7 @@ export type ClientMinAggregateOutputType = {
   timezone: string | null
   notes: string | null
   status: $Enums.GeneralStatus | null
+  onHold: boolean | null
   isActive: boolean | null
   managerId: string | null
   departmentId: string | null
@@ -54,6 +55,7 @@ export type ClientMaxAggregateOutputType = {
   timezone: string | null
   notes: string | null
   status: $Enums.GeneralStatus | null
+  onHold: boolean | null
   isActive: boolean | null
   managerId: string | null
   departmentId: string | null
@@ -73,6 +75,7 @@ export type ClientCountAggregateOutputType = {
   timezone: number
   notes: number
   status: number
+  onHold: number
   isActive: number
   managerId: number
   departmentId: number
@@ -95,6 +98,7 @@ export type ClientMinAggregateInputType = {
   timezone?: true
   notes?: true
   status?: true
+  onHold?: true
   isActive?: true
   managerId?: true
   departmentId?: true
@@ -114,6 +118,7 @@ export type ClientMaxAggregateInputType = {
   timezone?: true
   notes?: true
   status?: true
+  onHold?: true
   isActive?: true
   managerId?: true
   departmentId?: true
@@ -133,6 +138,7 @@ export type ClientCountAggregateInputType = {
   timezone?: true
   notes?: true
   status?: true
+  onHold?: true
   isActive?: true
   managerId?: true
   departmentId?: true
@@ -226,6 +232,7 @@ export type ClientGroupByOutputType = {
   timezone: string | null
   notes: string | null
   status: $Enums.GeneralStatus
+  onHold: boolean
   isActive: boolean
   managerId: string | null
   departmentId: string | null
@@ -267,6 +274,7 @@ export type ClientWhereInput = {
   timezone?: Prisma.StringNullableFilter<"Client"> | string | null
   notes?: Prisma.StringNullableFilter<"Client"> | string | null
   status?: Prisma.EnumGeneralStatusFilter<"Client"> | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFilter<"Client"> | boolean
   isActive?: Prisma.BoolFilter<"Client"> | boolean
   managerId?: Prisma.StringNullableFilter<"Client"> | string | null
   departmentId?: Prisma.StringNullableFilter<"Client"> | string | null
@@ -291,6 +299,7 @@ export type ClientOrderByWithRelationInput = {
   timezone?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   managerId?: Prisma.SortOrderInput | Prisma.SortOrder
   departmentId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -318,6 +327,7 @@ export type ClientWhereUniqueInput = Prisma.AtLeast<{
   timezone?: Prisma.StringNullableFilter<"Client"> | string | null
   notes?: Prisma.StringNullableFilter<"Client"> | string | null
   status?: Prisma.EnumGeneralStatusFilter<"Client"> | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFilter<"Client"> | boolean
   isActive?: Prisma.BoolFilter<"Client"> | boolean
   managerId?: Prisma.StringNullableFilter<"Client"> | string | null
   departmentId?: Prisma.StringNullableFilter<"Client"> | string | null
@@ -342,6 +352,7 @@ export type ClientOrderByWithAggregationInput = {
   timezone?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   managerId?: Prisma.SortOrderInput | Prisma.SortOrder
   departmentId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -368,6 +379,7 @@ export type ClientScalarWhereWithAggregatesInput = {
   timezone?: Prisma.StringNullableWithAggregatesFilter<"Client"> | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"Client"> | string | null
   status?: Prisma.EnumGeneralStatusWithAggregatesFilter<"Client"> | $Enums.GeneralStatus
+  onHold?: Prisma.BoolWithAggregatesFilter<"Client"> | boolean
   isActive?: Prisma.BoolWithAggregatesFilter<"Client"> | boolean
   managerId?: Prisma.StringNullableWithAggregatesFilter<"Client"> | string | null
   departmentId?: Prisma.StringNullableWithAggregatesFilter<"Client"> | string | null
@@ -388,6 +400,7 @@ export type ClientCreateInput = {
   timezone?: string | null
   notes?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   onboardingFolderUrl?: string | null
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
@@ -410,6 +423,7 @@ export type ClientUncheckedCreateInput = {
   timezone?: string | null
   notes?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   managerId?: string | null
   departmentId?: string | null
@@ -432,6 +446,7 @@ export type ClientUpdateInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
@@ -454,6 +469,7 @@ export type ClientUncheckedUpdateInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -476,6 +492,7 @@ export type ClientCreateManyInput = {
   timezone?: string | null
   notes?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   managerId?: string | null
   departmentId?: string | null
@@ -496,6 +513,7 @@ export type ClientUpdateManyMutationInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
@@ -514,6 +532,7 @@ export type ClientUncheckedUpdateManyInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -544,6 +563,7 @@ export type ClientCountOrderByAggregateInput = {
   timezone?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   managerId?: Prisma.SortOrder
   departmentId?: Prisma.SortOrder
@@ -564,6 +584,7 @@ export type ClientMaxOrderByAggregateInput = {
   timezone?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   managerId?: Prisma.SortOrder
   departmentId?: Prisma.SortOrder
@@ -583,6 +604,7 @@ export type ClientMinOrderByAggregateInput = {
   timezone?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   managerId?: Prisma.SortOrder
   departmentId?: Prisma.SortOrder
@@ -739,6 +761,7 @@ export type ClientCreateWithoutDepartmentInput = {
   timezone?: string | null
   notes?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   onboardingFolderUrl?: string | null
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
@@ -760,6 +783,7 @@ export type ClientUncheckedCreateWithoutDepartmentInput = {
   timezone?: string | null
   notes?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   managerId?: string | null
   onboardingFolderUrl?: string | null
@@ -810,6 +834,7 @@ export type ClientScalarWhereInput = {
   timezone?: Prisma.StringNullableFilter<"Client"> | string | null
   notes?: Prisma.StringNullableFilter<"Client"> | string | null
   status?: Prisma.EnumGeneralStatusFilter<"Client"> | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFilter<"Client"> | boolean
   isActive?: Prisma.BoolFilter<"Client"> | boolean
   managerId?: Prisma.StringNullableFilter<"Client"> | string | null
   departmentId?: Prisma.StringNullableFilter<"Client"> | string | null
@@ -830,6 +855,7 @@ export type ClientCreateWithoutManagerInput = {
   timezone?: string | null
   notes?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   onboardingFolderUrl?: string | null
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
@@ -851,6 +877,7 @@ export type ClientUncheckedCreateWithoutManagerInput = {
   timezone?: string | null
   notes?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   departmentId?: string | null
   onboardingFolderUrl?: string | null
@@ -898,6 +925,7 @@ export type ClientCreateWithoutAssignmentsInput = {
   timezone?: string | null
   notes?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   onboardingFolderUrl?: string | null
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
@@ -919,6 +947,7 @@ export type ClientUncheckedCreateWithoutAssignmentsInput = {
   timezone?: string | null
   notes?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   managerId?: string | null
   departmentId?: string | null
@@ -956,6 +985,7 @@ export type ClientUpdateWithoutAssignmentsInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
@@ -977,6 +1007,7 @@ export type ClientUncheckedUpdateWithoutAssignmentsInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -998,6 +1029,7 @@ export type ClientCreateWithoutTicketsInput = {
   timezone?: string | null
   notes?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   onboardingFolderUrl?: string | null
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
@@ -1019,6 +1051,7 @@ export type ClientUncheckedCreateWithoutTicketsInput = {
   timezone?: string | null
   notes?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   managerId?: string | null
   departmentId?: string | null
@@ -1056,6 +1089,7 @@ export type ClientUpdateWithoutTicketsInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
@@ -1077,6 +1111,7 @@ export type ClientUncheckedUpdateWithoutTicketsInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1098,6 +1133,7 @@ export type ClientCreateManyDepartmentInput = {
   timezone?: string | null
   notes?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   managerId?: string | null
   onboardingFolderUrl?: string | null
@@ -1117,6 +1153,7 @@ export type ClientUpdateWithoutDepartmentInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
@@ -1138,6 +1175,7 @@ export type ClientUncheckedUpdateWithoutDepartmentInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1159,6 +1197,7 @@ export type ClientUncheckedUpdateManyWithoutDepartmentInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1178,6 +1217,7 @@ export type ClientCreateManyManagerInput = {
   timezone?: string | null
   notes?: string | null
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   departmentId?: string | null
   onboardingFolderUrl?: string | null
@@ -1197,6 +1237,7 @@ export type ClientUpdateWithoutManagerInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
@@ -1218,6 +1259,7 @@ export type ClientUncheckedUpdateWithoutManagerInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1239,6 +1281,7 @@ export type ClientUncheckedUpdateManyWithoutManagerInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1298,6 +1341,7 @@ export type ClientSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   timezone?: boolean
   notes?: boolean
   status?: boolean
+  onHold?: boolean
   isActive?: boolean
   managerId?: boolean
   departmentId?: boolean
@@ -1323,6 +1367,7 @@ export type ClientSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   timezone?: boolean
   notes?: boolean
   status?: boolean
+  onHold?: boolean
   isActive?: boolean
   managerId?: boolean
   departmentId?: boolean
@@ -1345,6 +1390,7 @@ export type ClientSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   timezone?: boolean
   notes?: boolean
   status?: boolean
+  onHold?: boolean
   isActive?: boolean
   managerId?: boolean
   departmentId?: boolean
@@ -1367,6 +1413,7 @@ export type ClientSelectScalar = {
   timezone?: boolean
   notes?: boolean
   status?: boolean
+  onHold?: boolean
   isActive?: boolean
   managerId?: boolean
   departmentId?: boolean
@@ -1376,7 +1423,7 @@ export type ClientSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ClientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "contactName" | "contactEmail" | "contactPhone" | "platform" | "industry" | "timezone" | "notes" | "status" | "isActive" | "managerId" | "departmentId" | "onboardingFolderUrl" | "requiredSkills" | "createdAt" | "updatedAt", ExtArgs["result"]["client"]>
+export type ClientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "contactName" | "contactEmail" | "contactPhone" | "platform" | "industry" | "timezone" | "notes" | "status" | "onHold" | "isActive" | "managerId" | "departmentId" | "onboardingFolderUrl" | "requiredSkills" | "createdAt" | "updatedAt", ExtArgs["result"]["client"]>
 export type ClientInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   manager?: boolean | Prisma.Client$managerArgs<ExtArgs>
   department?: boolean | Prisma.Client$departmentArgs<ExtArgs>
@@ -1412,6 +1459,7 @@ export type $ClientPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     timezone: string | null
     notes: string | null
     status: $Enums.GeneralStatus
+    onHold: boolean
     isActive: boolean
     managerId: string | null
     departmentId: string | null
@@ -1856,6 +1904,7 @@ export interface ClientFieldRefs {
   readonly timezone: Prisma.FieldRef<"Client", 'String'>
   readonly notes: Prisma.FieldRef<"Client", 'String'>
   readonly status: Prisma.FieldRef<"Client", 'GeneralStatus'>
+  readonly onHold: Prisma.FieldRef<"Client", 'Boolean'>
   readonly isActive: Prisma.FieldRef<"Client", 'Boolean'>
   readonly managerId: Prisma.FieldRef<"Client", 'String'>
   readonly departmentId: Prisma.FieldRef<"Client", 'String'>

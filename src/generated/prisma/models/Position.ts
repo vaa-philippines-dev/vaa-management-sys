@@ -42,6 +42,7 @@ export type PositionMinAggregateOutputType = {
   isStaffRole: boolean | null
   sortOrder: number | null
   status: $Enums.GeneralStatus | null
+  onHold: boolean | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -55,6 +56,7 @@ export type PositionMaxAggregateOutputType = {
   isStaffRole: boolean | null
   sortOrder: number | null
   status: $Enums.GeneralStatus | null
+  onHold: boolean | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -68,6 +70,7 @@ export type PositionCountAggregateOutputType = {
   isStaffRole: number
   sortOrder: number
   status: number
+  onHold: number
   isActive: number
   createdAt: number
   updatedAt: number
@@ -91,6 +94,7 @@ export type PositionMinAggregateInputType = {
   isStaffRole?: true
   sortOrder?: true
   status?: true
+  onHold?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -104,6 +108,7 @@ export type PositionMaxAggregateInputType = {
   isStaffRole?: true
   sortOrder?: true
   status?: true
+  onHold?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -117,6 +122,7 @@ export type PositionCountAggregateInputType = {
   isStaffRole?: true
   sortOrder?: true
   status?: true
+  onHold?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -217,6 +223,7 @@ export type PositionGroupByOutputType = {
   isStaffRole: boolean
   sortOrder: number
   status: $Enums.GeneralStatus
+  onHold: boolean
   isActive: boolean
   createdAt: Date
   updatedAt: Date
@@ -253,6 +260,7 @@ export type PositionWhereInput = {
   isStaffRole?: Prisma.BoolFilter<"Position"> | boolean
   sortOrder?: Prisma.IntFilter<"Position"> | number
   status?: Prisma.EnumGeneralStatusFilter<"Position"> | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFilter<"Position"> | boolean
   isActive?: Prisma.BoolFilter<"Position"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Position"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Position"> | Date | string
@@ -270,6 +278,7 @@ export type PositionOrderByWithRelationInput = {
   isStaffRole?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -290,6 +299,7 @@ export type PositionWhereUniqueInput = Prisma.AtLeast<{
   isStaffRole?: Prisma.BoolFilter<"Position"> | boolean
   sortOrder?: Prisma.IntFilter<"Position"> | number
   status?: Prisma.EnumGeneralStatusFilter<"Position"> | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFilter<"Position"> | boolean
   isActive?: Prisma.BoolFilter<"Position"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Position"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Position"> | Date | string
@@ -307,6 +317,7 @@ export type PositionOrderByWithAggregationInput = {
   isStaffRole?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -328,6 +339,7 @@ export type PositionScalarWhereWithAggregatesInput = {
   isStaffRole?: Prisma.BoolWithAggregatesFilter<"Position"> | boolean
   sortOrder?: Prisma.IntWithAggregatesFilter<"Position"> | number
   status?: Prisma.EnumGeneralStatusWithAggregatesFilter<"Position"> | $Enums.GeneralStatus
+  onHold?: Prisma.BoolWithAggregatesFilter<"Position"> | boolean
   isActive?: Prisma.BoolWithAggregatesFilter<"Position"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Position"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Position"> | Date | string
@@ -339,6 +351,7 @@ export type PositionCreateInput = {
   isStaffRole?: boolean
   sortOrder?: number
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -356,6 +369,7 @@ export type PositionUncheckedCreateInput = {
   isStaffRole?: boolean
   sortOrder?: number
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -369,6 +383,7 @@ export type PositionUpdateInput = {
   isStaffRole?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -386,6 +401,7 @@ export type PositionUncheckedUpdateInput = {
   isStaffRole?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -401,6 +417,7 @@ export type PositionCreateManyInput = {
   isStaffRole?: boolean
   sortOrder?: number
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -412,6 +429,7 @@ export type PositionUpdateManyMutationInput = {
   isStaffRole?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -425,6 +443,7 @@ export type PositionUncheckedUpdateManyInput = {
   isStaffRole?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -453,6 +472,7 @@ export type PositionCountOrderByAggregateInput = {
   isStaffRole?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -470,6 +490,7 @@ export type PositionMaxOrderByAggregateInput = {
   isStaffRole?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -483,6 +504,7 @@ export type PositionMinOrderByAggregateInput = {
   isStaffRole?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -618,6 +640,7 @@ export type PositionCreateWithoutDepartmentInput = {
   isStaffRole?: boolean
   sortOrder?: number
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -633,6 +656,7 @@ export type PositionUncheckedCreateWithoutDepartmentInput = {
   isStaffRole?: boolean
   sortOrder?: number
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -677,6 +701,7 @@ export type PositionScalarWhereInput = {
   isStaffRole?: Prisma.BoolFilter<"Position"> | boolean
   sortOrder?: Prisma.IntFilter<"Position"> | number
   status?: Prisma.EnumGeneralStatusFilter<"Position"> | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFilter<"Position"> | boolean
   isActive?: Prisma.BoolFilter<"Position"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Position"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Position"> | Date | string
@@ -688,6 +713,7 @@ export type PositionCreateWithoutSubordinatesInput = {
   isStaffRole?: boolean
   sortOrder?: number
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -704,6 +730,7 @@ export type PositionUncheckedCreateWithoutSubordinatesInput = {
   isStaffRole?: boolean
   sortOrder?: number
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -721,6 +748,7 @@ export type PositionCreateWithoutReportsToInput = {
   isStaffRole?: boolean
   sortOrder?: number
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -736,6 +764,7 @@ export type PositionUncheckedCreateWithoutReportsToInput = {
   isStaffRole?: boolean
   sortOrder?: number
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -770,6 +799,7 @@ export type PositionUpdateWithoutSubordinatesInput = {
   isStaffRole?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -786,6 +816,7 @@ export type PositionUncheckedUpdateWithoutSubordinatesInput = {
   isStaffRole?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -814,6 +845,7 @@ export type PositionCreateWithoutMembershipsInput = {
   isStaffRole?: boolean
   sortOrder?: number
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -830,6 +862,7 @@ export type PositionUncheckedCreateWithoutMembershipsInput = {
   isStaffRole?: boolean
   sortOrder?: number
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -858,6 +891,7 @@ export type PositionUpdateWithoutMembershipsInput = {
   isStaffRole?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -874,6 +908,7 @@ export type PositionUncheckedUpdateWithoutMembershipsInput = {
   isStaffRole?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -887,6 +922,7 @@ export type PositionCreateManyDepartmentInput = {
   isStaffRole?: boolean
   sortOrder?: number
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -898,6 +934,7 @@ export type PositionUpdateWithoutDepartmentInput = {
   isStaffRole?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -913,6 +950,7 @@ export type PositionUncheckedUpdateWithoutDepartmentInput = {
   isStaffRole?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -927,6 +965,7 @@ export type PositionUncheckedUpdateManyWithoutDepartmentInput = {
   isStaffRole?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -939,6 +978,7 @@ export type PositionCreateManyReportsToInput = {
   isStaffRole?: boolean
   sortOrder?: number
   status?: $Enums.GeneralStatus
+  onHold?: boolean
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -950,6 +990,7 @@ export type PositionUpdateWithoutReportsToInput = {
   isStaffRole?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -965,6 +1006,7 @@ export type PositionUncheckedUpdateWithoutReportsToInput = {
   isStaffRole?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -979,6 +1021,7 @@ export type PositionUncheckedUpdateManyWithoutReportsToInput = {
   isStaffRole?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1032,6 +1075,7 @@ export type PositionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   isStaffRole?: boolean
   sortOrder?: boolean
   status?: boolean
+  onHold?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1050,6 +1094,7 @@ export type PositionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   isStaffRole?: boolean
   sortOrder?: boolean
   status?: boolean
+  onHold?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1065,6 +1110,7 @@ export type PositionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   isStaffRole?: boolean
   sortOrder?: boolean
   status?: boolean
+  onHold?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1080,12 +1126,13 @@ export type PositionSelectScalar = {
   isStaffRole?: boolean
   sortOrder?: boolean
   status?: boolean
+  onHold?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PositionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "reportsToId" | "departmentId" | "isStaffRole" | "sortOrder" | "status" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["position"]>
+export type PositionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "reportsToId" | "departmentId" | "isStaffRole" | "sortOrder" | "status" | "onHold" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["position"]>
 export type PositionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reportsTo?: boolean | Prisma.Position$reportsToArgs<ExtArgs>
   subordinates?: boolean | Prisma.Position$subordinatesArgs<ExtArgs>
@@ -1118,6 +1165,7 @@ export type $PositionPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     isStaffRole: boolean
     sortOrder: number
     status: $Enums.GeneralStatus
+    onHold: boolean
     isActive: boolean
     createdAt: Date
     updatedAt: Date
@@ -1555,6 +1603,7 @@ export interface PositionFieldRefs {
   readonly isStaffRole: Prisma.FieldRef<"Position", 'Boolean'>
   readonly sortOrder: Prisma.FieldRef<"Position", 'Int'>
   readonly status: Prisma.FieldRef<"Position", 'GeneralStatus'>
+  readonly onHold: Prisma.FieldRef<"Position", 'Boolean'>
   readonly isActive: Prisma.FieldRef<"Position", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Position", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Position", 'DateTime'>

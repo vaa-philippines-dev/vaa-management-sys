@@ -71,7 +71,8 @@ export const ModelName = {
   Ticket: 'Ticket',
   TicketConversation: 'TicketConversation',
   AuditLog: 'AuditLog',
-  Notification: 'Notification'
+  Notification: 'Notification',
+  SidebarFavorite: 'SidebarFavorite'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -119,6 +120,7 @@ export const PositionScalarFieldEnum = {
   isStaffRole: 'isStaffRole',
   sortOrder: 'sortOrder',
   status: 'status',
+  onHold: 'onHold',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -157,6 +159,7 @@ export const UserScalarFieldEnum = {
   userType: 'userType',
   avatarUrl: 'avatarUrl',
   status: 'status',
+  onHold: 'onHold',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -238,6 +241,7 @@ export const RoleAssignmentScalarFieldEnum = {
   grantedBy: 'grantedBy',
   expiresAt: 'expiresAt',
   status: 'status',
+  onHold: 'onHold',
   isActive: 'isActive',
   createdAt: 'createdAt'
 } as const
@@ -270,6 +274,7 @@ export const VAProfileScalarFieldEnum = {
   dept201FolderLink: 'dept201FolderLink',
   notes: 'notes',
   status: 'status',
+  onHold: 'onHold',
   engagementStatus: 'engagementStatus',
   isActive: 'isActive',
   createdAt: 'createdAt',
@@ -382,6 +387,7 @@ export const ClientScalarFieldEnum = {
   timezone: 'timezone',
   notes: 'notes',
   status: 'status',
+  onHold: 'onHold',
   isActive: 'isActive',
   managerId: 'managerId',
   departmentId: 'departmentId',
@@ -490,6 +496,19 @@ export const NotificationScalarFieldEnum = {
 } as const
 
 export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
+export const SidebarFavoriteScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  href: 'href',
+  label: 'label',
+  color: 'color',
+  isFeatured: 'isFeatured',
+  createdAt: 'createdAt'
+} as const
+
+export type SidebarFavoriteScalarFieldEnum = (typeof SidebarFavoriteScalarFieldEnum)[keyof typeof SidebarFavoriteScalarFieldEnum]
 
 
 export const SortOrder = {

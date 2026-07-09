@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { getFeaturedFavorite } from '@/lib/favorites'
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url)
@@ -59,6 +60,15 @@ export async function GET(request: NextRequest) {
       if (!dbUser.isActive) {
         await supabase.auth.signOut()
         return NextResponse.redirect(`${origin}/login?error=account_disabled`)
+      }
+
+      if (dbUser.userType !== 'VIRTUAL_ASSISTANT' && next === '/dashboard') {
+        const featured = await getFeaturedFavorite(dbUser.id)
+        if (featured && featured.href !== '/dashboard') {
+          const res = NextResponse.redirect(`${origin}${featured.href}`)
+          res.cookies.set('vaa_just_logged_in', '1', { path: '/', maxAge: 10, httpOnly: false, sameSite: 'lax' })
+          return res
+        }
       }
 
       const adminRoles = ['SUPER_ADMIN', 'SYSTEM_ADMIN']
