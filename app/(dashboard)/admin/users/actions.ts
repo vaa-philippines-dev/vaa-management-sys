@@ -286,13 +286,19 @@ export async function createDepartment(
 ) {
   const admin = await getAdmin()
 
-  const clean = await validateCreate({
-    name,
-    shortName: shortName ?? null,
-    acronym: acronym ?? name.slice(0, 4).toUpperCase(),
-    level: level ?? 'MANAGEMENT',
-    parentId,
-  })
+  let clean
+  try {
+    clean = await validateCreate({
+      name,
+      shortName: shortName ?? null,
+      acronym: acronym ?? name.slice(0, 4).toUpperCase(),
+      level: level ?? 'MANAGEMENT',
+      parentId,
+    })
+  } catch (e) {
+    if (e instanceof DepartmentValidationError) throw new Error(e.message)
+    throw e
+  }
 
   const dept = await prisma.department.create({
     data: {
@@ -365,13 +371,19 @@ export async function updateDepartment(id: string, data: { name?: string; shortN
   const before = await prisma.department.findUnique({ where: { id }, select: { name: true, shortName: true, acronym: true, level: true, description: true, isParent: true, parentId: true, status: true } })
   if (!before) return
 
-  const clean = await validateUpdate(id, {
-    name: data.name,
-    shortName: data.shortName,
-    acronym: data.acronym,
-    level: data.level,
-    parentId: data.parentId,
-  })
+  let clean
+  try {
+    clean = await validateUpdate(id, {
+      name: data.name,
+      shortName: data.shortName,
+      acronym: data.acronym,
+      level: data.level,
+      parentId: data.parentId,
+    })
+  } catch (e) {
+    if (e instanceof DepartmentValidationError) throw new Error(e.message)
+    throw e
+  }
 
   await prisma.department.update({
     where: { id },
