@@ -1,13 +1,13 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState, useTransition } from 'react'
-import { Hash, Send, Search } from 'lucide-react'
+import { Hash, Send, Search, Settings } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { ChannelRealtimeProvider } from '@/components/layout/ChannelRealtimeProvider'
 import { MentionAutocomplete } from './MentionAutocomplete'
-import { MessageColorPicker } from './MessageColorPicker'
+import { InboxSettingsModal } from './InboxSettingsModal'
 import { UserProfilePanel, type ProfilePanelUser } from './UserProfilePanel'
 import {
   getChannelMessages,
@@ -96,6 +96,7 @@ export function InboxView({
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [messageColor, setMessageColorState] = useState(currentUser.messageColor)
   const [profileUser, setProfileUser] = useState<ProfilePanelUser | null>(null)
+  const [settingsOpen, setSettingsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -138,38 +139,48 @@ export function InboxView({
       <div className="flex w-60 shrink-0 flex-col border-r">
         <div className="flex items-center justify-between border-b px-3 py-2.5">
           <p className="text-xs font-semibold text-muted-foreground">Inbox</p>
-          <div ref={dropdownRef} className="relative">
+          <div className="flex items-center gap-0.5">
+            <div ref={dropdownRef} className="relative">
+              <button
+                type="button"
+                onClick={() => setDropdownOpen((v) => !v)}
+                aria-label="Jump to channel"
+                aria-expanded={dropdownOpen}
+                className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              >
+                <Search className="h-3.5 w-3.5" />
+              </button>
+              {dropdownOpen && (
+                <div className="absolute right-0 top-8 z-40 w-56 overflow-hidden rounded-lg border bg-popover shadow-lg animate-in fade-in-0 zoom-in-95 duration-150 origin-top-right">
+                  <div className="max-h-72 overflow-y-auto p-1">
+                    {channels.map((c) => (
+                      <button
+                        key={c.channelId}
+                        type="button"
+                        onClick={() => handleSelectChannel(c.channelId)}
+                        className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-left text-xs font-medium transition-colors hover:bg-muted/60"
+                      >
+                        <Hash className="h-3 w-3 shrink-0 opacity-60" />
+                        <span className="truncate flex-1">{c.departmentName}</span>
+                        {c.unreadCount > 0 && (
+                          <span className="rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-semibold text-primary-foreground">
+                            {c.unreadCount}
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
             <button
               type="button"
-              onClick={() => setDropdownOpen((v) => !v)}
-              aria-label="Jump to channel"
-              aria-expanded={dropdownOpen}
+              onClick={() => setSettingsOpen(true)}
+              aria-label="Inbox settings"
               className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             >
-              <Search className="h-3.5 w-3.5" />
+              <Settings className="h-3.5 w-3.5" />
             </button>
-            {dropdownOpen && (
-              <div className="absolute right-0 top-8 z-40 w-56 overflow-hidden rounded-lg border bg-popover shadow-lg animate-in fade-in-0 zoom-in-95 duration-150 origin-top-right">
-                <div className="max-h-72 overflow-y-auto p-1">
-                  {channels.map((c) => (
-                    <button
-                      key={c.channelId}
-                      type="button"
-                      onClick={() => handleSelectChannel(c.channelId)}
-                      className="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-left text-xs font-medium transition-colors hover:bg-muted/60"
-                    >
-                      <Hash className="h-3 w-3 shrink-0 opacity-60" />
-                      <span className="truncate flex-1">{c.departmentName}</span>
-                      {c.unreadCount > 0 && (
-                        <span className="rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-semibold text-primary-foreground">
-                          {c.unreadCount}
-                        </span>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         </div>
         <ScrollArea className="flex-1">
@@ -211,13 +222,19 @@ export function InboxView({
               currentUser={currentUser}
               messageColor={messageColor}
               onOpenProfile={openProfile}
-              headerRight={<MessageColorPicker color={messageColor} onChange={setMessageColorState} />}
             />
           )}
         </div>
 
         {profileUser && <UserProfilePanel user={profileUser} onClose={() => setProfileUser(null)} />}
       </div>
+
+      <InboxSettingsModal
+        open={settingsOpen}
+        onOpenChange={setSettingsOpen}
+        color={messageColor}
+        onChangeColor={setMessageColorState}
+      />
     </div>
   )
 }
@@ -228,14 +245,12 @@ function ChannelThread({
   currentUser,
   messageColor,
   onOpenProfile,
-  headerRight,
 }: {
   channelId: string
   departmentName: string
   currentUser: CurrentUser
   messageColor: 'RED' | 'BLUE' | 'YELLOW'
   onOpenProfile: (userId: string) => void
-  headerRight: React.ReactNode
 }) {
   const [messages, setMessages] = useState<MessageWithSender[]>([])
   const [members, setMembers] = useState<Member[]>([])
@@ -395,12 +410,9 @@ function ChannelThread({
         typingRef={typingBroadcastRef}
       />
 
-      <div className="flex items-center justify-between border-b px-4 py-2.5">
-        <div className="flex items-center gap-1.5">
-          <Hash className="h-4 w-4 text-muted-foreground" />
-          <p className="text-sm font-semibold">{departmentName}</p>
-        </div>
-        {headerRight}
+      <div className="flex items-center gap-1.5 border-b px-4 py-2.5">
+        <Hash className="h-4 w-4 text-muted-foreground" />
+        <p className="text-sm font-semibold">{departmentName}</p>
       </div>
 
       <ScrollArea className="flex-1 px-4 py-3">
