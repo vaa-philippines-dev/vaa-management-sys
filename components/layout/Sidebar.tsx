@@ -21,6 +21,7 @@ import {
   ChevronDown,
   Star,
   X,
+  Ticket,
 } from 'lucide-react'
 import Image from 'next/image'
 import {
@@ -247,6 +248,7 @@ const managerRoutes = [
   { label: 'Assignments', href: '/assignments', icon: Briefcase },
   { label: 'Work Logs', href: '/work-logs', icon: ListTodo },
   { label: 'Services', href: '/skills', icon: UserCog },
+  { label: 'Tickets', href: '/tickets', icon: Ticket },
   { label: 'Monthly Report', href: '/reports', icon: BarChart3 },
 ]
 
@@ -254,6 +256,7 @@ const vaRoutes = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { label: 'My Work Logs', href: '/work-logs', icon: Clock },
   { label: 'My Assignments', href: '/assignments', icon: Briefcase },
+  { label: 'Tickets', href: '/tickets', icon: Ticket },
 ]
 
 const adminRoutes = [

@@ -4,6 +4,7 @@ import { createServerSupabase } from '@/lib/supabase/server'
 export const CLIENT_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'STAFF']
 export const ASSIGNMENT_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'STAFF']
 export const VA_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER']
+export const TICKET_STAFF_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'STAFF']
 
 export async function getCurrentUser() {
   const supabase = await createServerSupabase()
