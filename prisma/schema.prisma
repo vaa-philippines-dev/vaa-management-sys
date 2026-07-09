@@ -328,6 +328,7 @@ model User {
   systemRole SystemRole    @map("system_role")
   userType   UserType      @map("user_type")
   avatarUrl  String?       @map("avatar_url")
+  messageColor FavoriteColor @default(BLUE) @map("message_color")
   status     GeneralStatus @default(ACTIVE) @map("general_status")
   onHold     Boolean       @default(false) @map("on_hold")
   isActive   Boolean       @default(true) @map("is_active")
@@ -355,6 +356,8 @@ model User {
   notifications              Notification[]
   sidebarFavorites           SidebarFavorite[]
   messages                   Message[]
+  messageMentions            MessageMention[]
+  channelReads               ChannelRead[]
 
   @@index([email])
   @@index([systemRole])
@@ -739,6 +742,7 @@ model Channel {
   createdAt    DateTime  @default(now()) @map("created_at")
 
   messages Message[]
+  reads    ChannelRead[]
 
   @@map("channels")
 }
@@ -750,10 +754,35 @@ model Message {
   senderId  String   @map("sender_id")
   sender    User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
   body      String
+  mentions  MessageMention[]
   createdAt DateTime @default(now()) @map("created_at")
 
   @@index([channelId, createdAt])
   @@map("messages")
+}
+
+model MessageMention {
+  id            String   @id @default(cuid())
+  messageId     String   @map("message_id")
+  message       Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  mentionedUserId String @map("mentioned_user_id")
+  mentionedUser User     @relation(fields: [mentionedUserId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@index([mentionedUserId])
+  @@map("message_mentions")
+}
+
+model ChannelRead {
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  channelId  String   @map("channel_id")
+  channel    Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  lastReadAt DateTime @default(now()) @map("last_read_at")
+
+  @@unique([userId, channelId])
+  @@map("channel_reads")
 }
 
 // ──────────────────────────────────────────────────────────────────

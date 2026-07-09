@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Bell, Briefcase, Clock, MessageSquare } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
@@ -18,6 +19,8 @@ type Notification = {
   message: string
   read: boolean
   createdAt: string | Date
+  entityType?: string | null
+  entityId?: string | null
 }
 
 const TYPE_ICON: Record<Notification['type'], React.ComponentType<{ className?: string }>> = {
@@ -30,6 +33,7 @@ export function NotificationBell({ userId }: { userId: string }) {
   const [open, setOpen] = useState(false)
   const [notifications, setNotifications] = useState<Notification[]>([])
   const containerRef = useRef<HTMLDivElement>(null)
+  const router = useRouter()
 
   useEffect(() => {
     getMyNotifications().then((data) => setNotifications(data))
@@ -73,10 +77,17 @@ export function NotificationBell({ userId }: { userId: string }) {
     await markAllNotificationsRead()
   }, [])
 
-  const handleItemClick = useCallback(async (id: string) => {
-    setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)))
-    await markNotificationRead(id)
-  }, [])
+  const handleItemClick = useCallback(
+    async (n: Notification) => {
+      setNotifications((prev) => prev.map((item) => (item.id === n.id ? { ...item, read: true } : item)))
+      setOpen(false)
+      await markNotificationRead(n.id)
+      if (n.type === 'NEW_MESSAGE' && n.entityType === 'Channel' && n.entityId) {
+        router.push('/inbox')
+      }
+    },
+    [router]
+  )
 
   return (
     <div ref={containerRef} className="relative">
@@ -118,7 +129,7 @@ export function NotificationBell({ userId }: { userId: string }) {
                   <button
                     key={n.id}
                     type="button"
-                    onClick={() => handleItemClick(n.id)}
+                    onClick={() => handleItemClick(n)}
                     className={cn(
                       'flex w-full items-start gap-2.5 border-b px-4 py-3 text-left transition-colors last:border-b-0 hover:bg-muted/60',
                       !n.read && 'bg-primary/5'

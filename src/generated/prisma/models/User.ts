@@ -34,6 +34,7 @@ export type UserMinAggregateOutputType = {
   systemRole: $Enums.SystemRole | null
   userType: $Enums.UserType | null
   avatarUrl: string | null
+  messageColor: $Enums.FavoriteColor | null
   status: $Enums.GeneralStatus | null
   onHold: boolean | null
   isActive: boolean | null
@@ -51,6 +52,7 @@ export type UserMaxAggregateOutputType = {
   systemRole: $Enums.SystemRole | null
   userType: $Enums.UserType | null
   avatarUrl: string | null
+  messageColor: $Enums.FavoriteColor | null
   status: $Enums.GeneralStatus | null
   onHold: boolean | null
   isActive: boolean | null
@@ -68,6 +70,7 @@ export type UserCountAggregateOutputType = {
   systemRole: number
   userType: number
   avatarUrl: number
+  messageColor: number
   status: number
   onHold: number
   isActive: number
@@ -87,6 +90,7 @@ export type UserMinAggregateInputType = {
   systemRole?: true
   userType?: true
   avatarUrl?: true
+  messageColor?: true
   status?: true
   onHold?: true
   isActive?: true
@@ -104,6 +108,7 @@ export type UserMaxAggregateInputType = {
   systemRole?: true
   userType?: true
   avatarUrl?: true
+  messageColor?: true
   status?: true
   onHold?: true
   isActive?: true
@@ -121,6 +126,7 @@ export type UserCountAggregateInputType = {
   systemRole?: true
   userType?: true
   avatarUrl?: true
+  messageColor?: true
   status?: true
   onHold?: true
   isActive?: true
@@ -211,6 +217,7 @@ export type UserGroupByOutputType = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl: string | null
+  messageColor: $Enums.FavoriteColor
   status: $Enums.GeneralStatus
   onHold: boolean
   isActive: boolean
@@ -249,6 +256,7 @@ export type UserWhereInput = {
   systemRole?: Prisma.EnumSystemRoleFilter<"User"> | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFilter<"User"> | $Enums.UserType
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  messageColor?: Prisma.EnumFavoriteColorFilter<"User"> | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFilter<"User"> | $Enums.GeneralStatus
   onHold?: Prisma.BoolFilter<"User"> | boolean
   isActive?: Prisma.BoolFilter<"User"> | boolean
@@ -275,6 +283,8 @@ export type UserWhereInput = {
   notifications?: Prisma.NotificationListRelationFilter
   sidebarFavorites?: Prisma.SidebarFavoriteListRelationFilter
   messages?: Prisma.MessageListRelationFilter
+  messageMentions?: Prisma.MessageMentionListRelationFilter
+  channelReads?: Prisma.ChannelReadListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -287,6 +297,7 @@ export type UserOrderByWithRelationInput = {
   systemRole?: Prisma.SortOrder
   userType?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  messageColor?: Prisma.SortOrder
   status?: Prisma.SortOrder
   onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -313,6 +324,8 @@ export type UserOrderByWithRelationInput = {
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
   sidebarFavorites?: Prisma.SidebarFavoriteOrderByRelationAggregateInput
   messages?: Prisma.MessageOrderByRelationAggregateInput
+  messageMentions?: Prisma.MessageMentionOrderByRelationAggregateInput
+  channelReads?: Prisma.ChannelReadOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -328,6 +341,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   systemRole?: Prisma.EnumSystemRoleFilter<"User"> | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFilter<"User"> | $Enums.UserType
   avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  messageColor?: Prisma.EnumFavoriteColorFilter<"User"> | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFilter<"User"> | $Enums.GeneralStatus
   onHold?: Prisma.BoolFilter<"User"> | boolean
   isActive?: Prisma.BoolFilter<"User"> | boolean
@@ -354,6 +368,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   notifications?: Prisma.NotificationListRelationFilter
   sidebarFavorites?: Prisma.SidebarFavoriteListRelationFilter
   messages?: Prisma.MessageListRelationFilter
+  messageMentions?: Prisma.MessageMentionListRelationFilter
+  channelReads?: Prisma.ChannelReadListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -366,6 +382,7 @@ export type UserOrderByWithAggregationInput = {
   systemRole?: Prisma.SortOrder
   userType?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  messageColor?: Prisma.SortOrder
   status?: Prisma.SortOrder
   onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -389,6 +406,7 @@ export type UserScalarWhereWithAggregatesInput = {
   systemRole?: Prisma.EnumSystemRoleWithAggregatesFilter<"User"> | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeWithAggregatesFilter<"User"> | $Enums.UserType
   avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  messageColor?: Prisma.EnumFavoriteColorWithAggregatesFilter<"User"> | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusWithAggregatesFilter<"User"> | $Enums.GeneralStatus
   onHold?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   isActive?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
@@ -406,6 +424,7 @@ export type UserCreateInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -432,6 +451,8 @@ export type UserCreateInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -444,6 +465,7 @@ export type UserUncheckedCreateInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -470,6 +492,8 @@ export type UserUncheckedCreateInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -482,6 +506,7 @@ export type UserUpdateInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -508,6 +533,8 @@ export type UserUpdateInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -520,6 +547,7 @@ export type UserUncheckedUpdateInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -546,6 +574,8 @@ export type UserUncheckedUpdateInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -558,6 +588,7 @@ export type UserCreateManyInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -575,6 +606,7 @@ export type UserUpdateManyMutationInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -592,6 +624,7 @@ export type UserUncheckedUpdateManyInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -619,6 +652,7 @@ export type UserCountOrderByAggregateInput = {
   systemRole?: Prisma.SortOrder
   userType?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
+  messageColor?: Prisma.SortOrder
   status?: Prisma.SortOrder
   onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -636,6 +670,7 @@ export type UserMaxOrderByAggregateInput = {
   systemRole?: Prisma.SortOrder
   userType?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
+  messageColor?: Prisma.SortOrder
   status?: Prisma.SortOrder
   onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -653,6 +688,7 @@ export type UserMinOrderByAggregateInput = {
   systemRole?: Prisma.SortOrder
   userType?: Prisma.SortOrder
   avatarUrl?: Prisma.SortOrder
+  messageColor?: Prisma.SortOrder
   status?: Prisma.SortOrder
   onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -696,6 +732,10 @@ export type EnumSystemRoleFieldUpdateOperationsInput = {
 
 export type EnumUserTypeFieldUpdateOperationsInput = {
   set?: $Enums.UserType
+}
+
+export type EnumFavoriteColorFieldUpdateOperationsInput = {
+  set?: $Enums.FavoriteColor
 }
 
 export type UserCreateNestedOneWithoutProfileInput = {
@@ -930,6 +970,34 @@ export type UserUpdateOneRequiredWithoutMessagesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMessagesInput, Prisma.UserUpdateWithoutMessagesInput>, Prisma.UserUncheckedUpdateWithoutMessagesInput>
 }
 
+export type UserCreateNestedOneWithoutMessageMentionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMessageMentionsInput, Prisma.UserUncheckedCreateWithoutMessageMentionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMessageMentionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutMessageMentionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMessageMentionsInput, Prisma.UserUncheckedCreateWithoutMessageMentionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMessageMentionsInput
+  upsert?: Prisma.UserUpsertWithoutMessageMentionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMessageMentionsInput, Prisma.UserUpdateWithoutMessageMentionsInput>, Prisma.UserUncheckedUpdateWithoutMessageMentionsInput>
+}
+
+export type UserCreateNestedOneWithoutChannelReadsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutChannelReadsInput, Prisma.UserUncheckedCreateWithoutChannelReadsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutChannelReadsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutChannelReadsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutChannelReadsInput, Prisma.UserUncheckedCreateWithoutChannelReadsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutChannelReadsInput
+  upsert?: Prisma.UserUpsertWithoutChannelReadsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutChannelReadsInput, Prisma.UserUpdateWithoutChannelReadsInput>, Prisma.UserUncheckedUpdateWithoutChannelReadsInput>
+}
+
 export type UserCreateNestedOneWithoutAuditLogsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutAuditLogsInput, Prisma.UserUncheckedCreateWithoutAuditLogsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutAuditLogsInput
@@ -982,6 +1050,7 @@ export type UserCreateWithoutDepartmentHeadInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -1007,6 +1076,8 @@ export type UserCreateWithoutDepartmentHeadInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDepartmentHeadInput = {
@@ -1019,6 +1090,7 @@ export type UserUncheckedCreateWithoutDepartmentHeadInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -1044,6 +1116,8 @@ export type UserUncheckedCreateWithoutDepartmentHeadInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDepartmentHeadInput = {
@@ -1072,6 +1146,7 @@ export type UserUpdateWithoutDepartmentHeadInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1097,6 +1172,8 @@ export type UserUpdateWithoutDepartmentHeadInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDepartmentHeadInput = {
@@ -1109,6 +1186,7 @@ export type UserUncheckedUpdateWithoutDepartmentHeadInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1134,6 +1212,8 @@ export type UserUncheckedUpdateWithoutDepartmentHeadInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMembershipsInput = {
@@ -1146,6 +1226,7 @@ export type UserCreateWithoutMembershipsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -1171,6 +1252,8 @@ export type UserCreateWithoutMembershipsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMembershipsInput = {
@@ -1183,6 +1266,7 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -1208,6 +1292,8 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMembershipsInput = {
@@ -1236,6 +1322,7 @@ export type UserUpdateWithoutMembershipsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1261,6 +1348,8 @@ export type UserUpdateWithoutMembershipsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMembershipsInput = {
@@ -1273,6 +1362,7 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1298,6 +1388,8 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutProfileInput = {
@@ -1310,6 +1402,7 @@ export type UserCreateWithoutProfileInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -1335,6 +1428,8 @@ export type UserCreateWithoutProfileInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProfileInput = {
@@ -1347,6 +1442,7 @@ export type UserUncheckedCreateWithoutProfileInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -1372,6 +1468,8 @@ export type UserUncheckedCreateWithoutProfileInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProfileInput = {
@@ -1400,6 +1498,7 @@ export type UserUpdateWithoutProfileInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1425,6 +1524,8 @@ export type UserUpdateWithoutProfileInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProfileInput = {
@@ -1437,6 +1538,7 @@ export type UserUncheckedUpdateWithoutProfileInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1462,6 +1564,8 @@ export type UserUncheckedUpdateWithoutProfileInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutEmploymentRecordsInput = {
@@ -1474,6 +1578,7 @@ export type UserCreateWithoutEmploymentRecordsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -1499,6 +1604,8 @@ export type UserCreateWithoutEmploymentRecordsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutEmploymentRecordsInput = {
@@ -1511,6 +1618,7 @@ export type UserUncheckedCreateWithoutEmploymentRecordsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -1536,6 +1644,8 @@ export type UserUncheckedCreateWithoutEmploymentRecordsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutEmploymentRecordsInput = {
@@ -1553,6 +1663,7 @@ export type UserCreateWithoutEmploymentRecordsInitiatedInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -1578,6 +1689,8 @@ export type UserCreateWithoutEmploymentRecordsInitiatedInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutEmploymentRecordsInitiatedInput = {
@@ -1590,6 +1703,7 @@ export type UserUncheckedCreateWithoutEmploymentRecordsInitiatedInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -1615,6 +1729,8 @@ export type UserUncheckedCreateWithoutEmploymentRecordsInitiatedInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutEmploymentRecordsInitiatedInput = {
@@ -1643,6 +1759,7 @@ export type UserUpdateWithoutEmploymentRecordsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1668,6 +1785,8 @@ export type UserUpdateWithoutEmploymentRecordsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmploymentRecordsInput = {
@@ -1680,6 +1799,7 @@ export type UserUncheckedUpdateWithoutEmploymentRecordsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1705,6 +1825,8 @@ export type UserUncheckedUpdateWithoutEmploymentRecordsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutEmploymentRecordsInitiatedInput = {
@@ -1728,6 +1850,7 @@ export type UserUpdateWithoutEmploymentRecordsInitiatedInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1753,6 +1876,8 @@ export type UserUpdateWithoutEmploymentRecordsInitiatedInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmploymentRecordsInitiatedInput = {
@@ -1765,6 +1890,7 @@ export type UserUncheckedUpdateWithoutEmploymentRecordsInitiatedInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1790,6 +1916,8 @@ export type UserUncheckedUpdateWithoutEmploymentRecordsInitiatedInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRoleAssignmentsInput = {
@@ -1802,6 +1930,7 @@ export type UserCreateWithoutRoleAssignmentsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -1827,6 +1956,8 @@ export type UserCreateWithoutRoleAssignmentsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRoleAssignmentsInput = {
@@ -1839,6 +1970,7 @@ export type UserUncheckedCreateWithoutRoleAssignmentsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -1864,6 +1996,8 @@ export type UserUncheckedCreateWithoutRoleAssignmentsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRoleAssignmentsInput = {
@@ -1881,6 +2015,7 @@ export type UserCreateWithoutGrantedRoleAssignmentsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -1906,6 +2041,8 @@ export type UserCreateWithoutGrantedRoleAssignmentsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutGrantedRoleAssignmentsInput = {
@@ -1918,6 +2055,7 @@ export type UserUncheckedCreateWithoutGrantedRoleAssignmentsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -1943,6 +2081,8 @@ export type UserUncheckedCreateWithoutGrantedRoleAssignmentsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutGrantedRoleAssignmentsInput = {
@@ -1971,6 +2111,7 @@ export type UserUpdateWithoutRoleAssignmentsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1996,6 +2137,8 @@ export type UserUpdateWithoutRoleAssignmentsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRoleAssignmentsInput = {
@@ -2008,6 +2151,7 @@ export type UserUncheckedUpdateWithoutRoleAssignmentsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2033,6 +2177,8 @@ export type UserUncheckedUpdateWithoutRoleAssignmentsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutGrantedRoleAssignmentsInput = {
@@ -2056,6 +2202,7 @@ export type UserUpdateWithoutGrantedRoleAssignmentsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2081,6 +2228,8 @@ export type UserUpdateWithoutGrantedRoleAssignmentsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGrantedRoleAssignmentsInput = {
@@ -2093,6 +2242,7 @@ export type UserUncheckedUpdateWithoutGrantedRoleAssignmentsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2118,6 +2268,8 @@ export type UserUncheckedUpdateWithoutGrantedRoleAssignmentsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutVaProfileInput = {
@@ -2130,6 +2282,7 @@ export type UserCreateWithoutVaProfileInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -2155,6 +2308,8 @@ export type UserCreateWithoutVaProfileInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutVaProfileInput = {
@@ -2167,6 +2322,7 @@ export type UserUncheckedCreateWithoutVaProfileInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -2192,6 +2348,8 @@ export type UserUncheckedCreateWithoutVaProfileInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutVaProfileInput = {
@@ -2220,6 +2378,7 @@ export type UserUpdateWithoutVaProfileInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2245,6 +2404,8 @@ export type UserUpdateWithoutVaProfileInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVaProfileInput = {
@@ -2257,6 +2418,7 @@ export type UserUncheckedUpdateWithoutVaProfileInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2282,6 +2444,8 @@ export type UserUncheckedUpdateWithoutVaProfileInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutVaHistoryEventsInput = {
@@ -2294,6 +2458,7 @@ export type UserCreateWithoutVaHistoryEventsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -2319,6 +2484,8 @@ export type UserCreateWithoutVaHistoryEventsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutVaHistoryEventsInput = {
@@ -2331,6 +2498,7 @@ export type UserUncheckedCreateWithoutVaHistoryEventsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -2356,6 +2524,8 @@ export type UserUncheckedCreateWithoutVaHistoryEventsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutVaHistoryEventsInput = {
@@ -2373,6 +2543,7 @@ export type UserCreateWithoutVaHistoryChangesInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -2398,6 +2569,8 @@ export type UserCreateWithoutVaHistoryChangesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutVaHistoryChangesInput = {
@@ -2410,6 +2583,7 @@ export type UserUncheckedCreateWithoutVaHistoryChangesInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -2435,6 +2609,8 @@ export type UserUncheckedCreateWithoutVaHistoryChangesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutVaHistoryChangesInput = {
@@ -2463,6 +2639,7 @@ export type UserUpdateWithoutVaHistoryEventsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2488,6 +2665,8 @@ export type UserUpdateWithoutVaHistoryEventsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVaHistoryEventsInput = {
@@ -2500,6 +2679,7 @@ export type UserUncheckedUpdateWithoutVaHistoryEventsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2525,6 +2705,8 @@ export type UserUncheckedUpdateWithoutVaHistoryEventsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutVaHistoryChangesInput = {
@@ -2548,6 +2730,7 @@ export type UserUpdateWithoutVaHistoryChangesInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2573,6 +2756,8 @@ export type UserUpdateWithoutVaHistoryChangesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVaHistoryChangesInput = {
@@ -2585,6 +2770,7 @@ export type UserUncheckedUpdateWithoutVaHistoryChangesInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2610,6 +2796,8 @@ export type UserUncheckedUpdateWithoutVaHistoryChangesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutUploadedDocumentsInput = {
@@ -2622,6 +2810,7 @@ export type UserCreateWithoutUploadedDocumentsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -2647,6 +2836,8 @@ export type UserCreateWithoutUploadedDocumentsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUploadedDocumentsInput = {
@@ -2659,6 +2850,7 @@ export type UserUncheckedCreateWithoutUploadedDocumentsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -2684,6 +2876,8 @@ export type UserUncheckedCreateWithoutUploadedDocumentsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUploadedDocumentsInput = {
@@ -2712,6 +2906,7 @@ export type UserUpdateWithoutUploadedDocumentsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2737,6 +2932,8 @@ export type UserUpdateWithoutUploadedDocumentsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadedDocumentsInput = {
@@ -2749,6 +2946,7 @@ export type UserUncheckedUpdateWithoutUploadedDocumentsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2774,6 +2972,8 @@ export type UserUncheckedUpdateWithoutUploadedDocumentsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLeaveRequestsInput = {
@@ -2786,6 +2986,7 @@ export type UserCreateWithoutLeaveRequestsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -2811,6 +3012,8 @@ export type UserCreateWithoutLeaveRequestsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLeaveRequestsInput = {
@@ -2823,6 +3026,7 @@ export type UserUncheckedCreateWithoutLeaveRequestsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -2848,6 +3052,8 @@ export type UserUncheckedCreateWithoutLeaveRequestsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLeaveRequestsInput = {
@@ -2865,6 +3071,7 @@ export type UserCreateWithoutApprovedLeavesInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -2890,6 +3097,8 @@ export type UserCreateWithoutApprovedLeavesInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutApprovedLeavesInput = {
@@ -2902,6 +3111,7 @@ export type UserUncheckedCreateWithoutApprovedLeavesInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -2927,6 +3137,8 @@ export type UserUncheckedCreateWithoutApprovedLeavesInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutApprovedLeavesInput = {
@@ -2955,6 +3167,7 @@ export type UserUpdateWithoutLeaveRequestsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2980,6 +3193,8 @@ export type UserUpdateWithoutLeaveRequestsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLeaveRequestsInput = {
@@ -2992,6 +3207,7 @@ export type UserUncheckedUpdateWithoutLeaveRequestsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3017,6 +3233,8 @@ export type UserUncheckedUpdateWithoutLeaveRequestsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutApprovedLeavesInput = {
@@ -3040,6 +3258,7 @@ export type UserUpdateWithoutApprovedLeavesInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3065,6 +3284,8 @@ export type UserUpdateWithoutApprovedLeavesInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApprovedLeavesInput = {
@@ -3077,6 +3298,7 @@ export type UserUncheckedUpdateWithoutApprovedLeavesInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3102,6 +3324,8 @@ export type UserUncheckedUpdateWithoutApprovedLeavesInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutManagedClientsInput = {
@@ -3114,6 +3338,7 @@ export type UserCreateWithoutManagedClientsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -3139,6 +3364,8 @@ export type UserCreateWithoutManagedClientsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutManagedClientsInput = {
@@ -3151,6 +3378,7 @@ export type UserUncheckedCreateWithoutManagedClientsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -3176,6 +3404,8 @@ export type UserUncheckedCreateWithoutManagedClientsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutManagedClientsInput = {
@@ -3204,6 +3434,7 @@ export type UserUpdateWithoutManagedClientsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3229,6 +3460,8 @@ export type UserUpdateWithoutManagedClientsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutManagedClientsInput = {
@@ -3241,6 +3474,7 @@ export type UserUncheckedUpdateWithoutManagedClientsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3266,6 +3500,8 @@ export type UserUncheckedUpdateWithoutManagedClientsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCreatedTicketsInput = {
@@ -3278,6 +3514,7 @@ export type UserCreateWithoutCreatedTicketsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -3303,6 +3540,8 @@ export type UserCreateWithoutCreatedTicketsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreatedTicketsInput = {
@@ -3315,6 +3554,7 @@ export type UserUncheckedCreateWithoutCreatedTicketsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -3340,6 +3580,8 @@ export type UserUncheckedCreateWithoutCreatedTicketsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreatedTicketsInput = {
@@ -3357,6 +3599,7 @@ export type UserCreateWithoutAssignedTicketsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -3382,6 +3625,8 @@ export type UserCreateWithoutAssignedTicketsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAssignedTicketsInput = {
@@ -3394,6 +3639,7 @@ export type UserUncheckedCreateWithoutAssignedTicketsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -3419,6 +3665,8 @@ export type UserUncheckedCreateWithoutAssignedTicketsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAssignedTicketsInput = {
@@ -3447,6 +3695,7 @@ export type UserUpdateWithoutCreatedTicketsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3472,6 +3721,8 @@ export type UserUpdateWithoutCreatedTicketsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedTicketsInput = {
@@ -3484,6 +3735,7 @@ export type UserUncheckedUpdateWithoutCreatedTicketsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3509,6 +3761,8 @@ export type UserUncheckedUpdateWithoutCreatedTicketsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutAssignedTicketsInput = {
@@ -3532,6 +3786,7 @@ export type UserUpdateWithoutAssignedTicketsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3557,6 +3812,8 @@ export type UserUpdateWithoutAssignedTicketsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssignedTicketsInput = {
@@ -3569,6 +3826,7 @@ export type UserUncheckedUpdateWithoutAssignedTicketsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3594,6 +3852,8 @@ export type UserUncheckedUpdateWithoutAssignedTicketsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTicketConversationsInput = {
@@ -3606,6 +3866,7 @@ export type UserCreateWithoutTicketConversationsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -3631,6 +3892,8 @@ export type UserCreateWithoutTicketConversationsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTicketConversationsInput = {
@@ -3643,6 +3906,7 @@ export type UserUncheckedCreateWithoutTicketConversationsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -3668,6 +3932,8 @@ export type UserUncheckedCreateWithoutTicketConversationsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTicketConversationsInput = {
@@ -3696,6 +3962,7 @@ export type UserUpdateWithoutTicketConversationsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3721,6 +3988,8 @@ export type UserUpdateWithoutTicketConversationsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTicketConversationsInput = {
@@ -3733,6 +4002,7 @@ export type UserUncheckedUpdateWithoutTicketConversationsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3758,6 +4028,8 @@ export type UserUncheckedUpdateWithoutTicketConversationsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMessagesInput = {
@@ -3770,6 +4042,7 @@ export type UserCreateWithoutMessagesInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -3795,6 +4068,8 @@ export type UserCreateWithoutMessagesInput = {
   vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMessagesInput = {
@@ -3807,6 +4082,7 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -3832,6 +4108,8 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMessagesInput = {
@@ -3860,6 +4138,7 @@ export type UserUpdateWithoutMessagesInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3885,6 +4164,8 @@ export type UserUpdateWithoutMessagesInput = {
   vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMessagesInput = {
@@ -3897,6 +4178,7 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3922,6 +4204,360 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutMessageMentionsInput = {
+  id?: string
+  email: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  extName?: string | null
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
+  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
+  vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutMessageMentionsInput = {
+  id?: string
+  email: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  extName?: string | null
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileUncheckedCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipUncheckedCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
+  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
+  vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutMessageMentionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutMessageMentionsInput, Prisma.UserUncheckedCreateWithoutMessageMentionsInput>
+}
+
+export type UserUpsertWithoutMessageMentionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutMessageMentionsInput, Prisma.UserUncheckedUpdateWithoutMessageMentionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutMessageMentionsInput, Prisma.UserUncheckedCreateWithoutMessageMentionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutMessageMentionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutMessageMentionsInput, Prisma.UserUncheckedUpdateWithoutMessageMentionsInput>
+}
+
+export type UserUpdateWithoutMessageMentionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  extName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  vaProfile?: Prisma.VAProfileUpdateOneWithoutUserNestedInput
+  departmentHead?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUpdateManyWithoutUserNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutUserNestedInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUpdateManyWithoutInitiatorNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
+  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
+  uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
+  createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
+  assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
+  ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
+  vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutMessageMentionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  extName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  vaProfile?: Prisma.VAProfileUncheckedUpdateOneWithoutUserNestedInput
+  departmentHead?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUncheckedUpdateManyWithoutUserNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutUserNestedInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutInitiatorNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
+  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
+  createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
+  assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
+  ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
+  vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutChannelReadsInput = {
+  id?: string
+  email: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  extName?: string | null
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
+  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
+  vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+}
+
+export type UserUncheckedCreateWithoutChannelReadsInput = {
+  id?: string
+  email: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  extName?: string | null
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileUncheckedCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipUncheckedCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
+  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
+  vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+}
+
+export type UserCreateOrConnectWithoutChannelReadsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutChannelReadsInput, Prisma.UserUncheckedCreateWithoutChannelReadsInput>
+}
+
+export type UserUpsertWithoutChannelReadsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutChannelReadsInput, Prisma.UserUncheckedUpdateWithoutChannelReadsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutChannelReadsInput, Prisma.UserUncheckedCreateWithoutChannelReadsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutChannelReadsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutChannelReadsInput, Prisma.UserUncheckedUpdateWithoutChannelReadsInput>
+}
+
+export type UserUpdateWithoutChannelReadsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  extName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  vaProfile?: Prisma.VAProfileUpdateOneWithoutUserNestedInput
+  departmentHead?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUpdateManyWithoutUserNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutUserNestedInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUpdateManyWithoutInitiatorNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
+  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
+  uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
+  createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
+  assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
+  ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
+  vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutChannelReadsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  extName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  vaProfile?: Prisma.VAProfileUncheckedUpdateOneWithoutUserNestedInput
+  departmentHead?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUncheckedUpdateManyWithoutUserNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutUserNestedInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutInitiatorNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
+  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
+  createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
+  assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
+  ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
+  vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
 }
 
 export type UserCreateWithoutAuditLogsInput = {
@@ -3934,6 +4570,7 @@ export type UserCreateWithoutAuditLogsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -3959,6 +4596,8 @@ export type UserCreateWithoutAuditLogsInput = {
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAuditLogsInput = {
@@ -3971,6 +4610,7 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -3996,6 +4636,8 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAuditLogsInput = {
@@ -4024,6 +4666,7 @@ export type UserUpdateWithoutAuditLogsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4049,6 +4692,8 @@ export type UserUpdateWithoutAuditLogsInput = {
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuditLogsInput = {
@@ -4061,6 +4706,7 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4086,6 +4732,8 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -4098,6 +4746,7 @@ export type UserCreateWithoutNotificationsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -4123,6 +4772,8 @@ export type UserCreateWithoutNotificationsInput = {
   vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
   sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -4135,6 +4786,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -4160,6 +4812,8 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -4188,6 +4842,7 @@ export type UserUpdateWithoutNotificationsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4213,6 +4868,8 @@ export type UserUpdateWithoutNotificationsInput = {
   vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -4225,6 +4882,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4250,6 +4908,8 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSidebarFavoritesInput = {
@@ -4262,6 +4922,7 @@ export type UserCreateWithoutSidebarFavoritesInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -4287,6 +4948,8 @@ export type UserCreateWithoutSidebarFavoritesInput = {
   vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSidebarFavoritesInput = {
@@ -4299,6 +4962,7 @@ export type UserUncheckedCreateWithoutSidebarFavoritesInput = {
   systemRole: $Enums.SystemRole
   userType: $Enums.UserType
   avatarUrl?: string | null
+  messageColor?: $Enums.FavoriteColor
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
@@ -4324,6 +4988,8 @@ export type UserUncheckedCreateWithoutSidebarFavoritesInput = {
   vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSidebarFavoritesInput = {
@@ -4352,6 +5018,7 @@ export type UserUpdateWithoutSidebarFavoritesInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4377,6 +5044,8 @@ export type UserUpdateWithoutSidebarFavoritesInput = {
   vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSidebarFavoritesInput = {
@@ -4389,6 +5058,7 @@ export type UserUncheckedUpdateWithoutSidebarFavoritesInput = {
   systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
   userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumFavoriteColorFieldUpdateOperationsInput | $Enums.FavoriteColor
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4414,6 +5084,8 @@ export type UserUncheckedUpdateWithoutSidebarFavoritesInput = {
   vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -4441,6 +5113,8 @@ export type UserCountOutputType = {
   notifications: number
   sidebarFavorites: number
   messages: number
+  messageMentions: number
+  channelReads: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -4463,6 +5137,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
   sidebarFavorites?: boolean | UserCountOutputTypeCountSidebarFavoritesArgs
   messages?: boolean | UserCountOutputTypeCountMessagesArgs
+  messageMentions?: boolean | UserCountOutputTypeCountMessageMentionsArgs
+  channelReads?: boolean | UserCountOutputTypeCountChannelReadsArgs
 }
 
 /**
@@ -4608,6 +5284,20 @@ export type UserCountOutputTypeCountMessagesArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.MessageWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountMessageMentionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MessageMentionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountChannelReadsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChannelReadWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -4619,6 +5309,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   systemRole?: boolean
   userType?: boolean
   avatarUrl?: boolean
+  messageColor?: boolean
   status?: boolean
   onHold?: boolean
   isActive?: boolean
@@ -4645,6 +5336,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   sidebarFavorites?: boolean | Prisma.User$sidebarFavoritesArgs<ExtArgs>
   messages?: boolean | Prisma.User$messagesArgs<ExtArgs>
+  messageMentions?: boolean | Prisma.User$messageMentionsArgs<ExtArgs>
+  channelReads?: boolean | Prisma.User$channelReadsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -4658,6 +5351,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   systemRole?: boolean
   userType?: boolean
   avatarUrl?: boolean
+  messageColor?: boolean
   status?: boolean
   onHold?: boolean
   isActive?: boolean
@@ -4675,6 +5369,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   systemRole?: boolean
   userType?: boolean
   avatarUrl?: boolean
+  messageColor?: boolean
   status?: boolean
   onHold?: boolean
   isActive?: boolean
@@ -4692,6 +5387,7 @@ export type UserSelectScalar = {
   systemRole?: boolean
   userType?: boolean
   avatarUrl?: boolean
+  messageColor?: boolean
   status?: boolean
   onHold?: boolean
   isActive?: boolean
@@ -4699,7 +5395,7 @@ export type UserSelectScalar = {
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "firstName" | "middleName" | "lastName" | "extName" | "systemRole" | "userType" | "avatarUrl" | "status" | "onHold" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "firstName" | "middleName" | "lastName" | "extName" | "systemRole" | "userType" | "avatarUrl" | "messageColor" | "status" | "onHold" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   profile?: boolean | Prisma.User$profileArgs<ExtArgs>
   vaProfile?: boolean | Prisma.User$vaProfileArgs<ExtArgs>
@@ -4722,6 +5418,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   sidebarFavorites?: boolean | Prisma.User$sidebarFavoritesArgs<ExtArgs>
   messages?: boolean | Prisma.User$messagesArgs<ExtArgs>
+  messageMentions?: boolean | Prisma.User$messageMentionsArgs<ExtArgs>
+  channelReads?: boolean | Prisma.User$channelReadsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -4751,6 +5449,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
     sidebarFavorites: Prisma.$SidebarFavoritePayload<ExtArgs>[]
     messages: Prisma.$MessagePayload<ExtArgs>[]
+    messageMentions: Prisma.$MessageMentionPayload<ExtArgs>[]
+    channelReads: Prisma.$ChannelReadPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -4762,6 +5462,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     systemRole: $Enums.SystemRole
     userType: $Enums.UserType
     avatarUrl: string | null
+    messageColor: $Enums.FavoriteColor
     status: $Enums.GeneralStatus
     onHold: boolean
     isActive: boolean
@@ -5182,6 +5883,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sidebarFavorites<T extends Prisma.User$sidebarFavoritesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sidebarFavoritesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SidebarFavoritePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   messages<T extends Prisma.User$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  messageMentions<T extends Prisma.User$messageMentionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$messageMentionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessageMentionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  channelReads<T extends Prisma.User$channelReadsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$channelReadsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChannelReadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5220,6 +5923,7 @@ export interface UserFieldRefs {
   readonly systemRole: Prisma.FieldRef<"User", 'SystemRole'>
   readonly userType: Prisma.FieldRef<"User", 'UserType'>
   readonly avatarUrl: Prisma.FieldRef<"User", 'String'>
+  readonly messageColor: Prisma.FieldRef<"User", 'FavoriteColor'>
   readonly status: Prisma.FieldRef<"User", 'GeneralStatus'>
   readonly onHold: Prisma.FieldRef<"User", 'Boolean'>
   readonly isActive: Prisma.FieldRef<"User", 'Boolean'>
@@ -6109,6 +6813,54 @@ export type User$messagesArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.MessageScalarFieldEnum | Prisma.MessageScalarFieldEnum[]
+}
+
+/**
+ * User.messageMentions
+ */
+export type User$messageMentionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MessageMention
+   */
+  select?: Prisma.MessageMentionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MessageMention
+   */
+  omit?: Prisma.MessageMentionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MessageMentionInclude<ExtArgs> | null
+  where?: Prisma.MessageMentionWhereInput
+  orderBy?: Prisma.MessageMentionOrderByWithRelationInput | Prisma.MessageMentionOrderByWithRelationInput[]
+  cursor?: Prisma.MessageMentionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MessageMentionScalarFieldEnum | Prisma.MessageMentionScalarFieldEnum[]
+}
+
+/**
+ * User.channelReads
+ */
+export type User$channelReadsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChannelRead
+   */
+  select?: Prisma.ChannelReadSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChannelRead
+   */
+  omit?: Prisma.ChannelReadOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChannelReadInclude<ExtArgs> | null
+  where?: Prisma.ChannelReadWhereInput
+  orderBy?: Prisma.ChannelReadOrderByWithRelationInput | Prisma.ChannelReadOrderByWithRelationInput[]
+  cursor?: Prisma.ChannelReadWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChannelReadScalarFieldEnum | Prisma.ChannelReadScalarFieldEnum[]
 }
 
 /**

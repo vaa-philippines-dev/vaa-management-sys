@@ -168,6 +168,7 @@ export type ChannelWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Channel"> | Date | string
   department?: Prisma.XOR<Prisma.DepartmentScalarRelationFilter, Prisma.DepartmentWhereInput>
   messages?: Prisma.MessageListRelationFilter
+  reads?: Prisma.ChannelReadListRelationFilter
 }
 
 export type ChannelOrderByWithRelationInput = {
@@ -176,6 +177,7 @@ export type ChannelOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   department?: Prisma.DepartmentOrderByWithRelationInput
   messages?: Prisma.MessageOrderByRelationAggregateInput
+  reads?: Prisma.ChannelReadOrderByRelationAggregateInput
 }
 
 export type ChannelWhereUniqueInput = Prisma.AtLeast<{
@@ -187,6 +189,7 @@ export type ChannelWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Channel"> | Date | string
   department?: Prisma.XOR<Prisma.DepartmentScalarRelationFilter, Prisma.DepartmentWhereInput>
   messages?: Prisma.MessageListRelationFilter
+  reads?: Prisma.ChannelReadListRelationFilter
 }, "id" | "departmentId">
 
 export type ChannelOrderByWithAggregationInput = {
@@ -212,6 +215,7 @@ export type ChannelCreateInput = {
   createdAt?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutChannelInput
   messages?: Prisma.MessageCreateNestedManyWithoutChannelInput
+  reads?: Prisma.ChannelReadCreateNestedManyWithoutChannelInput
 }
 
 export type ChannelUncheckedCreateInput = {
@@ -219,6 +223,7 @@ export type ChannelUncheckedCreateInput = {
   departmentId: string
   createdAt?: Date | string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutChannelInput
+  reads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutChannelInput
 }
 
 export type ChannelUpdateInput = {
@@ -226,6 +231,7 @@ export type ChannelUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutChannelNestedInput
   messages?: Prisma.MessageUpdateManyWithoutChannelNestedInput
+  reads?: Prisma.ChannelReadUpdateManyWithoutChannelNestedInput
 }
 
 export type ChannelUncheckedUpdateInput = {
@@ -233,6 +239,7 @@ export type ChannelUncheckedUpdateInput = {
   departmentId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutChannelNestedInput
+  reads?: Prisma.ChannelReadUncheckedUpdateManyWithoutChannelNestedInput
 }
 
 export type ChannelCreateManyInput = {
@@ -326,16 +333,32 @@ export type ChannelUpdateOneRequiredWithoutMessagesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ChannelUpdateToOneWithWhereWithoutMessagesInput, Prisma.ChannelUpdateWithoutMessagesInput>, Prisma.ChannelUncheckedUpdateWithoutMessagesInput>
 }
 
+export type ChannelCreateNestedOneWithoutReadsInput = {
+  create?: Prisma.XOR<Prisma.ChannelCreateWithoutReadsInput, Prisma.ChannelUncheckedCreateWithoutReadsInput>
+  connectOrCreate?: Prisma.ChannelCreateOrConnectWithoutReadsInput
+  connect?: Prisma.ChannelWhereUniqueInput
+}
+
+export type ChannelUpdateOneRequiredWithoutReadsNestedInput = {
+  create?: Prisma.XOR<Prisma.ChannelCreateWithoutReadsInput, Prisma.ChannelUncheckedCreateWithoutReadsInput>
+  connectOrCreate?: Prisma.ChannelCreateOrConnectWithoutReadsInput
+  upsert?: Prisma.ChannelUpsertWithoutReadsInput
+  connect?: Prisma.ChannelWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ChannelUpdateToOneWithWhereWithoutReadsInput, Prisma.ChannelUpdateWithoutReadsInput>, Prisma.ChannelUncheckedUpdateWithoutReadsInput>
+}
+
 export type ChannelCreateWithoutDepartmentInput = {
   id?: string
   createdAt?: Date | string
   messages?: Prisma.MessageCreateNestedManyWithoutChannelInput
+  reads?: Prisma.ChannelReadCreateNestedManyWithoutChannelInput
 }
 
 export type ChannelUncheckedCreateWithoutDepartmentInput = {
   id?: string
   createdAt?: Date | string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutChannelInput
+  reads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutChannelInput
 }
 
 export type ChannelCreateOrConnectWithoutDepartmentInput = {
@@ -358,24 +381,28 @@ export type ChannelUpdateWithoutDepartmentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   messages?: Prisma.MessageUpdateManyWithoutChannelNestedInput
+  reads?: Prisma.ChannelReadUpdateManyWithoutChannelNestedInput
 }
 
 export type ChannelUncheckedUpdateWithoutDepartmentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutChannelNestedInput
+  reads?: Prisma.ChannelReadUncheckedUpdateManyWithoutChannelNestedInput
 }
 
 export type ChannelCreateWithoutMessagesInput = {
   id?: string
   createdAt?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutChannelInput
+  reads?: Prisma.ChannelReadCreateNestedManyWithoutChannelInput
 }
 
 export type ChannelUncheckedCreateWithoutMessagesInput = {
   id?: string
   departmentId: string
   createdAt?: Date | string
+  reads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutChannelInput
 }
 
 export type ChannelCreateOrConnectWithoutMessagesInput = {
@@ -398,12 +425,58 @@ export type ChannelUpdateWithoutMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutChannelNestedInput
+  reads?: Prisma.ChannelReadUpdateManyWithoutChannelNestedInput
 }
 
 export type ChannelUncheckedUpdateWithoutMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   departmentId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reads?: Prisma.ChannelReadUncheckedUpdateManyWithoutChannelNestedInput
+}
+
+export type ChannelCreateWithoutReadsInput = {
+  id?: string
+  createdAt?: Date | string
+  department: Prisma.DepartmentCreateNestedOneWithoutChannelInput
+  messages?: Prisma.MessageCreateNestedManyWithoutChannelInput
+}
+
+export type ChannelUncheckedCreateWithoutReadsInput = {
+  id?: string
+  departmentId: string
+  createdAt?: Date | string
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutChannelInput
+}
+
+export type ChannelCreateOrConnectWithoutReadsInput = {
+  where: Prisma.ChannelWhereUniqueInput
+  create: Prisma.XOR<Prisma.ChannelCreateWithoutReadsInput, Prisma.ChannelUncheckedCreateWithoutReadsInput>
+}
+
+export type ChannelUpsertWithoutReadsInput = {
+  update: Prisma.XOR<Prisma.ChannelUpdateWithoutReadsInput, Prisma.ChannelUncheckedUpdateWithoutReadsInput>
+  create: Prisma.XOR<Prisma.ChannelCreateWithoutReadsInput, Prisma.ChannelUncheckedCreateWithoutReadsInput>
+  where?: Prisma.ChannelWhereInput
+}
+
+export type ChannelUpdateToOneWithWhereWithoutReadsInput = {
+  where?: Prisma.ChannelWhereInput
+  data: Prisma.XOR<Prisma.ChannelUpdateWithoutReadsInput, Prisma.ChannelUncheckedUpdateWithoutReadsInput>
+}
+
+export type ChannelUpdateWithoutReadsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneRequiredWithoutChannelNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutChannelNestedInput
+}
+
+export type ChannelUncheckedUpdateWithoutReadsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutChannelNestedInput
 }
 
 
@@ -413,10 +486,12 @@ export type ChannelUncheckedUpdateWithoutMessagesInput = {
 
 export type ChannelCountOutputType = {
   messages: number
+  reads: number
 }
 
 export type ChannelCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   messages?: boolean | ChannelCountOutputTypeCountMessagesArgs
+  reads?: boolean | ChannelCountOutputTypeCountReadsArgs
 }
 
 /**
@@ -436,6 +511,13 @@ export type ChannelCountOutputTypeCountMessagesArgs<ExtArgs extends runtime.Type
   where?: Prisma.MessageWhereInput
 }
 
+/**
+ * ChannelCountOutputType without action
+ */
+export type ChannelCountOutputTypeCountReadsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChannelReadWhereInput
+}
+
 
 export type ChannelSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -443,6 +525,7 @@ export type ChannelSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   createdAt?: boolean
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
   messages?: boolean | Prisma.Channel$messagesArgs<ExtArgs>
+  reads?: boolean | Prisma.Channel$readsArgs<ExtArgs>
   _count?: boolean | Prisma.ChannelCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["channel"]>
 
@@ -470,6 +553,7 @@ export type ChannelOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type ChannelInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
   messages?: boolean | Prisma.Channel$messagesArgs<ExtArgs>
+  reads?: boolean | Prisma.Channel$readsArgs<ExtArgs>
   _count?: boolean | Prisma.ChannelCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ChannelIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -484,6 +568,7 @@ export type $ChannelPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {
     department: Prisma.$DepartmentPayload<ExtArgs>
     messages: Prisma.$MessagePayload<ExtArgs>[]
+    reads: Prisma.$ChannelReadPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -885,6 +970,7 @@ export interface Prisma__ChannelClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   department<T extends Prisma.DepartmentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DepartmentDefaultArgs<ExtArgs>>): Prisma.Prisma__DepartmentClient<runtime.Types.Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   messages<T extends Prisma.Channel$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Channel$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reads<T extends Prisma.Channel$readsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Channel$readsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChannelReadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1339,6 +1425,30 @@ export type Channel$messagesArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.MessageScalarFieldEnum | Prisma.MessageScalarFieldEnum[]
+}
+
+/**
+ * Channel.reads
+ */
+export type Channel$readsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChannelRead
+   */
+  select?: Prisma.ChannelReadSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChannelRead
+   */
+  omit?: Prisma.ChannelReadOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChannelReadInclude<ExtArgs> | null
+  where?: Prisma.ChannelReadWhereInput
+  orderBy?: Prisma.ChannelReadOrderByWithRelationInput | Prisma.ChannelReadOrderByWithRelationInput[]
+  cursor?: Prisma.ChannelReadWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChannelReadScalarFieldEnum | Prisma.ChannelReadScalarFieldEnum[]
 }
 
 /**

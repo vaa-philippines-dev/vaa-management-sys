@@ -72,6 +72,8 @@ export const ModelName = {
   TicketConversation: 'TicketConversation',
   Channel: 'Channel',
   Message: 'Message',
+  MessageMention: 'MessageMention',
+  ChannelRead: 'ChannelRead',
   AuditLog: 'AuditLog',
   Notification: 'Notification',
   SidebarFavorite: 'SidebarFavorite'
@@ -160,6 +162,7 @@ export const UserScalarFieldEnum = {
   systemRole: 'systemRole',
   userType: 'userType',
   avatarUrl: 'avatarUrl',
+  messageColor: 'messageColor',
   status: 'status',
   onHold: 'onHold',
   isActive: 'isActive',
@@ -487,6 +490,26 @@ export const MessageScalarFieldEnum = {
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+export const MessageMentionScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  mentionedUserId: 'mentionedUserId',
+  createdAt: 'createdAt'
+} as const
+
+export type MessageMentionScalarFieldEnum = (typeof MessageMentionScalarFieldEnum)[keyof typeof MessageMentionScalarFieldEnum]
+
+
+export const ChannelReadScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  channelId: 'channelId',
+  lastReadAt: 'lastReadAt'
+} as const
+
+export type ChannelReadScalarFieldEnum = (typeof ChannelReadScalarFieldEnum)[keyof typeof ChannelReadScalarFieldEnum]
 
 
 export const AuditLogScalarFieldEnum = {

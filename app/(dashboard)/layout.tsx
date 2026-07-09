@@ -1,6 +1,7 @@
 import { Sidebar } from '@/components/layout/Sidebar'
 import { Navbar } from '@/components/layout/Navbar'
 import { RealtimeProvider } from '@/components/layout/RealtimeProvider'
+import { SidebarCollapseProvider } from '@/components/layout/SidebarCollapseContext'
 import { VACsvImportProvider } from '@/components/vas/VACsvImportContext'
 import { VACsvImportFloatingWidget } from '@/components/vas/VACsvImportFloatingWidget'
 import { ImportVACsvModal } from '@/components/vas/ImportVACsvModal'
@@ -19,19 +20,23 @@ export default async function DashboardLayout({
 
   return (
     <RealtimeProvider>
-      <VACsvImportProvider>
-        <div className="flex h-screen bg-background">
-          <Sidebar role={role} isAdmin={isAdmin} initialFavorites={favorites} />
-          <div className="flex flex-1 flex-col overflow-hidden">
-            <Navbar />
-            <main className="flex-1 overflow-auto p-6">
-              <div className="mx-auto max-w-7xl">{children}</div>
-            </main>
+      <SidebarCollapseProvider>
+        <VACsvImportProvider>
+          <div className="flex h-screen bg-background">
+            <Sidebar role={role} isAdmin={isAdmin} initialFavorites={favorites} />
+            <div className="flex flex-1 flex-col overflow-hidden">
+              <Navbar />
+              <main className="flex-1 overflow-auto p-6 has-[[data-inbox-page]]:overflow-hidden has-[[data-inbox-page]]:p-0">
+                <div className="mx-auto max-w-7xl has-[[data-inbox-page]]:h-full has-[[data-inbox-page]]:max-w-none">
+                  {children}
+                </div>
+              </main>
+            </div>
           </div>
-        </div>
-        <VACsvImportFloatingWidget />
-        <ImportVACsvModal />
-      </VACsvImportProvider>
+          <VACsvImportFloatingWidget />
+          <ImportVACsvModal />
+        </VACsvImportProvider>
+      </SidebarCollapseProvider>
     </RealtimeProvider>
   )
 }

@@ -31,6 +31,8 @@ import {
   setFeaturedFavorite,
 } from '@/app/(dashboard)/_sidebar-favorites/actions'
 import type { FavoriteColor } from '@/lib/favorites'
+import { useSidebarCollapse } from './SidebarCollapseContext'
+import { PanelLeftOpen } from 'lucide-react'
 
 const ADMIN_TREE_STORAGE_KEY = 'sidebar-admin-tree-expanded'
 const MAX_FAVORITES = 3
@@ -244,7 +246,7 @@ function FavoritableRow({
 
 const managerRoutes = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { label: 'Messages', href: '/messages', icon: MessageSquare },
+  { label: 'Inbox', href: '/inbox', icon: MessageSquare },
   { label: 'Clients', href: '/clients', icon: Building2 },
   { label: 'VA Roster', href: '/vas', icon: Users },
   { label: 'Assignments', href: '/assignments', icon: Briefcase },
@@ -256,7 +258,7 @@ const managerRoutes = [
 
 const vaRoutes = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { label: 'Messages', href: '/messages', icon: MessageSquare },
+  { label: 'Inbox', href: '/inbox', icon: MessageSquare },
   { label: 'My Work Logs', href: '/work-logs', icon: Clock },
   { label: 'My Assignments', href: '/assignments', icon: Briefcase },
   { label: 'Tickets', href: '/tickets', icon: Ticket },
@@ -283,6 +285,12 @@ export function Sidebar({
   const pathname = usePathname()
   const routes = role === 'VA' ? vaRoutes : managerRoutes
   const canFavorite = role === 'MANAGER'
+  const { collapsed, setCollapsed } = useSidebarCollapse()
+
+  useEffect(() => {
+    setCollapsed(pathname.startsWith('/inbox'))
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only re-run when entering/leaving /inbox, not on setCollapsed identity
+  }, [pathname])
 
   const [favorites, setFavorites] = useState<FavoriteRecord[]>(initialFavorites)
   const [, startTransition] = useTransition()
@@ -323,8 +331,24 @@ export function Sidebar({
   // the Favorites list above, so only one row is highlighted at a time.
   const isMainRowActive = (href: string, active: boolean) => active && !isFavorited(href)
 
+  if (collapsed) {
+    return (
+      <div className="flex h-full w-12 shrink-0 flex-col items-center gap-3 bg-sidebar py-2.5 transition-all duration-200">
+        <Image src="/vaalogo.svg" alt="VAA Philippines" width={24} height={24} className="h-6 w-6 shrink-0 object-contain" />
+        <button
+          type="button"
+          onClick={() => setCollapsed(false)}
+          aria-label="Expand sidebar"
+          className="flex h-8 w-8 items-center justify-center rounded-md text-sidebar-foreground/60 transition-colors hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground"
+        >
+          <PanelLeftOpen className="h-4 w-4" />
+        </button>
+      </div>
+    )
+  }
+
   return (
-    <div className="flex h-full w-[212px] flex-col bg-sidebar px-2 py-2.5">
+    <div className="flex h-full w-[212px] shrink-0 flex-col bg-sidebar px-2 py-2.5 transition-all duration-200">
       <div className="flex items-center justify-center px-2 pb-3">
         <Image src="/vaalogo.svg" alt="VAA Philippines" width={56} height={20} className="h-auto w-auto shrink-0" />
       </div>

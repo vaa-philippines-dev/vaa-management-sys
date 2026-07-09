@@ -405,6 +405,8 @@ export const ModelName = {
   TicketConversation: 'TicketConversation',
   Channel: 'Channel',
   Message: 'Message',
+  MessageMention: 'MessageMention',
+  ChannelRead: 'ChannelRead',
   AuditLog: 'AuditLog',
   Notification: 'Notification',
   SidebarFavorite: 'SidebarFavorite'
@@ -423,7 +425,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveRequest" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "channel" | "message" | "auditLog" | "notification" | "sidebarFavorite"
+    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveRequest" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "channel" | "message" | "messageMention" | "channelRead" | "auditLog" | "notification" | "sidebarFavorite"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1981,6 +1983,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    MessageMention: {
+      payload: Prisma.$MessageMentionPayload<ExtArgs>
+      fields: Prisma.MessageMentionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MessageMentionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageMentionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MessageMentionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageMentionPayload>
+        }
+        findFirst: {
+          args: Prisma.MessageMentionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageMentionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MessageMentionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageMentionPayload>
+        }
+        findMany: {
+          args: Prisma.MessageMentionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageMentionPayload>[]
+        }
+        create: {
+          args: Prisma.MessageMentionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageMentionPayload>
+        }
+        createMany: {
+          args: Prisma.MessageMentionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MessageMentionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageMentionPayload>[]
+        }
+        delete: {
+          args: Prisma.MessageMentionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageMentionPayload>
+        }
+        update: {
+          args: Prisma.MessageMentionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageMentionPayload>
+        }
+        deleteMany: {
+          args: Prisma.MessageMentionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MessageMentionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MessageMentionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageMentionPayload>[]
+        }
+        upsert: {
+          args: Prisma.MessageMentionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageMentionPayload>
+        }
+        aggregate: {
+          args: Prisma.MessageMentionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMessageMention>
+        }
+        groupBy: {
+          args: Prisma.MessageMentionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MessageMentionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MessageMentionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MessageMentionCountAggregateOutputType> | number
+        }
+      }
+    }
+    ChannelRead: {
+      payload: Prisma.$ChannelReadPayload<ExtArgs>
+      fields: Prisma.ChannelReadFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChannelReadFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelReadPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChannelReadFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelReadPayload>
+        }
+        findFirst: {
+          args: Prisma.ChannelReadFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelReadPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChannelReadFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelReadPayload>
+        }
+        findMany: {
+          args: Prisma.ChannelReadFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelReadPayload>[]
+        }
+        create: {
+          args: Prisma.ChannelReadCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelReadPayload>
+        }
+        createMany: {
+          args: Prisma.ChannelReadCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChannelReadCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelReadPayload>[]
+        }
+        delete: {
+          args: Prisma.ChannelReadDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelReadPayload>
+        }
+        update: {
+          args: Prisma.ChannelReadUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelReadPayload>
+        }
+        deleteMany: {
+          args: Prisma.ChannelReadDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChannelReadUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChannelReadUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelReadPayload>[]
+        }
+        upsert: {
+          args: Prisma.ChannelReadUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelReadPayload>
+        }
+        aggregate: {
+          args: Prisma.ChannelReadAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChannelRead>
+        }
+        groupBy: {
+          args: Prisma.ChannelReadGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChannelReadGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChannelReadCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChannelReadCountAggregateOutputType> | number
+        }
+      }
+    }
     AuditLog: {
       payload: Prisma.$AuditLogPayload<ExtArgs>
       fields: Prisma.AuditLogFieldRefs
@@ -2309,6 +2459,7 @@ export const UserScalarFieldEnum = {
   systemRole: 'systemRole',
   userType: 'userType',
   avatarUrl: 'avatarUrl',
+  messageColor: 'messageColor',
   status: 'status',
   onHold: 'onHold',
   isActive: 'isActive',
@@ -2638,6 +2789,26 @@ export const MessageScalarFieldEnum = {
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
 
 
+export const MessageMentionScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  mentionedUserId: 'mentionedUserId',
+  createdAt: 'createdAt'
+} as const
+
+export type MessageMentionScalarFieldEnum = (typeof MessageMentionScalarFieldEnum)[keyof typeof MessageMentionScalarFieldEnum]
+
+
+export const ChannelReadScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  channelId: 'channelId',
+  lastReadAt: 'lastReadAt'
+} as const
+
+export type ChannelReadScalarFieldEnum = (typeof ChannelReadScalarFieldEnum)[keyof typeof ChannelReadScalarFieldEnum]
+
+
 export const AuditLogScalarFieldEnum = {
   id: 'id',
   actorId: 'actorId',
@@ -2873,6 +3044,20 @@ export type EnumUserTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
  * Reference to a field of type 'UserType[]'
  */
 export type ListEnumUserTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'FavoriteColor'
+ */
+export type EnumFavoriteColorFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FavoriteColor'>
+    
+
+
+/**
+ * Reference to a field of type 'FavoriteColor[]'
+ */
+export type ListEnumFavoriteColorFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FavoriteColor[]'>
     
 
 
@@ -3157,20 +3342,6 @@ export type ListEnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
- * Reference to a field of type 'FavoriteColor'
- */
-export type EnumFavoriteColorFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FavoriteColor'>
-    
-
-
-/**
- * Reference to a field of type 'FavoriteColor[]'
- */
-export type ListEnumFavoriteColorFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FavoriteColor[]'>
-    
-
-
-/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -3314,6 +3485,8 @@ export type GlobalOmitConfig = {
   ticketConversation?: Prisma.TicketConversationOmit
   channel?: Prisma.ChannelOmit
   message?: Prisma.MessageOmit
+  messageMention?: Prisma.MessageMentionOmit
+  channelRead?: Prisma.ChannelReadOmit
   auditLog?: Prisma.AuditLogOmit
   notification?: Prisma.NotificationOmit
   sidebarFavorite?: Prisma.SidebarFavoriteOmit

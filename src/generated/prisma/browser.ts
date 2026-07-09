@@ -123,6 +123,16 @@ export type Channel = Prisma.ChannelModel
  */
 export type Message = Prisma.MessageModel
 /**
+ * Model MessageMention
+ * 
+ */
+export type MessageMention = Prisma.MessageMentionModel
+/**
+ * Model ChannelRead
+ * 
+ */
+export type ChannelRead = Prisma.ChannelReadModel
+/**
  * Model AuditLog
  * 
  */
