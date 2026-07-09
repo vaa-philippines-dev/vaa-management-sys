@@ -50,6 +50,18 @@ function getClient(): GoogleGenAI {
   return client
 }
 
+const MAX_ATTEMPTS = 3
+const RETRY_STATUS_CODES = new Set([429, 503])
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+function isRetryable(error: unknown): boolean {
+  const status = (error as { status?: number })?.status
+  return typeof status === 'number' && RETRY_STATUS_CODES.has(status)
+}
+
 export async function draftTicketFromReport(input: {
   screenshotBase64: string
   screenshotMimeType: string
@@ -57,31 +69,47 @@ export async function draftTicketFromReport(input: {
 }): Promise<TicketDraft> {
   const { screenshotBase64, screenshotMimeType, vaNote } = input
 
-  const response = await getClient().models.generateContent({
-    model: 'gemini-2.5-flash',
-    contents: [
-      {
-        role: 'user',
-        parts: [
-          { inlineData: { mimeType: screenshotMimeType, data: screenshotBase64 } },
+  let lastError: unknown
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    try {
+      const response = await getClient().models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: [
           {
-            text: vaNote?.trim()
-              ? `The VA's note about what happened: "${vaNote.trim()}"`
-              : 'The VA did not write a note — infer what you can from the screenshot alone.',
+            role: 'user',
+            parts: [
+              { inlineData: { mimeType: screenshotMimeType, data: screenshotBase64 } },
+              {
+                text: vaNote?.trim()
+                  ? `The VA's note about what happened: "${vaNote.trim()}"`
+                  : 'The VA did not write a note — infer what you can from the screenshot alone.',
+              },
+            ],
           },
         ],
-      },
-    ],
-    config: {
-      systemInstruction: SYSTEM_INSTRUCTION,
-      responseMimeType: 'application/json',
-      responseSchema: DRAFT_SCHEMA,
-    },
-  })
+        config: {
+          systemInstruction: SYSTEM_INSTRUCTION,
+          responseMimeType: 'application/json',
+          responseSchema: DRAFT_SCHEMA,
+        },
+      })
 
-  const text = response.text
-  if (!text) throw new Error('Empty response from AI draft model')
+      const text = response.text
+      if (!text) throw new Error('Empty response from AI draft model')
 
-  const parsed = JSON.parse(text) as TicketDraft
-  return parsed
+      return JSON.parse(text) as TicketDraft
+    } catch (error) {
+      lastError = error
+      if (attempt < MAX_ATTEMPTS && isRetryable(error)) {
+        await sleep(1000 * 2 ** (attempt - 1)) // 1s, 2s
+        continue
+      }
+      break
+    }
+  }
+
+  if (isRetryable(lastError)) {
+    throw new Error('The AI drafting service is temporarily overloaded. Please try again in a moment.')
+  }
+  throw lastError
 }
