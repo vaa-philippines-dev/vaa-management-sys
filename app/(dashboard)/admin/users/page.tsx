@@ -9,6 +9,8 @@ import { Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Pagination } from '@/components/ui/pagination'
 import Link from 'next/link'
+import { UserBulkSelectToggle } from '@/components/admin/UserBulkSelectToggle'
+import { UserSelectAllCheckbox } from '@/components/admin/UserSelectAllCheckbox'
 
 const PAGE_SIZE = 20
 
@@ -111,44 +113,45 @@ export default async function AdminUsersPage({
     return `?${sp.toString()}`
   })()
 
-  return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Users className="h-5 w-5 text-muted-foreground" />
-          <div>
-            <h2 className="text-lg font-bold tracking-tight">Users</h2>
-            <p className="text-xs text-muted-foreground">
-              {hasFilters
-                ? `${filteredCount} of ${totalUsers} user${totalUsers !== 1 ? 's' : ''}`
-                : `${totalUsers} user${totalUsers !== 1 ? 's' : ''} registered`}
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          {viewAll ? (
-            <Link href={paginatedHref} className="flex items-center gap-1.5 text-xs font-medium text-primary hover:underline">
-              <LayoutList className="h-3 w-3" />
-              Paginate ({PAGE_SIZE}/page)
-            </Link>
-          ) : (
-            filteredCount > PAGE_SIZE && (
-              <Link href={viewAllHref} className="flex items-center gap-1.5 text-xs font-medium text-primary hover:underline">
-                <LayoutList className="h-3 w-3" />
-                View All
-              </Link>
-            )
-          )}
-          {!canEdit && (
-            <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded bg-warning/10 text-warning border border-warning/20">
-              View Only
-            </span>
-          )}
-        </div>
+  const headerActions = (
+    <div className="flex items-center gap-3">
+      <Users className="h-5 w-5 text-muted-foreground" />
+      <div>
+        <h2 className="text-lg font-bold tracking-tight">Users</h2>
+        <p className="text-xs text-muted-foreground">
+          {hasFilters
+            ? `${filteredCount} of ${totalUsers} user${totalUsers !== 1 ? 's' : ''}`
+            : `${totalUsers} user${totalUsers !== 1 ? 's' : ''} registered`}
+        </p>
       </div>
+    </div>
+  )
 
-      <AddUserPanel canEdit={canEdit} />
+  const viewControls = (
+    <div className="flex items-center gap-3">
+      {viewAll ? (
+        <Link href={paginatedHref} className="flex items-center gap-1.5 text-xs font-medium text-primary hover:underline">
+          <LayoutList className="h-3 w-3" />
+          Paginate ({PAGE_SIZE}/page)
+        </Link>
+      ) : (
+        filteredCount > PAGE_SIZE && (
+          <Link href={viewAllHref} className="flex items-center gap-1.5 text-xs font-medium text-primary hover:underline">
+            <LayoutList className="h-3 w-3" />
+            View All
+          </Link>
+        )
+      )}
+      {!canEdit && (
+        <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-1 rounded bg-warning/10 text-warning border border-warning/20">
+          View Only
+        </span>
+      )}
+    </div>
+  )
 
+  const body = (
+    <>
       <div className="rounded-lg border bg-card p-3">
         <Suspense fallback={<Skeleton className="h-8 w-full rounded-md" />}>
           <FilterBar
@@ -203,6 +206,12 @@ export default async function AdminUsersPage({
         </div>
       ) : (
         <div className="space-y-1.5">
+          {canEdit && (
+            <div className="flex items-center gap-2 px-3 py-1.5 text-[11px] text-muted-foreground">
+              <UserSelectAllCheckbox ids={users.map((u) => u.id)} />
+              <span>Select all</span>
+            </div>
+          )}
           {users.map((u) => (
             <UserCard
               key={u.id}
@@ -242,6 +251,26 @@ export default async function AdminUsersPage({
 
       {!viewAll && (
         <Pagination page={page} pageCount={pageCount} buildHref={buildHref} />
+      )}
+    </>
+  )
+
+  return (
+    <div className="space-y-4">
+      {canEdit ? (
+        <UserBulkSelectToggle headerActions={headerActions} extraActions={viewControls}>
+          <AddUserPanel canEdit={canEdit} />
+          {body}
+        </UserBulkSelectToggle>
+      ) : (
+        <>
+          <div className="flex items-center justify-between">
+            {headerActions}
+            {viewControls}
+          </div>
+          <AddUserPanel canEdit={canEdit} />
+          {body}
+        </>
       )}
     </div>
   )

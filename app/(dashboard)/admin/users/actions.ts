@@ -537,6 +537,84 @@ export async function createUser(formData: FormData) {
   revalidateTag(CACHE_TAGS.admin, 'default')
 }
 
+export async function deleteUser(userId: string) {
+  const admin = await getAdmin()
+  if (admin.id === userId) throw new Error('You cannot delete your own account')
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { email: true, firstName: true, lastName: true, systemRole: true, userType: true },
+  })
+  if (!user) throw new Error('User not found')
+
+  await logAudit({
+    actorId: admin.id,
+    action: 'DELETE',
+    entityType: ENTITY_USER,
+    entityId: userId,
+    before: { email: user.email, firstName: user.firstName, lastName: user.lastName, systemRole: user.systemRole, userType: user.userType },
+    metadata: { hardDelete: true },
+  })
+
+  await prisma.user.delete({ where: { id: userId } })
+
+  revalidatePath('/admin/users')
+  revalidateTag(CACHE_TAGS.users, 'default')
+  revalidatePath('/vas')
+  revalidateTag(CACHE_TAGS.vas, 'default')
+}
+
+export type BulkDeleteUsersResult = {
+  deleted: number
+  failed: { userId: string; reason: string }[]
+}
+
+export async function bulkDeleteUsers(userIds: string[]): Promise<BulkDeleteUsersResult> {
+  const admin = await getAdmin()
+  const result: BulkDeleteUsersResult = { deleted: 0, failed: [] }
+  const uniqueIds = Array.from(new Set(userIds))
+
+  for (const userId of uniqueIds) {
+    if (userId === admin.id) {
+      result.failed.push({ userId, reason: 'Cannot delete your own account' })
+      continue
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { email: true, firstName: true, lastName: true, systemRole: true, userType: true },
+    })
+    if (!user) {
+      result.failed.push({ userId, reason: 'User not found' })
+      continue
+    }
+
+    try {
+      await logAudit({
+        actorId: admin.id,
+        action: 'DELETE',
+        entityType: ENTITY_USER,
+        entityId: userId,
+        before: { email: user.email, firstName: user.firstName, lastName: user.lastName, systemRole: user.systemRole, userType: user.userType },
+        metadata: { hardDelete: true, bulk: true },
+      })
+      await prisma.user.delete({ where: { id: userId } })
+      result.deleted++
+    } catch (e) {
+      result.failed.push({ userId, reason: e instanceof Error ? e.message : 'Failed to delete' })
+    }
+  }
+
+  if (result.deleted > 0) {
+    revalidatePath('/admin/users')
+    revalidateTag(CACHE_TAGS.users, 'default')
+    revalidatePath('/vas')
+    revalidateTag(CACHE_TAGS.vas, 'default')
+  }
+
+  return result
+}
+
 export async function updateUserNameByForm(id: string, formData: FormData) {
   const firstName = formData.get('firstName') as string
   const lastName = formData.get('lastName') as string

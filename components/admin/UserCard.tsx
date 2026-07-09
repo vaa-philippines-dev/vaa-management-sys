@@ -1,8 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Modal } from '@/components/ui/modal'
 import {
   toggleUserActive,
   removeDepartmentMembership,
@@ -12,7 +15,9 @@ import {
   updateUserTypeByForm,
   assignDeptByForm,
   assignTempRoleByForm,
+  deleteUser,
 } from '@/app/(dashboard)/admin/users/actions'
+import { UserRowCheckbox } from '@/components/admin/UserRowCheckbox'
 import {
   ChevronDown,
   ChevronUp,
@@ -20,7 +25,10 @@ import {
   Trash2,
   Power,
   PowerOff,
+  Loader2,
 } from 'lucide-react'
+
+const CONFIRM_WORD = 'CONFIRM'
 
 type Membership = {
   id: string
@@ -92,6 +100,25 @@ export function UserCard({
   canEdit?: boolean
 }) {
   const [open, setOpen] = useState(false)
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [confirmText, setConfirmText] = useState('')
+  const [deleting, setDeleting] = useState(false)
+  const router = useRouter()
+
+  const handleDelete = async () => {
+    setDeleting(true)
+    try {
+      await deleteUser(user.id)
+      toast.success(`Permanently deleted ${user.firstName} ${user.lastName}`)
+      setDeleteModalOpen(false)
+      setConfirmText('')
+      router.refresh()
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Failed to delete user')
+    } finally {
+      setDeleting(false)
+    }
+  }
 
   return (
     <div className="rounded-lg border bg-card group/card">
@@ -100,6 +127,9 @@ export function UserCard({
         onClick={() => setOpen(!open)}
         className="w-full flex items-center gap-3 p-3 hover:bg-accent/30 transition-colors text-left"
       >
+        <span onClick={(e) => e.stopPropagation()}>
+          <UserRowCheckbox id={user.id} />
+        </span>
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
           {(user.firstName || 'U')[0].toUpperCase()}
         </div>
@@ -289,8 +319,76 @@ export function UserCard({
               </form>
             )}
           </div>
+
+          {canEdit && (
+            <div className="pt-2 border-t">
+              <Button
+                type="button"
+                variant="destructive"
+                size="sm"
+                className="h-7 text-xs gap-1.5"
+                onClick={() => setDeleteModalOpen(true)}
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                Delete User
+              </Button>
+            </div>
+          )}
         </div>
       )}
+
+      <Modal
+        open={deleteModalOpen}
+        onOpenChange={(o) => {
+          if (!deleting) {
+            setDeleteModalOpen(o)
+            if (!o) setConfirmText('')
+          }
+        }}
+        title="Permanently delete this user?"
+        description={`This will permanently delete ${user.firstName} ${user.lastName} (${user.email}) and all associated records. This action cannot be undone.`}
+        size="sm"
+        footer={
+          <>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-8 text-xs"
+              onClick={() => {
+                setDeleteModalOpen(false)
+                setConfirmText('')
+              }}
+              disabled={deleting}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              className="h-8 text-xs gap-1.5"
+              onClick={handleDelete}
+              disabled={deleting || confirmText !== CONFIRM_WORD}
+            >
+              {deleting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
+              Delete User
+            </Button>
+          </>
+        }
+      >
+        <p className="text-xs text-muted-foreground mb-2">
+          Type <span className="font-mono font-semibold text-foreground">{CONFIRM_WORD}</span> below to proceed.
+        </p>
+        <input
+          autoFocus
+          value={confirmText}
+          onChange={(e) => setConfirmText(e.target.value)}
+          placeholder={CONFIRM_WORD}
+          className="w-full px-3 py-1.5 text-xs border rounded-md bg-background h-8 font-mono"
+          disabled={deleting}
+        />
+      </Modal>
     </div>
   )
 }
