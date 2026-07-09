@@ -312,6 +312,10 @@ export function Sidebar({
   const allRoutes = [...routes, ...(isAdmin ? adminRoutes : [])]
   const isRouteActive = (href: string) =>
     href === '/dashboard' ? pathname === '/dashboard' : pathname === href || pathname.startsWith(href + '/')
+  const isFavorited = (href: string) => favorites.some((f) => f.href === href)
+  // Suppress the highlight on the main/admin-tree copy of a row once it's also shown in
+  // the Favorites list above, so only one row is highlighted at a time.
+  const isMainRowActive = (href: string, active: boolean) => active && !isFavorited(href)
 
   return (
     <div className="flex h-full w-[212px] flex-col bg-sidebar px-2 py-2.5">
@@ -326,7 +330,7 @@ export function Sidebar({
               href={route.href}
               label={route.label}
               icon={route.icon}
-              isActive={isRouteActive(route.href)}
+              isActive={isMainRowActive(route.href, isRouteActive(route.href))}
               canFavorite={canFavorite}
               favorite={favorites.find((f) => f.href === route.href)}
               atMax={atMax}
@@ -339,7 +343,7 @@ export function Sidebar({
               <p className="px-2 pt-3.5 pb-1 text-[10.5px] tracking-wide text-sidebar-foreground/60">Admin</p>
               <div className="group flex items-center gap-0.5">
                 <div className="flex-1">
-                  <NavButton href="/admin" isActive={pathname === '/admin'} icon={LayoutDashboard}>
+                  <NavButton href="/admin" isActive={isMainRowActive('/admin', pathname === '/admin')} icon={LayoutDashboard}>
                     Admin Panel
                   </NavButton>
                 </div>
@@ -369,7 +373,7 @@ export function Sidebar({
                     href="/admin/users"
                     label="Manage Users"
                     icon={UserPlus}
-                    isActive={isRouteActive('/admin/users')}
+                    isActive={isMainRowActive('/admin/users', isRouteActive('/admin/users'))}
                     canFavorite={canFavorite}
                     favorite={favorites.find((f) => f.href === '/admin/users')}
                     atMax={atMax}
@@ -379,7 +383,7 @@ export function Sidebar({
                     href="/admin/departments"
                     label="Manage Departments"
                     icon={Network}
-                    isActive={isRouteActive('/admin/departments')}
+                    isActive={isMainRowActive('/admin/departments', isRouteActive('/admin/departments'))}
                     canFavorite={canFavorite}
                     favorite={favorites.find((f) => f.href === '/admin/departments')}
                     atMax={atMax}
@@ -392,7 +396,7 @@ export function Sidebar({
                 href="/departments"
                 label="Departments"
                 icon={Building2}
-                isActive={pathname === '/departments'}
+                isActive={isMainRowActive('/departments', pathname === '/departments')}
                 canFavorite={canFavorite}
                 favorite={favorites.find((f) => f.href === '/departments')}
                 atMax={atMax}
@@ -402,7 +406,7 @@ export function Sidebar({
                 href="/admin/audit"
                 label="Audit Log"
                 icon={ClipboardList}
-                isActive={isRouteActive('/admin/audit')}
+                isActive={isMainRowActive('/admin/audit', isRouteActive('/admin/audit'))}
                 canFavorite={canFavorite}
                 favorite={favorites.find((f) => f.href === '/admin/audit')}
                 atMax={atMax}
@@ -412,7 +416,7 @@ export function Sidebar({
                 href="/admin/history"
                 label="History"
                 icon={History}
-                isActive={isRouteActive('/admin/history')}
+                isActive={isMainRowActive('/admin/history', isRouteActive('/admin/history'))}
                 canFavorite={canFavorite}
                 favorite={favorites.find((f) => f.href === '/admin/history')}
                 atMax={atMax}
