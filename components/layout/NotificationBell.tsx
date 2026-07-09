@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Bell, Briefcase, Clock } from 'lucide-react'
+import { Bell, Briefcase, Clock, MessageSquare } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
@@ -13,7 +13,7 @@ import {
 
 type Notification = {
   id: string
-  type: 'NEW_ASSIGNMENT' | 'HOURS_SHORTFALL'
+  type: 'NEW_ASSIGNMENT' | 'HOURS_SHORTFALL' | 'NEW_MESSAGE'
   title: string
   message: string
   read: boolean
@@ -23,6 +23,7 @@ type Notification = {
 const TYPE_ICON: Record<Notification['type'], React.ComponentType<{ className?: string }>> = {
   NEW_ASSIGNMENT: Briefcase,
   HOURS_SHORTFALL: Clock,
+  NEW_MESSAGE: MessageSquare,
 }
 
 export function NotificationBell({ userId }: { userId: string }) {

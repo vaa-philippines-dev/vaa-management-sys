@@ -180,6 +180,7 @@ enum Priority {
 enum NotificationType {
   NEW_ASSIGNMENT
   HOURS_SHORTFALL
+  NEW_MESSAGE
 }
 
 enum AuditAction {
@@ -261,6 +262,7 @@ model Department {
   services          DepartmentSkill[]
   vaHistoryEvents   VAHistory[]
   employmentRecords EmploymentRecord[]
+  channel           Channel?
 
   @@unique([name, parentId])
   @@unique([acronym, parentId])
@@ -352,6 +354,7 @@ model User {
   vaHistoryChanges           VAHistory[]            @relation("VAHistoryChangedBy")
   notifications              Notification[]
   sidebarFavorites           SidebarFavorite[]
+  messages                   Message[]
 
   @@index([email])
   @@index([systemRole])
@@ -725,6 +728,32 @@ model TicketConversation {
 
   @@index([ticketId, createdAt])
   @@map("ticket_conversations")
+}
+
+// ── Phase 5: Messaging ───────────────────────────────────────────
+
+model Channel {
+  id           String    @id @default(cuid())
+  departmentId String    @unique @map("department_id")
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  messages Message[]
+
+  @@map("channels")
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  channelId String   @map("channel_id")
+  channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  senderId  String   @map("sender_id")
+  sender    User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  body      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([channelId, createdAt])
+  @@map("messages")
 }
 
 // ──────────────────────────────────────────────────────────────────

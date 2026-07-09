@@ -137,6 +137,16 @@ export type Ticket = Prisma.TicketModel
  */
 export type TicketConversation = Prisma.TicketConversationModel
 /**
+ * Model Channel
+ * 
+ */
+export type Channel = Prisma.ChannelModel
+/**
+ * Model Message
+ * 
+ */
+export type Message = Prisma.MessageModel
+/**
  * Model AuditLog
  * 
  */

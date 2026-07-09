@@ -22,6 +22,7 @@ import {
   Star,
   X,
   Ticket,
+  MessageSquare,
 } from 'lucide-react'
 import Image from 'next/image'
 import {
@@ -243,6 +244,7 @@ function FavoritableRow({
 
 const managerRoutes = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { label: 'Messages', href: '/messages', icon: MessageSquare },
   { label: 'Clients', href: '/clients', icon: Building2 },
   { label: 'VA Roster', href: '/vas', icon: Users },
   { label: 'Assignments', href: '/assignments', icon: Briefcase },
@@ -254,6 +256,7 @@ const managerRoutes = [
 
 const vaRoutes = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { label: 'Messages', href: '/messages', icon: MessageSquare },
   { label: 'My Work Logs', href: '/work-logs', icon: Clock },
   { label: 'My Assignments', href: '/assignments', icon: Briefcase },
   { label: 'Tickets', href: '/tickets', icon: Ticket },

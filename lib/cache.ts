@@ -13,6 +13,7 @@ export const CACHE_TAGS = {
   reports: 'reports',
   audit: 'audit',
   tickets: 'tickets',
+  messages: 'messages',
 } as const
 
 export function cached<T>(
