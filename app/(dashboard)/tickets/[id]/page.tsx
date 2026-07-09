@@ -8,6 +8,7 @@ import { ArrowLeft } from 'lucide-react'
 import { format } from 'date-fns'
 import { TicketStatusBadge, TicketPriorityBadge } from '@/components/tickets/TicketBadges'
 import { TicketStatusButtons } from '@/components/tickets/TicketStatusButtons'
+import { DeleteTicketButton } from '@/components/tickets/DeleteTicketButton'
 import { TicketAssigneeSelect } from '@/components/tickets/TicketAssigneeSelect'
 import { TicketConversation } from '@/components/tickets/TicketConversation'
 import { TICKET_VIEW_ALL_ROLES, TICKET_MUTATOR_ROLES } from '@/lib/auth'
@@ -77,7 +78,12 @@ export default async function TicketDetailPage({
             {format(ticket.createdAt, 'MMM dd, yyyy')}
           </p>
         </div>
-        {canMutate && <TicketStatusButtons id={ticket.id} current={ticket.status} />}
+        {canMutate && (
+          <div className="flex items-center gap-2">
+            <TicketStatusButtons id={ticket.id} current={ticket.status} />
+            <DeleteTicketButton id={ticket.id} ticketNumber={ticket.ticketNumber} />
+          </div>
+        )}
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">

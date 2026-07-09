@@ -161,6 +161,32 @@ export async function assignTicket(id: string, assignedTo: string | null) {
   revalidatePath(`/tickets/${id}`)
 }
 
+export async function deleteTicket(id: string) {
+  const user = await requireAuth()
+  if (!TICKET_MUTATOR_ROLES.includes(user.systemRole)) throw new Error('Forbidden')
+
+  const ticket = await prisma.ticket.findUnique({
+    where: { id },
+    select: { ticketNumber: true, title: true, status: true, departmentId: true },
+  })
+  if (!ticket) throw new Error('Ticket not found')
+
+  await prisma.ticket.delete({ where: { id } })
+
+  await logAudit({
+    actorId: user.id,
+    action: 'DELETE',
+    entityType: 'Ticket',
+    entityId: id,
+    before: { ticketNumber: ticket.ticketNumber, title: ticket.title, status: ticket.status },
+    departmentId: ticket.departmentId,
+  })
+
+  revalidatePath('/tickets')
+  revalidateTag(CACHE_TAGS.tickets, 'default')
+  redirect('/tickets')
+}
+
 export async function addTicketMessage(formData: FormData) {
   const user = await requireAuth()
 
