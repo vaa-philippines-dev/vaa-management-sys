@@ -363,7 +363,7 @@ async function VATableSection({
                 <TableHead className="px-3 py-2.5 hidden lg:table-cell">Position</TableHead>
                 <TableHead className="px-3 py-2.5 hidden sm:table-cell">Availability</TableHead>
                 <TableHead className="px-3 py-2.5 hidden sm:table-cell">Status</TableHead>
-                <TableHead className="px-3 py-2.5 hidden md:table-cell">Eng. Status</TableHead>
+                <TableHead className="px-3 py-2.5 hidden md:table-cell">Engagement Status</TableHead>
                 <TableHead className="px-3 py-2.5 w-0"> </TableHead>
               </TableRow>
             </TableHeader>
