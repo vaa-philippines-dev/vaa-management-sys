@@ -52,7 +52,10 @@ export function NotificationBell({ userId }: { userId: string }) {
           toast(row.title, { description: row.message })
         }
       )
-      .subscribe()
+      .subscribe((status, err) => {
+        // eslint-disable-next-line no-console -- temporary diagnostic for production realtime connectivity issue
+        console.log(`[Notifications] channel notifications-${userId} status:`, status, err ?? '')
+      })
 
     return () => {
       supabase.removeChannel(channel)

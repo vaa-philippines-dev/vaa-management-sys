@@ -45,7 +45,10 @@ export function ChannelRealtimeProvider({
       .on('broadcast', { event: 'typing' }, ({ payload }) => {
         onTyping?.(payload as TypingPayload)
       })
-      .subscribe()
+      .subscribe((status, err) => {
+        // eslint-disable-next-line no-console -- temporary diagnostic for production realtime connectivity issue
+        console.log(`[Inbox] channel messages-${channelId} status:`, status, err ?? '')
+      })
 
     broadcastChannelRef.current = channel
 
