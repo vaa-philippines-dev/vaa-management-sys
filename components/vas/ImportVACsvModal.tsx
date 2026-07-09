@@ -1,12 +1,12 @@
 'use client'
 
-import { useRef, useState, useTransition } from 'react'
+import { useRef, useState } from 'react'
 import { Modal } from '@/components/ui/modal'
 import { Button } from '@/components/ui/button'
-import { UploadCloud, Loader2, FileText, X, Download } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { UploadCloud, FileText, X, Download, Minus } from 'lucide-react'
 import { toast } from 'sonner'
-import { bulkImportVAs, type VACsvRow, type VACsvImportResult } from '@/app/(dashboard)/vas/actions'
+import type { VACsvRow } from '@/app/(dashboard)/vas/actions'
+import { useVACsvImport } from '@/components/vas/VACsvImportContext'
 
 function parseCsv(text: string): VACsvRow[] {
   const lines = text.split(/\r\n|\n|\r/).filter((line) => line.trim().length > 0)
@@ -123,21 +123,22 @@ function parseCsv(text: string): VACsvRow[] {
   })
 }
 
-export function ImportVACsvModal({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const router = useRouter()
+export function ImportVACsvModal() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [fileName, setFileName] = useState<string | null>(null)
   const [rows, setRows] = useState<VACsvRow[]>([])
-  const [submitting, setSubmitting] = useState(false)
-  const [result, setResult] = useState<VACsvImportResult | null>(null)
   const [overwriteExisting, setOverwriteExisting] = useState(false)
-  const [, startTransition] = useTransition()
+  const { state: importState, startImport, minimize, cancelImport, closeModal, reset: resetImport } = useVACsvImport()
+  const open = importState.modalOpen
+
+  const isRunning = importState.status === 'running'
+  const isDone = importState.status === 'done' || importState.status === 'cancelled'
 
   const reset = () => {
     setFileName(null)
     setRows([])
-    setResult(null)
     setOverwriteExisting(false)
+    resetImport()
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
@@ -150,34 +151,19 @@ export function ImportVACsvModal({ open, onClose }: { open: boolean; onClose: ()
     }
     setFileName(file.name)
     setRows(parsed)
-    setResult(null)
   }
 
-  const handleImport = async () => {
-    setSubmitting(true)
-    try {
-      const res = await bulkImportVAs(rows, overwriteExisting)
-      setResult(res)
-      if (res.created > 0 || res.updated > 0) {
-        const parts = []
-        if (res.created > 0) parts.push(`${res.created} created`)
-        if (res.updated > 0) parts.push(`${res.updated} updated`)
-        toast.success(parts.join(', '))
-        startTransition(() => router.refresh())
-      }
-      if (res.skipped.length > 0) {
-        toast.warning(`${res.skipped.length} row${res.skipped.length === 1 ? '' : 's'} skipped`)
-      }
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : 'Import failed')
-    } finally {
-      setSubmitting(false)
-    }
+  const handleImport = () => {
+    startImport(fileName ?? 'import.csv', rows, overwriteExisting)
   }
 
   const handleClose = () => {
+    if (isRunning) {
+      minimize()
+      return
+    }
     reset()
-    onClose()
+    closeModal()
   }
 
   const handleDownloadTemplate = () => {
@@ -218,134 +204,156 @@ export function ImportVACsvModal({ open, onClose }: { open: boolean; onClose: ()
       size="md"
       footer={
         <>
-          <Button type="button" variant="outline" size="sm" className="h-8" onClick={handleClose}>
-            {result ? 'Close' : 'Cancel'}
-          </Button>
-          {!result && (
-            <Button type="button" size="sm" className="h-8" disabled={rows.length === 0 || submitting} onClick={handleImport}>
-              {submitting ? (
-                <><Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> Importing...</>
-              ) : (
-                <>Import {rows.length > 0 ? `${rows.length} VA${rows.length === 1 ? '' : 's'}` : ''}</>
+          {isRunning ? (
+            <>
+              <Button type="button" variant="outline" size="sm" className="h-8" onClick={handleClose}>
+                <Minus className="h-3.5 w-3.5 mr-1.5" />
+                Minimize
+              </Button>
+              <Button type="button" variant="destructive" size="sm" className="h-8" onClick={cancelImport}>
+                Cancel Import
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button type="button" variant="outline" size="sm" className="h-8" onClick={handleClose}>
+                {isDone ? 'Close' : 'Cancel'}
+              </Button>
+              {!isDone && (
+                <Button type="button" size="sm" className="h-8" disabled={rows.length === 0} onClick={handleImport}>
+                  Import {rows.length > 0 ? `${rows.length} VA${rows.length === 1 ? '' : 's'}` : ''}
+                </Button>
               )}
-            </Button>
+            </>
           )}
         </>
       }
     >
       <div className="space-y-3">
-        {!fileName && !result && (
-          <Button type="button" variant="outline" size="sm" className="h-8 w-full" onClick={handleDownloadTemplate}>
-            <Download className="h-3.5 w-3.5 mr-1.5" />
-            Download CSV Template
-          </Button>
-        )}
-
-        {!fileName ? (
-          <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-lg p-8 cursor-pointer hover:bg-muted/40 transition-colors">
-            <UploadCloud className="h-6 w-6 text-muted-foreground" />
-            <span className="text-sm font-medium">Click to select a CSV file</span>
-            <span className="text-[11px] text-muted-foreground">or drag and drop</span>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".csv,text/csv"
-              className="hidden"
-              onChange={(e) => {
-                const file = e.target.files?.[0]
-                if (file) handleFile(file)
-              }}
-            />
-          </label>
-        ) : (
-          <div className="flex items-center justify-between rounded-lg border p-3 bg-muted/30">
-            <div className="flex items-center gap-2 min-w-0">
-              <FileText className="h-4 w-4 text-primary shrink-0" />
-              <div className="min-w-0">
-                <p className="text-sm font-medium truncate">{fileName}</p>
-                <p className="text-[11px] text-muted-foreground">{rows.length} row{rows.length === 1 ? '' : 's'} detected</p>
-              </div>
-            </div>
-            <button type="button" onClick={reset} className="p-1 hover:bg-accent rounded shrink-0">
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-        )}
-
-        {rows.length > 0 && !result && (
-          <label className="flex items-start gap-2 text-xs rounded-lg border p-3 bg-muted/20 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={overwriteExisting}
-              onChange={(e) => setOverwriteExisting(e.target.checked)}
-              className="mt-0.5"
-            />
-            <span>
-              <span className="font-medium">Update existing VAs if matched</span>
-              <span className="block text-[11px] text-muted-foreground mt-0.5">
-                Matches by email, or by first + last name if no email. Blank cells won&apos;t erase existing data. Unmatched rows are still created as new.
-              </span>
-            </span>
-          </label>
-        )}
-
-        {rows.length > 0 && !result && (
-          <div className="border rounded-lg overflow-hidden max-h-48 overflow-y-auto">
-            <table className="w-full text-xs">
-              <thead className="bg-muted/50 sticky top-0">
-                <tr>
-                  <th className="text-left px-2 py-1.5 font-medium">Name</th>
-                  <th className="text-left px-2 py-1.5 font-medium">Email</th>
-                  <th className="text-left px-2 py-1.5 font-medium">Rate</th>
-                  <th className="text-left px-2 py-1.5 font-medium">Department</th>
-                  <th className="text-left px-2 py-1.5 font-medium">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.slice(0, 20).map((r, i) => (
-                  <tr key={i} className="border-t">
-                    <td className="px-2 py-1 truncate max-w-[140px]">
-                      {[r.firstName, r.middleName, r.lastName, r.extName].filter(Boolean).join(' ') || <span className="text-muted-foreground">—</span>}
-                    </td>
-                    <td className="px-2 py-1 text-muted-foreground truncate max-w-[160px]">{r.email || 'auto-generated'}</td>
-                    <td className="px-2 py-1 text-muted-foreground">{r.hourlyRate || '—'}</td>
-                    <td className="px-2 py-1 text-muted-foreground truncate max-w-[120px]">{r.department || '—'}</td>
-                    <td className="px-2 py-1 text-muted-foreground">{r.status || '—'}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {rows.length > 20 && (
-              <p className="text-[11px] text-muted-foreground text-center py-1.5 bg-muted/30">
-                + {rows.length - 20} more row{rows.length - 20 === 1 ? '' : 's'}
-              </p>
-            )}
-          </div>
-        )}
-
-        {result && (
+        {(isRunning || isDone) ? (
           <div className="space-y-2">
+            <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+              <div
+                className={`h-full transition-all duration-300 ${isDone ? (importState.status === 'cancelled' ? 'bg-warning' : 'bg-success') : 'bg-primary'}`}
+                style={{ width: `${importState.totalRows > 0 ? Math.round((importState.processedRows / importState.totalRows) * 100) : 0}%` }}
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {importState.fileName} · {importState.processedRows}/{importState.totalRows} rows
+              {importState.status === 'cancelled' && ' · cancelled'}
+            </p>
             <p className="text-sm">
-              <span className="font-medium text-success">{result.created} created</span>
-              {result.updated > 0 && (
-                <span className="font-medium text-info"> · {result.updated} updated</span>
+              <span className="font-medium text-success">{importState.created} created</span>
+              {importState.updated > 0 && (
+                <span className="font-medium text-info"> · {importState.updated} updated</span>
               )}
-              {result.skipped.length > 0 && (
-                <span className="text-muted-foreground"> · {result.skipped.length} skipped</span>
+              {importState.skipped.length > 0 && (
+                <span className="text-muted-foreground"> · {importState.skipped.length} skipped</span>
               )}
             </p>
-            {result.skipped.length > 0 && (
+            {isDone && importState.skipped.length > 0 && (
               <div className="border rounded-lg overflow-hidden max-h-40 overflow-y-auto">
                 <ul className="text-[11px] divide-y">
-                  {result.skipped.map((s, i) => (
+                  {importState.skipped.map((s, i) => (
                     <li key={i} className="px-2 py-1.5 text-muted-foreground">
-                      Row {s.row}: {s.reason}
+                      {s.row === -1 ? 'Chunk error' : `Row ${s.row}`}: {s.reason}
                     </li>
                   ))}
                 </ul>
               </div>
             )}
           </div>
+        ) : (
+          <>
+            {!fileName && (
+              <Button type="button" variant="outline" size="sm" className="h-8 w-full" onClick={handleDownloadTemplate}>
+                <Download className="h-3.5 w-3.5 mr-1.5" />
+                Download CSV Template
+              </Button>
+            )}
+
+            {!fileName ? (
+              <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-lg p-8 cursor-pointer hover:bg-muted/40 transition-colors">
+                <UploadCloud className="h-6 w-6 text-muted-foreground" />
+                <span className="text-sm font-medium">Click to select a CSV file</span>
+                <span className="text-[11px] text-muted-foreground">or drag and drop</span>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".csv,text/csv"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if (file) handleFile(file)
+                  }}
+                />
+              </label>
+            ) : (
+              <div className="flex items-center justify-between rounded-lg border p-3 bg-muted/30">
+                <div className="flex items-center gap-2 min-w-0">
+                  <FileText className="h-4 w-4 text-primary shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium truncate">{fileName}</p>
+                    <p className="text-[11px] text-muted-foreground">{rows.length} row{rows.length === 1 ? '' : 's'} detected</p>
+                  </div>
+                </div>
+                <button type="button" onClick={reset} className="p-1 hover:bg-accent rounded shrink-0">
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            )}
+
+            {rows.length > 0 && (
+              <label className="flex items-start gap-2 text-xs rounded-lg border p-3 bg-muted/20 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={overwriteExisting}
+                  onChange={(e) => setOverwriteExisting(e.target.checked)}
+                  className="mt-0.5"
+                />
+                <span>
+                  <span className="font-medium">Update existing VAs if matched</span>
+                  <span className="block text-[11px] text-muted-foreground mt-0.5">
+                    Matches by email, or by first + last name if no email. Blank cells won&apos;t erase existing data. Unmatched rows are still created as new.
+                  </span>
+                </span>
+              </label>
+            )}
+
+            {rows.length > 0 && (
+              <div className="border rounded-lg overflow-hidden max-h-48 overflow-y-auto">
+                <table className="w-full text-xs">
+                  <thead className="bg-muted/50 sticky top-0">
+                    <tr>
+                      <th className="text-left px-2 py-1.5 font-medium">Name</th>
+                      <th className="text-left px-2 py-1.5 font-medium">Email</th>
+                      <th className="text-left px-2 py-1.5 font-medium">Rate</th>
+                      <th className="text-left px-2 py-1.5 font-medium">Department</th>
+                      <th className="text-left px-2 py-1.5 font-medium">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rows.slice(0, 20).map((r, i) => (
+                      <tr key={i} className="border-t">
+                        <td className="px-2 py-1 truncate max-w-[140px]">
+                          {[r.firstName, r.middleName, r.lastName, r.extName].filter(Boolean).join(' ') || <span className="text-muted-foreground">—</span>}
+                        </td>
+                        <td className="px-2 py-1 text-muted-foreground truncate max-w-[160px]">{r.email || 'auto-generated'}</td>
+                        <td className="px-2 py-1 text-muted-foreground">{r.hourlyRate || '—'}</td>
+                        <td className="px-2 py-1 text-muted-foreground truncate max-w-[120px]">{r.department || '—'}</td>
+                        <td className="px-2 py-1 text-muted-foreground">{r.status || '—'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {rows.length > 20 && (
+                  <p className="text-[11px] text-muted-foreground text-center py-1.5 bg-muted/30">
+                    + {rows.length - 20} more row{rows.length - 20 === 1 ? '' : 's'}
+                  </p>
+                )}
+              </div>
+            )}
+          </>
         )}
       </div>
     </Modal>
