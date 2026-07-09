@@ -4,7 +4,11 @@ import { createServerSupabase } from '@/lib/supabase/server'
 export const CLIENT_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'STAFF']
 export const ASSIGNMENT_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'STAFF']
 export const VA_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER']
-export const TICKET_STAFF_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'STAFF']
+// Ticketing: only admins can view every ticket and manage them (assign/close/resolve).
+// EXECUTIVE can view every ticket but not mutate it (view-only, same as requireAdminMutator()).
+// Everyone else (DEPT_MANAGER, STAFF, VA) only sees tickets they created or are assigned to.
+export const TICKET_VIEW_ALL_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE']
+export const TICKET_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN']
 
 export async function getCurrentUser() {
   const supabase = await createServerSupabase()

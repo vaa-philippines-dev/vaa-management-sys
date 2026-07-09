@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { CACHE_TAGS } from '@/lib/cache'
 import { redirect } from 'next/navigation'
-import { requireAuth, TICKET_STAFF_ROLES } from '@/lib/auth'
+import { requireAuth, TICKET_MUTATOR_ROLES } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
 import { draftTicketFromReport } from '@/lib/ai/ticket-draft'
 
@@ -109,6 +109,7 @@ export async function createTicketFromScreenshot(formData: FormData) {
 
 export async function updateTicketStatus(id: string, status: string) {
   const user = await requireAuth()
+  if (!TICKET_MUTATOR_ROLES.includes(user.systemRole)) throw new Error('Forbidden')
 
   const before = await prisma.ticket.findUnique({ where: { id }, select: { status: true, departmentId: true } })
   if (!before) throw new Error('Ticket not found')
@@ -138,7 +139,7 @@ export async function updateTicketStatus(id: string, status: string) {
 
 export async function assignTicket(id: string, assignedTo: string | null) {
   const user = await requireAuth()
-  if (!TICKET_STAFF_ROLES.includes(user.systemRole)) throw new Error('Forbidden')
+  if (!TICKET_MUTATOR_ROLES.includes(user.systemRole)) throw new Error('Forbidden')
 
   const before = await prisma.ticket.findUnique({ where: { id }, select: { assignedTo: true, departmentId: true } })
   if (!before) throw new Error('Ticket not found')
@@ -165,7 +166,7 @@ export async function addTicketMessage(formData: FormData) {
 
   const ticketId = formData.get('ticketId') as string
   const message = (formData.get('message') as string)?.trim()
-  const isInternalNote = formData.get('isInternalNote') === 'on' && TICKET_STAFF_ROLES.includes(user.systemRole)
+  const isInternalNote = formData.get('isInternalNote') === 'on' && TICKET_MUTATOR_ROLES.includes(user.systemRole)
 
   if (!ticketId || !message) throw new Error('Message is required')
 

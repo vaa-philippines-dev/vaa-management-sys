@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent } from '@/components/ui/card'
+import { Progress } from '@/components/ui/progress'
+import { Loader2 } from 'lucide-react'
 import { createTicket, createTicketFromScreenshot } from '@/app/(dashboard)/tickets/actions'
 
 type Option = { id: string; name: string }
@@ -81,27 +83,42 @@ export function NewTicketForm({ departments, clients }: { departments: Option[];
             }}
             className="space-y-4"
           >
-            <div className="space-y-2">
-              <Label htmlFor="screenshot">Screenshot *</Label>
-              <Input id="screenshot" name="screenshot" type="file" accept="image/*" required />
-              <p className="text-xs text-muted-foreground">
-                Take a screenshot of the problem — a screen capture tool, Snipping Tool, or your phone's screenshot works.
-              </p>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="vaNote">What happened? (optional)</Label>
-              <textarea
-                id="vaNote"
-                name="vaNote"
-                rows={3}
-                placeholder="In your own words — even a few words helps, e.g. &quot;this button doesn&apos;t work&quot;"
-                className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-              />
-            </div>
-            <SharedFields departments={departments} clients={clients} />
+            <fieldset disabled={submitting} className="space-y-4 disabled:opacity-60">
+              <div className="space-y-2">
+                <Label htmlFor="screenshot">Screenshot *</Label>
+                <Input id="screenshot" name="screenshot" type="file" accept="image/*" required />
+                <p className="text-xs text-muted-foreground">
+                  Take a screenshot of the problem — a screen capture tool, Snipping Tool, or your phone's screenshot works.
+                </p>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="vaNote">What happened? (optional)</Label>
+                <textarea
+                  id="vaNote"
+                  name="vaNote"
+                  rows={3}
+                  placeholder="In your own words — even a few words helps, e.g. &quot;this button doesn&apos;t work&quot;"
+                  className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                />
+              </div>
+              <SharedFields departments={departments} clients={clients} />
+            </fieldset>
+            {submitting && (
+              <div className="space-y-2 rounded-lg border bg-muted/40 p-3">
+                <p className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  Reading your screenshot and drafting the ticket — this can take a few seconds...
+                </p>
+                <Progress indeterminate />
+              </div>
+            )}
             <div className="flex justify-end gap-2">
               <Button type="submit" disabled={submitting}>
-                {submitting ? 'Drafting ticket...' : 'Submit'}
+                {submitting ? (
+                  <><Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> Drafting ticket...</>
+                ) : (
+                  'Submit'
+                )}
               </Button>
             </div>
           </form>

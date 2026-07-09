@@ -7,18 +7,18 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Plus, Ticket as TicketIcon } from 'lucide-react'
 import { format } from 'date-fns'
 import { TicketStatusBadge, TicketPriorityBadge } from '@/components/tickets/TicketBadges'
-import { TICKET_STAFF_ROLES } from '@/lib/auth'
+import { TICKET_VIEW_ALL_ROLES } from '@/lib/auth'
 
 export default async function TicketsPage() {
   const user = await getCurrentUser()
 
-  const isStaff = !!user && TICKET_STAFF_ROLES.includes(user.systemRole)
+  const canViewAll = !!user && TICKET_VIEW_ALL_ROLES.includes(user.systemRole)
   const where: Record<string, unknown> = {}
-  if (!isStaff && user) {
+  if (!canViewAll && user) {
     where.OR = [{ createdBy: user.id }, { assignedTo: user.id }]
   }
 
-  const tickets = await cached(`tickets:list:${isStaff ? 'all' : user?.id}`, [CACHE_TAGS.tickets], 15, () =>
+  const tickets = await cached(`tickets:list:${canViewAll ? 'all' : user?.id}`, [CACHE_TAGS.tickets], 15, () =>
     prisma.ticket.findMany({
       where: where as any,
       include: {

@@ -10,7 +10,7 @@ import { TicketStatusBadge, TicketPriorityBadge } from '@/components/tickets/Tic
 import { TicketStatusButtons } from '@/components/tickets/TicketStatusButtons'
 import { TicketAssigneeSelect } from '@/components/tickets/TicketAssigneeSelect'
 import { TicketConversation } from '@/components/tickets/TicketConversation'
-import { TICKET_STAFF_ROLES } from '@/lib/auth'
+import { TICKET_VIEW_ALL_ROLES, TICKET_MUTATOR_ROLES } from '@/lib/auth'
 
 export default async function TicketDetailPage({
   params,
@@ -37,17 +37,18 @@ export default async function TicketDetailPage({
 
   if (!ticket) notFound()
 
-  const isStaff = TICKET_STAFF_ROLES.includes(user.systemRole)
+  const canViewAll = TICKET_VIEW_ALL_ROLES.includes(user.systemRole)
+  const canMutate = TICKET_MUTATOR_ROLES.includes(user.systemRole)
   const isOwner = ticket.createdBy === user.id || ticket.assignedTo === user.id
-  if (!isStaff && !isOwner) notFound()
+  if (!canViewAll && !isOwner) notFound()
 
-  const visibleMessages = isStaff
+  const visibleMessages = canViewAll
     ? ticket.conversations
     : ticket.conversations.filter((m) => !m.isInternalNote)
 
-  const staff = isStaff
+  const assignableUsers = canMutate
     ? await prisma.user.findMany({
-        where: { systemRole: { in: TICKET_STAFF_ROLES as any } },
+        where: { systemRole: { in: TICKET_MUTATOR_ROLES as any } },
         select: { id: true, firstName: true, email: true },
         orderBy: { firstName: 'asc' },
       })
@@ -76,7 +77,7 @@ export default async function TicketDetailPage({
             {format(ticket.createdAt, 'MMM dd, yyyy')}
           </p>
         </div>
-        {isStaff && <TicketStatusButtons id={ticket.id} current={ticket.status} />}
+        {canMutate && <TicketStatusButtons id={ticket.id} current={ticket.status} />}
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
@@ -98,7 +99,7 @@ export default async function TicketDetailPage({
               <TicketConversation
                 ticketId={ticket.id}
                 messages={visibleMessages}
-                canWriteInternalNotes={isStaff}
+                canWriteInternalNotes={canMutate}
               />
             </CardContent>
           </Card>
@@ -120,11 +121,11 @@ export default async function TicketDetailPage({
               </div>
               <div>
                 <p className="text-xs text-muted-foreground mb-1">Assignee</p>
-                {isStaff ? (
+                {canMutate ? (
                   <TicketAssigneeSelect
                     ticketId={ticket.id}
                     currentAssigneeId={ticket.assignee?.id ?? null}
-                    staff={staff.map((s) => ({ id: s.id, label: s.firstName || s.email }))}
+                    staff={assignableUsers.map((s) => ({ id: s.id, label: s.firstName || s.email }))}
                   />
                 ) : (
                   <p className="font-medium">
