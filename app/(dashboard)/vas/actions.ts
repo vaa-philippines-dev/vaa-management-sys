@@ -139,6 +139,7 @@ export type VACsvRow = {
 
 export type VACsvImportResult = {
   created: number
+  updated: number
   skipped: { row: number; reason: string }[]
 }
 
@@ -154,25 +155,34 @@ function normalizeEnum(value: string | undefined, allowed: string[]): string | n
 
 const CSV_IMPORT_BATCH_SIZE = 20
 
-export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult> {
+export async function bulkImportVAs(rows: VACsvRow[], overwriteExisting = false): Promise<VACsvImportResult> {
   const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER')
 
-  const result: VACsvImportResult = { created: 0, skipped: [] }
+  const result: VACsvImportResult = { created: 0, updated: 0, skipped: [] }
 
   // Pre-fetch lookups once instead of per-row to avoid thousands of sequential round-trips.
   const emailInputs = rows
     .map((row) => (row.email || '').trim().toLowerCase())
     .filter(Boolean)
-  const existingEmails = new Set(
-    emailInputs.length > 0
-      ? (
-          await prisma.user.findMany({
-            where: { email: { in: Array.from(new Set(emailInputs)) } },
-            select: { email: true },
-          })
-        ).map((u) => u.email)
-      : [],
+
+  const existingVAs = await prisma.user.findMany({
+    where: { userType: 'VIRTUAL_ASSISTANT' },
+    select: { id: true, email: true, firstName: true, middleName: true, lastName: true, extName: true },
+  })
+  const existingEmails = new Set(existingVAs.map((u) => u.email))
+  const normalizeNameKey = (first: string, last: string) =>
+    `${first.trim().toLowerCase()}|${last.trim().toLowerCase()}`
+  // Full-name key catches VAs imported before the name-column split, whose
+  // firstName/lastName boundary may not line up with a re-import's split.
+  const normalizeFullNameKey = (...parts: (string | null | undefined)[]) =>
+    parts.filter(Boolean).join(' ').trim().toLowerCase().replace(/\s+/g, ' ')
+  const existingIdByNameKey = new Map(
+    existingVAs.map((u) => [normalizeNameKey(u.firstName, u.lastName), u.id]),
   )
+  const existingIdByFullNameKey = new Map(
+    existingVAs.map((u) => [normalizeFullNameKey(u.firstName, u.middleName, u.lastName, u.extName), u.id]),
+  )
+  const existingIdByEmail = new Map(existingVAs.map((u) => [u.email, u.id]))
 
   const departments = await prisma.department.findMany({ select: { id: true, name: true } })
   const normalizeDeptName = (name: string) =>
@@ -222,6 +232,7 @@ export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult
     linkedinUrl: string | null
     departmentInput: string
     departmentId: string | null
+    matchedUserId: string | null
   }
 
   const prepared: PreparedRow[] = []
@@ -238,11 +249,25 @@ export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult
     }
 
     const emailInput = (row.email || '').trim().toLowerCase()
-    if (emailInput && existingEmails.has(emailInput)) {
-      result.skipped.push({ row: rowNum, reason: `Email already exists: ${emailInput}` })
+    const lastNameInput = (row.lastName || '').trim() || '-'
+    const nameKey = normalizeNameKey(firstName, lastNameInput)
+    const fullNameKey = normalizeFullNameKey(firstName, row.middleName, lastNameInput, row.extName)
+
+    const matchedUserId = (emailInput ? existingIdByEmail.get(emailInput) : undefined)
+      ?? existingIdByNameKey.get(nameKey)
+      ?? existingIdByFullNameKey.get(fullNameKey)
+      ?? null
+
+    if (matchedUserId && !overwriteExisting) {
+      result.skipped.push({
+        row: rowNum,
+        reason: emailInput && existingEmails.has(emailInput)
+          ? `Email already exists: ${emailInput}`
+          : `VA already exists: ${firstName} ${lastNameInput}`,
+      })
       continue
     }
-    if (emailInput && seenEmails.has(emailInput)) {
+    if (!matchedUserId && emailInput && seenEmails.has(emailInput)) {
       result.skipped.push({ row: rowNum, reason: `Duplicate email in file: ${emailInput}` })
       continue
     }
@@ -306,7 +331,88 @@ export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult
       linkedinUrl: (row.linkedinUrl || '').trim() || null,
       departmentInput,
       departmentId,
+      matchedUserId,
     })
+  }
+
+  const updateOne = async (p: PreparedRow) => {
+    const userId = p.matchedUserId!
+    try {
+      const userData: Record<string, unknown> = {
+        firstName: p.firstName,
+        lastName: p.lastName,
+      }
+      if (p.middleName !== null) userData.middleName = p.middleName
+      if (p.extName !== null) userData.extName = p.extName
+
+      const vaProfileData: Record<string, unknown> = { onHold: p.onHold }
+      if (p.hourlyRate !== null) vaProfileData.hourlyRate = p.hourlyRate
+      if (p.baseRate !== null) vaProfileData.baseRate = p.baseRate
+      if (p.vaaPosition !== null) vaProfileData.vaaPosition = p.vaaPosition
+      if (p.level !== null) vaProfileData.level = p.level
+      if (p.availabilityStatus !== null) vaProfileData.availabilityStatus = p.availabilityStatus as any
+      if (p.recommendability !== null) vaProfileData.recommendability = p.recommendability
+      if (p.status !== null) vaProfileData.status = p.status as any
+      if (p.engagementStatus !== null) vaProfileData.engagementStatus = p.engagementStatus as any
+      if (p.preferredWorkHours !== null) vaProfileData.preferredWorkHours = p.preferredWorkHours
+      if (p.availableSchedule !== null) vaProfileData.availableSchedule = p.availableSchedule
+      if (p.notes !== null) vaProfileData.notes = p.notes
+      vaProfileData.hybrid = p.hybrid
+
+      const profileData: Record<string, unknown> = {}
+      if (p.phone !== null) profileData.phone = p.phone
+      if (p.personalEmail !== null) profileData.personalEmail = p.personalEmail
+      if (p.workEmail !== null) profileData.workEmail = p.workEmail
+      if (p.gender !== null) profileData.gender = p.gender
+      if (p.birthDate !== null) profileData.birthDate = p.birthDate
+      if (p.birthdayCelebrant !== undefined) profileData.birthdayCelebrant = p.birthdayCelebrant
+      if (p.addressLine !== null) profileData.addressLine = p.addressLine
+      if (p.barangay !== null) profileData.barangay = p.barangay
+      if (p.cityMunicipality !== null) profileData.cityMunicipality = p.cityMunicipality
+      if (p.province !== null) profileData.province = p.province
+      if (p.zipCode !== null) profileData.zipCode = p.zipCode
+      if (p.landmark !== null) profileData.landmark = p.landmark
+      if (p.gcashNumber !== null) profileData.gcashNumber = p.gcashNumber
+      if (p.emergencyContactName !== null) profileData.emergencyContactName = p.emergencyContactName
+      if (p.emergencyContactPhone !== null) profileData.emergencyContactPhone = p.emergencyContactPhone
+      if (p.emergencyContactRelation !== null) profileData.emergencyContactRelation = p.emergencyContactRelation
+      if (p.facebookName !== null) profileData.facebookName = p.facebookName
+      if (p.facebookUrl !== null) profileData.facebookUrl = p.facebookUrl
+      if (p.linkedinUrl !== null) profileData.linkedinUrl = p.linkedinUrl
+
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          ...userData,
+          vaProfile: { update: vaProfileData },
+          profile: { upsert: { create: profileData, update: profileData } },
+        },
+      })
+
+      if (p.departmentId) {
+        const existingMembership = await prisma.departmentMembership.findFirst({
+          where: { userId, departmentId: p.departmentId, endedAt: null },
+        })
+        if (!existingMembership) {
+          await prisma.departmentMembership.create({
+            data: { userId, departmentId: p.departmentId, isPrimary: true },
+          })
+        }
+      }
+
+      await logAudit({
+        actorId: actor.id,
+        action: 'UPDATE',
+        entityType: 'User',
+        entityId: userId,
+        after: { email: p.email, firstName: p.firstName, lastName: p.lastName, department: p.departmentInput || null },
+        metadata: { viaImport: 'vas/csv', overwrite: true },
+      })
+
+      result.updated++
+    } catch (e) {
+      result.skipped.push({ row: p.rowNum, reason: e instanceof Error ? e.message : 'Failed to update' })
+    }
   }
 
   const createOne = async (p: PreparedRow) => {
@@ -396,10 +502,10 @@ export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult
 
   for (let i = 0; i < prepared.length; i += CSV_IMPORT_BATCH_SIZE) {
     const batch = prepared.slice(i, i + CSV_IMPORT_BATCH_SIZE)
-    await Promise.all(batch.map(createOne))
+    await Promise.all(batch.map((p) => (p.matchedUserId ? updateOne(p) : createOne(p))))
   }
 
-  if (result.created > 0) {
+  if (result.created > 0 || result.updated > 0) {
     revalidatePath('/vas')
     revalidateTag(CACHE_TAGS.vas, 'default')
     revalidateTag(CACHE_TAGS.users, 'default')

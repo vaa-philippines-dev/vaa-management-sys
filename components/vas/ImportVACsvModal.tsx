@@ -130,12 +130,14 @@ export function ImportVACsvModal({ open, onClose }: { open: boolean; onClose: ()
   const [rows, setRows] = useState<VACsvRow[]>([])
   const [submitting, setSubmitting] = useState(false)
   const [result, setResult] = useState<VACsvImportResult | null>(null)
+  const [overwriteExisting, setOverwriteExisting] = useState(false)
   const [, startTransition] = useTransition()
 
   const reset = () => {
     setFileName(null)
     setRows([])
     setResult(null)
+    setOverwriteExisting(false)
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
@@ -154,10 +156,13 @@ export function ImportVACsvModal({ open, onClose }: { open: boolean; onClose: ()
   const handleImport = async () => {
     setSubmitting(true)
     try {
-      const res = await bulkImportVAs(rows)
+      const res = await bulkImportVAs(rows, overwriteExisting)
       setResult(res)
-      if (res.created > 0) {
-        toast.success(`Imported ${res.created} VA${res.created === 1 ? '' : 's'}`)
+      if (res.created > 0 || res.updated > 0) {
+        const parts = []
+        if (res.created > 0) parts.push(`${res.created} created`)
+        if (res.updated > 0) parts.push(`${res.updated} updated`)
+        toast.success(parts.join(', '))
         startTransition(() => router.refresh())
       }
       if (res.skipped.length > 0) {
@@ -268,6 +273,23 @@ export function ImportVACsvModal({ open, onClose }: { open: boolean; onClose: ()
         )}
 
         {rows.length > 0 && !result && (
+          <label className="flex items-start gap-2 text-xs rounded-lg border p-3 bg-muted/20 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={overwriteExisting}
+              onChange={(e) => setOverwriteExisting(e.target.checked)}
+              className="mt-0.5"
+            />
+            <span>
+              <span className="font-medium">Update existing VAs if matched</span>
+              <span className="block text-[11px] text-muted-foreground mt-0.5">
+                Matches by email, or by first + last name if no email. Blank cells won&apos;t erase existing data. Unmatched rows are still created as new.
+              </span>
+            </span>
+          </label>
+        )}
+
+        {rows.length > 0 && !result && (
           <div className="border rounded-lg overflow-hidden max-h-48 overflow-y-auto">
             <table className="w-full text-xs">
               <thead className="bg-muted/50 sticky top-0">
@@ -305,6 +327,9 @@ export function ImportVACsvModal({ open, onClose }: { open: boolean; onClose: ()
           <div className="space-y-2">
             <p className="text-sm">
               <span className="font-medium text-success">{result.created} created</span>
+              {result.updated > 0 && (
+                <span className="font-medium text-info"> · {result.updated} updated</span>
+              )}
               {result.skipped.length > 0 && (
                 <span className="text-muted-foreground"> · {result.skipped.length} skipped</span>
               )}
