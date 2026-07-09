@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import { prisma } from '@/lib/prisma'
 import { createServerSupabase } from '@/lib/supabase/server'
 
@@ -10,7 +11,7 @@ export const VA_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER']
 export const TICKET_VIEW_ALL_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE']
 export const TICKET_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN']
 
-export async function getCurrentUser() {
+export const getCurrentUser = cache(async () => {
   const supabase = await createServerSupabase()
   if (!supabase) {
     return null
@@ -30,7 +31,7 @@ export async function getCurrentUser() {
       roleAssignments: { where: { status: 'ACTIVE' } },
     },
   })
-}
+})
 
 export async function requireAuth() {
   const user = await getCurrentUser()
