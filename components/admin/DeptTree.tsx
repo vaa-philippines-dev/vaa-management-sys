@@ -17,8 +17,11 @@ import {
   X,
   Ellipsis,
   GripVertical,
+  Pencil,
+  Check,
+  Loader2,
 } from 'lucide-react'
-import { toggleDepartmentActive, deleteDepartment, reorderDepartments } from '@/app/(dashboard)/admin/users/actions'
+import { toggleDepartmentActive, deleteDepartment, reorderDepartments, updateDepartment } from '@/app/(dashboard)/admin/users/actions'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { ServiceSelector } from '@/components/admin/ServiceSelector'
@@ -121,6 +124,20 @@ export function DeptTree({
     } catch (e: any) {
       toast.error(e.message ?? 'Failed to reorder')
       router.refresh()
+    }
+  }
+
+  const handleEdit = async (id: string, data: { name: string; shortName: string | null; acronym: string | null }) => {
+    setPending(id)
+    try {
+      await updateDepartment(id, data)
+      toast.success('Department updated')
+      router.refresh()
+    } catch (e: any) {
+      toast.error(e.message ?? 'Failed to update department')
+      throw e
+    } finally {
+      setPending(null)
     }
   }
 
@@ -259,6 +276,7 @@ export function DeptTree({
               onToggle={handleToggle}
               onDelete={handleDelete}
               onReorder={handleReorder}
+              onEdit={handleEdit}
               pendingId={pending}
               canEdit={canEdit}
               canReorder={canEdit && !isFiltering}
@@ -328,6 +346,7 @@ function DeptNode({
   onToggle,
   onDelete,
   onReorder,
+  onEdit,
   pendingId,
   canEdit,
   canReorder,
@@ -340,6 +359,7 @@ function DeptNode({
   onToggle: (id: string, status: string) => void
   onDelete: (id: string, name: string) => void
   onReorder: (parentId: string | null, orderedIds: string[]) => void
+  onEdit: (id: string, data: { name: string; shortName: string | null; acronym: string | null }) => Promise<void>
   pendingId: string | null
   canEdit: boolean
   canReorder: boolean
@@ -349,13 +369,50 @@ function DeptNode({
 }) {
   const [open, setOpen] = useState(depth < 1)
   const [showActions, setShowActions] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editName, setEditName] = useState(dept.name)
+  const [editShortName, setEditShortName] = useState(dept.shortName ?? '')
+  const [editAcronym, setEditAcronym] = useState(dept.acronym ?? '')
+  const [savingEdit, setSavingEdit] = useState(false)
   const isPending = pendingId === dept.id
 
   const canMerge = canEdit && dept.status === 'ACTIVE' && !dept.isLevel
   const canSplit = canEdit && dept.status === 'ACTIVE' && !dept.isLevel
   const canToggle = canEdit && !dept.isLevel
   const canDelete = canEdit && !dept.isLevel && dept.childrenCount === 0
+  const canRename = canEdit && !dept.isLevel
   const canDrag = canReorder && !dept.isLevel
+
+  const startEdit = () => {
+    setEditName(dept.name)
+    setEditShortName(dept.shortName ?? '')
+    setEditAcronym(dept.acronym ?? '')
+    setIsEditing(true)
+  }
+
+  const cancelEdit = () => setIsEditing(false)
+
+  const submitEdit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const name = editName.trim()
+    if (!name) {
+      toast.error('Department name is required')
+      return
+    }
+    setSavingEdit(true)
+    try {
+      await onEdit(dept.id, {
+        name,
+        shortName: editShortName.trim() || null,
+        acronym: editAcronym.trim().toUpperCase() || null,
+      })
+      setIsEditing(false)
+    } catch {
+      // error already toasted by onEdit
+    } finally {
+      setSavingEdit(false)
+    }
+  }
 
   const sortable = useSortable({ id: dept.id, disabled: !canDrag })
   const style = {
@@ -372,6 +429,44 @@ function DeptNode({
       style={style}
       className={`rounded-lg border bg-card overflow-hidden group/row ${sortable.isDragging ? 'opacity-60 shadow-lg z-10 relative' : ''}`}
     >
+      {isEditing ? (
+        <form
+          onSubmit={submitEdit}
+          className="flex items-center gap-2 px-3 py-2.5"
+          style={{ paddingLeft: `${12 + depth * 16}px` }}
+        >
+          <div className={`h-5 w-1 rounded-full ${levelColor} shrink-0`} />
+          <Input
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
+            placeholder="Name"
+            maxLength={100}
+            className="h-7 text-xs flex-1 min-w-[120px]"
+            autoFocus
+            required
+          />
+          <Input
+            value={editShortName}
+            onChange={(e) => setEditShortName(e.target.value)}
+            placeholder="Short name"
+            maxLength={50}
+            className="h-7 text-xs w-32"
+          />
+          <Input
+            value={editAcronym}
+            onChange={(e) => setEditAcronym(e.target.value.toUpperCase().replace(/[^A-Z0-9 ]/g, '').slice(0, 6))}
+            placeholder="Acronym"
+            maxLength={6}
+            className="h-7 text-xs w-20 font-mono"
+          />
+          <Button type="submit" size="sm" variant="ghost" className="h-7 w-7 p-0 shrink-0" disabled={savingEdit} title="Save">
+            {savingEdit ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5 text-success" />}
+          </Button>
+          <Button type="button" size="sm" variant="ghost" className="h-7 w-7 p-0 shrink-0" onClick={cancelEdit} disabled={savingEdit} title="Cancel">
+            <X className="h-3.5 w-3.5" />
+          </Button>
+        </form>
+      ) : (
       <div
         className={`flex items-center gap-2 px-3 py-2.5 transition-colors ${isPending ? 'opacity-50' : ''}`}
         style={{ paddingLeft: `${12 + depth * 16}px` }}
@@ -449,6 +544,17 @@ function DeptNode({
               }))}
             />
           )}
+          {canRename && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-6 text-[10px] px-1.5 gap-1"
+              onClick={startEdit}
+              disabled={isPending}
+            >
+              <Pencil className="h-3 w-3" /> Edit
+            </Button>
+          )}
           {canMerge && (
             <Link href={`/admin/departments/merge/${dept.id}`}>
               <Button variant="outline" size="sm" className="h-6 text-[10px] px-1.5 gap-1">Merge</Button>
@@ -490,6 +596,7 @@ function DeptNode({
           </Button>
         </div>
       </div>
+      )}
 
       {showActions && (
         <div className="border-t px-3 py-2 bg-muted/20 md:hidden flex flex-wrap gap-1.5">
@@ -505,6 +612,11 @@ function DeptNode({
                 assigned: assignedSkillIds.includes(s.id),
               }))}
             />
+          )}
+          {canRename && (
+            <Button variant="outline" size="sm" className="h-6 text-[10px] px-1.5 gap-1" onClick={startEdit} disabled={isPending}>
+              <Pencil className="h-3 w-3" /> Edit
+            </Button>
           )}
           {canMerge && (
             <Link href={`/admin/departments/merge/${dept.id}`}>
@@ -559,6 +671,7 @@ function DeptNode({
                     onToggle={onToggle}
                     onDelete={onDelete}
                     onReorder={onReorder}
+                    onEdit={onEdit}
                     pendingId={pendingId}
                     canEdit={canEdit}
                     canReorder={canReorder}
