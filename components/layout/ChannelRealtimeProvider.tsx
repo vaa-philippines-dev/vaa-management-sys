@@ -39,18 +39,13 @@ export function ChannelRealtimeProvider({
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'messages', filter: `channel_id=eq.${channelId}` },
         (payload: RealtimePostgresChangesPayload<MessageRow>) => {
-          // eslint-disable-next-line no-console -- temporary diagnostic for production realtime connectivity issue
-          console.log(`[Inbox] received INSERT on messages-${channelId}:`, payload.new)
           onMessage(payload.new as MessageRow)
         }
       )
       .on('broadcast', { event: 'typing' }, ({ payload }) => {
         onTyping?.(payload as TypingPayload)
       })
-      .subscribe((status, err) => {
-        // eslint-disable-next-line no-console -- temporary diagnostic for production realtime connectivity issue
-        console.log(`[Inbox] channel messages-${channelId} status:`, status, err ?? '')
-      })
+      .subscribe()
 
     broadcastChannelRef.current = channel
 

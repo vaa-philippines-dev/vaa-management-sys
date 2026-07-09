@@ -47,17 +47,12 @@ export function NotificationBell({ userId }: { userId: string }) {
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'notifications', filter: `recipient_id=eq.${userId}` },
         (payload) => {
-          // eslint-disable-next-line no-console -- temporary diagnostic for production realtime connectivity issue
-          console.log(`[Notifications] received INSERT for user ${userId}:`, payload.new)
           const row = payload.new as Notification
           setNotifications((prev) => [row, ...prev].slice(0, 20))
           toast(row.title, { description: row.message })
         }
       )
-      .subscribe((status, err) => {
-        // eslint-disable-next-line no-console -- temporary diagnostic for production realtime connectivity issue
-        console.log(`[Notifications] channel notifications-${userId} status:`, status, err ?? '')
-      })
+      .subscribe()
 
     return () => {
       supabase.removeChannel(channel)
