@@ -51,11 +51,13 @@ function NavButton({
   href,
   isActive,
   icon: Icon,
+  iconColor,
   children,
 }: {
   href: string
   isActive: boolean
-  icon: React.ComponentType<{ className?: string }>
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>
+  iconColor?: string
   children: React.ReactNode
 }) {
   return (
@@ -68,7 +70,10 @@ function NavButton({
           : 'text-sidebar-foreground hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground'
       )}
     >
-      <Icon className={cn('h-3.5 w-3.5 shrink-0', isActive ? 'opacity-100' : 'opacity-75')} />
+      <Icon
+        className={cn('h-3.5 w-3.5 shrink-0', !iconColor && (isActive ? 'opacity-100' : 'opacity-75'))}
+        style={iconColor ? { color: iconColor } : undefined}
+      />
       {children}
     </Link>
   )
@@ -119,6 +124,9 @@ function FavoriteStar({
     })
   }
 
+  const [hovered, setHovered] = useState(false)
+  const showColor = favorite && (hovered || open)
+
   return (
     <div className="relative flex items-center">
       <button
@@ -128,15 +136,17 @@ function FavoriteStar({
           e.stopPropagation()
           setOpen((o) => !o)
         }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
         aria-label={favorite ? 'Edit favorite' : 'Add to favorites'}
         className={cn(
-          'flex h-5 w-5 shrink-0 items-center justify-center rounded transition-opacity',
-          favorite ? 'opacity-100' : 'opacity-0 group-hover:opacity-60 hover:!opacity-100'
+          'flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-0 transition-opacity group-hover:opacity-100',
+          open && 'opacity-100'
         )}
       >
         <Star
           className="h-3 w-3"
-          style={favorite ? { color: COLOR_SWATCH[favorite.color], fill: COLOR_SWATCH[favorite.color] } : undefined}
+          style={showColor ? { color: COLOR_SWATCH[favorite!.color], fill: COLOR_SWATCH[favorite!.color] } : undefined}
         />
       </button>
 
@@ -172,6 +182,28 @@ function FavoriteStar({
         </div>
       )}
     </div>
+  )
+}
+
+function FeaturedStarButton({ fav, onToggle }: { fav: FavoriteRecord; onToggle: () => void }) {
+  const [hovered, setHovered] = useState(false)
+  const showColor = fav.isFeatured && hovered
+
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      aria-label={fav.isFeatured ? 'Unset as featured favorite' : 'Set as featured favorite'}
+      title={fav.isFeatured ? 'Featured — lands here on login' : 'Set as featured favorite'}
+      className="flex h-5 w-5 shrink-0 items-center justify-center rounded text-sidebar-foreground/30 opacity-0 group-hover:opacity-100 hover:text-sidebar-foreground/70"
+    >
+      <Star
+        className="h-3 w-3"
+        style={showColor ? { fill: COLOR_SWATCH[fav.color], color: COLOR_SWATCH[fav.color] } : undefined}
+      />
+    </button>
   )
 }
 
@@ -288,42 +320,6 @@ export function Sidebar({
       </div>
       <ScrollArea className="flex-1">
         <nav className="flex flex-col gap-px pr-1">
-          {canFavorite && favorites.length > 0 && (
-            <>
-              <p className="px-2 pb-1 text-[10.5px] tracking-wide text-sidebar-foreground/60">Favorites</p>
-              {favorites.map((fav) => {
-                const route = allRoutes.find((r) => r.href === fav.href)
-                return (
-                  <div key={fav.href} className="group flex items-center gap-0.5">
-                    <div className="flex-1">
-                      <NavButton href={fav.href} isActive={isRouteActive(fav.href)} icon={route?.icon ?? Star}>
-                        {fav.label}
-                      </NavButton>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => toggleFeatured(fav.href)}
-                      aria-label={fav.isFeatured ? 'Unset as featured favorite' : 'Set as featured favorite'}
-                      title={fav.isFeatured ? 'Featured — lands here on login' : 'Set as featured favorite'}
-                      className={cn(
-                        'flex h-5 w-5 shrink-0 items-center justify-center rounded',
-                        fav.isFeatured
-                          ? 'text-sidebar-foreground'
-                          : 'text-sidebar-foreground/30 opacity-0 group-hover:opacity-100 hover:text-sidebar-foreground/70'
-                      )}
-                    >
-                      <Star
-                        className="h-3 w-3"
-                        style={fav.isFeatured ? { fill: COLOR_SWATCH[fav.color], color: COLOR_SWATCH[fav.color] } : undefined}
-                      />
-                    </button>
-                  </div>
-                )
-              })}
-              <div className="my-1.5 border-t border-sidebar-foreground/10" />
-            </>
-          )}
-
           {routes.map((route) => (
             <FavoritableRow
               key={route.href}
@@ -422,6 +418,30 @@ export function Sidebar({
                 atMax={atMax}
                 onChanged={setFavorites}
               />
+            </>
+          )}
+
+          {canFavorite && favorites.length > 0 && (
+            <>
+              <p className="px-2 pt-3.5 pb-1 text-[10.5px] tracking-wide text-sidebar-foreground/60">Favorites</p>
+              {favorites.map((fav) => {
+                const route = allRoutes.find((r) => r.href === fav.href)
+                return (
+                  <div key={fav.href} className="group flex items-center gap-0.5">
+                    <div className="flex-1">
+                      <NavButton
+                        href={fav.href}
+                        isActive={isRouteActive(fav.href)}
+                        icon={route?.icon ?? Star}
+                        iconColor={COLOR_SWATCH[fav.color]}
+                      >
+                        {fav.label}
+                      </NavButton>
+                    </div>
+                    <FeaturedStarButton fav={fav} onToggle={() => toggleFeatured(fav.href)} />
+                  </div>
+                )
+              })}
             </>
           )}
         </nav>
