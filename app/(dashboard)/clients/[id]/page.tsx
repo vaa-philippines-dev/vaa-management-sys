@@ -11,8 +11,22 @@ import { ClientDetailPanel } from '@/components/clients/ClientDetailPanel'
 
 const STATUS_DOT: Record<string, string> = {
   ACTIVE: 'bg-success',
-  ON_HOLD: 'bg-warning',
-  INACTIVE: 'bg-destructive',
+  PENDING: 'bg-warning',
+  TRANSFERRED: 'bg-info',
+  RESIGNED: 'bg-destructive',
+  REMOVED: 'bg-destructive',
+  PROJECT_ENDED: 'bg-muted-foreground',
+  CANCELLED: 'bg-destructive',
+}
+
+const STATUS_LABEL: Record<string, string> = {
+  ACTIVE: 'Active',
+  PENDING: 'Pending',
+  TRANSFERRED: 'Transferred',
+  RESIGNED: 'Resigned',
+  REMOVED: 'Removed',
+  PROJECT_ENDED: 'Project Ended',
+  CANCELLED: 'Cancelled',
 }
 
 const PLATFORM_META: Record<string, { label: string; color: string }> = {
@@ -62,7 +76,7 @@ export default async function ClientDetailPage({
           <div className="flex items-center gap-3">
             <h2 className="text-2xl font-bold tracking-tight">{client.name}</h2>
             <Badge variant={client.status === 'ACTIVE' ? 'default' : 'secondary'}>
-              {client.status === 'ACTIVE' ? 'Active' : client.status === 'ON_HOLD' ? 'On Hold' : 'Inactive'}
+              {client.onHold ? 'On Hold' : (STATUS_LABEL[client.status] ?? client.status)}
             </Badge>
             <Badge
               variant="outline"
@@ -148,8 +162,8 @@ export default async function ClientDetailPage({
         </div>
 
         <ClientDetailPanel
-          statusLabel={client.status === 'ACTIVE' ? 'Active' : client.status === 'ON_HOLD' ? 'On Hold' : 'Inactive'}
-          statusDotClassName={STATUS_DOT[client.status] ?? 'bg-muted-foreground'}
+          statusLabel={client.onHold ? 'On Hold' : (STATUS_LABEL[client.status] ?? client.status)}
+          statusDotClassName={client.onHold ? 'bg-warning' : (STATUS_DOT[client.status] ?? 'bg-muted-foreground')}
           contactName={client.contactName ?? null}
           contactEmail={client.contactEmail ?? null}
           industry={client.industry ?? null}

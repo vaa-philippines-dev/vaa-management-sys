@@ -11,7 +11,7 @@ import { Loader2, GitBranch, AlertTriangle, Plus, Trash2, Users, Briefcase, Buil
 
 type Source = { id: string; name: string; level: string | null }
 type Membership = { id: string; userName: string; userEmail: string; position: string | null }
-type Client = { id: string; name: string; contactName: string | null; isActive: boolean; status?: 'ACTIVE' | 'INACTIVE' | 'ON_HOLD' }
+type Client = { id: string; name: string; contactName: string | null; isActive: boolean; status?: 'ACTIVE' | 'PENDING' | 'TRANSFERRED' | 'RESIGNED' | 'REMOVED' | 'PROJECT_ENDED' | 'CANCELLED' }
 type Child = { id: string; name: string; acronym: string | null }
 type ServiceItem = { id: string; name: string; category: string }
 

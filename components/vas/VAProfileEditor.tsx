@@ -644,8 +644,12 @@ function DocBadge({ icon: Icon, label, url, highlighted }: { icon: React.Compone
 
 const GENERAL_STATUS_OPTIONS = [
   { value: 'ACTIVE', label: 'Active' },
-  { value: 'ON_HOLD', label: 'On Hold' },
-  { value: 'INACTIVE', label: 'Inactive' },
+  { value: 'PENDING', label: 'Pending' },
+  { value: 'TRANSFERRED', label: 'Transferred' },
+  { value: 'RESIGNED', label: 'Resigned' },
+  { value: 'REMOVED', label: 'Removed' },
+  { value: 'PROJECT_ENDED', label: 'Project Ended' },
+  { value: 'CANCELLED', label: 'Cancelled' },
 ]
 
 const ENGAGEMENT_STATUS_OPTIONS = [
@@ -721,6 +725,9 @@ function StatusCard({
               <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
           </select>
+          {(currentStatus === 'RESIGNED' || currentStatus === 'REMOVED') && currentEngagement !== 'END_OF_CONTRACT' && (
+            <p className="text-[10px] text-warning mt-1">Usually only set when Engagement Status is End of Contract.</p>
+          )}
         </div>
         <div>
           <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Engagement Status</Label>

@@ -18,8 +18,22 @@ const hrgRoles = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'EXECUTIVE']
 
 const STATUS_DOT: Record<string, string> = {
   ACTIVE: 'bg-success',
-  ON_HOLD: 'bg-warning',
-  INACTIVE: 'bg-destructive',
+  PENDING: 'bg-warning',
+  TRANSFERRED: 'bg-info',
+  RESIGNED: 'bg-destructive',
+  REMOVED: 'bg-destructive',
+  PROJECT_ENDED: 'bg-muted-foreground',
+  CANCELLED: 'bg-destructive',
+}
+
+const STATUS_LABEL: Record<string, string> = {
+  ACTIVE: 'Active',
+  PENDING: 'Pending',
+  TRANSFERRED: 'Transferred',
+  RESIGNED: 'Resigned',
+  REMOVED: 'Removed',
+  PROJECT_ENDED: 'Project Ended',
+  CANCELLED: 'Cancelled',
 }
 
 const AVAILABILITY_LABEL: Record<string, string> = {
@@ -234,7 +248,8 @@ export default async function VADetailPage({
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-xl font-bold tracking-tight">{va.user.firstName} {va.user.lastName}</h2>
-                <Badge variant={va.status === 'ACTIVE' ? 'default' : 'secondary'} className="text-xs">{va.status === 'ACTIVE' ? 'Active' : va.status === 'ON_HOLD' ? 'On Hold' : 'Inactive'}</Badge>
+                <Badge variant={va.status === 'ACTIVE' ? 'default' : 'secondary'} className="text-xs">{STATUS_LABEL[va.status] ?? va.status}</Badge>
+                {va.onHold && <Badge variant="outline" className="text-xs bg-warning/15 text-warning border-warning/20">On Hold</Badge>}
                 {va.hybrid && <Badge variant="outline" className="text-xs bg-info/15 text-info border-info/20">Hybrid</Badge>}
               </div>
               <p className="text-xs text-muted-foreground mt-0.5">
@@ -355,8 +370,8 @@ export default async function VADetailPage({
           </Card>
         </div>
         <VADetailPanel
-          statusLabel={va.status === 'ACTIVE' ? 'Active' : va.status === 'ON_HOLD' ? 'On Hold' : 'Inactive'}
-          statusDotClassName={STATUS_DOT[va.status] ?? 'bg-muted-foreground'}
+          statusLabel={va.onHold ? 'On Hold' : (STATUS_LABEL[va.status] ?? va.status)}
+          statusDotClassName={va.onHold ? 'bg-warning' : (STATUS_DOT[va.status] ?? 'bg-muted-foreground')}
           availabilityLabel={AVAILABILITY_LABEL[va.availabilityStatus] ?? null}
           weeklyHours={va.preferredWorkHours ? Number(va.preferredWorkHours) : null}
           managerName={null}

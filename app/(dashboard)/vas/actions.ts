@@ -110,6 +110,7 @@ export type VACsvRow = {
   availabilityStatus?: string
   recommendability?: string
   status?: string
+  onHold?: string
   engagementStatus?: string
   hybrid?: string
   preferredWorkHours?: string
@@ -142,7 +143,7 @@ export type VACsvImportResult = {
 }
 
 const CSV_AVAILABILITY_VALUES = ['AVAILABLE', 'PARTIALLY_ASSIGNED', 'FULLY_ASSIGNED', 'ON_LEAVE', 'UNAVAILABLE']
-const CSV_STATUS_VALUES = ['ACTIVE', 'INACTIVE', 'ON_HOLD']
+const CSV_STATUS_VALUES = ['ACTIVE', 'PENDING', 'TRANSFERRED', 'RESIGNED', 'REMOVED', 'PROJECT_ENDED', 'CANCELLED']
 const CSV_ENGAGEMENT_VALUES = ['EMPLOYED', 'ENGAGED', 'CONTRACTED', 'END_OF_CONTRACT', 'TRANSFERRED', 'RESIGNED', 'TERMINATED', 'BLACKLISTED']
 
 function normalizeEnum(value: string | undefined, allowed: string[]): string | null {
@@ -173,16 +174,11 @@ export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult
       : [],
   )
 
-  const departmentNames = Array.from(
-    new Set(rows.map((row) => (row.department || '').trim()).filter(Boolean)),
-  )
-  const departments = departmentNames.length > 0
-    ? await prisma.department.findMany({
-        where: { name: { in: departmentNames, mode: 'insensitive' } },
-      })
-    : []
-  const departmentIdByName = new Map(
-    departments.map((d) => [d.name.toLowerCase(), d.id]),
+  const departments = await prisma.department.findMany({ select: { id: true, name: true } })
+  const normalizeDeptName = (name: string) =>
+    name.trim().toLowerCase().replace(/\s+department$/, '').trim()
+  const departmentIdByNormalizedName = new Map(
+    departments.map((d) => [normalizeDeptName(d.name), d.id]),
   )
 
   type PreparedRow = {
@@ -199,6 +195,7 @@ export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult
     availabilityStatus: string | null
     recommendability: string | null
     status: string | null
+    onHold: boolean
     engagementStatus: string | null
     hybrid: boolean
     preferredWorkHours: number | null
@@ -260,12 +257,13 @@ export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult
     const baseRate = baseRateInput && !Number.isNaN(Number(baseRateInput)) ? Number(baseRateInput) : null
     const preferredWorkHours = preferredWorkHoursInput && !Number.isNaN(Number(preferredWorkHoursInput)) ? Number(preferredWorkHoursInput) : null
     const hybrid = (row.hybrid || '').trim().toLowerCase() === 'true' || (row.hybrid || '').trim().toLowerCase() === 'yes'
+    const onHold = (row.onHold || '').trim().toLowerCase() === 'true' || (row.onHold || '').trim().toLowerCase() === 'yes'
     const birthDate = (row.birthDate || '').trim() ? new Date((row.birthDate || '').trim()) : null
     const birthdayCelebrantInput = (row.birthdayCelebrant || '').trim().toLowerCase()
     const birthdayCelebrant = birthdayCelebrantInput ? (birthdayCelebrantInput === 'true' || birthdayCelebrantInput === 'yes') : undefined
 
     const departmentInput = (row.department || '').trim()
-    const departmentId = departmentInput ? departmentIdByName.get(departmentInput.toLowerCase()) ?? null : null
+    const departmentId = departmentInput ? departmentIdByNormalizedName.get(normalizeDeptName(departmentInput)) ?? null : null
 
     prepared.push({
       rowNum,
@@ -281,6 +279,7 @@ export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult
       availabilityStatus: normalizeEnum(row.availabilityStatus, CSV_AVAILABILITY_VALUES),
       recommendability: (row.recommendability || '').trim() || null,
       status: normalizeEnum(row.status, CSV_STATUS_VALUES),
+      onHold,
       engagementStatus: normalizeEnum(row.engagementStatus, CSV_ENGAGEMENT_VALUES),
       hybrid,
       preferredWorkHours,
@@ -330,6 +329,7 @@ export async function bulkImportVAs(rows: VACsvRow[]): Promise<VACsvImportResult
               availabilityStatus: (p.availabilityStatus as any) ?? undefined,
               recommendability: p.recommendability,
               status: (p.status as any) ?? undefined,
+              onHold: p.onHold,
               engagementStatus: (p.engagementStatus as any) ?? undefined,
               hybrid: p.hybrid,
               preferredWorkHours: p.preferredWorkHours,
@@ -799,18 +799,18 @@ export async function bulkDeleteVAs(vaProfileIds: string[]): Promise<BulkDeleteV
     await prisma.$transaction([
       prisma.vAProfile.update({
         where: { id: vaProfileId },
-        data: { status: 'INACTIVE' },
+        data: { status: 'REMOVED' },
       }),
       prisma.user.update({
         where: { id: va.userId },
-        data: { isActive: false, status: 'INACTIVE' },
+        data: { isActive: false, status: 'REMOVED' },
       }),
       prisma.vAHistory.create({
         data: {
           userId: va.userId,
           eventType: 'STATUS_CHANGE',
           oldValue: va.status,
-          newValue: 'INACTIVE',
+          newValue: 'REMOVED',
           effectiveDate: effective,
           reason: 'Bulk deactivation by admin',
           changedById: actor.id,
@@ -824,7 +824,7 @@ export async function bulkDeleteVAs(vaProfileIds: string[]): Promise<BulkDeleteV
       entityType: 'VAProfile',
       entityId: vaProfileId,
       before: { status: va.status },
-      after: { status: 'INACTIVE' },
+      after: { status: 'REMOVED' },
       metadata: { bulk: true },
     })
 

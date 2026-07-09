@@ -111,13 +111,13 @@ export async function updateUserType(userId: string, userType: string) {
   revalidateTag(CACHE_TAGS.users, 'default')
 }
 
-export async function toggleUserActive(userId: string, newStatus: 'ACTIVE' | 'INACTIVE' | 'ON_HOLD') {
+export async function toggleUserActive(userId: string, newIsActive: boolean) {
   const admin = await getAdmin()
-  const before = await prisma.user.findUnique({ where: { id: userId }, select: { status: true, email: true, firstName: true, lastName: true } })
+  const before = await prisma.user.findUnique({ where: { id: userId }, select: { isActive: true, email: true, firstName: true, lastName: true } })
 
   await prisma.user.update({
     where: { id: userId },
-    data: { status: newStatus },
+    data: { isActive: newIsActive },
   })
 
   await logAudit({
@@ -125,8 +125,8 @@ export async function toggleUserActive(userId: string, newStatus: 'ACTIVE' | 'IN
     action: 'STATUS_CHANGE',
     entityType: ENTITY_USER,
     entityId: userId,
-    before: before ? { status: before.status } : undefined,
-    after: { status: newStatus },
+    before: before ? { isActive: before.isActive } : undefined,
+    after: { isActive: newIsActive },
     metadata: { email: before?.email, name: `${before?.firstName} ${before?.lastName}` },
   })
 

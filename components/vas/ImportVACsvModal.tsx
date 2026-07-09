@@ -48,6 +48,7 @@ function parseCsv(text: string): VACsvRow[] {
   const availabilityIdx = idx('availabilitystatus', 'availability status', 'availability')
   const recommendabilityIdx = idx('recommendability')
   const statusIdx = idx('status', 'active status')
+  const onHoldIdx = idx('onhold', 'on hold', 'hold status', 'hold')
   const engagementIdx = idx('engagementstatus', 'engagement status')
   const hybridIdx = idx('hybrid')
   const preferredHoursIdx = idx('preferredworkhours', 'preferred work hours', 'preferred hours')
@@ -93,6 +94,7 @@ function parseCsv(text: string): VACsvRow[] {
       availabilityStatus: cell(cells, availabilityIdx),
       recommendability: cell(cells, recommendabilityIdx),
       status: cell(cells, statusIdx),
+      onHold: cell(cells, onHoldIdx),
       engagementStatus: cell(cells, engagementIdx),
       hybrid: cell(cells, hybridIdx),
       preferredWorkHours: cell(cells, preferredHoursIdx),
@@ -177,15 +179,15 @@ export function ImportVACsvModal({ open, onClose }: { open: boolean; onClose: ()
     const csvContent = [
       [
         'firstName', 'middleName', 'lastName', 'extName', 'email', 'hourlyRate', 'baseRate', 'vaaPosition', 'level', 'department',
-        'availabilityStatus', 'recommendability', 'status', 'engagementStatus', 'hybrid', 'preferredWorkHours', 'availableSchedule',
+        'availabilityStatus', 'recommendability', 'status', 'onHold', 'engagementStatus', 'hybrid', 'preferredWorkHours', 'availableSchedule',
         'phone', 'personalEmail', 'workEmail', 'gender', 'birthDate', 'birthdayCelebrant',
         'addressLine', 'barangay', 'cityMunicipality', 'province', 'zipCode', 'landmark', 'gcashNumber',
         'emergencyContactName', 'emergencyContactPhone', 'emergencyContactRelation',
         'facebookName', 'facebookUrl', 'linkedinUrl', 'notes',
       ].join(','),
       [
-        'Juan', 'Santos', 'Dela Cruz', 'Jr.', 'juan@example.com', '5.50', '350', 'Virtual Assistant', 'L1', 'Operations',
-        'AVAILABLE', 'Highly Recommended', 'ACTIVE', 'EMPLOYED', 'false', '40', 'Mon-Fri 9am-6pm',
+        'Juan', 'Santos', 'Dela Cruz', 'Jr.', 'juan@example.com', '5.50', '350', 'Virtual Assistant', 'L1', 'Amazon',
+        'AVAILABLE', 'Highly Recommended', 'ACTIVE', 'false', 'EMPLOYED', 'false', '40', 'Mon-Fri 9am-6pm',
         '09171234567', 'juan.personal@example.com', 'juan.work@example.com', 'Male', '1995-01-15', 'true',
         '123 Sample St.', 'Barangay Sample', 'Quezon City', 'Metro Manila', '1100', 'Near sample landmark', '09171234567',
         'Maria Dela Cruz', '09179876543', 'Spouse',
@@ -207,7 +209,7 @@ export function ImportVACsvModal({ open, onClose }: { open: boolean; onClose: ()
       open={open}
       onOpenChange={(o) => !o && handleClose()}
       title="Import VAs from CSV"
-      description="Columns: firstName (required), middleName, lastName, extName, email, hourlyRate, baseRate, vaaPosition, level, department, availabilityStatus, recommendability, status, engagementStatus, hybrid, preferredWorkHours, availableSchedule, phone, personalEmail, workEmail, gender, birthDate, birthdayCelebrant, addressLine, barangay, cityMunicipality, province, zipCode, landmark, gcashNumber, emergencyContactName/Phone/Relation, facebookName, facebookUrl, linkedinUrl, notes"
+      description="Columns: firstName (required), middleName, lastName, extName, email, hourlyRate, baseRate, vaaPosition, level, department, availabilityStatus, recommendability, status (ACTIVE/PENDING/TRANSFERRED/RESIGNED/REMOVED/PROJECT_ENDED/CANCELLED), onHold, engagementStatus, hybrid, preferredWorkHours, availableSchedule, phone, personalEmail, workEmail, gender, birthDate, birthdayCelebrant, addressLine, barangay, cityMunicipality, province, zipCode, landmark, gcashNumber, emergencyContactName/Phone/Relation, facebookName, facebookUrl, linkedinUrl, notes"
       size="md"
       footer={
         <>

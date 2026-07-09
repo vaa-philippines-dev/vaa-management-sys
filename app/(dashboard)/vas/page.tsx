@@ -39,8 +39,22 @@ const AVAILABILITY_TONE: Record<string, Tone> = {
 
 const STATUS_TONE: Record<string, Tone> = {
   ACTIVE: 'success',
-  ON_HOLD: 'warning',
-  INACTIVE: 'destructive',
+  PENDING: 'warning',
+  TRANSFERRED: 'info',
+  RESIGNED: 'destructive',
+  REMOVED: 'destructive',
+  PROJECT_ENDED: 'neutral',
+  CANCELLED: 'destructive',
+}
+
+const STATUS_LABEL: Record<string, string> = {
+  ACTIVE: 'Active',
+  PENDING: 'Pending',
+  TRANSFERRED: 'Transferred',
+  RESIGNED: 'Resigned',
+  REMOVED: 'Removed',
+  PROJECT_ENDED: 'Project Ended',
+  CANCELLED: 'Cancelled',
 }
 
 const EMPLOYMENT_TONE: Record<string, Tone> = {
@@ -344,7 +358,7 @@ async function VATableSection({
                   </TableHead>
                 )}
                 <TableHead className="px-3 py-2.5 sticky left-0 bg-muted/30 z-10">Name</TableHead>
-                <TableHead className="px-3 py-2.5 hidden md:table-cell">Email</TableHead>
+                <TableHead className="px-3 py-2.5 hidden md:table-cell">Work Email</TableHead>
                 <TableHead className="px-3 py-2.5 hidden lg:table-cell">Department</TableHead>
                 <TableHead className="px-3 py-2.5 hidden lg:table-cell">Position</TableHead>
                 <TableHead className="px-3 py-2.5 hidden sm:table-cell">Availability</TableHead>
@@ -375,7 +389,7 @@ async function VATableSection({
                         </span>
                       </Link>
                     </TableCell>
-                    <TableCell className="px-3 py-2.5 text-muted-foreground hidden md:table-cell">{va.user.email}</TableCell>
+                    <TableCell className="px-3 py-2.5 text-muted-foreground hidden md:table-cell">{va.user.profile?.workEmail || <span className="text-muted-foreground/50">—</span>}</TableCell>
                     <TableCell className="px-3 py-2.5 hidden lg:table-cell">
                       {primaryMem?.department ? (
                         <Badge variant="outline" className="text-[10px] py-0 px-1.5">{primaryMem.department.name}</Badge>
@@ -390,9 +404,12 @@ async function VATableSection({
                       </StatusIndicator>
                     </TableCell>
                     <TableCell className="px-3 py-2.5 hidden sm:table-cell">
-                      <StatusIndicator tone={STATUS_TONE[va.status] ?? 'destructive'}>
-                        {va.status === 'ACTIVE' ? 'Active' : va.status === 'ON_HOLD' ? 'On Hold' : 'Inactive'}
-                      </StatusIndicator>
+                      <div className="flex items-center gap-1">
+                        <StatusIndicator tone={STATUS_TONE[va.status] ?? 'neutral'}>
+                          {STATUS_LABEL[va.status] ?? va.status}
+                        </StatusIndicator>
+                        {va.onHold && <StatusIndicator tone="warning">On Hold</StatusIndicator>}
+                      </div>
                     </TableCell>
                     <TableCell className="px-3 py-2.5 hidden md:table-cell">
                       {emp ? (

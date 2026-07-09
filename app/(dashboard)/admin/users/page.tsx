@@ -213,7 +213,8 @@ export default async function AdminUsersPage({
                 lastName: u.lastName,
                 systemRole: u.systemRole,
                 userType: u.userType,
-                isActive: u.status === 'ACTIVE',
+                isActive: u.isActive,
+                onHold: u.onHold,
                 memberships: u.memberships.map((m) => ({
                   id: m.id,
                   department: { id: m.department.id, name: m.department.name },
