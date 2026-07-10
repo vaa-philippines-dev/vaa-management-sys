@@ -6,6 +6,13 @@ const protectedPaths = ['/clients', '/vas', '/assignments', '/work-logs', '/skil
 const authPaths = ['/login']
 
 export async function proxy(request: NextRequest) {
+  // Dev-only auth bypass — see lib/auth.ts. Never set DEV_AUTH_BYPASS_EMAIL
+  // on Vercel/production; this check is a no-op there since NODE_ENV is
+  // always 'production' in that environment.
+  if (process.env.NODE_ENV !== 'production' && process.env.DEV_AUTH_BYPASS_EMAIL) {
+    return NextResponse.next()
+  }
+
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 

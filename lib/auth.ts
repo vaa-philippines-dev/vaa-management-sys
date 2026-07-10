@@ -11,7 +11,26 @@ export const VA_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER']
 export const TICKET_VIEW_ALL_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE']
 export const TICKET_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN']
 
+// Dev-only auth bypass for local testing of multi-user flows (e.g. Inbox
+// realtime) without needing two real Google OAuth logins. Only ever active
+// when NODE_ENV !== 'production' AND DEV_AUTH_BYPASS_EMAIL is set locally —
+// this env var must never be set on Vercel/production deployments.
+const DEV_AUTH_BYPASS_EMAIL =
+  process.env.NODE_ENV !== 'production' ? process.env.DEV_AUTH_BYPASS_EMAIL : undefined
+
 export const getCurrentUser = cache(async () => {
+  if (DEV_AUTH_BYPASS_EMAIL) {
+    return prisma.user.findUnique({
+      where: { email: DEV_AUTH_BYPASS_EMAIL },
+      include: {
+        vaProfile: true,
+        profile: true,
+        memberships: { include: { department: true, position: true } },
+        roleAssignments: { where: { status: 'ACTIVE' } },
+      },
+    })
+  }
+
   const supabase = await createServerSupabase()
   if (!supabase) {
     return null

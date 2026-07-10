@@ -290,18 +290,18 @@ function ChannelThread({
   const handleRealtimeMessage = (row: { id: string; channel_id: string; sender_id: string; body: string; created_at: string }) => {
     setMessages((prev) => {
       if (prev.some((m) => m.id === row.id)) return prev
-      const sender =
-        row.sender_id === currentUser.id
-          ? { id: currentUser.id, firstName: currentUser.firstName, lastName: currentUser.lastName, messageColor }
-          : prev.find((m) => m.sender.id === row.sender_id)?.sender ??
-            members.find((m) => m.id === row.sender_id)
-              ? {
-                  id: row.sender_id,
-                  firstName: members.find((m) => m.id === row.sender_id)!.firstName,
-                  lastName: members.find((m) => m.id === row.sender_id)!.lastName,
-                  messageColor: 'BLUE' as const,
-                }
-              : { id: row.sender_id, firstName: 'Unknown', lastName: '', messageColor: 'BLUE' as const }
+
+      let sender: MessageWithSender['sender']
+      if (row.sender_id === currentUser.id) {
+        sender = { id: currentUser.id, firstName: currentUser.firstName, lastName: currentUser.lastName, messageColor }
+      } else {
+        const knownSender = prev.find((m) => m.sender.id === row.sender_id)?.sender
+        const member = members.find((m) => m.id === row.sender_id)
+        sender = knownSender ?? (member
+          ? { id: row.sender_id, firstName: member.firstName, lastName: member.lastName, messageColor: 'BLUE' as const }
+          : { id: row.sender_id, firstName: 'Unknown', lastName: '', messageColor: 'BLUE' as const })
+      }
+
       return [
         ...prev.filter((m) => !(m.pending && m.sender.id === row.sender_id && m.body === row.body)),
         { id: row.id, channelId: row.channel_id, body: row.body, createdAt: row.created_at, sender },
