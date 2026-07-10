@@ -362,7 +362,7 @@ export function Sidebar({
 
   return (
     <div className="flex h-full w-[212px] shrink-0 flex-col bg-sidebar px-2 py-2.5 transition-all duration-200">
-      <div className="flex items-center justify-center gap-2 px-2 pb-3">
+      <div className="flex items-center justify-start gap-2 px-2 pb-3">
         <Image
           src="/blackLogo.png"
           alt="VAA Philippines"
