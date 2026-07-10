@@ -64,7 +64,24 @@ export function NotificationBell({
           'postgres_changes',
           { event: 'INSERT', schema: 'public', table: 'notifications', filter: `recipient_id=eq.${userId}` },
           (payload) => {
-            const row = payload.new as Notification
+            // Supabase Realtime delivers payload.new with raw snake_case
+            // Postgres column names, not the camelCased shape Prisma/our
+            // Notification type expects — map explicitly instead of casting.
+            const raw = payload.new as Record<string, unknown>
+            const row: Notification = {
+              id: raw.id as string,
+              type: raw.type as Notification['type'],
+              title: raw.title as string,
+              message: raw.message as string,
+              read: raw.read as boolean,
+              createdAt: raw.created_at as string,
+              entityType: raw.entity_type as string | null,
+              entityId: raw.entity_id as string | null,
+              messageId: raw.message_id as string | null,
+              mentionerName: raw.mentioner_name as string | null,
+              mentionerAvatarUrl: raw.mentioner_avatar_url as string | null,
+              departmentName: raw.department_name as string | null,
+            }
             setNotifications((prev) => [row, ...prev].slice(0, 20))
 
             const isChatNotification =
