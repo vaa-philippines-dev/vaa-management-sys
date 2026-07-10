@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { cn } from '@/lib/utils'
-import { LogOut, Building2, Briefcase } from 'lucide-react'
+import { LogOut, Settings, Building2, Briefcase } from 'lucide-react'
 
 const ROLE_LABELS: Record<string, string> = {
   SUPER_ADMIN: 'Super Admin',
@@ -123,6 +124,17 @@ export function ProfileCard({
                 </span>
               </div>
             )}
+          </div>
+
+          <div className="p-1.5 border-b">
+            <Link
+              href="/settings"
+              onClick={() => setOpen(false)}
+              className="flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-xs font-medium hover:bg-muted transition-colors"
+            >
+              <Settings className="h-3.5 w-3.5" />
+              Settings
+            </Link>
           </div>
 
           <div className="p-1.5">

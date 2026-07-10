@@ -122,3 +122,18 @@ export async function uploadFileToDrive(
   if (!res.data.webViewLink) throw new Error('Failed to upload file')
   return res.data.webViewLink
 }
+
+export async function makeFilePublic(
+  drive: ReturnType<typeof google.drive>,
+  fileId: string
+): Promise<void> {
+  await drive.permissions.create({
+    fileId,
+    requestBody: { role: 'reader', type: 'anyone' },
+    supportsAllDrives: true,
+  })
+}
+
+export function toDirectImageUrl(fileId: string): string {
+  return `https://drive.google.com/uc?export=view&id=${fileId}`
+}
