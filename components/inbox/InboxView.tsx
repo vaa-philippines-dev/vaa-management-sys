@@ -2,20 +2,35 @@
 
 import { useEffect, useMemo, useRef, useState, useTransition } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Hash, Send, Search, Settings } from 'lucide-react'
+import { Hash, Send, Search, Settings, Pin, CornerUpLeft, Forward, MoreHorizontal, X } from 'lucide-react'
+import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu'
 import { ChannelRealtimeProvider } from '@/components/layout/ChannelRealtimeProvider'
 import { MentionAutocomplete } from './MentionAutocomplete'
 import { InboxSettingsModal } from './InboxSettingsModal'
 import { UserProfilePanel, type ProfilePanelUser } from './UserProfilePanel'
+import { ForwardMessageModal } from './ForwardMessageModal'
+import { PinnedMessagesPanel } from './PinnedMessagesPanel'
 import {
   getChannelMessages,
   getChannelMembers,
   getUserProfile,
   markChannelRead,
   sendMessage,
+  editMessage,
+  deleteMessage,
+  replyToMessage,
+  bumpMessage,
+  pinMessage,
 } from '@/app/(dashboard)/inbox/actions'
 
 type ChannelSummary = {
@@ -24,6 +39,7 @@ type ChannelSummary = {
   departmentName: string
   unreadCount: number
   unreadMentions: number
+  pinnedCount: number
 }
 
 type CurrentUser = {
@@ -38,12 +54,26 @@ type CurrentUser = {
 
 type Member = { id: string; firstName: string; lastName: string; avatarUrl: string | null }
 
+type ReplyPreview = { id: string; body: string; deletedAt: string | Date | null; senderName: string } | null
+
 type MessageWithSender = {
   id: string
   channelId: string
   body: string
   createdAt: string | Date
   pending?: boolean
+  editedAt?: string | Date | null
+  deletedAt?: string | Date | null
+  parentId?: string | null
+  pinned?: boolean
+  forwardedFromBody?: string | null
+  forwardedFromSenderName?: string | null
+  parent?: {
+    id: string
+    body: string
+    deletedAt: string | Date | null
+    sender: { firstName: string; lastName: string }
+  } | null
   sender: { id: string; firstName: string; lastName: string; messageColor: 'RED' | 'BLUE' | 'YELLOW' }
 }
 
@@ -52,6 +82,8 @@ const BUBBLE_COLOR: Record<string, string> = {
   BLUE: 'bg-blue-500/15 text-foreground border-blue-500/25 dark:bg-blue-400/15 dark:border-blue-400/25',
   YELLOW: 'bg-amber-400/20 text-foreground border-amber-400/30',
 }
+
+const MODERATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER']
 
 function renderBody(body: string, currentUserId: string) {
   const parts: React.ReactNode[] = []
@@ -116,6 +148,7 @@ export function InboxView({
   const [messageColor, setMessageColorState] = useState(currentUser.messageColor)
   const [profileUser, setProfileUser] = useState<ProfilePanelUser | null>(null)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [pinnedOpen, setPinnedOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -137,12 +170,19 @@ export function InboxView({
   const handleSelectChannel = (channelId: string) => {
     setActiveChannelId(channelId)
     setDropdownOpen(false)
+    setPinnedOpen(false)
     clearUnread(channelId)
   }
 
   const openProfile = async (userId: string) => {
     const profile = await getUserProfile(userId)
     if (profile) setProfileUser(profile)
+  }
+
+  const updatePinnedCount = (channelId: string, delta: number) => {
+    setChannels((prev) =>
+      prev.map((c) => (c.channelId === channelId ? { ...c, pinnedCount: Math.max(0, c.pinnedCount + delta) } : c))
+    )
   }
 
   if (channels.length === 0) {
@@ -152,6 +192,8 @@ export function InboxView({
       </div>
     )
   }
+
+  const canModerate = MODERATOR_ROLES.includes(currentUser.systemRole)
 
   return (
     <div className="flex h-full overflow-hidden border bg-card">
@@ -238,14 +280,31 @@ export function InboxView({
               key={activeChannel.channelId}
               channelId={activeChannel.channelId}
               departmentName={activeChannel.departmentName}
+              pinnedCount={activeChannel.pinnedCount}
               currentUser={currentUser}
               messageColor={messageColor}
+              channels={channels}
+              canModerate={canModerate}
               onOpenProfile={openProfile}
+              onTogglePinnedPanel={() => setPinnedOpen((v) => !v)}
+              onPinnedCountChange={(delta) => updatePinnedCount(activeChannel.channelId, delta)}
             />
           )}
         </div>
 
-        {profileUser && <UserProfilePanel user={profileUser} onClose={() => setProfileUser(null)} />}
+        {pinnedOpen && activeChannel && (
+          <PinnedMessagesPanel
+            key={activeChannel.channelId}
+            channelId={activeChannel.channelId}
+            canUnpin={canModerate}
+            onClose={() => setPinnedOpen(false)}
+            onJumpTo={(messageId) => {
+              document.getElementById(`message-${messageId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+            }}
+          />
+        )}
+
+        {profileUser && !pinnedOpen && <UserProfilePanel user={profileUser} onClose={() => setProfileUser(null)} />}
       </div>
 
       <InboxSettingsModal
@@ -258,18 +317,30 @@ export function InboxView({
   )
 }
 
+type ComposerMode = { type: 'reply' | 'edit'; message: MessageWithSender } | null
+
 function ChannelThread({
   channelId,
   departmentName,
+  pinnedCount,
   currentUser,
   messageColor,
+  channels,
+  canModerate,
   onOpenProfile,
+  onTogglePinnedPanel,
+  onPinnedCountChange,
 }: {
   channelId: string
   departmentName: string
+  pinnedCount: number
   currentUser: CurrentUser
   messageColor: 'RED' | 'BLUE' | 'YELLOW'
+  channels: ChannelSummary[]
+  canModerate: boolean
   onOpenProfile: (userId: string) => void
+  onTogglePinnedPanel: () => void
+  onPinnedCountChange: (delta: number) => void
 }) {
   const [messages, setMessages] = useState<MessageWithSender[]>([])
   const [members, setMembers] = useState<Member[]>([])
@@ -277,9 +348,12 @@ function ChannelThread({
   const [mentionQuery, setMentionQuery] = useState<string | null>(null)
   const [mentionActiveIndex, setMentionActiveIndex] = useState(0)
   const [typingUsers, setTypingUsers] = useState<Map<string, string>>(new Map())
+  const [composerMode, setComposerMode] = useState<ComposerMode>(null)
+  const [forwardMessageId, setForwardMessageId] = useState<string | null>(null)
+  const [highlightedId, setHighlightedId] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
   const bottomRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLTextAreaElement>(null)
   const typingBroadcastRef = useRef<((userId: string, firstName: string) => void) | null>(null)
   const typingTimeoutsRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map())
   const lastTypingSentRef = useRef(0)
@@ -301,12 +375,28 @@ function ChannelThread({
     bottomRef.current?.scrollIntoView({ block: 'end' })
   }, [messages.length])
 
+  useEffect(() => {
+    if (!inputRef.current) return
+    inputRef.current.style.height = 'auto'
+    inputRef.current.style.height = `${Math.min(inputRef.current.scrollHeight, 128)}px`
+  }, [draft])
+
   const mentionMatches = useMemo(() => {
     if (mentionQuery === null) return []
     return members.filter((m) => `${m.firstName} ${m.lastName}`.toLowerCase().includes(mentionQuery.toLowerCase())).slice(0, 6)
   }, [members, mentionQuery])
 
-  const handleRealtimeMessage = (row: { id: string; channel_id: string; sender_id: string; body: string; created_at: string }) => {
+  const handleRealtimeMessage = (row: {
+    id: string
+    channel_id: string
+    sender_id: string
+    body: string
+    created_at: string
+    parent_id: string | null
+    pinned: boolean
+    forwarded_from_body: string | null
+    forwarded_from_sender_name: string | null
+  }) => {
     setMessages((prev) => {
       if (prev.some((m) => m.id === row.id)) return prev
 
@@ -321,9 +411,24 @@ function ChannelThread({
           : { id: row.sender_id, firstName: 'Unknown', lastName: '', messageColor: 'BLUE' as const })
       }
 
+      const parent = row.parent_id ? prev.find((m) => m.id === row.parent_id) : undefined
+
       return [
         ...prev.filter((m) => !(m.pending && m.sender.id === row.sender_id && m.body === row.body)),
-        { id: row.id, channelId: row.channel_id, body: row.body, createdAt: row.created_at, sender },
+        {
+          id: row.id,
+          channelId: row.channel_id,
+          body: row.body,
+          createdAt: row.created_at,
+          parentId: row.parent_id,
+          pinned: row.pinned,
+          forwardedFromBody: row.forwarded_from_body,
+          forwardedFromSenderName: row.forwarded_from_sender_name,
+          parent: parent
+            ? { id: parent.id, body: parent.body, deletedAt: parent.deletedAt ?? null, sender: parent.sender }
+            : undefined,
+          sender,
+        },
       ]
     })
     setTypingUsers((prev) => {
@@ -332,6 +437,22 @@ function ChannelThread({
       next.delete(row.sender_id)
       return next
     })
+  }
+
+  const handleRealtimeMessageUpdate = (row: {
+    id: string
+    body: string
+    edited_at: string | null
+    deleted_at: string | null
+    pinned: boolean
+  }) => {
+    setMessages((prev) =>
+      prev.map((m) =>
+        m.id === row.id
+          ? { ...m, body: row.body, editedAt: row.edited_at, deletedAt: row.deleted_at, pinned: row.pinned }
+          : m
+      )
+    )
   }
 
   const handleTyping = ({ userId, firstName }: { userId: string; firstName: string }) => {
@@ -383,11 +504,61 @@ function ChannelThread({
     setMentionActiveIndex(0)
   }
 
+  const startReply = (message: MessageWithSender) => {
+    setComposerMode({ type: 'reply', message })
+    inputRef.current?.focus()
+  }
+
+  const startEdit = (message: MessageWithSender) => {
+    setComposerMode({ type: 'edit', message })
+    setDraft(message.body)
+    inputRef.current?.focus()
+  }
+
+  const cancelComposerMode = () => {
+    setComposerMode(null)
+    if (composerMode?.type === 'edit') setDraft('')
+  }
+
+  const handleBump = (message: MessageWithSender) => {
+    startTransition(async () => {
+      await bumpMessage(message.id)
+      toast.success('Bumped')
+    })
+  }
+
+  const handleDelete = (message: MessageWithSender) => {
+    if (!window.confirm('Delete this message?')) return
+    setMessages((prev) => prev.map((m) => (m.id === message.id ? { ...m, deletedAt: new Date().toISOString() } : m)))
+    startTransition(async () => {
+      await deleteMessage(message.id)
+    })
+  }
+
+  const handleTogglePin = (message: MessageWithSender) => {
+    const nextPinned = !message.pinned
+    setMessages((prev) => prev.map((m) => (m.id === message.id ? { ...m, pinned: nextPinned } : m)))
+    onPinnedCountChange(nextPinned ? 1 : -1)
+    startTransition(async () => {
+      await pinMessage(message.id, nextPinned)
+    })
+  }
+
   const handleSend = () => {
     const body = draft.trim()
     if (!body) return
     setDraft('')
     setMentionQuery(null)
+    const mode = composerMode
+    setComposerMode(null)
+
+    if (mode?.type === 'edit') {
+      setMessages((prev) => prev.map((m) => (m.id === mode.message.id ? { ...m, body, editedAt: new Date().toISOString() } : m)))
+      startTransition(async () => {
+        await editMessage(mode.message.id, body)
+      })
+      return
+    }
 
     const optimisticId = `pending-${Date.now()}`
     setMessages((prev) => [
@@ -398,18 +569,37 @@ function ChannelThread({
         body,
         createdAt: new Date().toISOString(),
         pending: true,
+        parentId: mode?.type === 'reply' ? mode.message.id : undefined,
+        parent:
+          mode?.type === 'reply'
+            ? {
+                id: mode.message.id,
+                body: mode.message.body,
+                deletedAt: mode.message.deletedAt ?? null,
+                sender: { firstName: mode.message.sender.firstName, lastName: mode.message.sender.lastName },
+              }
+            : undefined,
         sender: { id: currentUser.id, firstName: currentUser.firstName, lastName: currentUser.lastName, messageColor },
       },
     ])
 
     startTransition(async () => {
-      const message = await sendMessage(channelId, body)
+      const message =
+        mode?.type === 'reply' ? await replyToMessage(channelId, mode.message.id, body) : await sendMessage(channelId, body)
       setMessages((prev) => {
         const withoutOptimistic = prev.filter((m) => m.id !== optimisticId)
         if (withoutOptimistic.some((m) => m.id === message.id)) return withoutOptimistic
         return [...withoutOptimistic, message as unknown as MessageWithSender]
       })
     })
+  }
+
+  const scrollToMessage = (messageId: string) => {
+    const el = document.getElementById(`message-${messageId}`)
+    if (!el) return
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    setHighlightedId(messageId)
+    setTimeout(() => setHighlightedId((cur) => (cur === messageId ? null : cur)), 1500)
   }
 
   const typingLabel = useMemo(() => {
@@ -425,13 +615,27 @@ function ChannelThread({
       <ChannelRealtimeProvider
         channelId={channelId}
         onMessage={handleRealtimeMessage}
+        onMessageUpdate={handleRealtimeMessageUpdate}
         onTyping={handleTyping}
         typingRef={typingBroadcastRef}
       />
 
       <div className="flex items-center gap-1.5 border-b px-4 py-2.5">
         <Hash className="h-4 w-4 text-muted-foreground" />
-        <p className="text-sm font-semibold">{departmentName}</p>
+        <p className="text-sm font-semibold flex-1">{departmentName}</p>
+        <button
+          type="button"
+          onClick={onTogglePinnedPanel}
+          aria-label="Pinned messages"
+          className="relative flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        >
+          <Pin className="h-3.5 w-3.5" />
+          {pinnedCount > 0 && (
+            <span className="absolute -right-0.5 -top-0.5 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-primary px-0.5 text-[9px] font-semibold text-primary-foreground">
+              {pinnedCount}
+            </span>
+          )}
+        </button>
       </div>
 
       <ScrollArea className="flex-1 px-4 py-3">
@@ -441,12 +645,27 @@ function ChannelThread({
           ) : (
             messages.map((m) => {
               const isMe = m.sender.id === currentUser.id
+              const isDeleted = Boolean(m.deletedAt)
+              const canEdit = isMe && !isDeleted
+              const canDelete = (isMe || canModerate) && !isDeleted
+              const canPin = canModerate && !isDeleted
+              const replyPreview: ReplyPreview = m.parent
+                ? {
+                    id: m.parent.id,
+                    body: m.parent.body,
+                    deletedAt: m.parent.deletedAt,
+                    senderName: `${m.parent.sender.firstName} ${m.parent.sender.lastName}`,
+                  }
+                : null
+
               return (
                 <div
                   key={m.id}
+                  id={`message-${m.id}`}
                   className={cn(
-                    'flex items-end gap-2 animate-in fade-in-0 slide-in-from-bottom-2 duration-200',
-                    isMe && 'flex-row-reverse'
+                    'group/message flex items-end gap-2 animate-in fade-in-0 slide-in-from-bottom-2 duration-200 rounded-lg transition-colors',
+                    isMe && 'flex-row-reverse',
+                    highlightedId === m.id && 'bg-primary/10'
                   )}
                 >
                   <button
@@ -468,16 +687,77 @@ function ChannelThread({
                       </button>
                       <p className="text-[10.5px] text-muted-foreground">
                         {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        {m.editedAt && <span className="italic"> (edited)</span>}
                       </p>
+                      {!isDeleted && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger
+                            className="opacity-0 transition-opacity group-hover/message:opacity-100 flex h-5 w-5 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground"
+                            aria-label="Message actions"
+                          >
+                            <MoreHorizontal className="h-3.5 w-3.5" />
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align={isMe ? 'end' : 'start'}>
+                            <DropdownMenuItem onClick={() => startReply(m)}>Reply</DropdownMenuItem>
+                            {canEdit && <DropdownMenuItem onClick={() => startEdit(m)}>Edit</DropdownMenuItem>}
+                            <DropdownMenuItem onClick={() => setForwardMessageId(m.id)}>Forward</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleBump(m)}>Bump</DropdownMenuItem>
+                            {canPin && (
+                              <DropdownMenuItem onClick={() => handleTogglePin(m)}>
+                                {m.pinned ? 'Unpin' : 'Pin'}
+                              </DropdownMenuItem>
+                            )}
+                            {canDelete && (
+                              <>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem variant="destructive" onClick={() => handleDelete(m)}>
+                                  Delete
+                                </DropdownMenuItem>
+                              </>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
                     </div>
+
+                    {replyPreview && (
+                      <button
+                        type="button"
+                        onClick={() => scrollToMessage(replyPreview.id)}
+                        className={cn(
+                          'flex max-w-full items-center gap-1 truncate rounded-md border-l-2 border-muted-foreground/30 bg-muted/40 px-2 py-1 text-[11px] text-muted-foreground hover:bg-muted/60',
+                          isMe && 'flex-row-reverse'
+                        )}
+                      >
+                        <CornerUpLeft className="h-3 w-3 shrink-0" />
+                        <span className="shrink-0 font-medium">{replyPreview.senderName}:</span>
+                        <span className="truncate">
+                          {replyPreview.deletedAt ? 'Message deleted' : replyPreview.body}
+                        </span>
+                      </button>
+                    )}
+
+                    {m.forwardedFromSenderName && (
+                      <div
+                        className={cn(
+                          'flex max-w-full items-center gap-1 truncate rounded-md border-l-2 border-muted-foreground/30 bg-muted/40 px-2 py-1 text-[11px] text-muted-foreground',
+                          isMe && 'flex-row-reverse'
+                        )}
+                      >
+                        <Forward className="h-3 w-3 shrink-0" />
+                        <span>Forwarded from {m.forwardedFromSenderName}</span>
+                      </div>
+                    )}
+
                     <div
                       className={cn(
                         'rounded-2xl border px-3 py-1.5 text-[13px] whitespace-pre-wrap break-words',
                         BUBBLE_COLOR[m.sender.messageColor] ?? BUBBLE_COLOR.BLUE,
-                        m.pending && 'opacity-60'
+                        m.pending && 'opacity-60',
+                        isDeleted && 'italic text-muted-foreground'
                       )}
                     >
-                      {renderBody(m.body, currentUser.id)}
+                      {isDeleted ? 'Message deleted' : renderBody(m.body, currentUser.id)}
                     </div>
                   </div>
                 </div>
@@ -490,11 +770,27 @@ function ChannelThread({
 
       <div className="h-5 px-4 text-[11px] text-muted-foreground italic">{typingLabel}</div>
 
-      <div className="relative flex items-center gap-2 border-t p-2.5">
+      {composerMode && (
+        <div className="flex items-center justify-between border-t bg-muted/40 px-3 py-1.5 text-[11px]">
+          <span className="truncate">
+            {composerMode.type === 'edit' ? 'Editing message' : `Replying to ${composerMode.message.sender.firstName}`}
+          </span>
+          <button
+            type="button"
+            onClick={cancelComposerMode}
+            aria-label="Cancel"
+            className="flex h-4 w-4 items-center justify-center rounded text-muted-foreground hover:text-foreground"
+          >
+            <X className="h-3 w-3" />
+          </button>
+        </div>
+      )}
+
+      <div className="relative flex items-end gap-2 border-t p-2.5">
         {mentionQuery !== null && (
           <MentionAutocomplete members={mentionMatches} activeIndex={mentionActiveIndex} onPick={insertMention} />
         )}
-        <input
+        <textarea
           ref={inputRef}
           value={draft}
           onChange={(e) => handleDraftChange(e.target.value)}
@@ -526,14 +822,23 @@ function ChannelThread({
               handleSend()
             }
           }}
+          rows={1}
           placeholder={`Message #${departmentName}... (type @ to mention)`}
           disabled={isPending}
-          className="h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 text-[13px] outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50"
+          className="max-h-32 w-full min-w-0 resize-none rounded-lg border border-input bg-transparent px-2.5 py-1.5 text-[13px] outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50"
         />
         <Button type="button" size="sm" onClick={handleSend} disabled={!draft.trim()}>
           <Send className="h-3.5 w-3.5" />
         </Button>
       </div>
+
+      <ForwardMessageModal
+        open={forwardMessageId !== null}
+        onOpenChange={(open) => !open && setForwardMessageId(null)}
+        messageId={forwardMessageId}
+        currentChannelId={channelId}
+        channels={channels}
+      />
     </>
   )
 }

@@ -232,7 +232,8 @@ export type Priority = (typeof Priority)[keyof typeof Priority]
 export const NotificationType = {
   NEW_ASSIGNMENT: 'NEW_ASSIGNMENT',
   HOURS_SHORTFALL: 'HOURS_SHORTFALL',
-  NEW_MESSAGE: 'NEW_MESSAGE'
+  NEW_MESSAGE: 'NEW_MESSAGE',
+  MESSAGE_REPLY: 'MESSAGE_REPLY'
 } as const
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]

@@ -181,6 +181,7 @@ enum NotificationType {
   NEW_ASSIGNMENT
   HOURS_SHORTFALL
   NEW_MESSAGE
+  MESSAGE_REPLY
 }
 
 enum AuditAction {
@@ -358,6 +359,7 @@ model User {
   messages                   Message[]
   messageMentions            MessageMention[]
   channelReads               ChannelRead[]
+  pinnedMessages              Message[]              @relation("MessagePinnedBy")
 
   @@index([email])
   @@index([systemRole])
@@ -757,7 +759,25 @@ model Message {
   mentions  MessageMention[]
   createdAt DateTime @default(now()) @map("created_at")
 
+  editedAt  DateTime? @map("edited_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  parentId String?   @map("parent_id")
+  parent   Message?  @relation("MessageReplies", fields: [parentId], references: [id], onDelete: SetNull)
+  replies  Message[] @relation("MessageReplies")
+
+  pinned       Boolean   @default(false)
+  pinnedAt     DateTime? @map("pinned_at")
+  pinnedBy     String?   @map("pinned_by")
+  pinnedByUser User?     @relation("MessagePinnedBy", fields: [pinnedBy], references: [id], onDelete: SetNull)
+
+  forwardedFromId         String? @map("forwarded_from_id")
+  forwardedFromBody       String? @map("forwarded_from_body")
+  forwardedFromSenderName String? @map("forwarded_from_sender_name")
+
   @@index([channelId, createdAt])
+  @@index([parentId])
+  @@index([channelId, pinned])
   @@map("messages")
 }
 
@@ -809,16 +829,19 @@ model AuditLog {
 }
 
 model Notification {
-  id          String           @id @default(cuid())
-  recipientId String           @map("recipient_id")
-  recipient   User             @relation(fields: [recipientId], references: [id], onDelete: Cascade)
-  type        NotificationType
-  title       String
-  message     String
-  entityType  String?          @map("entity_type")
-  entityId    String?          @map("entity_id")
-  read        Boolean          @default(false)
-  createdAt   DateTime         @default(now()) @map("created_at")
+  id             String           @id @default(cuid())
+  recipientId    String           @map("recipient_id")
+  recipient      User             @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  type           NotificationType
+  title          String
+  message        String
+  entityType     String?          @map("entity_type")
+  entityId       String?          @map("entity_id")
+  messageId      String?          @map("message_id")
+  mentionerName  String?          @map("mentioner_name")
+  departmentName String?          @map("department_name")
+  read           Boolean          @default(false)
+  createdAt      DateTime         @default(now()) @map("created_at")
 
   @@index([recipientId, read, createdAt])
   @@map("notifications")

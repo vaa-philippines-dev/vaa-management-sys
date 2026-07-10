@@ -2,10 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Bell, Briefcase, Clock, MessageSquare } from 'lucide-react'
+import { Bell, Briefcase, Clock, MessageSquare, Reply } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { createClient, waitForRealtimeAuth } from '@/lib/supabase/client'
+import { MentionToast } from './MentionToast'
 import {
   getMyNotifications,
   markAllNotificationsRead,
@@ -14,22 +15,32 @@ import {
 
 type Notification = {
   id: string
-  type: 'NEW_ASSIGNMENT' | 'HOURS_SHORTFALL' | 'NEW_MESSAGE'
+  type: 'NEW_ASSIGNMENT' | 'HOURS_SHORTFALL' | 'NEW_MESSAGE' | 'MESSAGE_REPLY'
   title: string
   message: string
   read: boolean
   createdAt: string | Date
   entityType?: string | null
   entityId?: string | null
+  messageId?: string | null
+  mentionerName?: string | null
+  departmentName?: string | null
 }
 
 const TYPE_ICON: Record<Notification['type'], React.ComponentType<{ className?: string }>> = {
   NEW_ASSIGNMENT: Briefcase,
   HOURS_SHORTFALL: Clock,
   NEW_MESSAGE: MessageSquare,
+  MESSAGE_REPLY: Reply,
 }
 
-export function NotificationBell({ userId }: { userId: string }) {
+export function NotificationBell({
+  userId,
+  currentUserMessageColor,
+}: {
+  userId: string
+  currentUserMessageColor: 'RED' | 'BLUE' | 'YELLOW'
+}) {
   const [open, setOpen] = useState(false)
   const [notifications, setNotifications] = useState<Notification[]>([])
   const containerRef = useRef<HTMLDivElement>(null)
@@ -54,13 +65,32 @@ export function NotificationBell({ userId }: { userId: string }) {
           (payload) => {
             const row = payload.new as Notification
             setNotifications((prev) => [row, ...prev].slice(0, 20))
-            toast(row.title, {
-              description: row.message,
-              action:
-                row.type === 'NEW_MESSAGE' && row.entityType === 'Channel' && row.entityId
+
+            const isChatNotification =
+              (row.type === 'NEW_MESSAGE' || row.type === 'MESSAGE_REPLY') &&
+              row.entityType === 'Channel' &&
+              row.entityId
+
+            if (isChatNotification && row.messageId) {
+              toast.custom((t) => (
+                <MentionToast
+                  notification={row}
+                  currentUserColor={currentUserMessageColor}
+                  onNavigate={() => {
+                    router.push(`/inbox?channel=${row.entityId}`)
+                    toast.dismiss(t)
+                  }}
+                  onDismiss={() => toast.dismiss(t)}
+                />
+              ))
+            } else {
+              toast(row.title, {
+                description: row.message,
+                action: isChatNotification
                   ? { label: 'View', onClick: () => router.push(`/inbox?channel=${row.entityId}`) }
                   : undefined,
-            })
+              })
+            }
           }
         )
         .subscribe()
@@ -96,7 +126,7 @@ export function NotificationBell({ userId }: { userId: string }) {
       setNotifications((prev) => prev.map((item) => (item.id === n.id ? { ...item, read: true } : item)))
       setOpen(false)
       await markNotificationRead(n.id)
-      if (n.type === 'NEW_MESSAGE' && n.entityType === 'Channel' && n.entityId) {
+      if ((n.type === 'NEW_MESSAGE' || n.type === 'MESSAGE_REPLY') && n.entityType === 'Channel' && n.entityId) {
         router.push(`/inbox?channel=${n.entityId}`)
       }
     },

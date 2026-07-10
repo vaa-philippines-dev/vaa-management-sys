@@ -16,7 +16,7 @@ export async function Navbar() {
         <CommandPalette isAdmin={isAdmin} isVA={isVA} />
       </div>
       <div className="flex items-center gap-3">
-        {user && <NotificationBell userId={user.id} />}
+        {user && <NotificationBell userId={user.id} currentUserMessageColor={user.messageColor} />}
         <ThemeToggle />
         {user && (
           <ProfileCard

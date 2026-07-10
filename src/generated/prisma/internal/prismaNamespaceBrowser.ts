@@ -486,7 +486,16 @@ export const MessageScalarFieldEnum = {
   channelId: 'channelId',
   senderId: 'senderId',
   body: 'body',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  editedAt: 'editedAt',
+  deletedAt: 'deletedAt',
+  parentId: 'parentId',
+  pinned: 'pinned',
+  pinnedAt: 'pinnedAt',
+  pinnedBy: 'pinnedBy',
+  forwardedFromId: 'forwardedFromId',
+  forwardedFromBody: 'forwardedFromBody',
+  forwardedFromSenderName: 'forwardedFromSenderName'
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
@@ -536,6 +545,9 @@ export const NotificationScalarFieldEnum = {
   message: 'message',
   entityType: 'entityType',
   entityId: 'entityId',
+  messageId: 'messageId',
+  mentionerName: 'mentionerName',
+  departmentName: 'departmentName',
   read: 'read',
   createdAt: 'createdAt'
 } as const
