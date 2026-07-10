@@ -334,7 +334,20 @@ export function Sidebar({
   if (collapsed) {
     return (
       <div className="flex h-full w-12 shrink-0 flex-col items-center gap-3 bg-sidebar py-2.5 transition-all duration-200">
-        <Image src="/vaalogo.svg" alt="VAA Philippines" width={24} height={24} className="h-6 w-6 shrink-0 object-contain" />
+        <Image
+          src="/blackLogo.png"
+          alt="VAA Philippines"
+          width={24}
+          height={24}
+          className="h-6 w-6 shrink-0 object-contain dark:hidden"
+        />
+        <Image
+          src="/whiteLogo.png"
+          alt="VAA Philippines"
+          width={24}
+          height={24}
+          className="hidden h-6 w-6 shrink-0 object-contain dark:block"
+        />
         <button
           type="button"
           onClick={() => setCollapsed(false)}
@@ -349,8 +362,22 @@ export function Sidebar({
 
   return (
     <div className="flex h-full w-[212px] shrink-0 flex-col bg-sidebar px-2 py-2.5 transition-all duration-200">
-      <div className="flex items-center justify-center px-2 pb-3">
-        <Image src="/vaalogo.svg" alt="VAA Philippines" className="w-28 h-auto shrink-0" />
+      <div className="flex items-center justify-center gap-2 px-2 pb-3">
+        <Image
+          src="/blackLogo.png"
+          alt="VAA Philippines"
+          width={28}
+          height={28}
+          className="h-7 w-7 shrink-0 object-contain dark:hidden"
+        />
+        <Image
+          src="/whiteLogo.png"
+          alt="VAA Philippines"
+          width={28}
+          height={28}
+          className="hidden h-7 w-7 shrink-0 object-contain dark:block"
+        />
+        <span className="font-sans text-lg font-semibold tracking-tight text-sidebar-foreground">VAA</span>
       </div>
       <ScrollArea className="flex-1">
         <nav className="flex flex-col gap-px pr-1">
