@@ -58,7 +58,7 @@ export function NotificationBell({ userId }: { userId: string }) {
               description: row.message,
               action:
                 row.type === 'NEW_MESSAGE' && row.entityType === 'Channel' && row.entityId
-                  ? { label: 'View', onClick: () => router.push('/inbox') }
+                  ? { label: 'View', onClick: () => router.push(`/inbox?channel=${row.entityId}`) }
                   : undefined,
             })
           }
@@ -97,7 +97,7 @@ export function NotificationBell({ userId }: { userId: string }) {
       setOpen(false)
       await markNotificationRead(n.id)
       if (n.type === 'NEW_MESSAGE' && n.entityType === 'Channel' && n.entityId) {
-        router.push('/inbox')
+        router.push(`/inbox?channel=${n.entityId}`)
       }
     },
     [router]

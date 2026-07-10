@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState, useTransition } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Hash, Send, Search, Settings } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -86,13 +87,31 @@ export function InboxView({
   channels: ChannelSummary[]
   currentUser: CurrentUser
 }) {
+  const searchParams = useSearchParams()
+  const requestedChannelId = searchParams.get('channel')
   const [channels, setChannels] = useState(initialChannels)
-  const [activeChannelId, setActiveChannelId] = useState<string | null>(initialChannels[0]?.channelId ?? null)
+  const [activeChannelId, setActiveChannelId] = useState<string | null>(
+    (requestedChannelId && initialChannels.some((c) => c.channelId === requestedChannelId)
+      ? requestedChannelId
+      : initialChannels[0]?.channelId) ?? null
+  )
+  const [lastHandledRequest, setLastHandledRequest] = useState<string | null>(requestedChannelId)
 
   useEffect(() => {
-    if (initialChannels[0]) markChannelRead(initialChannels[0].channelId)
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- run once on mount for the initially active channel only
-  }, [])
+    if (activeChannelId) markChannelRead(activeChannelId)
+  }, [activeChannelId])
+
+  if (
+    requestedChannelId &&
+    requestedChannelId !== lastHandledRequest &&
+    channels.some((c) => c.channelId === requestedChannelId)
+  ) {
+    setLastHandledRequest(requestedChannelId)
+    setActiveChannelId(requestedChannelId)
+    setChannels((prev) =>
+      prev.map((c) => (c.channelId === requestedChannelId ? { ...c, unreadCount: 0, unreadMentions: 0 } : c))
+    )
+  }
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [messageColor, setMessageColorState] = useState(currentUser.messageColor)
   const [profileUser, setProfileUser] = useState<ProfilePanelUser | null>(null)

@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { getCurrentUser } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { getMyChannels } from './actions'
@@ -11,18 +12,20 @@ export default async function InboxPage() {
 
   return (
     <div data-inbox-page className="h-full">
-      <InboxView
-        channels={channels}
-        currentUser={{
-          id: user.id,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          avatarUrl: user.avatarUrl,
-          systemRole: user.systemRole,
-          messageColor: user.messageColor,
-        }}
-      />
+      <Suspense fallback={null}>
+        <InboxView
+          channels={channels}
+          currentUser={{
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            avatarUrl: user.avatarUrl,
+            systemRole: user.systemRole,
+            messageColor: user.messageColor,
+          }}
+        />
+      </Suspense>
     </div>
   )
 }
