@@ -1,6 +1,17 @@
 import { createBrowserClient } from '@supabase/ssr'
+import type { SupabaseClient } from '@supabase/supabase-js'
+
+// Module-level singleton. Every caller shares one client, one auth listener,
+// and one Realtime websocket. Multiple independent createBrowserClient()
+// instances (as when several components each called this separately) each
+// raced to call realtime.setAuth() on their own connection — a channel could
+// finish joining before its own instance's auth call resolved, permanently
+// stuck authenticating as anon for that connection's lifetime.
+let client: SupabaseClient | undefined
 
 export function createClient() {
+  if (client) return client
+
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
@@ -21,5 +32,6 @@ export function createClient() {
     supabase.realtime.setAuth(session?.access_token ?? key)
   })
 
+  client = supabase
   return supabase
 }
