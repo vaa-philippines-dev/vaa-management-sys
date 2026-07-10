@@ -7,7 +7,7 @@ import { logAudit } from '@/lib/audit'
 const MENTION_PATTERN = /@\[([^\]]+)\]\(([a-zA-Z0-9_-]+)\)/g
 
 const MESSAGE_SENDER_SELECT = {
-  sender: { select: { id: true, firstName: true, lastName: true, messageColor: true } },
+  sender: { select: { id: true, firstName: true, lastName: true, messageColor: true, avatarUrl: true } },
   parent: {
     select: {
       id: true,
@@ -39,11 +39,13 @@ async function createMessageAndNotify(params: {
   departmentName: string
   senderId: string
   senderFirstName: string
+  senderAvatarUrl: string | null
   body: string
   parentId?: string
   forwardedFrom?: { id: string; body: string; senderName: string }
 }) {
-  const { channelId, departmentId, departmentName, senderId, senderFirstName, body, parentId, forwardedFrom } = params
+  const { channelId, departmentId, departmentName, senderId, senderFirstName, senderAvatarUrl, body, parentId, forwardedFrom } =
+    params
 
   const mentionedUserIds = [...body.matchAll(MENTION_PATTERN)].map((m) => m[2])
   const uniqueMentionedIds = [...new Set(mentionedUserIds)].filter((id) => id !== senderId)
@@ -75,6 +77,7 @@ async function createMessageAndNotify(params: {
         entityId: channelId,
         messageId: message.id,
         mentionerName: senderFirstName,
+        mentionerAvatarUrl: senderAvatarUrl,
         departmentName,
       })),
     })
@@ -186,6 +189,7 @@ export async function sendMessage(channelId: string, body: string) {
     departmentName: channel.department.name,
     senderId: user.id,
     senderFirstName: user.firstName,
+    senderAvatarUrl: user.avatarUrl,
     body: trimmed,
   })
 }
@@ -209,6 +213,7 @@ export async function replyToMessage(channelId: string, parentId: string, body: 
     departmentName: channel.department.name,
     senderId: user.id,
     senderFirstName: user.firstName,
+    senderAvatarUrl: user.avatarUrl,
     body: trimmed,
     parentId,
   })
@@ -224,6 +229,7 @@ export async function replyToMessage(channelId: string, parentId: string, body: 
         entityId: channelId,
         messageId: message.id,
         mentionerName: user.firstName,
+        mentionerAvatarUrl: user.avatarUrl,
         departmentName: channel.department.name,
       },
     })
@@ -257,6 +263,7 @@ export async function forwardMessage(sourceMessageId: string, targetChannelId: s
     departmentName: targetChannel.department.name,
     senderId: user.id,
     senderFirstName: user.firstName,
+    senderAvatarUrl: user.avatarUrl,
     body: source.body,
     forwardedFrom: {
       id: source.id,
@@ -322,6 +329,7 @@ export async function editMessage(messageId: string, body: string) {
         entityId: message.channelId,
         messageId,
         mentionerName: user.firstName,
+        mentionerAvatarUrl: user.avatarUrl,
         departmentName: channel.department.name,
       })),
     })
@@ -423,7 +431,7 @@ export async function getPinnedMessages(channelId: string) {
     where: { channelId, pinned: true },
     orderBy: { pinnedAt: 'desc' },
     include: {
-      sender: { select: { id: true, firstName: true, lastName: true, messageColor: true } },
+      sender: { select: { id: true, firstName: true, lastName: true, messageColor: true, avatarUrl: true } },
       pinnedByUser: { select: { firstName: true, lastName: true } },
     },
   })

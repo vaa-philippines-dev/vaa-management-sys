@@ -837,9 +837,10 @@ model Notification {
   message        String
   entityType     String?          @map("entity_type")
   entityId       String?          @map("entity_id")
-  messageId      String?          @map("message_id")
-  mentionerName  String?          @map("mentioner_name")
-  departmentName String?          @map("department_name")
+  messageId          String? @map("message_id")
+  mentionerName      String? @map("mentioner_name")
+  mentionerAvatarUrl String? @map("mentioner_avatar_url")
+  departmentName     String? @map("department_name")
   read           Boolean          @default(false)
   createdAt      DateTime         @default(now()) @map("created_at")
 

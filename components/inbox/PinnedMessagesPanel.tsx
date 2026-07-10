@@ -10,7 +10,7 @@ type PinnedMessage = {
   body: string
   createdAt: string | Date
   pinnedAt: string | Date | null
-  sender: { firstName: string; lastName: string }
+  sender: { firstName: string; lastName: string; avatarUrl?: string | null }
   pinnedByUser: { firstName: string; lastName: string } | null
 }
 
@@ -72,9 +72,26 @@ export function PinnedMessagesPanel({
             {messages.map((m) => (
               <div key={m.id} className="rounded-lg border bg-muted/30 p-2.5">
                 <button type="button" onClick={() => onJumpTo(m.id)} className="block w-full text-left">
-                  <p className="text-[11px] font-semibold">
-                    {m.sender.firstName} {m.sender.lastName}
-                  </p>
+                  <div className="flex items-center gap-1.5">
+                    <div className="flex h-4 w-4 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted text-[8px] font-semibold">
+                      {m.sender.avatarUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={m.sender.avatarUrl}
+                          alt={`${m.sender.firstName} ${m.sender.lastName}`}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <>
+                          {m.sender.firstName?.[0]}
+                          {m.sender.lastName?.[0]}
+                        </>
+                      )}
+                    </div>
+                    <p className="text-[11px] font-semibold">
+                      {m.sender.firstName} {m.sender.lastName}
+                    </p>
+                  </div>
                   <p className="mt-0.5 line-clamp-3 text-[12px] text-muted-foreground">{m.body}</p>
                 </button>
                 <div className="mt-1.5 flex items-center justify-between text-[10px] text-muted-foreground">

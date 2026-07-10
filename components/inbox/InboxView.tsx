@@ -74,7 +74,13 @@ type MessageWithSender = {
     deletedAt: string | Date | null
     sender: { firstName: string; lastName: string }
   } | null
-  sender: { id: string; firstName: string; lastName: string; messageColor: 'RED' | 'BLUE' | 'YELLOW' }
+  sender: {
+    id: string
+    firstName: string
+    lastName: string
+    messageColor: 'RED' | 'BLUE' | 'YELLOW'
+    avatarUrl?: string | null
+  }
 }
 
 const BUBBLE_COLOR: Record<string, string> = {
@@ -402,13 +408,25 @@ function ChannelThread({
 
       let sender: MessageWithSender['sender']
       if (row.sender_id === currentUser.id) {
-        sender = { id: currentUser.id, firstName: currentUser.firstName, lastName: currentUser.lastName, messageColor }
+        sender = {
+          id: currentUser.id,
+          firstName: currentUser.firstName,
+          lastName: currentUser.lastName,
+          messageColor,
+          avatarUrl: currentUser.avatarUrl,
+        }
       } else {
         const knownSender = prev.find((m) => m.sender.id === row.sender_id)?.sender
         const member = members.find((m) => m.id === row.sender_id)
         sender = knownSender ?? (member
-          ? { id: row.sender_id, firstName: member.firstName, lastName: member.lastName, messageColor: 'BLUE' as const }
-          : { id: row.sender_id, firstName: 'Unknown', lastName: '', messageColor: 'BLUE' as const })
+          ? {
+              id: row.sender_id,
+              firstName: member.firstName,
+              lastName: member.lastName,
+              messageColor: 'BLUE' as const,
+              avatarUrl: member.avatarUrl,
+            }
+          : { id: row.sender_id, firstName: 'Unknown', lastName: '', messageColor: 'BLUE' as const, avatarUrl: null })
       }
 
       const parent = row.parent_id ? prev.find((m) => m.id === row.parent_id) : undefined
@@ -579,7 +597,13 @@ function ChannelThread({
                 sender: { firstName: mode.message.sender.firstName, lastName: mode.message.sender.lastName },
               }
             : undefined,
-        sender: { id: currentUser.id, firstName: currentUser.firstName, lastName: currentUser.lastName, messageColor },
+        sender: {
+          id: currentUser.id,
+          firstName: currentUser.firstName,
+          lastName: currentUser.lastName,
+          messageColor,
+          avatarUrl: currentUser.avatarUrl,
+        },
       },
     ])
 
@@ -671,10 +695,21 @@ function ChannelThread({
                   <button
                     type="button"
                     onClick={() => onOpenProfile(m.sender.id)}
-                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-[11px] font-semibold transition-transform hover:scale-105"
+                    className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted text-[11px] font-semibold transition-transform hover:scale-105"
                   >
-                    {m.sender.firstName?.[0]}
-                    {m.sender.lastName?.[0]}
+                    {m.sender.avatarUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={m.sender.avatarUrl}
+                        alt={`${m.sender.firstName} ${m.sender.lastName}`}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <>
+                        {m.sender.firstName?.[0]}
+                        {m.sender.lastName?.[0]}
+                      </>
+                    )}
                   </button>
                   <div className={cn('flex max-w-[70%] flex-col gap-0.5', isMe && 'items-end')}>
                     <div className={cn('flex items-baseline gap-2', isMe && 'flex-row-reverse')}>

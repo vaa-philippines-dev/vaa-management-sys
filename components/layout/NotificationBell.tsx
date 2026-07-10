@@ -24,6 +24,7 @@ type Notification = {
   entityId?: string | null
   messageId?: string | null
   mentionerName?: string | null
+  mentionerAvatarUrl?: string | null
   departmentName?: string | null
 }
 

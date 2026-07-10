@@ -11,6 +11,7 @@ type MentionNotification = {
   message: string
   messageId?: string | null
   mentionerName?: string | null
+  mentionerAvatarUrl?: string | null
   departmentName?: string | null
 }
 
@@ -47,19 +48,29 @@ export function MentionToast({
 
   return (
     <div className="w-80 rounded-lg border bg-popover p-3 text-popover-foreground shadow-lg">
-      <button type="button" onClick={onNavigate} className="block w-full text-left">
-        <p className="text-xs font-semibold">
-          {notification.mentionerName && (
-            <span className={NAME_COLOR[currentUserColor]}>{notification.mentionerName}</span>
-          )}
-          {notification.mentionerName ? ' ' : ''}
-          {notification.departmentName ? (
-            <span className="text-foreground">mentioned you in #{notification.departmentName}</span>
+      <button type="button" onClick={onNavigate} className="flex w-full items-start gap-2 text-left">
+        <div className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted text-[11px] font-semibold">
+          {notification.mentionerAvatarUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={notification.mentionerAvatarUrl} alt={notification.mentionerName ?? ''} className="h-full w-full object-cover" />
           ) : (
-            <span className="text-foreground">{notification.title}</span>
+            notification.mentionerName?.[0]
           )}
-        </p>
-        <p className="mt-1 line-clamp-2 text-[11px] text-muted-foreground">{notification.message}</p>
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-xs font-semibold">
+            {notification.mentionerName && (
+              <span className={NAME_COLOR[currentUserColor]}>{notification.mentionerName}</span>
+            )}
+            {notification.mentionerName ? ' ' : ''}
+            {notification.departmentName ? (
+              <span className="text-foreground">mentioned you in #{notification.departmentName}</span>
+            ) : (
+              <span className="text-foreground">{notification.title}</span>
+            )}
+          </p>
+          <p className="mt-1 line-clamp-2 text-[11px] text-muted-foreground">{notification.message}</p>
+        </div>
       </button>
 
       {notification.messageId && !sent && (

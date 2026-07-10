@@ -547,6 +547,7 @@ export const NotificationScalarFieldEnum = {
   entityId: 'entityId',
   messageId: 'messageId',
   mentionerName: 'mentionerName',
+  mentionerAvatarUrl: 'mentionerAvatarUrl',
   departmentName: 'departmentName',
   read: 'read',
   createdAt: 'createdAt'
