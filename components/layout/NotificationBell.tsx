@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Bell, Briefcase, Clock, MessageSquare } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { createClient } from '@/lib/supabase/client'
+import { createClient, waitForRealtimeAuth } from '@/lib/supabase/client'
 import {
   getMyNotifications,
   markAllNotificationsRead,
@@ -40,33 +40,35 @@ export function NotificationBell({ userId }: { userId: string }) {
   }, [])
 
   useEffect(() => {
+    let cancelled = false
     const supabase = createClient()
-    const channel = supabase
-      .channel(`notifications-${userId}`)
-      .on(
-        'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'notifications', filter: `recipient_id=eq.${userId}` },
-        (payload) => {
-          // eslint-disable-next-line no-console -- temporary diagnostic for notification realtime issue
-          console.log('[NotificationBell] received INSERT:', JSON.stringify(payload.new))
-          const row = payload.new as Notification
-          setNotifications((prev) => [row, ...prev].slice(0, 20))
-          toast(row.title, {
-            description: row.message,
-            action:
-              row.type === 'NEW_MESSAGE' && row.entityType === 'Channel' && row.entityId
-                ? { label: 'View', onClick: () => router.push('/inbox') }
-                : undefined,
-          })
-        }
-      )
-      .subscribe((status, err) => {
-        // eslint-disable-next-line no-console -- temporary diagnostic for notification realtime issue
-        console.log(`[NotificationBell] channel notifications-${userId} status:`, status, err ?? '')
-      })
+    let channel: ReturnType<typeof supabase.channel> | null = null
+
+    waitForRealtimeAuth().then(() => {
+      if (cancelled) return
+      channel = supabase
+        .channel(`notifications-${userId}`)
+        .on(
+          'postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'notifications', filter: `recipient_id=eq.${userId}` },
+          (payload) => {
+            const row = payload.new as Notification
+            setNotifications((prev) => [row, ...prev].slice(0, 20))
+            toast(row.title, {
+              description: row.message,
+              action:
+                row.type === 'NEW_MESSAGE' && row.entityType === 'Channel' && row.entityId
+                  ? { label: 'View', onClick: () => router.push('/inbox') }
+                  : undefined,
+            })
+          }
+        )
+        .subscribe()
+    })
 
     return () => {
-      supabase.removeChannel(channel)
+      cancelled = true
+      if (channel) supabase.removeChannel(channel)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- router from useRouter() is referentially stable, only userId should re-subscribe
   }, [userId])

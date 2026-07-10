@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { createClient, waitForRealtimeAuth } from '@/lib/supabase/client'
 import type { RealtimePostgresChangesPayload, RealtimeChannel } from '@supabase/supabase-js'
 
 type MessageRow = {
@@ -31,32 +31,38 @@ export function ChannelRealtimeProvider({
   const broadcastChannelRef = useRef<RealtimeChannel | null>(null)
 
   useEffect(() => {
+    let cancelled = false
     const supabase = createClient()
 
-    const channel = supabase
-      .channel(`messages-${channelId}`)
-      .on(
-        'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'messages', filter: `channel_id=eq.${channelId}` },
-        (payload: RealtimePostgresChangesPayload<MessageRow>) => {
-          onMessage(payload.new as MessageRow)
+    waitForRealtimeAuth().then(() => {
+      if (cancelled) return
+
+      const channel = supabase
+        .channel(`messages-${channelId}`)
+        .on(
+          'postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'messages', filter: `channel_id=eq.${channelId}` },
+          (payload: RealtimePostgresChangesPayload<MessageRow>) => {
+            onMessage(payload.new as MessageRow)
+          }
+        )
+        .on('broadcast', { event: 'typing' }, ({ payload }) => {
+          onTyping?.(payload as TypingPayload)
+        })
+        .subscribe()
+
+      broadcastChannelRef.current = channel
+
+      if (typingRef) {
+        typingRef.current = (userId: string, firstName: string) => {
+          channel.send({ type: 'broadcast', event: 'typing', payload: { userId, firstName } })
         }
-      )
-      .on('broadcast', { event: 'typing' }, ({ payload }) => {
-        onTyping?.(payload as TypingPayload)
-      })
-      .subscribe()
-
-    broadcastChannelRef.current = channel
-
-    if (typingRef) {
-      typingRef.current = (userId: string, firstName: string) => {
-        channel.send({ type: 'broadcast', event: 'typing', payload: { userId, firstName } })
       }
-    }
+    })
 
     return () => {
-      supabase.removeChannel(channel)
+      cancelled = true
+      if (broadcastChannelRef.current) supabase.removeChannel(broadcastChannelRef.current)
       if (typingRef) typingRef.current = null
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- onMessage/onTyping are recreated each render by design; only channelId identity should re-subscribe
