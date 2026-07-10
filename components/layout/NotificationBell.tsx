@@ -49,7 +49,13 @@ export function NotificationBell({ userId }: { userId: string }) {
         (payload) => {
           const row = payload.new as Notification
           setNotifications((prev) => [row, ...prev].slice(0, 20))
-          toast(row.title, { description: row.message })
+          toast(row.title, {
+            description: row.message,
+            action:
+              row.type === 'NEW_MESSAGE' && row.entityType === 'Channel' && row.entityId
+                ? { label: 'View', onClick: () => router.push('/inbox') }
+                : undefined,
+          })
         }
       )
       .subscribe()
@@ -57,6 +63,7 @@ export function NotificationBell({ userId }: { userId: string }) {
     return () => {
       supabase.removeChannel(channel)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- router from useRouter() is referentially stable, only userId should re-subscribe
   }, [userId])
 
   useEffect(() => {
