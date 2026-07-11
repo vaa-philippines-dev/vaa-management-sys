@@ -15,10 +15,12 @@ type MentionNotification = {
   departmentName?: string | null
 }
 
-const NAME_COLOR: Record<'RED' | 'BLUE' | 'YELLOW', string> = {
-  RED: 'text-destructive',
-  BLUE: 'text-blue-500 dark:text-blue-400',
-  YELLOW: 'text-amber-500 dark:text-amber-400',
+const NAME_COLOR: Record<'BLUE' | 'RED' | 'GREEN' | 'YELLOW' | 'BLACK', string> = {
+  BLUE: 'text-[#0B84FE] dark:text-[#3B9EFF]',
+  RED: 'text-[#FF3B30] dark:text-[#FF6961]',
+  GREEN: 'text-[#33C759] dark:text-[#4CD964]',
+  YELLOW: 'text-[#B38F00] dark:text-[#FFCC00]',
+  BLACK: 'text-foreground',
 }
 
 export function MentionToast({
@@ -28,7 +30,7 @@ export function MentionToast({
   onDismiss,
 }: {
   notification: MentionNotification
-  currentUserColor: 'RED' | 'BLUE' | 'YELLOW'
+  currentUserColor: 'BLUE' | 'RED' | 'GREEN' | 'YELLOW' | 'BLACK'
   onNavigate: () => void
   onDismiss: () => void
 }) {

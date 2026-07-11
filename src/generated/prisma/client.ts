@@ -142,6 +142,11 @@ export type TicketConversation = Prisma.TicketConversationModel
  */
 export type Channel = Prisma.ChannelModel
 /**
+ * Model ChannelParticipant
+ * 
+ */
+export type ChannelParticipant = Prisma.ChannelParticipantModel
+/**
  * Model Message
  * 
  */

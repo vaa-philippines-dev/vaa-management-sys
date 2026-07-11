@@ -284,11 +284,11 @@ export type EnumUserTypeFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumUserTypeFilter<$PrismaModel> | $Enums.UserType
 }
 
-export type EnumFavoriteColorFilter<$PrismaModel = never> = {
-  equals?: $Enums.FavoriteColor | Prisma.EnumFavoriteColorFieldRefInput<$PrismaModel>
-  in?: $Enums.FavoriteColor[] | Prisma.ListEnumFavoriteColorFieldRefInput<$PrismaModel>
-  notIn?: $Enums.FavoriteColor[] | Prisma.ListEnumFavoriteColorFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumFavoriteColorFilter<$PrismaModel> | $Enums.FavoriteColor
+export type EnumMessageColorFilter<$PrismaModel = never> = {
+  equals?: $Enums.MessageColor | Prisma.EnumMessageColorFieldRefInput<$PrismaModel>
+  in?: $Enums.MessageColor[] | Prisma.ListEnumMessageColorFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MessageColor[] | Prisma.ListEnumMessageColorFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMessageColorFilter<$PrismaModel> | $Enums.MessageColor
 }
 
 export type EnumSystemRoleWithAggregatesFilter<$PrismaModel = never> = {
@@ -311,14 +311,14 @@ export type EnumUserTypeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumUserTypeFilter<$PrismaModel>
 }
 
-export type EnumFavoriteColorWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.FavoriteColor | Prisma.EnumFavoriteColorFieldRefInput<$PrismaModel>
-  in?: $Enums.FavoriteColor[] | Prisma.ListEnumFavoriteColorFieldRefInput<$PrismaModel>
-  notIn?: $Enums.FavoriteColor[] | Prisma.ListEnumFavoriteColorFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumFavoriteColorWithAggregatesFilter<$PrismaModel> | $Enums.FavoriteColor
+export type EnumMessageColorWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MessageColor | Prisma.EnumMessageColorFieldRefInput<$PrismaModel>
+  in?: $Enums.MessageColor[] | Prisma.ListEnumMessageColorFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MessageColor[] | Prisma.ListEnumMessageColorFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMessageColorWithAggregatesFilter<$PrismaModel> | $Enums.MessageColor
   _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumFavoriteColorFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumFavoriteColorFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMessageColorFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMessageColorFilter<$PrismaModel>
 }
 
 export type EnumContractTypeFilter<$PrismaModel = never> = {
@@ -681,6 +681,23 @@ export type EnumTicketSourceWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumTicketSourceFilter<$PrismaModel>
 }
 
+export type EnumChannelKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.ChannelKind | Prisma.EnumChannelKindFieldRefInput<$PrismaModel>
+  in?: $Enums.ChannelKind[] | Prisma.ListEnumChannelKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ChannelKind[] | Prisma.ListEnumChannelKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumChannelKindFilter<$PrismaModel> | $Enums.ChannelKind
+}
+
+export type EnumChannelKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ChannelKind | Prisma.EnumChannelKindFieldRefInput<$PrismaModel>
+  in?: $Enums.ChannelKind[] | Prisma.ListEnumChannelKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ChannelKind[] | Prisma.ListEnumChannelKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumChannelKindWithAggregatesFilter<$PrismaModel> | $Enums.ChannelKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumChannelKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumChannelKindFilter<$PrismaModel>
+}
+
 export type EnumAuditActionFilter<$PrismaModel = never> = {
   equals?: $Enums.AuditAction | Prisma.EnumAuditActionFieldRefInput<$PrismaModel>
   in?: $Enums.AuditAction[] | Prisma.ListEnumAuditActionFieldRefInput<$PrismaModel>
@@ -764,6 +781,23 @@ export type EnumNotificationTypeWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumNotificationTypeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumNotificationTypeFilter<$PrismaModel>
+}
+
+export type EnumFavoriteColorFilter<$PrismaModel = never> = {
+  equals?: $Enums.FavoriteColor | Prisma.EnumFavoriteColorFieldRefInput<$PrismaModel>
+  in?: $Enums.FavoriteColor[] | Prisma.ListEnumFavoriteColorFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FavoriteColor[] | Prisma.ListEnumFavoriteColorFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFavoriteColorFilter<$PrismaModel> | $Enums.FavoriteColor
+}
+
+export type EnumFavoriteColorWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.FavoriteColor | Prisma.EnumFavoriteColorFieldRefInput<$PrismaModel>
+  in?: $Enums.FavoriteColor[] | Prisma.ListEnumFavoriteColorFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FavoriteColor[] | Prisma.ListEnumFavoriteColorFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFavoriteColorWithAggregatesFilter<$PrismaModel> | $Enums.FavoriteColor
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumFavoriteColorFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumFavoriteColorFilter<$PrismaModel>
 }
 
 export type NestedStringFilter<$PrismaModel = never> = {
@@ -1049,11 +1083,11 @@ export type NestedEnumUserTypeFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumUserTypeFilter<$PrismaModel> | $Enums.UserType
 }
 
-export type NestedEnumFavoriteColorFilter<$PrismaModel = never> = {
-  equals?: $Enums.FavoriteColor | Prisma.EnumFavoriteColorFieldRefInput<$PrismaModel>
-  in?: $Enums.FavoriteColor[] | Prisma.ListEnumFavoriteColorFieldRefInput<$PrismaModel>
-  notIn?: $Enums.FavoriteColor[] | Prisma.ListEnumFavoriteColorFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumFavoriteColorFilter<$PrismaModel> | $Enums.FavoriteColor
+export type NestedEnumMessageColorFilter<$PrismaModel = never> = {
+  equals?: $Enums.MessageColor | Prisma.EnumMessageColorFieldRefInput<$PrismaModel>
+  in?: $Enums.MessageColor[] | Prisma.ListEnumMessageColorFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MessageColor[] | Prisma.ListEnumMessageColorFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMessageColorFilter<$PrismaModel> | $Enums.MessageColor
 }
 
 export type NestedEnumSystemRoleWithAggregatesFilter<$PrismaModel = never> = {
@@ -1076,14 +1110,14 @@ export type NestedEnumUserTypeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumUserTypeFilter<$PrismaModel>
 }
 
-export type NestedEnumFavoriteColorWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.FavoriteColor | Prisma.EnumFavoriteColorFieldRefInput<$PrismaModel>
-  in?: $Enums.FavoriteColor[] | Prisma.ListEnumFavoriteColorFieldRefInput<$PrismaModel>
-  notIn?: $Enums.FavoriteColor[] | Prisma.ListEnumFavoriteColorFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumFavoriteColorWithAggregatesFilter<$PrismaModel> | $Enums.FavoriteColor
+export type NestedEnumMessageColorWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MessageColor | Prisma.EnumMessageColorFieldRefInput<$PrismaModel>
+  in?: $Enums.MessageColor[] | Prisma.ListEnumMessageColorFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MessageColor[] | Prisma.ListEnumMessageColorFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMessageColorWithAggregatesFilter<$PrismaModel> | $Enums.MessageColor
   _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumFavoriteColorFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumFavoriteColorFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMessageColorFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMessageColorFilter<$PrismaModel>
 }
 
 export type NestedEnumContractTypeFilter<$PrismaModel = never> = {
@@ -1446,6 +1480,23 @@ export type NestedEnumTicketSourceWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumTicketSourceFilter<$PrismaModel>
 }
 
+export type NestedEnumChannelKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.ChannelKind | Prisma.EnumChannelKindFieldRefInput<$PrismaModel>
+  in?: $Enums.ChannelKind[] | Prisma.ListEnumChannelKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ChannelKind[] | Prisma.ListEnumChannelKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumChannelKindFilter<$PrismaModel> | $Enums.ChannelKind
+}
+
+export type NestedEnumChannelKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ChannelKind | Prisma.EnumChannelKindFieldRefInput<$PrismaModel>
+  in?: $Enums.ChannelKind[] | Prisma.ListEnumChannelKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ChannelKind[] | Prisma.ListEnumChannelKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumChannelKindWithAggregatesFilter<$PrismaModel> | $Enums.ChannelKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumChannelKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumChannelKindFilter<$PrismaModel>
+}
+
 export type NestedEnumAuditActionFilter<$PrismaModel = never> = {
   equals?: $Enums.AuditAction | Prisma.EnumAuditActionFieldRefInput<$PrismaModel>
   in?: $Enums.AuditAction[] | Prisma.ListEnumAuditActionFieldRefInput<$PrismaModel>
@@ -1502,6 +1553,23 @@ export type NestedEnumNotificationTypeWithAggregatesFilter<$PrismaModel = never>
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumNotificationTypeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumNotificationTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumFavoriteColorFilter<$PrismaModel = never> = {
+  equals?: $Enums.FavoriteColor | Prisma.EnumFavoriteColorFieldRefInput<$PrismaModel>
+  in?: $Enums.FavoriteColor[] | Prisma.ListEnumFavoriteColorFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FavoriteColor[] | Prisma.ListEnumFavoriteColorFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFavoriteColorFilter<$PrismaModel> | $Enums.FavoriteColor
+}
+
+export type NestedEnumFavoriteColorWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.FavoriteColor | Prisma.EnumFavoriteColorFieldRefInput<$PrismaModel>
+  in?: $Enums.FavoriteColor[] | Prisma.ListEnumFavoriteColorFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FavoriteColor[] | Prisma.ListEnumFavoriteColorFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFavoriteColorWithAggregatesFilter<$PrismaModel> | $Enums.FavoriteColor
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumFavoriteColorFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumFavoriteColorFilter<$PrismaModel>
 }
 
 

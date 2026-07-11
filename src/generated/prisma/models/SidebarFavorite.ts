@@ -409,6 +409,10 @@ export type SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.SidebarFavoriteScalarWhereInput | Prisma.SidebarFavoriteScalarWhereInput[]
 }
 
+export type EnumFavoriteColorFieldUpdateOperationsInput = {
+  set?: $Enums.FavoriteColor
+}
+
 export type SidebarFavoriteCreateWithoutUserInput = {
   id?: string
   href: string

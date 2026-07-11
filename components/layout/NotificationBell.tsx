@@ -40,7 +40,7 @@ export function NotificationBell({
   currentUserMessageColor,
 }: {
   userId: string
-  currentUserMessageColor: 'RED' | 'BLUE' | 'YELLOW'
+  currentUserMessageColor: 'BLUE' | 'RED' | 'GREEN' | 'YELLOW' | 'BLACK'
 }) {
   const [open, setOpen] = useState(false)
   const [notifications, setNotifications] = useState<Notification[]>([])

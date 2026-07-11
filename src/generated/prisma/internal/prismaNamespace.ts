@@ -404,6 +404,7 @@ export const ModelName = {
   Ticket: 'Ticket',
   TicketConversation: 'TicketConversation',
   Channel: 'Channel',
+  ChannelParticipant: 'ChannelParticipant',
   Message: 'Message',
   MessageMention: 'MessageMention',
   ChannelRead: 'ChannelRead',
@@ -425,7 +426,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveRequest" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "channel" | "message" | "messageMention" | "channelRead" | "auditLog" | "notification" | "sidebarFavorite"
+    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveRequest" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "notification" | "sidebarFavorite"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1909,6 +1910,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ChannelParticipant: {
+      payload: Prisma.$ChannelParticipantPayload<ExtArgs>
+      fields: Prisma.ChannelParticipantFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChannelParticipantFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelParticipantPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChannelParticipantFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelParticipantPayload>
+        }
+        findFirst: {
+          args: Prisma.ChannelParticipantFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelParticipantPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChannelParticipantFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelParticipantPayload>
+        }
+        findMany: {
+          args: Prisma.ChannelParticipantFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelParticipantPayload>[]
+        }
+        create: {
+          args: Prisma.ChannelParticipantCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelParticipantPayload>
+        }
+        createMany: {
+          args: Prisma.ChannelParticipantCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChannelParticipantCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelParticipantPayload>[]
+        }
+        delete: {
+          args: Prisma.ChannelParticipantDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelParticipantPayload>
+        }
+        update: {
+          args: Prisma.ChannelParticipantUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelParticipantPayload>
+        }
+        deleteMany: {
+          args: Prisma.ChannelParticipantDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChannelParticipantUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChannelParticipantUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelParticipantPayload>[]
+        }
+        upsert: {
+          args: Prisma.ChannelParticipantUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelParticipantPayload>
+        }
+        aggregate: {
+          args: Prisma.ChannelParticipantAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChannelParticipant>
+        }
+        groupBy: {
+          args: Prisma.ChannelParticipantGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChannelParticipantGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChannelParticipantCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChannelParticipantCountAggregateOutputType> | number
+        }
+      }
+    }
     Message: {
       payload: Prisma.$MessagePayload<ExtArgs>
       fields: Prisma.MessageFieldRefs
@@ -2771,11 +2846,24 @@ export type TicketConversationScalarFieldEnum = (typeof TicketConversationScalar
 
 export const ChannelScalarFieldEnum = {
   id: 'id',
+  kind: 'kind',
   departmentId: 'departmentId',
+  dmKey: 'dmKey',
   createdAt: 'createdAt'
 } as const
 
 export type ChannelScalarFieldEnum = (typeof ChannelScalarFieldEnum)[keyof typeof ChannelScalarFieldEnum]
+
+
+export const ChannelParticipantScalarFieldEnum = {
+  id: 'id',
+  channelId: 'channelId',
+  userId: 'userId',
+  muted: 'muted',
+  createdAt: 'createdAt'
+} as const
+
+export type ChannelParticipantScalarFieldEnum = (typeof ChannelParticipantScalarFieldEnum)[keyof typeof ChannelParticipantScalarFieldEnum]
 
 
 export const MessageScalarFieldEnum = {
@@ -3061,16 +3149,16 @@ export type ListEnumUserTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
 
 
 /**
- * Reference to a field of type 'FavoriteColor'
+ * Reference to a field of type 'MessageColor'
  */
-export type EnumFavoriteColorFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FavoriteColor'>
+export type EnumMessageColorFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MessageColor'>
     
 
 
 /**
- * Reference to a field of type 'FavoriteColor[]'
+ * Reference to a field of type 'MessageColor[]'
  */
-export type ListEnumFavoriteColorFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FavoriteColor[]'>
+export type ListEnumMessageColorFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MessageColor[]'>
     
 
 
@@ -3313,6 +3401,20 @@ export type ListEnumTicketSourceFieldRefInput<$PrismaModel> = FieldRefInputType<
 
 
 /**
+ * Reference to a field of type 'ChannelKind'
+ */
+export type EnumChannelKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChannelKind'>
+    
+
+
+/**
+ * Reference to a field of type 'ChannelKind[]'
+ */
+export type ListEnumChannelKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChannelKind[]'>
+    
+
+
+/**
  * Reference to a field of type 'AuditAction'
  */
 export type EnumAuditActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditAction'>
@@ -3351,6 +3453,20 @@ export type EnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
  * Reference to a field of type 'NotificationType[]'
  */
 export type ListEnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'FavoriteColor'
+ */
+export type EnumFavoriteColorFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FavoriteColor'>
+    
+
+
+/**
+ * Reference to a field of type 'FavoriteColor[]'
+ */
+export type ListEnumFavoriteColorFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FavoriteColor[]'>
     
 
 
@@ -3497,6 +3613,7 @@ export type GlobalOmitConfig = {
   ticket?: Prisma.TicketOmit
   ticketConversation?: Prisma.TicketConversationOmit
   channel?: Prisma.ChannelOmit
+  channelParticipant?: Prisma.ChannelParticipantOmit
   message?: Prisma.MessageOmit
   messageMention?: Prisma.MessageMentionOmit
   channelRead?: Prisma.ChannelReadOmit

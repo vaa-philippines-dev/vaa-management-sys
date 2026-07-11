@@ -4,17 +4,25 @@ import { cn } from '@/lib/utils'
 import { Modal } from '@/components/ui/modal'
 import { setMessageColor } from '@/app/(dashboard)/inbox/actions'
 
-const COLOR_SWATCH: Record<string, string> = {
-  YELLOW: '#F5C518',
-  BLUE: '#2E7BE0',
-  RED: '#E5484D',
+export type MessageColorValue = 'BLUE' | 'RED' | 'GREEN' | 'YELLOW' | 'BLACK'
+
+const COLOR_SWATCH: Record<MessageColorValue, string> = {
+  BLUE: '#0B84FE',
+  RED: '#FF3B30',
+  GREEN: '#33C759',
+  YELLOW: '#FFCC00',
+  BLACK: '#1C1C1E',
 }
 
-const COLOR_LABEL: Record<string, string> = {
-  YELLOW: 'Yellow',
+const COLOR_LABEL: Record<MessageColorValue, string> = {
   BLUE: 'Blue',
   RED: 'Red',
+  GREEN: 'Green',
+  YELLOW: 'Yellow',
+  BLACK: 'Black',
 }
+
+const COLOR_ORDER: MessageColorValue[] = ['BLUE', 'RED', 'GREEN', 'YELLOW', 'BLACK']
 
 export function InboxSettingsModal({
   open,
@@ -24,10 +32,10 @@ export function InboxSettingsModal({
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
-  color: 'RED' | 'BLUE' | 'YELLOW'
-  onChangeColor: (color: 'RED' | 'BLUE' | 'YELLOW') => void
+  color: MessageColorValue
+  onChangeColor: (color: MessageColorValue) => void
 }) {
-  const pick = (next: 'RED' | 'BLUE' | 'YELLOW') => {
+  const pick = (next: MessageColorValue) => {
     onChangeColor(next)
     setMessageColor(next)
   }
@@ -47,7 +55,7 @@ export function InboxSettingsModal({
             Applied to your own message bubbles across every channel.
           </p>
           <div className="mt-3 flex items-center gap-3">
-            {(['YELLOW', 'BLUE', 'RED'] as const).map((c) => (
+            {COLOR_ORDER.map((c) => (
               <button
                 key={c}
                 type="button"

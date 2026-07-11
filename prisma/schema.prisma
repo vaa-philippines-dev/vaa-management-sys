@@ -329,7 +329,7 @@ model User {
   systemRole SystemRole    @map("system_role")
   userType   UserType      @map("user_type")
   avatarUrl  String?       @map("avatar_url")
-  messageColor FavoriteColor @default(BLUE) @map("message_color")
+  messageColor MessageColor @default(BLUE) @map("message_color")
   status     GeneralStatus @default(ACTIVE) @map("general_status")
   onHold     Boolean       @default(false) @map("on_hold")
   isActive   Boolean       @default(true) @map("is_active")
@@ -360,6 +360,7 @@ model User {
   messageMentions            MessageMention[]
   channelReads               ChannelRead[]
   pinnedMessages              Message[]              @relation("MessagePinnedBy")
+  channelParticipants         ChannelParticipant[]
 
   @@index([email])
   @@index([systemRole])
@@ -737,16 +738,39 @@ model TicketConversation {
 
 // ── Phase 5: Messaging ───────────────────────────────────────────
 
-model Channel {
-  id           String    @id @default(cuid())
-  departmentId String    @unique @map("department_id")
-  department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
-  createdAt    DateTime  @default(now()) @map("created_at")
+enum ChannelKind {
+  DEPARTMENT
+  DIRECT
+  ANNOUNCEMENTS
+}
 
-  messages Message[]
-  reads    ChannelRead[]
+model Channel {
+  id           String      @id @default(cuid())
+  kind         ChannelKind @default(DEPARTMENT)
+  departmentId String?     @unique @map("department_id")
+  department   Department? @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  dmKey        String?     @unique @map("dm_key")
+  createdAt    DateTime    @default(now()) @map("created_at")
+
+  messages     Message[]
+  reads        ChannelRead[]
+  participants ChannelParticipant[]
 
   @@map("channels")
+}
+
+model ChannelParticipant {
+  id        String   @id @default(cuid())
+  channelId String   @map("channel_id")
+  channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  muted     Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([channelId, userId])
+  @@index([userId])
+  @@map("channel_participants")
 }
 
 model Message {
@@ -856,6 +880,14 @@ enum FavoriteColor {
   YELLOW
   BLUE
   RED
+}
+
+enum MessageColor {
+  BLUE
+  RED
+  GREEN
+  YELLOW
+  BLACK
 }
 
 model SidebarFavorite {

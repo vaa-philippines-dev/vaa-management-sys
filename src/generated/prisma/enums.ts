@@ -291,6 +291,15 @@ export const GeneralStatus = {
 export type GeneralStatus = (typeof GeneralStatus)[keyof typeof GeneralStatus]
 
 
+export const ChannelKind = {
+  DEPARTMENT: 'DEPARTMENT',
+  DIRECT: 'DIRECT',
+  ANNOUNCEMENTS: 'ANNOUNCEMENTS'
+} as const
+
+export type ChannelKind = (typeof ChannelKind)[keyof typeof ChannelKind]
+
+
 export const FavoriteColor = {
   YELLOW: 'YELLOW',
   BLUE: 'BLUE',
@@ -298,3 +307,14 @@ export const FavoriteColor = {
 } as const
 
 export type FavoriteColor = (typeof FavoriteColor)[keyof typeof FavoriteColor]
+
+
+export const MessageColor = {
+  BLUE: 'BLUE',
+  RED: 'RED',
+  GREEN: 'GREEN',
+  YELLOW: 'YELLOW',
+  BLACK: 'BLACK'
+} as const
+
+export type MessageColor = (typeof MessageColor)[keyof typeof MessageColor]

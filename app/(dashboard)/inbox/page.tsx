@@ -8,13 +8,14 @@ export default async function InboxPage() {
   const user = await getCurrentUser()
   if (!user) redirect('/login')
 
-  const channels = await getMyChannels()
+  const { channels, directMessages } = await getMyChannels()
 
   return (
     <div data-inbox-page className="h-full">
       <Suspense fallback={null}>
         <InboxView
           channels={channels}
+          directMessages={directMessages}
           currentUser={{
             id: user.id,
             firstName: user.firstName,

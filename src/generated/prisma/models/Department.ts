@@ -1078,10 +1078,12 @@ export type DepartmentCreateNestedOneWithoutChannelInput = {
   connect?: Prisma.DepartmentWhereUniqueInput
 }
 
-export type DepartmentUpdateOneRequiredWithoutChannelNestedInput = {
+export type DepartmentUpdateOneWithoutChannelNestedInput = {
   create?: Prisma.XOR<Prisma.DepartmentCreateWithoutChannelInput, Prisma.DepartmentUncheckedCreateWithoutChannelInput>
   connectOrCreate?: Prisma.DepartmentCreateOrConnectWithoutChannelInput
   upsert?: Prisma.DepartmentUpsertWithoutChannelInput
+  disconnect?: Prisma.DepartmentWhereInput | boolean
+  delete?: Prisma.DepartmentWhereInput | boolean
   connect?: Prisma.DepartmentWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.DepartmentUpdateToOneWithWhereWithoutChannelInput, Prisma.DepartmentUpdateWithoutChannelInput>, Prisma.DepartmentUncheckedUpdateWithoutChannelInput>
 }

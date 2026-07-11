@@ -71,6 +71,7 @@ export const ModelName = {
   Ticket: 'Ticket',
   TicketConversation: 'TicketConversation',
   Channel: 'Channel',
+  ChannelParticipant: 'ChannelParticipant',
   Message: 'Message',
   MessageMention: 'MessageMention',
   ChannelRead: 'ChannelRead',
@@ -474,11 +475,24 @@ export type TicketConversationScalarFieldEnum = (typeof TicketConversationScalar
 
 export const ChannelScalarFieldEnum = {
   id: 'id',
+  kind: 'kind',
   departmentId: 'departmentId',
+  dmKey: 'dmKey',
   createdAt: 'createdAt'
 } as const
 
 export type ChannelScalarFieldEnum = (typeof ChannelScalarFieldEnum)[keyof typeof ChannelScalarFieldEnum]
+
+
+export const ChannelParticipantScalarFieldEnum = {
+  id: 'id',
+  channelId: 'channelId',
+  userId: 'userId',
+  muted: 'muted',
+  createdAt: 'createdAt'
+} as const
+
+export type ChannelParticipantScalarFieldEnum = (typeof ChannelParticipantScalarFieldEnum)[keyof typeof ChannelParticipantScalarFieldEnum]
 
 
 export const MessageScalarFieldEnum = {

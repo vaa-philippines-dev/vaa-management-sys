@@ -5,6 +5,7 @@ import { requireAuth, requireManager } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
 
 const MENTION_PATTERN = /@\[([^\]]+)\]\(([a-zA-Z0-9_-]+)\)/g
+const ANNOUNCEMENT_POSTER_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER']
 
 const MESSAGE_SENDER_SELECT = {
   sender: { select: { id: true, firstName: true, lastName: true, messageColor: true, avatarUrl: true } },
@@ -21,10 +22,21 @@ const MESSAGE_SENDER_SELECT = {
 async function requireChannelMembership(channelId: string, userId: string) {
   const channel = await prisma.channel.findUnique({
     where: { id: channelId },
-    select: { departmentId: true, department: { select: { name: true } } },
+    select: { kind: true, departmentId: true, department: { select: { name: true } } },
   })
   if (!channel) throw new Error('Channel not found')
 
+  if (channel.kind === 'ANNOUNCEMENTS') return channel
+
+  if (channel.kind === 'DIRECT') {
+    const participant = await prisma.channelParticipant.findUnique({
+      where: { channelId_userId: { channelId, userId } },
+    })
+    if (!participant) throw new Error('You are not a participant in this conversation')
+    return channel
+  }
+
+  if (!channel.departmentId) throw new Error('Channel is misconfigured (no department)')
   const membership = await prisma.departmentMembership.findFirst({
     where: { userId, departmentId: channel.departmentId, endedAt: null },
   })
@@ -33,10 +45,16 @@ async function requireChannelMembership(channelId: string, userId: string) {
   return channel
 }
 
+function assertCanPostInChannel(channelKind: string, systemRole: string) {
+  if (channelKind === 'ANNOUNCEMENTS' && !ANNOUNCEMENT_POSTER_ROLES.includes(systemRole)) {
+    throw new Error('Only admins and managers can post in #announcements')
+  }
+}
+
 async function createMessageAndNotify(params: {
   channelId: string
-  departmentId: string
-  departmentName: string
+  departmentId?: string | null
+  departmentName?: string | null
   senderId: string
   senderFirstName: string
   senderAvatarUrl: string | null
@@ -71,14 +89,14 @@ async function createMessageAndNotify(params: {
       data: uniqueMentionedIds.map((recipientId) => ({
         recipientId,
         type: 'NEW_MESSAGE' as const,
-        title: `${senderFirstName} mentioned you in #${departmentName}`,
+        title: departmentName ? `${senderFirstName} mentioned you in #${departmentName}` : `${senderFirstName} mentioned you`,
         message: body.replace(MENTION_PATTERN, '@$1').slice(0, 140),
         entityType: 'Channel',
         entityId: channelId,
         messageId: message.id,
         mentionerName: senderFirstName,
         mentionerAvatarUrl: senderAvatarUrl,
-        departmentName,
+        departmentName: departmentName ?? null,
       })),
     })
   }
@@ -89,7 +107,7 @@ async function createMessageAndNotify(params: {
     entityType: 'Message',
     entityId: message.id,
     after: { channelId, body },
-    departmentId,
+    departmentId: departmentId ?? undefined,
   })
 
   return message
@@ -107,57 +125,116 @@ export async function getMyChannels() {
     },
   })
 
-  const channels = memberships
+  const announcementsChannel = await prisma.channel.findFirst({
+    where: { kind: 'ANNOUNCEMENTS' },
+    select: { id: true },
+  })
+
+  const deptChannels = memberships
     .filter((m) => m.department.channel)
     .map((m) => ({
+      kind: 'DEPARTMENT' as const,
       channelId: m.department.channel!.id,
       departmentId: m.department.id,
       departmentName: m.department.name,
     }))
+    .sort((a, b) => a.departmentName.localeCompare(b.departmentName))
+
+  const channels = announcementsChannel
+    ? [
+        {
+          kind: 'ANNOUNCEMENTS' as const,
+          channelId: announcementsChannel.id,
+          departmentId: null,
+          departmentName: 'announcements',
+        },
+        ...deptChannels,
+      ]
+    : deptChannels
+
+  const dmParticipations = await prisma.channelParticipant.findMany({
+    where: { userId: user.id, channel: { kind: 'DIRECT' } },
+    select: {
+      muted: true,
+      channel: {
+        select: {
+          id: true,
+          participants: {
+            where: { userId: { not: user.id } },
+            select: { user: { select: { id: true, firstName: true, lastName: true, avatarUrl: true } } },
+          },
+        },
+      },
+    },
+  })
+  const directMessages = dmParticipations.map((p) => ({
+    kind: 'DIRECT' as const,
+    channelId: p.channel.id,
+    muted: p.muted,
+    otherUser: p.channel.participants[0]?.user ?? null,
+  }))
+
+  const allChannelIds = [...channels.map((c) => c.channelId), ...directMessages.map((c) => c.channelId)]
 
   const reads = await prisma.channelRead.findMany({
-    where: { userId: user.id, channelId: { in: channels.map((c) => c.channelId) } },
+    where: { userId: user.id, channelId: { in: allChannelIds } },
   })
   const readMap = new Map(reads.map((r) => [r.channelId, r.lastReadAt]))
 
-  const unreadCounts = await Promise.all(
-    channels.map((c) =>
-      prisma.message.count({
-        where: { channelId: c.channelId, createdAt: { gt: readMap.get(c.channelId) ?? new Date(0) } },
-      })
-    )
-  )
-  const unreadMentionCounts = await Promise.all(
-    channels.map((c) =>
-      prisma.messageMention.count({
-        where: {
-          mentionedUserId: user.id,
-          message: {
-            channelId: c.channelId,
-            createdAt: { gt: readMap.get(c.channelId) ?? new Date(0) },
-          },
-        },
-      })
-    )
-  )
-  const pinnedCounts = await Promise.all(
-    channels.map((c) => prisma.message.count({ where: { channelId: c.channelId, pinned: true } }))
+  const [unreadCounts, unreadMentionCounts, pinnedCounts, lastMessages] = await Promise.all([
+    Promise.all(
+      allChannelIds.map((id) =>
+        prisma.message.count({ where: { channelId: id, createdAt: { gt: readMap.get(id) ?? new Date(0) } } })
+      )
+    ),
+    Promise.all(
+      allChannelIds.map((id) =>
+        prisma.messageMention.count({
+          where: { mentionedUserId: user.id, message: { channelId: id, createdAt: { gt: readMap.get(id) ?? new Date(0) } } },
+        })
+      )
+    ),
+    Promise.all(allChannelIds.map((id) => prisma.message.count({ where: { channelId: id, pinned: true } }))),
+    Promise.all(
+      allChannelIds.map((id) =>
+        prisma.message.findFirst({
+          where: { channelId: id },
+          orderBy: { createdAt: 'desc' },
+          select: { body: true, createdAt: true, senderId: true },
+        })
+      )
+    ),
+  ])
+
+  const countsById = new Map(
+    allChannelIds.map((id, i) => [
+      id,
+      { unreadCount: unreadCounts[i], unreadMentions: unreadMentionCounts[i], pinnedCount: pinnedCounts[i], lastMessage: lastMessages[i] },
+    ])
   )
 
-  return channels.map((c, i) => ({
-    ...c,
-    unreadCount: unreadCounts[i],
-    unreadMentions: unreadMentionCounts[i],
-    pinnedCount: pinnedCounts[i],
-  }))
+  return {
+    channels: channels.map((c) => ({ ...c, ...countsById.get(c.channelId)! })),
+    directMessages: directMessages.map((c) => ({ ...c, ...countsById.get(c.channelId)! })),
+  }
 }
 
 export async function getChannelMembers(channelId: string) {
   const user = await requireAuth()
   const channel = await requireChannelMembership(channelId, user.id)
 
+  if (channel.kind === 'ANNOUNCEMENTS') return []
+
+  if (channel.kind === 'DIRECT') {
+    const participants = await prisma.channelParticipant.findMany({
+      where: { channelId },
+      select: { user: { select: { id: true, firstName: true, lastName: true, avatarUrl: true } } },
+    })
+    return participants.map((p) => p.user)
+  }
+
   const memberships = await prisma.departmentMembership.findMany({
-    where: { departmentId: channel.departmentId, endedAt: null },
+    where: { departmentId: channel.departmentId!, endedAt: null },
     select: { user: { select: { id: true, firstName: true, lastName: true, avatarUrl: true } } },
   })
 
@@ -196,14 +273,15 @@ export async function getChannelMessages(channelId: string, cursor?: { createdAt
 export async function sendMessage(channelId: string, body: string) {
   const user = await requireAuth()
   const channel = await requireChannelMembership(channelId, user.id)
+  assertCanPostInChannel(channel.kind, user.systemRole)
 
   const trimmed = body.trim()
   if (!trimmed) throw new Error('Message cannot be empty')
 
   return createMessageAndNotify({
     channelId,
-    departmentId: channel.departmentId,
-    departmentName: channel.department.name,
+    departmentId: channel.kind === 'DEPARTMENT' ? channel.departmentId : null,
+    departmentName: channel.kind === 'DEPARTMENT' ? channel.department?.name : null,
     senderId: user.id,
     senderFirstName: user.firstName,
     senderAvatarUrl: user.avatarUrl,
@@ -214,6 +292,7 @@ export async function sendMessage(channelId: string, body: string) {
 export async function replyToMessage(channelId: string, parentId: string, body: string) {
   const user = await requireAuth()
   const channel = await requireChannelMembership(channelId, user.id)
+  assertCanPostInChannel(channel.kind, user.systemRole)
 
   const trimmed = body.trim()
   if (!trimmed) throw new Error('Message cannot be empty')
@@ -224,10 +303,12 @@ export async function replyToMessage(channelId: string, parentId: string, body: 
   })
   if (!parent || parent.channelId !== channelId) throw new Error('Original message not found in this channel')
 
+  const departmentName = channel.kind === 'DEPARTMENT' ? channel.department?.name : null
+
   const message = await createMessageAndNotify({
     channelId,
-    departmentId: channel.departmentId,
-    departmentName: channel.department.name,
+    departmentId: channel.kind === 'DEPARTMENT' ? channel.departmentId : null,
+    departmentName,
     senderId: user.id,
     senderFirstName: user.firstName,
     senderAvatarUrl: user.avatarUrl,
@@ -240,14 +321,14 @@ export async function replyToMessage(channelId: string, parentId: string, body: 
       data: {
         recipientId: parent.senderId,
         type: 'MESSAGE_REPLY',
-        title: `${user.firstName} replied to your message in #${channel.department.name}`,
+        title: departmentName ? `${user.firstName} replied to your message in #${departmentName}` : `${user.firstName} replied to your message`,
         message: trimmed.replace(MENTION_PATTERN, '@$1').slice(0, 140),
         entityType: 'Channel',
         entityId: channelId,
         messageId: message.id,
         mentionerName: user.firstName,
         mentionerAvatarUrl: user.avatarUrl,
-        departmentName: channel.department.name,
+        departmentName,
       },
     })
   }
@@ -273,11 +354,12 @@ export async function forwardMessage(sourceMessageId: string, targetChannelId: s
 
   await requireChannelMembership(source.channelId, user.id)
   const targetChannel = await requireChannelMembership(targetChannelId, user.id)
+  assertCanPostInChannel(targetChannel.kind, user.systemRole)
 
   return createMessageAndNotify({
     channelId: targetChannelId,
-    departmentId: targetChannel.departmentId,
-    departmentName: targetChannel.department.name,
+    departmentId: targetChannel.kind === 'DEPARTMENT' ? targetChannel.departmentId : null,
+    departmentName: targetChannel.kind === 'DEPARTMENT' ? targetChannel.department?.name : null,
     senderId: user.id,
     senderFirstName: user.firstName,
     senderAvatarUrl: user.avatarUrl,
@@ -320,6 +402,7 @@ export async function editMessage(messageId: string, body: string) {
   if (message.deletedAt) throw new Error('Cannot edit a deleted message')
 
   const channel = await requireChannelMembership(message.channelId, user.id)
+  const departmentName = channel.kind === 'DEPARTMENT' ? channel.department?.name : null
 
   const oldMentionedIds = new Set([...message.body.matchAll(MENTION_PATTERN)].map((m) => m[2]))
   const newMentionedIds = new Set(
@@ -340,14 +423,14 @@ export async function editMessage(messageId: string, body: string) {
       data: addedIds.map((recipientId) => ({
         recipientId,
         type: 'NEW_MESSAGE' as const,
-        title: `${user.firstName} mentioned you in #${channel.department.name}`,
+        title: departmentName ? `${user.firstName} mentioned you in #${departmentName}` : `${user.firstName} mentioned you`,
         message: trimmed.replace(MENTION_PATTERN, '@$1').slice(0, 140),
         entityType: 'Channel',
         entityId: message.channelId,
         messageId,
         mentionerName: user.firstName,
         mentionerAvatarUrl: user.avatarUrl,
-        departmentName: channel.department.name,
+        departmentName,
       })),
     })
   }
@@ -365,7 +448,7 @@ export async function editMessage(messageId: string, body: string) {
     entityId: messageId,
     before: { body: message.body },
     after: { body: trimmed },
-    departmentId: channel.departmentId,
+    departmentId: channel.kind === 'DEPARTMENT' ? (channel.departmentId ?? undefined) : undefined,
   })
 
   return updated
@@ -398,7 +481,7 @@ export async function deleteMessage(messageId: string) {
     action: 'DELETE',
     entityType: 'Message',
     entityId: messageId,
-    departmentId: channel.departmentId,
+    departmentId: channel.kind === 'DEPARTMENT' ? (channel.departmentId ?? undefined) : undefined,
   })
 
   return updated
@@ -435,6 +518,30 @@ export async function pinMessage(messageId: string, pinned: boolean) {
     entityType: 'Message',
     entityId: messageId,
     after: { pinned },
+  })
+
+  return updated
+}
+
+export async function pinDirectMessage(messageId: string, pinned: boolean) {
+  const user = await requireAuth()
+
+  const message = await prisma.message.findUnique({
+    where: { id: messageId },
+    select: { id: true, channelId: true, deletedAt: true },
+  })
+  if (!message) throw new Error('Message not found')
+  if (message.deletedAt) throw new Error('Cannot pin a deleted message')
+
+  const channel = await requireChannelMembership(message.channelId, user.id)
+  if (channel.kind !== 'DIRECT') throw new Error('Use pinMessage for department channels')
+
+  const updated = await prisma.message.update({
+    where: { id: messageId },
+    data: pinned
+      ? { pinned: true, pinnedAt: new Date(), pinnedBy: user.id }
+      : { pinned: false, pinnedAt: null, pinnedBy: null },
+    include: MESSAGE_SENDER_SELECT,
   })
 
   return updated
@@ -491,7 +598,7 @@ export async function markChannelRead(channelId: string) {
   })
 }
 
-export async function setMessageColor(color: 'RED' | 'BLUE' | 'YELLOW') {
+export async function setMessageColor(color: 'BLUE' | 'RED' | 'GREEN' | 'YELLOW' | 'BLACK') {
   const user = await requireAuth()
   await prisma.user.update({ where: { id: user.id }, data: { messageColor: color } })
 }
@@ -528,4 +635,87 @@ export async function getUserProfile(userId: string) {
     departmentName: primary?.department?.name ?? null,
     positionTitle: primary?.position?.title ?? null,
   }
+}
+
+export async function findOrCreateDirectMessageChannel(otherUserId: string) {
+  const user = await requireAuth()
+  if (otherUserId === user.id) throw new Error('Cannot start a DM with yourself')
+
+  const other = await prisma.user.findUnique({ where: { id: otherUserId }, select: { id: true } })
+  if (!other) throw new Error('User not found')
+
+  const dmKey = [user.id, otherUserId].sort().join(':')
+
+  const existing = await prisma.channel.findUnique({ where: { dmKey } })
+  if (existing) return { channelId: existing.id }
+
+  try {
+    const channel = await prisma.channel.create({
+      data: {
+        kind: 'DIRECT',
+        dmKey,
+        participants: { createMany: { data: [{ userId: user.id }, { userId: otherUserId }] } },
+      },
+    })
+    return { channelId: channel.id }
+  } catch (e) {
+    if (e && typeof e === 'object' && 'code' in e && e.code === 'P2002') {
+      const raced = await prisma.channel.findUnique({ where: { dmKey } })
+      if (raced) return { channelId: raced.id }
+    }
+    throw e
+  }
+}
+
+export async function muteChannel(channelId: string, muted: boolean) {
+  const user = await requireAuth()
+  await prisma.channelParticipant.update({
+    where: { channelId_userId: { channelId, userId: user.id } },
+    data: { muted },
+  })
+}
+
+export async function getOrgUsersForDMPicker(query: string) {
+  const user = await requireAuth()
+  const trimmed = query.trim()
+
+  return prisma.user.findMany({
+    where: {
+      id: { not: user.id },
+      isActive: true,
+      ...(trimmed
+        ? {
+            OR: [
+              { firstName: { contains: trimmed, mode: 'insensitive' } },
+              { lastName: { contains: trimmed, mode: 'insensitive' } },
+              { email: { contains: trimmed, mode: 'insensitive' } },
+            ],
+          }
+        : {}),
+    },
+    select: { id: true, firstName: true, lastName: true, avatarUrl: true, email: true },
+    take: 25,
+    orderBy: [{ firstName: 'asc' }, { lastName: 'asc' }],
+  })
+}
+
+export async function getGroupInfo(channelId: string) {
+  const user = await requireAuth()
+  const channel = await requireChannelMembership(channelId, user.id)
+  if (channel.kind !== 'DEPARTMENT') throw new Error('Group info is only available for department channels')
+
+  const [department, memberships, pinnedCount] = await Promise.all([
+    prisma.department.findUnique({ where: { id: channel.departmentId! }, select: { name: true, description: true } }),
+    prisma.departmentMembership.findMany({
+      where: { departmentId: channel.departmentId!, endedAt: null },
+      select: {
+        isPrimary: true,
+        user: { select: { id: true, firstName: true, lastName: true, avatarUrl: true, systemRole: true } },
+        position: { select: { title: true } },
+      },
+    }),
+    prisma.message.count({ where: { channelId, pinned: true } }),
+  ])
+
+  return { departmentName: department?.name ?? null, description: department?.description ?? null, members: memberships, pinnedCount }
 }

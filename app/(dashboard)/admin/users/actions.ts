@@ -24,6 +24,13 @@ async function getAdmin() {
   return requireAdminMutator()
 }
 
+async function createChannelForDepartment(
+  tx: typeof prisma | Parameters<Parameters<typeof prisma.$transaction>[0]>[0],
+  departmentId: string
+) {
+  await tx.channel.create({ data: { kind: 'DEPARTMENT', departmentId } })
+}
+
 export async function updateUserRole(userId: string, systemRole: string) {
   const admin = await getAdmin()
   const before = await prisma.user.findUnique({ where: { id: userId }, select: { systemRole: true, email: true, firstName: true, lastName: true } })
@@ -311,6 +318,7 @@ export async function createDepartment(
       parentId: clean.parentId,
     },
   })
+  await createChannelForDepartment(prisma, dept.id)
 
   await logAudit({
     actorId: admin.id,
@@ -348,6 +356,7 @@ export async function createDepartmentInline(formData: FormData) {
       parentId: null,
     },
   })
+  await createChannelForDepartment(prisma, dept.id)
 
   await logAudit({
     actorId: admin.id,
@@ -941,6 +950,7 @@ export async function splitDepartment(
           splitFromId: sourceId,
         },
       })
+      await createChannelForDepartment(tx, newDept.id)
 
       let mCount = 0
       let cCount = 0
