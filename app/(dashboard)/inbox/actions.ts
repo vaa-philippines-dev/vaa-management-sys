@@ -725,6 +725,27 @@ export async function getOrgUsersForDMPicker(query: string) {
   })
 }
 
+export async function searchChannelMessages(channelId: string, query: string) {
+  const user = await requireAuth()
+  const channel = await requireChannelMembership(channelId, user.id)
+  const clearedAt = 'clearedAt' in channel ? channel.clearedAt : null
+
+  const trimmed = query.trim()
+  if (!trimmed) return []
+
+  return prisma.message.findMany({
+    where: {
+      channelId,
+      deletedAt: null,
+      body: { contains: trimmed, mode: 'insensitive' },
+      ...(clearedAt ? { createdAt: { gt: clearedAt } } : {}),
+    },
+    orderBy: { createdAt: 'desc' },
+    take: 30,
+    include: MESSAGE_SENDER_SELECT,
+  })
+}
+
 export async function getGroupInfo(channelId: string) {
   const user = await requireAuth()
   const channel = await requireChannelMembership(channelId, user.id)

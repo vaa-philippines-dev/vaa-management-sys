@@ -40,6 +40,8 @@ import { ForwardMessageModal } from './ForwardMessageModal'
 import { PinnedMessagesPanel } from './PinnedMessagesPanel'
 import { GroupInfoPanel } from './GroupInfoPanel'
 import { DMUserPickerModal, type PickerUser } from './DMUserPickerModal'
+import { SearchMessagesPanel } from './SearchMessagesPanel'
+import { ConfirmDialog } from './ConfirmDialog'
 import { MessageListSkeleton } from './InboxSkeleton'
 import { formatRelativeTime } from '@/lib/format-relative-time'
 import {
@@ -224,10 +226,12 @@ export function InboxView({
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [pinnedOpen, setPinnedOpen] = useState(false)
   const [groupInfoOpen, setGroupInfoOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
   const [dmPickerOpen, setDmPickerOpen] = useState(false)
   const [dmSearch, setDmSearch] = useState('')
   const [showArchivedDMs, setShowArchivedDMs] = useState(false)
   const [clearGeneration, setClearGeneration] = useState<Record<string, number>>({})
+  const [clearConfirmDm, setClearConfirmDm] = useState<DirectChannelSummary | null>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -252,6 +256,7 @@ export function InboxView({
     setDropdownOpen(false)
     setPinnedOpen(false)
     setGroupInfoOpen(false)
+    setSearchOpen(false)
     clearUnread(channelId)
   }
 
@@ -288,7 +293,13 @@ export function InboxView({
   }
 
   const handleClearConversation = (dm: DirectChannelSummary) => {
-    if (!window.confirm('Clear this conversation? This only removes it from your view.')) return
+    setClearConfirmDm(dm)
+  }
+
+  const confirmClearConversation = () => {
+    const dm = clearConfirmDm
+    if (!dm) return
+    setClearConfirmDm(null)
     setDirectMessages((prev) =>
       prev.map((c) => (c.channelId === dm.channelId ? { ...c, lastMessage: null, unreadCount: 0, unreadMentions: 0 } : c))
     )
@@ -514,10 +525,17 @@ export function InboxView({
               onTogglePinnedPanel={() => {
                 setPinnedOpen((v) => !v)
                 setGroupInfoOpen(false)
+                setSearchOpen(false)
               }}
               onToggleGroupInfo={() => {
                 setGroupInfoOpen((v) => !v)
                 setPinnedOpen(false)
+                setSearchOpen(false)
+              }}
+              onToggleSearch={() => {
+                setSearchOpen((v) => !v)
+                setPinnedOpen(false)
+                setGroupInfoOpen(false)
               }}
               onPinnedCountChange={(delta) => updatePinnedCount(activeChannel.channelId, delta)}
             />
@@ -548,7 +566,20 @@ export function InboxView({
           />
         )}
 
-        {profileUser && !pinnedOpen && !groupInfoOpen && <UserProfilePanel user={profileUser} onClose={() => setProfileUser(null)} />}
+        {searchOpen && activeChannel && (
+          <SearchMessagesPanel
+            key={activeChannel.channelId}
+            channelId={activeChannel.channelId}
+            onClose={() => setSearchOpen(false)}
+            onJumpTo={(messageId) => {
+              document.getElementById(`message-${messageId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+            }}
+          />
+        )}
+
+        {profileUser && !pinnedOpen && !groupInfoOpen && !searchOpen && (
+          <UserProfilePanel user={profileUser} onClose={() => setProfileUser(null)} />
+        )}
       </div>
 
       <InboxSettingsModal
@@ -559,6 +590,15 @@ export function InboxView({
       />
 
       <DMUserPickerModal open={dmPickerOpen} onOpenChange={setDmPickerOpen} onStarted={handleDMStarted} />
+
+      <ConfirmDialog
+        open={clearConfirmDm !== null}
+        title="Clear conversation?"
+        description="This only removes it from your view. The other person will still see the full history."
+        confirmLabel="Clear"
+        onConfirm={confirmClearConversation}
+        onCancel={() => setClearConfirmDm(null)}
+      />
     </div>
   )
 }
@@ -574,6 +614,7 @@ function ChannelThread({
   onOpenProfile,
   onTogglePinnedPanel,
   onToggleGroupInfo,
+  onToggleSearch,
   onPinnedCountChange,
 }: {
   channel: ChannelSummary
@@ -587,6 +628,7 @@ function ChannelThread({
   onOpenProfile: (userId: string) => void
   onTogglePinnedPanel: () => void
   onToggleGroupInfo: () => void
+  onToggleSearch: () => void
   onPinnedCountChange: (delta: number) => void
 }) {
   const channelId = channel.channelId
@@ -615,6 +657,7 @@ function ChannelThread({
   const [hasMoreOlder, setHasMoreOlder] = useState(true)
   const [loadingOlder, setLoadingOlder] = useState(false)
   const [showJumpToLatest, setShowJumpToLatest] = useState(false)
+  const [deleteConfirmMessage, setDeleteConfirmMessage] = useState<MessageWithSender | null>(null)
   const [isPending, startTransition] = useTransition()
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -708,9 +751,13 @@ function ChannelThread({
   }
 
   useEffect(() => {
-    if (!inputRef.current) return
-    inputRef.current.style.height = 'auto'
-    inputRef.current.style.height = `${Math.min(inputRef.current.scrollHeight, 128)}px`
+    const el = inputRef.current
+    if (!el) return
+    el.style.height = 'auto'
+    const maxHeight = 160
+    const nextHeight = Math.min(el.scrollHeight, maxHeight)
+    el.style.height = `${nextHeight}px`
+    el.style.overflowY = el.scrollHeight > maxHeight ? 'auto' : 'hidden'
   }, [draft])
 
   const mentionMatches = useMemo(() => {
@@ -872,7 +919,13 @@ function ChannelThread({
   }
 
   const handleDelete = (message: MessageWithSender) => {
-    if (!window.confirm('Delete this message?')) return
+    setDeleteConfirmMessage(message)
+  }
+
+  const confirmDelete = () => {
+    const message = deleteConfirmMessage
+    if (!message) return
+    setDeleteConfirmMessage(null)
     setMessages((prev) => prev.map((m) => (m.id === message.id ? { ...m, deletedAt: new Date().toISOString() } : m)))
     startTransition(async () => {
       await deleteMessage(message.id)
@@ -1007,6 +1060,14 @@ function ChannelThread({
         )}
         <button
           type="button"
+          onClick={onToggleSearch}
+          aria-label="Search messages"
+          className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        >
+          <Search className="h-3.5 w-3.5" />
+        </button>
+        <button
+          type="button"
           onClick={onTogglePinnedPanel}
           aria-label="Pinned messages"
           className="relative flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
@@ -1022,7 +1083,7 @@ function ChannelThread({
 
       <div className="relative flex-1 min-h-0">
       <ScrollArea ref={scrollAreaRef} className="h-full px-4 py-3">
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col">
           <div ref={topSentinelRef} />
           {loadingOlder && (
             <p className="py-2 text-center text-[11px] text-muted-foreground">Loading older messages...</p>
@@ -1085,7 +1146,7 @@ function ChannelThread({
                     className={cn(
                       'group/message flex items-end gap-2 animate-in fade-in-0 slide-in-from-bottom-2 duration-200 rounded-lg transition-colors',
                       isMe && 'flex-row-reverse',
-                      isGroupedWithPrev ? 'mt-0.5' : 'mt-2',
+                      isGroupedWithPrev ? 'mt-px' : 'mt-3',
                       highlightedId === m.id && 'bg-primary/10'
                     )}
                   >
@@ -1130,7 +1191,7 @@ function ChannelThread({
                           </p>
                         </div>
                       )}
-                      <div className={cn('flex items-baseline gap-2', isMe && 'flex-row-reverse')}>
+                      <div className={cn('flex items-center gap-2', isMe && 'flex-row-reverse')}>
                         {isGroupedWithPrev && (
                           <p className="text-[10.5px] text-muted-foreground opacity-0 transition-opacity group-hover/message:opacity-100">
                             {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -1316,7 +1377,7 @@ function ChannelThread({
             rows={1}
             placeholder={`Message ${composerLabel}... (type @ to mention)`}
             disabled={isPending}
-            className="max-h-32 w-full min-w-0 resize-none rounded-lg border border-input bg-transparent px-2.5 py-1.5 text-[13px] outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50"
+            className="w-full min-w-0 resize-none overflow-hidden rounded-lg border border-input bg-transparent px-2.5 py-1.5 text-[13px] outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50"
           />
           <button
             type="button"
@@ -1336,6 +1397,15 @@ function ChannelThread({
         messageId={forwardMessageId}
         currentChannelId={channelId}
         channels={forwardOptions}
+      />
+
+      <ConfirmDialog
+        open={deleteConfirmMessage !== null}
+        title="Delete message?"
+        description="This can't be undone. The message will be removed for everyone in this conversation."
+        confirmLabel="Delete"
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteConfirmMessage(null)}
       />
     </>
   )
