@@ -377,7 +377,7 @@ export function Sidebar({
           height={28}
           className="hidden h-7 w-7 shrink-0 object-contain dark:block"
         />
-        <span className="font-sans text-lg font-semibold tracking-tight text-sidebar-foreground">VAA</span>
+        <span className="font-sans text-lg font-semibold tracking-tight text-sidebar-foreground">Workspace</span>
       </div>
       <ScrollArea className="flex-1">
         <nav className="flex flex-col gap-px pr-1">
