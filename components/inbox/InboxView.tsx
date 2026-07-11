@@ -118,6 +118,24 @@ function renderBody(body: string, currentUserId: string) {
   return parts
 }
 
+function dayKey(date: string | Date) {
+  const d = new Date(date)
+  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`
+}
+
+function formatDateLabel(date: string | Date) {
+  const d = new Date(date)
+  const today = new Date()
+  const yesterday = new Date()
+  yesterday.setDate(today.getDate() - 1)
+
+  if (dayKey(d) === dayKey(today)) return 'Today'
+  if (dayKey(d) === dayKey(yesterday)) return 'Yesterday'
+
+  const sameYear = d.getFullYear() === today.getFullYear()
+  return d.toLocaleDateString([], sameYear ? { month: 'long', day: 'numeric' } : { month: 'long', day: 'numeric', year: 'numeric' })
+}
+
 export function InboxView({
   channels: initialChannels,
   currentUser,
@@ -667,7 +685,7 @@ function ChannelThread({
           {messages.length === 0 ? (
             <p className="py-8 text-center text-xs text-muted-foreground">No messages yet. Say hello.</p>
           ) : (
-            messages.map((m) => {
+            messages.map((m, i) => {
               const isMe = m.sender.id === currentUser.id
               const isDeleted = Boolean(m.deletedAt)
               const canEdit = isMe && !isDeleted
@@ -681,17 +699,28 @@ function ChannelThread({
                     senderName: `${m.parent.sender.firstName} ${m.parent.sender.lastName}`,
                   }
                 : null
+              const prevMessage = messages[i - 1]
+              const showDateSeparator = !prevMessage || dayKey(prevMessage.createdAt) !== dayKey(m.createdAt)
 
               return (
-                <div
-                  key={m.id}
-                  id={`message-${m.id}`}
-                  className={cn(
-                    'group/message flex items-end gap-2 animate-in fade-in-0 slide-in-from-bottom-2 duration-200 rounded-lg transition-colors',
-                    isMe && 'flex-row-reverse',
-                    highlightedId === m.id && 'bg-primary/10'
+                <div key={m.id} className="contents">
+                  {showDateSeparator && (
+                    <div className="flex items-center gap-3 py-1">
+                      <div className="h-px flex-1 bg-border" />
+                      <p className="shrink-0 text-[10.5px] font-medium text-muted-foreground">
+                        {formatDateLabel(m.createdAt)}
+                      </p>
+                      <div className="h-px flex-1 bg-border" />
+                    </div>
                   )}
-                >
+                  <div
+                    id={`message-${m.id}`}
+                    className={cn(
+                      'group/message flex items-end gap-2 animate-in fade-in-0 slide-in-from-bottom-2 duration-200 rounded-lg transition-colors',
+                      isMe && 'flex-row-reverse',
+                      highlightedId === m.id && 'bg-primary/10'
+                    )}
+                  >
                   <button
                     type="button"
                     onClick={() => onOpenProfile(m.sender.id)}
@@ -796,6 +825,7 @@ function ChannelThread({
                     </div>
                   </div>
                 </div>
+              </div>
               )
             })
           )}
