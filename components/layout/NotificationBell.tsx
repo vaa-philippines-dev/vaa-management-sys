@@ -2,15 +2,23 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Bell, Briefcase, Clock, MessageSquare, Reply } from 'lucide-react'
+import { Bell, Briefcase, Clock, MessageSquare, Reply, MoreHorizontal, Circle, CircleDot } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { createClient, waitForRealtimeAuth } from '@/lib/supabase/client'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu'
 import { MentionToast } from './MentionToast'
 import {
   getMyNotifications,
   markAllNotificationsRead,
+  markAllNotificationsUnread,
   markNotificationRead,
+  markNotificationUnread,
 } from '@/app/(dashboard)/notifications/actions'
 
 // Supabase Realtime sends timestamp columns as raw Postgres text with no
@@ -150,6 +158,19 @@ export function NotificationBell({
     await markAllNotificationsRead()
   }, [])
 
+  const handleMarkAllUnread = useCallback(async () => {
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: false })))
+    await markAllNotificationsUnread()
+  }, [])
+
+  const handleToggleRead = useCallback(async (n: Notification, e: React.MouseEvent) => {
+    e.stopPropagation()
+    const nextRead = !n.read
+    setNotifications((prev) => prev.map((item) => (item.id === n.id ? { ...item, read: nextRead } : item)))
+    if (nextRead) await markNotificationRead(n.id)
+    else await markNotificationUnread(n.id)
+  }, [])
+
   const handleItemClick = useCallback(
     async (n: Notification) => {
       setNotifications((prev) => prev.map((item) => (item.id === n.id ? { ...item, read: true } : item)))
@@ -181,15 +202,18 @@ export function NotificationBell({
         <div className="absolute right-0 top-11 z-40 w-80 rounded-xl border bg-popover text-popover-foreground shadow-lg animate-in fade-in-0 zoom-in-95 duration-150 origin-top-right">
           <div className="flex items-center justify-between px-4 py-3 border-b">
             <p className="text-sm font-semibold">Notifications</p>
-            {unreadCount > 0 && (
-              <button
-                type="button"
-                onClick={handleMarkAllRead}
-                className="text-xs font-medium text-primary hover:underline"
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+                aria-label="Notification options"
               >
-                Mark all read
-              </button>
-            )}
+                <MoreHorizontal className="h-3.5 w-3.5" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleMarkAllRead}>Mark all as read</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleMarkAllUnread}>Mark all as unread</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           <div className="max-h-96 overflow-y-auto">
@@ -204,7 +228,7 @@ export function NotificationBell({
                     type="button"
                     onClick={() => handleItemClick(n)}
                     className={cn(
-                      'flex w-full items-start gap-2.5 border-b px-4 py-3 text-left transition-colors last:border-b-0 hover:bg-muted/60',
+                      'group flex w-full items-start gap-2.5 border-b px-4 py-3 text-left transition-colors last:border-b-0 hover:bg-muted/60',
                       !n.read && 'bg-primary/5'
                     )}
                   >
@@ -213,7 +237,15 @@ export function NotificationBell({
                       <p className="text-xs font-medium">{n.title}</p>
                       <p className="text-[11px] text-muted-foreground mt-0.5">{n.message}</p>
                     </div>
-                    {!n.read && <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />}
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      onClick={(e) => handleToggleRead(n, e)}
+                      aria-label={n.read ? 'Mark as unread' : 'Mark as read'}
+                      className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground"
+                    >
+                      {n.read ? <Circle className="h-2.5 w-2.5 opacity-0 group-hover:opacity-100" /> : <CircleDot className="h-2.5 w-2.5 text-primary" />}
+                    </span>
                   </button>
                 )
               })

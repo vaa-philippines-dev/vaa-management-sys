@@ -4,7 +4,7 @@ import { useEffect, useState, useTransition } from 'react'
 import { Modal } from '@/components/ui/modal'
 import { getOrgUsersForDMPicker, findOrCreateDirectMessageChannel } from '@/app/(dashboard)/inbox/actions'
 
-type PickerUser = { id: string; firstName: string; lastName: string; avatarUrl: string | null; email: string }
+export type PickerUser = { id: string; firstName: string; lastName: string; avatarUrl: string | null; email: string }
 
 export function DMUserPickerModal({
   open,
@@ -13,7 +13,7 @@ export function DMUserPickerModal({
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onStarted: (channelId: string) => void
+  onStarted: (channelId: string, otherUser: PickerUser) => void
 }) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<PickerUser[]>([])
@@ -42,7 +42,7 @@ export function DMUserPickerModal({
       const { channelId } = await findOrCreateDirectMessageChannel(user.id)
       setStartingId(null)
       handleOpenChange(false)
-      onStarted(channelId)
+      onStarted(channelId, user)
     })
   }
 

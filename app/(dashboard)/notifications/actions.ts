@@ -20,10 +20,26 @@ export async function markNotificationRead(id: string) {
   })
 }
 
+export async function markNotificationUnread(id: string) {
+  const user = await requireAuth()
+  await prisma.notification.updateMany({
+    where: { id, recipientId: user.id },
+    data: { read: false },
+  })
+}
+
 export async function markAllNotificationsRead() {
   const user = await requireAuth()
   await prisma.notification.updateMany({
     where: { recipientId: user.id, read: false },
     data: { read: true },
+  })
+}
+
+export async function markAllNotificationsUnread() {
+  const user = await requireAuth()
+  await prisma.notification.updateMany({
+    where: { recipientId: user.id, read: true },
+    data: { read: false },
   })
 }

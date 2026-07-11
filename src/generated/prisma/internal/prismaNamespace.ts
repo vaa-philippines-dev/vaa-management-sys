@@ -2860,6 +2860,8 @@ export const ChannelParticipantScalarFieldEnum = {
   channelId: 'channelId',
   userId: 'userId',
   muted: 'muted',
+  archived: 'archived',
+  clearedAt: 'clearedAt',
   createdAt: 'createdAt'
 } as const
 

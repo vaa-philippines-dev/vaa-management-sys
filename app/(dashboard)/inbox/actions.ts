@@ -33,7 +33,7 @@ async function requireChannelMembership(channelId: string, userId: string) {
       where: { channelId_userId: { channelId, userId } },
     })
     if (!participant) throw new Error('You are not a participant in this conversation')
-    return channel
+    return { ...channel, clearedAt: participant.clearedAt }
   }
 
   if (!channel.departmentId) throw new Error('Channel is misconfigured (no department)')
@@ -156,6 +156,8 @@ export async function getMyChannels() {
     where: { userId: user.id, channel: { kind: 'DIRECT' } },
     select: {
       muted: true,
+      archived: true,
+      clearedAt: true,
       channel: {
         select: {
           id: true,
@@ -171,8 +173,11 @@ export async function getMyChannels() {
     kind: 'DIRECT' as const,
     channelId: p.channel.id,
     muted: p.muted,
+    archived: p.archived,
+    clearedAt: p.clearedAt,
     otherUser: p.channel.participants[0]?.user ?? null,
   }))
+  const clearedAtByChannel = new Map(directMessages.map((d) => [d.channelId, d.clearedAt]))
 
   const allChannelIds = [...channels.map((c) => c.channelId), ...directMessages.map((c) => c.channelId)]
 
@@ -180,17 +185,18 @@ export async function getMyChannels() {
     where: { userId: user.id, channelId: { in: allChannelIds } },
   })
   const readMap = new Map(reads.map((r) => [r.channelId, r.lastReadAt]))
+  const sinceFor = (id: string) => {
+    const readAt = readMap.get(id) ?? new Date(0)
+    const clearedAt = clearedAtByChannel.get(id)
+    return clearedAt && clearedAt > readAt ? clearedAt : readAt
+  }
 
   const [unreadCounts, unreadMentionCounts, pinnedCounts, lastMessages] = await Promise.all([
-    Promise.all(
-      allChannelIds.map((id) =>
-        prisma.message.count({ where: { channelId: id, createdAt: { gt: readMap.get(id) ?? new Date(0) } } })
-      )
-    ),
+    Promise.all(allChannelIds.map((id) => prisma.message.count({ where: { channelId: id, createdAt: { gt: sinceFor(id) } } }))),
     Promise.all(
       allChannelIds.map((id) =>
         prisma.messageMention.count({
-          where: { mentionedUserId: user.id, message: { channelId: id, createdAt: { gt: readMap.get(id) ?? new Date(0) } } },
+          where: { mentionedUserId: user.id, message: { channelId: id, createdAt: { gt: sinceFor(id) } } },
         })
       )
     ),
@@ -198,7 +204,7 @@ export async function getMyChannels() {
     Promise.all(
       allChannelIds.map((id) =>
         prisma.message.findFirst({
-          where: { channelId: id },
+          where: { channelId: id, createdAt: { gt: clearedAtByChannel.get(id) ?? new Date(0) } },
           orderBy: { createdAt: 'desc' },
           select: { body: true, createdAt: true, senderId: true },
         })
@@ -215,7 +221,9 @@ export async function getMyChannels() {
 
   return {
     channels: channels.map((c) => ({ ...c, ...countsById.get(c.channelId)! })),
-    directMessages: directMessages.map((c) => ({ ...c, ...countsById.get(c.channelId)! })),
+    directMessages: directMessages
+      .map(({ clearedAt: _clearedAt, ...c }) => ({ ...c, ...countsById.get(c.channelId)! }))
+      .sort((a, b) => Number(a.archived) - Number(b.archived)),
   }
 }
 
@@ -245,11 +253,13 @@ const MESSAGE_PAGE_SIZE = 50
 
 export async function getChannelMessages(channelId: string, cursor?: { createdAt: string | Date; id: string }) {
   const user = await requireAuth()
-  await requireChannelMembership(channelId, user.id)
+  const channel = await requireChannelMembership(channelId, user.id)
+  const clearedAt = 'clearedAt' in channel ? channel.clearedAt : null
 
   const messages = await prisma.message.findMany({
     where: {
       channelId,
+      ...(clearedAt ? { createdAt: { gt: clearedAt } } : {}),
       ...(cursor
         ? {
             OR: [
@@ -672,6 +682,22 @@ export async function muteChannel(channelId: string, muted: boolean) {
   await prisma.channelParticipant.update({
     where: { channelId_userId: { channelId, userId: user.id } },
     data: { muted },
+  })
+}
+
+export async function archiveDirectMessage(channelId: string, archived: boolean) {
+  const user = await requireAuth()
+  await prisma.channelParticipant.update({
+    where: { channelId_userId: { channelId, userId: user.id } },
+    data: { archived },
+  })
+}
+
+export async function clearDirectMessage(channelId: string) {
+  const user = await requireAuth()
+  await prisma.channelParticipant.update({
+    where: { channelId_userId: { channelId, userId: user.id } },
+    data: { clearedAt: new Date() },
   })
 }
 

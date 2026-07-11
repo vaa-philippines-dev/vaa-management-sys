@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import {
   Hash,
   Megaphone,
-  Send,
+  ArrowUp,
   Search,
   Settings,
   Pin,
@@ -17,10 +17,13 @@ import {
   Camera,
   Bell,
   BellOff,
+  Archive,
+  ArchiveRestore,
+  Trash2,
+  ChevronDown,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   DropdownMenu,
@@ -36,7 +39,8 @@ import { UserProfilePanel, type ProfilePanelUser } from './UserProfilePanel'
 import { ForwardMessageModal } from './ForwardMessageModal'
 import { PinnedMessagesPanel } from './PinnedMessagesPanel'
 import { GroupInfoPanel } from './GroupInfoPanel'
-import { DMUserPickerModal } from './DMUserPickerModal'
+import { DMUserPickerModal, type PickerUser } from './DMUserPickerModal'
+import { MessageListSkeleton } from './InboxSkeleton'
 import { formatRelativeTime } from '@/lib/format-relative-time'
 import {
   getChannelMessages,
@@ -51,6 +55,8 @@ import {
   pinMessage,
   pinDirectMessage,
   muteChannel,
+  archiveDirectMessage,
+  clearDirectMessage,
 } from '@/app/(dashboard)/inbox/actions'
 
 type DepartmentChannelSummary = {
@@ -68,6 +74,7 @@ type DirectChannelSummary = {
   channelId: string
   otherUser: { id: string; firstName: string; lastName: string; avatarUrl: string | null } | null
   muted: boolean
+  archived: boolean
   unreadCount: number
   unreadMentions: number
   pinnedCount: number
@@ -218,6 +225,9 @@ export function InboxView({
   const [pinnedOpen, setPinnedOpen] = useState(false)
   const [groupInfoOpen, setGroupInfoOpen] = useState(false)
   const [dmPickerOpen, setDmPickerOpen] = useState(false)
+  const [dmSearch, setDmSearch] = useState('')
+  const [showArchivedDMs, setShowArchivedDMs] = useState(false)
+  const [clearGeneration, setClearGeneration] = useState<Record<string, number>>({})
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -245,15 +255,16 @@ export function InboxView({
     clearUnread(channelId)
   }
 
-  const handleDMStarted = (channelId: string) => {
+  const handleDMStarted = (channelId: string, otherUser: PickerUser) => {
     if (!directMessages.some((c) => c.channelId === channelId)) {
       setDirectMessages((prev) => [
         ...prev,
         {
           kind: 'DIRECT',
           channelId,
-          otherUser: null,
+          otherUser,
           muted: false,
+          archived: false,
           unreadCount: 0,
           unreadMentions: 0,
           pinnedCount: 0,
@@ -270,6 +281,21 @@ export function InboxView({
     muteChannel(dm.channelId, nextMuted)
   }
 
+  const handleToggleArchive = (dm: DirectChannelSummary) => {
+    const nextArchived = !dm.archived
+    setDirectMessages((prev) => prev.map((c) => (c.channelId === dm.channelId ? { ...c, archived: nextArchived } : c)))
+    archiveDirectMessage(dm.channelId, nextArchived)
+  }
+
+  const handleClearConversation = (dm: DirectChannelSummary) => {
+    if (!window.confirm('Clear this conversation? This only removes it from your view.')) return
+    setDirectMessages((prev) =>
+      prev.map((c) => (c.channelId === dm.channelId ? { ...c, lastMessage: null, unreadCount: 0, unreadMentions: 0 } : c))
+    )
+    clearDirectMessage(dm.channelId)
+    setClearGeneration((prev) => ({ ...prev, [dm.channelId]: (prev[dm.channelId] ?? 0) + 1 }))
+  }
+
   const openProfile = async (userId: string) => {
     const profile = await getUserProfile(userId)
     if (profile) setProfileUser(profile)
@@ -279,6 +305,12 @@ export function InboxView({
     setChannels((prev) => prev.map((c) => (c.channelId === channelId ? { ...c, pinnedCount: Math.max(0, c.pinnedCount + delta) } : c)))
     setDirectMessages((prev) => prev.map((c) => (c.channelId === channelId ? { ...c, pinnedCount: Math.max(0, c.pinnedCount + delta) } : c)))
   }
+
+  const dmSearchLower = dmSearch.trim().toLowerCase()
+  const matchesDmSearch = (dm: DirectChannelSummary) =>
+    !dmSearchLower || (dm.otherUser ? `${dm.otherUser.firstName} ${dm.otherUser.lastName}`.toLowerCase().includes(dmSearchLower) : false)
+  const filteredActiveDMs = directMessages.filter((dm) => !dm.archived && matchesDmSearch(dm))
+  const filteredArchivedDMs = directMessages.filter((dm) => dm.archived && matchesDmSearch(dm))
 
   if (allChannels.length === 0) {
     return (
@@ -413,65 +445,56 @@ export function InboxView({
                   <Plus className="h-3 w-3" />
                 </button>
               </div>
+              {directMessages.length > 4 && (
+                <div className="px-1.5 pb-1">
+                  <input
+                    value={dmSearch}
+                    onChange={(e) => setDmSearch(e.target.value)}
+                    placeholder="Search people..."
+                    className="w-full rounded-md border border-input bg-transparent px-2 py-1 text-[11px] outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50"
+                  />
+                </div>
+              )}
               <nav className="flex flex-col gap-px">
-                {directMessages.map((dm) => {
-                  const name = dm.otherUser ? `${dm.otherUser.firstName} ${dm.otherUser.lastName}` : 'Direct Message'
-                  return (
-                    <button
-                      key={dm.channelId}
-                      type="button"
-                      onClick={() => handleSelectChannel(dm.channelId)}
-                      className={cn(
-                        'group/dmrow flex items-center gap-2 rounded-md px-2 py-1.5 text-left transition-colors',
-                        activeChannelId === dm.channelId
-                          ? 'bg-accent text-accent-foreground'
-                          : 'text-muted-foreground hover:bg-accent/60 hover:text-accent-foreground'
-                      )}
-                    >
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted text-[11px] font-semibold">
-                        {dm.otherUser?.avatarUrl ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={dm.otherUser.avatarUrl} alt={name} className="h-full w-full object-cover" />
-                        ) : (
-                          dm.otherUser?.firstName[0] ?? '?'
-                        )}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center justify-between gap-1">
-                          <span className="truncate text-[13px] font-medium">{name}</span>
-                          {dm.lastMessage && (
-                            <span className="shrink-0 text-[10px] text-muted-foreground/70">
-                              {formatRelativeTime(dm.lastMessage.createdAt)}
-                            </span>
-                          )}
-                        </div>
-                        {dm.lastMessage && (
-                          <p className="truncate text-[11px] text-muted-foreground">{dm.lastMessage.body}</p>
-                        )}
-                      </div>
-                      {!dm.muted && dm.unreadMentions > 0 ? (
-                        <span className="shrink-0 rounded-full bg-destructive px-1.5 py-0.5 text-[10px] font-semibold text-destructive-foreground">
-                          @{dm.unreadMentions}
-                        </span>
-                      ) : !dm.muted && dm.unreadCount > 0 ? (
-                        <span className="shrink-0 h-1.5 w-1.5 rounded-full bg-primary" />
-                      ) : null}
-                      <span
-                        role="button"
-                        tabIndex={0}
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleToggleMute(dm)
-                        }}
-                        aria-label={dm.muted ? 'Unmute' : 'Mute'}
-                        className="opacity-0 shrink-0 flex h-5 w-5 items-center justify-center rounded text-muted-foreground transition-opacity hover:bg-muted hover:text-foreground group-hover/dmrow:opacity-100"
-                      >
-                        {dm.muted ? <BellOff className="h-3 w-3" /> : <Bell className="h-3 w-3" />}
-                      </span>
-                    </button>
-                  )
-                })}
+                {filteredActiveDMs.map((dm) => (
+                  <DMRow
+                    key={dm.channelId}
+                    dm={dm}
+                    isActive={activeChannelId === dm.channelId}
+                    onSelect={() => handleSelectChannel(dm.channelId)}
+                    onToggleMute={() => handleToggleMute(dm)}
+                    onToggleArchive={() => handleToggleArchive(dm)}
+                    onClear={() => handleClearConversation(dm)}
+                  />
+                ))}
               </nav>
+              {filteredArchivedDMs.length > 0 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setShowArchivedDMs((v) => !v)}
+                    className="mt-1 flex w-full items-center gap-1 px-1.5 py-1 text-[10.5px] font-medium text-muted-foreground hover:text-foreground"
+                  >
+                    <ChevronDown className={cn('h-3 w-3 transition-transform', !showArchivedDMs && '-rotate-90')} />
+                    Archived ({filteredArchivedDMs.length})
+                  </button>
+                  {showArchivedDMs && (
+                    <nav className="flex flex-col gap-px">
+                      {filteredArchivedDMs.map((dm) => (
+                        <DMRow
+                          key={dm.channelId}
+                          dm={dm}
+                          isActive={activeChannelId === dm.channelId}
+                          onSelect={() => handleSelectChannel(dm.channelId)}
+                          onToggleMute={() => handleToggleMute(dm)}
+                          onToggleArchive={() => handleToggleArchive(dm)}
+                          onClear={() => handleClearConversation(dm)}
+                        />
+                      ))}
+                    </nav>
+                  )}
+                </>
+              )}
             </section>
           </div>
         </ScrollArea>
@@ -481,7 +504,7 @@ export function InboxView({
         <div className="flex flex-1 flex-col min-w-0">
           {activeChannel && (
             <ChannelThread
-              key={activeChannel.channelId}
+              key={`${activeChannel.channelId}:${clearGeneration[activeChannel.channelId] ?? 0}`}
               channel={activeChannel}
               currentUser={currentUser}
               messageColor={messageColor}
@@ -580,6 +603,7 @@ function ChannelThread({
     : `#${channel.departmentName}`
 
   const [messages, setMessages] = useState<MessageWithSender[]>([])
+  const [messagesLoaded, setMessagesLoaded] = useState(false)
   const [members, setMembers] = useState<Member[]>([])
   const [draft, setDraft] = useState('')
   const [mentionQuery, setMentionQuery] = useState<string | null>(null)
@@ -590,6 +614,7 @@ function ChannelThread({
   const [highlightedId, setHighlightedId] = useState<string | null>(null)
   const [hasMoreOlder, setHasMoreOlder] = useState(true)
   const [loadingOlder, setLoadingOlder] = useState(false)
+  const [showJumpToLatest, setShowJumpToLatest] = useState(false)
   const [isPending, startTransition] = useTransition()
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -606,6 +631,7 @@ function ChannelThread({
       if (cancelled) return
       setMessages(result.messages as unknown as MessageWithSender[])
       setHasMoreOlder(result.hasMore)
+      setMessagesLoaded(true)
     })
     getChannelMembers(channelId).then((data) => {
       if (!cancelled) setMembers(data)
@@ -652,10 +678,34 @@ function ChannelThread({
   useEffect(() => {
     const newLastId = messages[messages.length - 1]?.id ?? null
     if (newLastId !== lastMessageIdRef.current) {
+      const wasNearBottom = lastMessageIdRef.current === null
+      const root = scrollAreaRef.current
+      const nearBottom = wasNearBottom || (root ? root.scrollHeight - root.scrollTop - root.clientHeight < 150 : true)
       lastMessageIdRef.current = newLastId
-      bottomRef.current?.scrollIntoView({ block: 'end' })
+      if (nearBottom) {
+        bottomRef.current?.scrollIntoView({ block: 'end' })
+        setShowJumpToLatest(false)
+      } else {
+        setShowJumpToLatest(true)
+      }
     }
   }, [messages])
+
+  useEffect(() => {
+    const root = scrollAreaRef.current
+    if (!root) return
+    const handleScroll = () => {
+      const nearBottom = root.scrollHeight - root.scrollTop - root.clientHeight < 150
+      if (nearBottom) setShowJumpToLatest(false)
+    }
+    root.addEventListener('scroll', handleScroll)
+    return () => root.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const jumpToLatest = () => {
+    bottomRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' })
+    setShowJumpToLatest(false)
+  }
 
   useEffect(() => {
     if (!inputRef.current) return
@@ -970,7 +1020,8 @@ function ChannelThread({
         </button>
       </div>
 
-      <ScrollArea ref={scrollAreaRef} className="flex-1 px-4 py-3">
+      <div className="relative flex-1 min-h-0">
+      <ScrollArea ref={scrollAreaRef} className="h-full px-4 py-3">
         <div className="flex flex-col gap-3">
           <div ref={topSentinelRef} />
           {loadingOlder && (
@@ -981,7 +1032,9 @@ function ChannelThread({
               {isDM ? `Beginning of your conversation with ${composerLabel}` : `Beginning of ${composerLabel}`}
             </p>
           )}
-          {messages.length === 0 ? (
+          {!messagesLoaded ? (
+            <MessageListSkeleton />
+          ) : messages.length === 0 ? (
             <p className="py-8 text-center text-xs text-muted-foreground">No messages yet. Say hello.</p>
           ) : (
             messages.map((m, i) => {
@@ -999,7 +1052,22 @@ function ChannelThread({
                   }
                 : null
               const prevMessage = messages[i - 1]
+              const nextMessage = messages[i + 1]
               const showDateSeparator = !prevMessage || dayKey(prevMessage.createdAt) !== dayKey(m.createdAt)
+              const isGroupedWithPrev =
+                !showDateSeparator &&
+                !!prevMessage &&
+                prevMessage.sender.id === m.sender.id &&
+                !m.parent &&
+                !m.forwardedFromSenderName &&
+                new Date(m.createdAt).getTime() - new Date(prevMessage.createdAt).getTime() < 5 * 60 * 1000
+              const isGroupedWithNext =
+                !!nextMessage &&
+                dayKey(nextMessage.createdAt) === dayKey(m.createdAt) &&
+                nextMessage.sender.id === m.sender.id &&
+                !nextMessage.parent &&
+                !nextMessage.forwardedFromSenderName &&
+                new Date(nextMessage.createdAt).getTime() - new Date(m.createdAt).getTime() < 5 * 60 * 1000
 
               return (
                 <div key={m.id} className="contents">
@@ -1017,10 +1085,11 @@ function ChannelThread({
                     className={cn(
                       'group/message flex items-end gap-2 animate-in fade-in-0 slide-in-from-bottom-2 duration-200 rounded-lg transition-colors',
                       isMe && 'flex-row-reverse',
+                      isGroupedWithPrev ? 'mt-0.5' : 'mt-2',
                       highlightedId === m.id && 'bg-primary/10'
                     )}
                   >
-                    {isMe ? (
+                    {isMe || isGroupedWithNext ? (
                       <div className="h-7 w-7 shrink-0" />
                     ) : (
                       <button
@@ -1044,20 +1113,30 @@ function ChannelThread({
                       </button>
                     )}
                     <div className={cn('flex max-w-[70%] flex-col gap-0.5', isMe && 'items-end')}>
+                      {!isGroupedWithPrev && (
+                        <div className={cn('flex items-baseline gap-2', isMe && 'flex-row-reverse')}>
+                          {!isMe && (
+                            <button
+                              type="button"
+                              onClick={() => onOpenProfile(m.sender.id)}
+                              className="text-[12px] font-semibold hover:underline"
+                            >
+                              {m.sender.firstName} {m.sender.lastName}
+                            </button>
+                          )}
+                          <p className="text-[10.5px] text-muted-foreground">
+                            {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            {m.editedAt && <span className="italic"> (edited)</span>}
+                          </p>
+                        </div>
+                      )}
                       <div className={cn('flex items-baseline gap-2', isMe && 'flex-row-reverse')}>
-                        {!isMe && (
-                          <button
-                            type="button"
-                            onClick={() => onOpenProfile(m.sender.id)}
-                            className="text-[12px] font-semibold hover:underline"
-                          >
-                            {m.sender.firstName} {m.sender.lastName}
-                          </button>
+                        {isGroupedWithPrev && (
+                          <p className="text-[10.5px] text-muted-foreground opacity-0 transition-opacity group-hover/message:opacity-100">
+                            {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            {m.editedAt && <span className="italic"> (edited)</span>}
+                          </p>
                         )}
-                        <p className="text-[10.5px] text-muted-foreground">
-                          {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                          {m.editedAt && <span className="italic"> (edited)</span>}
-                        </p>
                         {!isDeleted && (
                           <DropdownMenu>
                             <DropdownMenuTrigger
@@ -1129,7 +1208,14 @@ function ChannelThread({
                         {isDeleted ? 'Message deleted' : renderBody(m.body, currentUser.id)}
                       </div>
                       {isMe && !isDeleted && (
-                        <p className="text-[10px] text-muted-foreground/70">{m.pending ? 'Sending…' : 'Sent'}</p>
+                        <p
+                          className={cn(
+                            'text-[10px] text-muted-foreground/70',
+                            m.pending ? '' : 'opacity-0 transition-opacity group-hover/message:opacity-100'
+                          )}
+                        >
+                          {m.pending ? 'Sending…' : 'Sent'}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -1140,6 +1226,17 @@ function ChannelThread({
           <div ref={bottomRef} />
         </div>
       </ScrollArea>
+      {showJumpToLatest && (
+        <button
+          type="button"
+          onClick={jumpToLatest}
+          aria-label="Jump to latest messages"
+          className="absolute bottom-3 right-4 flex h-8 w-8 items-center justify-center rounded-full border bg-popover text-muted-foreground shadow-lg transition-transform hover:scale-105 hover:text-foreground"
+        >
+          <ChevronDown className="h-4 w-4" />
+        </button>
+      )}
+      </div>
 
       <div className="h-5 px-4 text-[11px] text-muted-foreground italic">{typingLabel}</div>
 
@@ -1221,9 +1318,15 @@ function ChannelThread({
             disabled={isPending}
             className="max-h-32 w-full min-w-0 resize-none rounded-lg border border-input bg-transparent px-2.5 py-1.5 text-[13px] outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50"
           />
-          <Button type="button" size="sm" onClick={handleSend} disabled={!draft.trim()}>
-            <Send className="h-3.5 w-3.5" />
-          </Button>
+          <button
+            type="button"
+            onClick={handleSend}
+            disabled={!draft.trim()}
+            aria-label="Send message"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0B84FE] text-white shadow-sm transition-all hover:bg-[#0A6CD4] disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:shadow-none"
+          >
+            <ArrowUp className="h-4 w-4" strokeWidth={2.75} />
+          </button>
         </div>
       )}
 
@@ -1235,5 +1338,97 @@ function ChannelThread({
         channels={forwardOptions}
       />
     </>
+  )
+}
+
+function DMRow({
+  dm,
+  isActive,
+  onSelect,
+  onToggleMute,
+  onToggleArchive,
+  onClear,
+}: {
+  dm: DirectChannelSummary
+  isActive: boolean
+  onSelect: () => void
+  onToggleMute: () => void
+  onToggleArchive: () => void
+  onClear: () => void
+}) {
+  const name = dm.otherUser ? `${dm.otherUser.firstName} ${dm.otherUser.lastName}` : 'Direct Message'
+
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      className={cn(
+        'group/dmrow flex items-center gap-2 rounded-md px-2 py-1.5 text-left transition-colors',
+        isActive ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:bg-accent/60 hover:text-accent-foreground'
+      )}
+    >
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted text-[11px] font-semibold">
+        {dm.otherUser?.avatarUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={dm.otherUser.avatarUrl} alt={name} className="h-full w-full object-cover" />
+        ) : (
+          dm.otherUser?.firstName[0] ?? '?'
+        )}
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center justify-between gap-1">
+          <span className="truncate text-[13px] font-medium">{name}</span>
+          {dm.lastMessage && (
+            <span className="shrink-0 text-[10px] text-muted-foreground/70">{formatRelativeTime(dm.lastMessage.createdAt)}</span>
+          )}
+        </div>
+        {dm.lastMessage && <p className="truncate text-[11px] text-muted-foreground">{dm.lastMessage.body}</p>}
+      </div>
+      {!dm.muted && dm.unreadMentions > 0 ? (
+        <span className="shrink-0 rounded-full bg-destructive px-1.5 py-0.5 text-[10px] font-semibold text-destructive-foreground">
+          @{dm.unreadMentions}
+        </span>
+      ) : !dm.muted && dm.unreadCount > 0 ? (
+        <span className="shrink-0 h-1.5 w-1.5 rounded-full bg-primary" />
+      ) : null}
+      <span
+        role="button"
+        tabIndex={0}
+        onClick={(e) => {
+          e.stopPropagation()
+          onToggleMute()
+        }}
+        aria-label={dm.muted ? 'Unmute' : 'Mute'}
+        className="opacity-0 shrink-0 flex h-5 w-5 items-center justify-center rounded text-muted-foreground transition-opacity hover:bg-muted hover:text-foreground group-hover/dmrow:opacity-100"
+      >
+        {dm.muted ? <BellOff className="h-3 w-3" /> : <Bell className="h-3 w-3" />}
+      </span>
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          onClick={(e) => e.stopPropagation()}
+          aria-label="Conversation options"
+          className="opacity-0 shrink-0 flex h-5 w-5 items-center justify-center rounded text-muted-foreground transition-opacity hover:bg-muted hover:text-foreground group-hover/dmrow:opacity-100"
+        >
+          <MoreHorizontal className="h-3 w-3" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={onToggleArchive}>
+            {dm.archived ? (
+              <>
+                <ArchiveRestore className="h-3.5 w-3.5" /> Unarchive
+              </>
+            ) : (
+              <>
+                <Archive className="h-3.5 w-3.5" /> Archive
+              </>
+            )}
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem variant="destructive" onClick={onClear}>
+            <Trash2 className="h-3.5 w-3.5" /> Clear conversation
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </button>
   )
 }
