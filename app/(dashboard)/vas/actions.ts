@@ -9,7 +9,7 @@ import { logAudit } from '@/lib/audit'
 import type { Proficiency, EmploymentStatus } from '@/src/generated/prisma/enums'
 
 export async function createVA(formData: FormData) {
-  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER')
+  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER')
 
   const email = formData.get('email') as string
   const nameVal = (formData.get('name') as string) || ''
@@ -64,7 +64,7 @@ export async function createVA(formData: FormData) {
 }
 
 export async function addVASkill(vaProfileId: string, skillId: string, proficiency: string, yearsExperience?: number) {
-  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER')
+  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER')
 
   const va = await prisma.vAProfile.findUnique({ where: { id: vaProfileId }, select: { userId: true } })
   if (!va) throw new Error('VA profile not found')
@@ -156,7 +156,7 @@ function normalizeEnum(value: string | undefined, allowed: string[]): string | n
 const CSV_IMPORT_BATCH_SIZE = 20
 
 export async function bulkImportVAs(rows: VACsvRow[], overwriteExisting = false): Promise<VACsvImportResult> {
-  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER')
+  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER')
 
   const result: VACsvImportResult = { created: 0, updated: 0, skipped: [] }
 
@@ -516,7 +516,7 @@ export async function bulkImportVAs(rows: VACsvRow[], overwriteExisting = false)
 }
 
 export async function updateVAProfile(vaProfileId: string, formData: FormData) {
-  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER')
+  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER')
 
   const data: Record<string, any> = {}
   const allowedFields = [
@@ -592,7 +592,7 @@ export async function changeVAStatus(
   effectiveDate?: string,
   reason?: string
 ) {
-  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER')
+  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER')
 
   const field = statusType === 'GENERAL' ? 'status' : 'engagementStatus'
   const before = await prisma.vAProfile.findUnique({
@@ -659,7 +659,7 @@ export async function transferVA(
   newHourlyRate?: number,
   newBaseRate?: number
 ) {
-  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER')
+  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER')
 
   const va = await prisma.vAProfile.findUnique({
     where: { id: vaProfileId },
@@ -769,7 +769,7 @@ export async function transferVA(
 }
 
 export async function updateUserProfile(userId: string, formData: FormData) {
-  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER')
+  const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER')
 
   const data: Record<string, any> = {}
   const userData: Record<string, any> = {}
@@ -845,7 +845,7 @@ export async function updateUserProfile(userId: string, formData: FormData) {
 export { updateUserProfile as updateUserProfileAction }
 
 export async function updateEmployment(vaProfileId: string, userId: string, formData: FormData) {
-  await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER')
+  await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER')
   await updateVAProfile(vaProfileId, formData)
   await updateUserProfile(userId, formData)
 }
@@ -856,7 +856,7 @@ export async function updateUserProfileFiles(
   philhealthPhoto: string | null,
   signedContract: string | null
 ) {
-  await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER')
+  await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER')
 
   await prisma.userProfile.upsert({
     where: { userId },

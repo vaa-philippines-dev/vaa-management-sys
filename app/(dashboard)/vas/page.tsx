@@ -68,7 +68,7 @@ const EMPLOYMENT_TONE: Record<string, Tone> = {
   BLACKLISTED: 'neutral',
 }
 
-const hrgRoles = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'EXECUTIVE']
+const hrgRoles = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'EXECUTIVE']
 
 export default async function VAPage({
   searchParams,

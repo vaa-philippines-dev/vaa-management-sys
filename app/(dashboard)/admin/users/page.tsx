@@ -164,6 +164,8 @@ export default async function AdminUsersPage({
                   { value: 'SYSTEM_ADMIN', label: 'System Admin' },
                   { value: 'EXECUTIVE', label: 'Executive' },
                   { value: 'DEPT_MANAGER', label: 'Dept Manager' },
+                  { value: 'TEAM_LEADER', label: 'Team Leader' },
+                  { value: 'OPERATIONS_MANAGER', label: 'Operations Manager' },
                   { value: 'STAFF', label: 'Staff' },
                   { value: 'VA', label: 'VA' },
                 ],

@@ -11,6 +11,8 @@ const ROLE_LABELS: Record<string, string> = {
   SYSTEM_ADMIN: 'System Admin',
   EXECUTIVE: 'Executive',
   DEPT_MANAGER: 'Dept Manager',
+  TEAM_LEADER: 'Team Leader',
+  OPERATIONS_MANAGER: 'Operations Manager',
   STAFF: 'Staff',
   VA: 'Virtual Assistant',
 }

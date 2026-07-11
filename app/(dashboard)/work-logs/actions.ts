@@ -7,7 +7,7 @@ import { redirect } from 'next/navigation'
 import { requireAuth } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
 
-const WORK_LOG_STAFF_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'STAFF']
+const WORK_LOG_STAFF_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'STAFF']
 
 export async function createWorkLog(formData: FormData) {
   const user = await requireAuth()

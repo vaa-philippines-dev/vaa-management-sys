@@ -10,7 +10,7 @@ import Link from 'next/link'
 import { HeadcountReportControls } from '@/components/reports/HeadcountReportControls'
 import { Users } from 'lucide-react'
 
-const REPORTS_VIEW_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'STAFF']
+const REPORTS_VIEW_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'STAFF']
 
 export default async function HeadcountReportPage({
   searchParams,

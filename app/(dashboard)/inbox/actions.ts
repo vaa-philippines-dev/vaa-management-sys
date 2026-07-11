@@ -5,7 +5,7 @@ import { requireAuth, requireManager } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
 
 const MENTION_PATTERN = /@\[([^\]]+)\]\(([a-zA-Z0-9_-]+)\)/g
-const ANNOUNCEMENT_POSTER_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER']
+const ANNOUNCEMENT_POSTER_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER']
 
 const MESSAGE_SENDER_SELECT = {
   sender: { select: { id: true, firstName: true, lastName: true, messageColor: true, avatarUrl: true } },
@@ -475,7 +475,7 @@ export async function deleteMessage(messageId: string) {
   if (message.deletedAt) throw new Error('Message already deleted')
 
   const isOwner = message.senderId === user.id
-  const isModerator = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER'].includes(user.systemRole)
+  const isModerator = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER'].includes(user.systemRole)
   if (!isOwner && !isModerator) throw new Error('Forbidden')
 
   const channel = await requireChannelMembership(message.channelId, user.id)

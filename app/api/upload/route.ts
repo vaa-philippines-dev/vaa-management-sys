@@ -5,7 +5,7 @@ import { Readable } from 'stream'
 import { logAudit } from '@/lib/audit'
 import { requireAuth } from '@/lib/auth'
 
-const HR_UPLOAD_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER']
+const HR_UPLOAD_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER']
 
 const ALLOWED_MIME_TYPES = new Set([
   'image/jpeg',

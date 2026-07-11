@@ -11,7 +11,7 @@ import { MonthlyReportControls } from '@/components/reports/MonthlyReportControl
 import { buttonVariants } from '@/components/ui/button'
 import { BarChart3, PieChart } from 'lucide-react'
 
-const REPORTS_VIEW_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'STAFF']
+const REPORTS_VIEW_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'STAFF']
 
 export default async function ReportsPage({
   searchParams,

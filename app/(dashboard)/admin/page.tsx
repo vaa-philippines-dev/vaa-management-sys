@@ -81,7 +81,7 @@ async function StatsSection() {
     cached('admin:totalDepts', [CACHE_TAGS.departments], 600, () => prisma.department.count({ where: { status: 'ACTIVE' } })),
     cached('admin:roleCounts', [CACHE_TAGS.users], 60, () =>
       prisma.user.groupBy({ by: ['systemRole'], _count: true }).then((rows) =>
-        ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'STAFF', 'VA'].map((role) => ({
+        ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'STAFF', 'VA'].map((role) => ({
           role,
           count: rows.find((r) => r.systemRole === role)?._count ?? 0,
         }))
@@ -151,7 +151,7 @@ async function DepartmentsSection() {
     ),
     cached('admin:roleCounts', [CACHE_TAGS.users], 60, () =>
       prisma.user.groupBy({ by: ['systemRole'], _count: true }).then((rows) =>
-        ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'STAFF', 'VA'].map((role) => ({
+        ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'STAFF', 'VA'].map((role) => ({
           role,
           count: rows.find((r) => r.systemRole === role)?._count ?? 0,
         }))
@@ -239,6 +239,8 @@ function roleColor(role: string) {
     SYSTEM_ADMIN: '#ea580c',
     EXECUTIVE: '#ca8a04',
     DEPT_MANAGER: '#2563eb',
+    TEAM_LEADER: '#0891b2',
+    OPERATIONS_MANAGER: '#4f46e5',
     STAFF: '#7c3aed',
     VA: '#059669',
   }

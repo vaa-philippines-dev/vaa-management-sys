@@ -2,9 +2,9 @@ import { cache } from 'react'
 import { prisma } from '@/lib/prisma'
 import { createServerSupabase } from '@/lib/supabase/server'
 
-export const CLIENT_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'STAFF']
-export const ASSIGNMENT_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'STAFF']
-export const VA_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER']
+export const CLIENT_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'STAFF']
+export const ASSIGNMENT_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'STAFF']
+export const VA_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER']
 // Ticketing: only admins can view every ticket and manage them (assign/close/resolve).
 // EXECUTIVE can view every ticket but not mutate it (view-only, same as requireAdminMutator()).
 // Everyone else (DEPT_MANAGER, STAFF, VA) only sees tickets they created or are assigned to.
@@ -82,7 +82,7 @@ export function canMutate(user: { systemRole: string } | null | undefined): bool
 }
 
 export async function requireManager() {
-  return requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER')
+  return requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER')
 }
 
 export async function requireVA() {

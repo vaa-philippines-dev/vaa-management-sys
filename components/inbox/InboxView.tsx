@@ -136,7 +136,7 @@ const BUBBLE_COLOR: Record<MessageColorValue, string> = {
 
 const NEUTRAL_RECEIVED_BUBBLE = 'bg-[#E9E9EB] text-[#1C1C1E] dark:bg-[#2C2C2E] dark:text-[#F2F2F7]'
 
-const MODERATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER']
+const MODERATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER']
 
 function renderBody(body: string, currentUserId: string) {
   const parts: React.ReactNode[] = []

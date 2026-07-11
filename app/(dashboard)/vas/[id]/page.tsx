@@ -14,7 +14,7 @@ import { TransferVAModal } from '@/components/vas/TransferVAModal'
 import { AddSkillCard } from '@/components/vas/AddSkillCard'
 import { VADetailPanel } from '@/components/vas/VADetailPanel'
 
-const hrgRoles = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'EXECUTIVE']
+const hrgRoles = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'EXECUTIVE']
 
 const STATUS_DOT: Record<string, string> = {
   ACTIVE: 'bg-success',
