@@ -168,12 +168,14 @@ export async function getChannelMessages(channelId: string) {
   const user = await requireAuth()
   await requireChannelMembership(channelId, user.id)
 
-  return prisma.message.findMany({
+  const messages = await prisma.message.findMany({
     where: { channelId },
-    orderBy: { createdAt: 'asc' },
+    orderBy: { createdAt: 'desc' },
     take: 100,
     include: MESSAGE_SENDER_SELECT,
   })
+
+  return messages.reverse()
 }
 
 export async function sendMessage(channelId: string, body: string) {
