@@ -13,6 +13,17 @@ import {
   markNotificationRead,
 } from '@/app/(dashboard)/notifications/actions'
 
+// Supabase Realtime sends timestamp columns as raw Postgres text with no
+// timezone marker, unlike Prisma which always includes the "Z" suffix.
+// new Date(...) treats an unmarked string as local time instead of UTC, so
+// without this the notification's time would render correctly only for
+// whichever timezone happens to match the raw string's numbers.
+function toUtcIso(value: string | null): string | null {
+  if (!value) return value
+  if (/[zZ]|[+-]\d{2}:?\d{2}$/.test(value)) return value
+  return `${value.replace(' ', 'T')}Z`
+}
+
 type Notification = {
   id: string
   type: 'NEW_ASSIGNMENT' | 'HOURS_SHORTFALL' | 'NEW_MESSAGE' | 'MESSAGE_REPLY'
@@ -74,7 +85,7 @@ export function NotificationBell({
               title: raw.title as string,
               message: raw.message as string,
               read: raw.read as boolean,
-              createdAt: raw.created_at as string,
+              createdAt: toUtcIso(raw.created_at as string) as string,
               entityType: raw.entity_type as string | null,
               entityId: raw.entity_id as string | null,
               messageId: raw.message_id as string | null,

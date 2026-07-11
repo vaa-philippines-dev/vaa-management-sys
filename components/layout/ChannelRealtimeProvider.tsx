@@ -26,6 +26,30 @@ type TypingPayload = {
   firstName: string
 }
 
+// Supabase Realtime sends timestamp columns as raw Postgres text with no
+// timezone marker (e.g. "2026-07-11 17:01:42.875"), unlike Prisma/PostgREST
+// which always include the "Z" suffix. `new Date(...)` treats an unmarked
+// string as local time instead of UTC, so without this normalization a
+// message's time renders correctly for the sender (whose local time happens
+// to line up) but wrong for anyone in a different timezone until they
+// refresh and refetch the same row via Prisma. Append "Z" (after swapping
+// the space for "T") whenever the string lacks an explicit zone.
+function toUtcIso(value: string | null): string | null {
+  if (!value) return value
+  if (/[zZ]|[+-]\d{2}:?\d{2}$/.test(value)) return value
+  return `${value.replace(' ', 'T')}Z`
+}
+
+function normalizeMessageRow(row: MessageRow): MessageRow {
+  return {
+    ...row,
+    created_at: toUtcIso(row.created_at) as string,
+    edited_at: toUtcIso(row.edited_at),
+    deleted_at: toUtcIso(row.deleted_at),
+    pinned_at: toUtcIso(row.pinned_at),
+  }
+}
+
 export function ChannelRealtimeProvider({
   channelId,
   onMessage,
@@ -54,14 +78,14 @@ export function ChannelRealtimeProvider({
           'postgres_changes',
           { event: 'INSERT', schema: 'public', table: 'messages', filter: `channel_id=eq.${channelId}` },
           (payload: RealtimePostgresChangesPayload<MessageRow>) => {
-            onMessage(payload.new as MessageRow)
+            onMessage(normalizeMessageRow(payload.new as MessageRow))
           }
         )
         .on(
           'postgres_changes',
           { event: 'UPDATE', schema: 'public', table: 'messages', filter: `channel_id=eq.${channelId}` },
           (payload: RealtimePostgresChangesPayload<MessageRow>) => {
-            onMessageUpdate?.(payload.new as MessageRow)
+            onMessageUpdate?.(normalizeMessageRow(payload.new as MessageRow))
           }
         )
         .on('broadcast', { event: 'typing' }, ({ payload }) => {
