@@ -164,18 +164,33 @@ export async function getChannelMembers(channelId: string) {
   return memberships.map((m) => m.user)
 }
 
-export async function getChannelMessages(channelId: string) {
+const MESSAGE_PAGE_SIZE = 50
+
+export async function getChannelMessages(channelId: string, cursor?: { createdAt: string | Date; id: string }) {
   const user = await requireAuth()
   await requireChannelMembership(channelId, user.id)
 
   const messages = await prisma.message.findMany({
-    where: { channelId },
-    orderBy: { createdAt: 'desc' },
-    take: 100,
+    where: {
+      channelId,
+      ...(cursor
+        ? {
+            OR: [
+              { createdAt: { lt: new Date(cursor.createdAt) } },
+              { createdAt: new Date(cursor.createdAt), id: { lt: cursor.id } },
+            ],
+          }
+        : {}),
+    },
+    orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+    take: MESSAGE_PAGE_SIZE + 1,
     include: MESSAGE_SENDER_SELECT,
   })
 
-  return messages.reverse()
+  const hasMore = messages.length > MESSAGE_PAGE_SIZE
+  const page = messages.slice(0, MESSAGE_PAGE_SIZE).reverse()
+
+  return { messages: page, hasMore }
 }
 
 export async function sendMessage(channelId: string, body: string) {

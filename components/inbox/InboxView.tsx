@@ -375,17 +375,24 @@ function ChannelThread({
   const [composerMode, setComposerMode] = useState<ComposerMode>(null)
   const [forwardMessageId, setForwardMessageId] = useState<string | null>(null)
   const [highlightedId, setHighlightedId] = useState<string | null>(null)
+  const [hasMoreOlder, setHasMoreOlder] = useState(true)
+  const [loadingOlder, setLoadingOlder] = useState(false)
   const [isPending, startTransition] = useTransition()
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
+  const scrollAreaRef = useRef<HTMLDivElement>(null)
+  const topSentinelRef = useRef<HTMLDivElement>(null)
+  const lastMessageIdRef = useRef<string | null>(null)
   const typingBroadcastRef = useRef<((userId: string, firstName: string) => void) | null>(null)
   const typingTimeoutsRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map())
   const lastTypingSentRef = useRef(0)
 
   useEffect(() => {
     let cancelled = false
-    getChannelMessages(channelId).then((data) => {
-      if (!cancelled) setMessages(data as unknown as MessageWithSender[])
+    getChannelMessages(channelId).then((result) => {
+      if (cancelled) return
+      setMessages(result.messages as unknown as MessageWithSender[])
+      setHasMoreOlder(result.hasMore)
     })
     getChannelMembers(channelId).then((data) => {
       if (!cancelled) setMembers(data)
@@ -395,9 +402,47 @@ function ChannelThread({
     }
   }, [channelId])
 
+  const loadOlderMessages = () => {
+    const oldest = messages[0]
+    if (!oldest || loadingOlder) return
+    setLoadingOlder(true)
+    const root = scrollAreaRef.current
+    const prevScrollHeight = root?.scrollHeight ?? 0
+
+    getChannelMessages(channelId, { createdAt: oldest.createdAt, id: oldest.id }).then((result) => {
+      setMessages((prev) => [...(result.messages as unknown as MessageWithSender[]), ...prev])
+      setHasMoreOlder(result.hasMore)
+      setLoadingOlder(false)
+      requestAnimationFrame(() => {
+        if (root) root.scrollTop += root.scrollHeight - prevScrollHeight
+      })
+    })
+  }
+
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ block: 'end' })
-  }, [messages.length])
+    if (!hasMoreOlder || loadingOlder) return
+    const sentinel = topSentinelRef.current
+    const root = scrollAreaRef.current
+    if (!sentinel || !root) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) loadOlderMessages()
+      },
+      { root, threshold: 0 }
+    )
+    observer.observe(sentinel)
+    return () => observer.disconnect()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- loadOlderMessages closes over messages/channelId by design; re-created each render is fine, only these three should re-arm the observer
+  }, [hasMoreOlder, loadingOlder, messages])
+
+  useEffect(() => {
+    const newLastId = messages[messages.length - 1]?.id ?? null
+    if (newLastId !== lastMessageIdRef.current) {
+      lastMessageIdRef.current = newLastId
+      bottomRef.current?.scrollIntoView({ block: 'end' })
+    }
+  }, [messages])
 
   useEffect(() => {
     if (!inputRef.current) return
@@ -680,8 +725,15 @@ function ChannelThread({
         </button>
       </div>
 
-      <ScrollArea className="flex-1 px-4 py-3">
+      <ScrollArea ref={scrollAreaRef} className="flex-1 px-4 py-3">
         <div className="flex flex-col gap-3">
+          <div ref={topSentinelRef} />
+          {loadingOlder && (
+            <p className="py-2 text-center text-[11px] text-muted-foreground">Loading older messages...</p>
+          )}
+          {!hasMoreOlder && messages.length > 0 && (
+            <p className="py-2 text-center text-[11px] text-muted-foreground">Beginning of #{departmentName}</p>
+          )}
           {messages.length === 0 ? (
             <p className="py-8 text-center text-xs text-muted-foreground">No messages yet. Say hello.</p>
           ) : (
