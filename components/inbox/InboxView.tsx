@@ -1268,11 +1268,13 @@ function ChannelThread({
                       >
                         {isDeleted ? 'Message deleted' : renderBody(m.body, currentUser.id)}
                       </div>
-                      {isMe && !isDeleted && (
+                      {isMe && !isDeleted && (m.pending || !isGroupedWithNext) && (
                         <p
                           className={cn(
                             'text-[10px] text-muted-foreground/70',
-                            m.pending ? '' : 'opacity-0 transition-opacity group-hover/message:opacity-100'
+                            m.pending
+                              ? 'leading-none'
+                              : 'max-h-0 overflow-hidden leading-none opacity-0 transition-[max-height,opacity] duration-150 group-hover/message:max-h-4 group-hover/message:opacity-100'
                           )}
                         >
                           {m.pending ? 'Sending…' : 'Sent'}
@@ -1429,11 +1431,18 @@ function DMRow({
   const name = dm.otherUser ? `${dm.otherUser.firstName} ${dm.otherUser.lastName}` : 'Direct Message'
 
   return (
-    <button
-      type="button"
+    <div
+      role="button"
+      tabIndex={0}
       onClick={onSelect}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onSelect()
+        }
+      }}
       className={cn(
-        'group/dmrow flex items-center gap-2 rounded-md px-2 py-1.5 text-left transition-colors',
+        'group/dmrow flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left transition-colors cursor-pointer',
         isActive ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:bg-accent/60 hover:text-accent-foreground'
       )}
     >
@@ -1499,6 +1508,6 @@ function DMRow({
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    </button>
+    </div>
   )
 }
