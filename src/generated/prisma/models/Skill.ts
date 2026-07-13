@@ -224,6 +224,7 @@ export type SkillWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Skill"> | Date | string
   vaSkills?: Prisma.VASkillListRelationFilter
   departments?: Prisma.DepartmentSkillListRelationFilter
+  positionForVAs?: Prisma.VAProfileListRelationFilter
 }
 
 export type SkillOrderByWithRelationInput = {
@@ -239,6 +240,7 @@ export type SkillOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   vaSkills?: Prisma.VASkillOrderByRelationAggregateInput
   departments?: Prisma.DepartmentSkillOrderByRelationAggregateInput
+  positionForVAs?: Prisma.VAProfileOrderByRelationAggregateInput
 }
 
 export type SkillWhereUniqueInput = Prisma.AtLeast<{
@@ -257,6 +259,7 @@ export type SkillWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Skill"> | Date | string
   vaSkills?: Prisma.VASkillListRelationFilter
   departments?: Prisma.DepartmentSkillListRelationFilter
+  positionForVAs?: Prisma.VAProfileListRelationFilter
 }, "id" | "name" | "acronym">
 
 export type SkillOrderByWithAggregationInput = {
@@ -304,6 +307,7 @@ export type SkillCreateInput = {
   updatedAt?: Date | string
   vaSkills?: Prisma.VASkillCreateNestedManyWithoutSkillInput
   departments?: Prisma.DepartmentSkillCreateNestedManyWithoutSkillInput
+  positionForVAs?: Prisma.VAProfileCreateNestedManyWithoutPositionSkillInput
 }
 
 export type SkillUncheckedCreateInput = {
@@ -319,6 +323,7 @@ export type SkillUncheckedCreateInput = {
   updatedAt?: Date | string
   vaSkills?: Prisma.VASkillUncheckedCreateNestedManyWithoutSkillInput
   departments?: Prisma.DepartmentSkillUncheckedCreateNestedManyWithoutSkillInput
+  positionForVAs?: Prisma.VAProfileUncheckedCreateNestedManyWithoutPositionSkillInput
 }
 
 export type SkillUpdateInput = {
@@ -334,6 +339,7 @@ export type SkillUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaSkills?: Prisma.VASkillUpdateManyWithoutSkillNestedInput
   departments?: Prisma.DepartmentSkillUpdateManyWithoutSkillNestedInput
+  positionForVAs?: Prisma.VAProfileUpdateManyWithoutPositionSkillNestedInput
 }
 
 export type SkillUncheckedUpdateInput = {
@@ -349,6 +355,7 @@ export type SkillUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaSkills?: Prisma.VASkillUncheckedUpdateManyWithoutSkillNestedInput
   departments?: Prisma.DepartmentSkillUncheckedUpdateManyWithoutSkillNestedInput
+  positionForVAs?: Prisma.VAProfileUncheckedUpdateManyWithoutPositionSkillNestedInput
 }
 
 export type SkillCreateManyInput = {
@@ -388,6 +395,11 @@ export type SkillUncheckedUpdateManyInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type SkillNullableScalarRelationFilter = {
+  is?: Prisma.SkillWhereInput | null
+  isNot?: Prisma.SkillWhereInput | null
 }
 
 export type SkillCountOrderByAggregateInput = {
@@ -434,6 +446,22 @@ export type SkillScalarRelationFilter = {
   isNot?: Prisma.SkillWhereInput
 }
 
+export type SkillCreateNestedOneWithoutPositionForVAsInput = {
+  create?: Prisma.XOR<Prisma.SkillCreateWithoutPositionForVAsInput, Prisma.SkillUncheckedCreateWithoutPositionForVAsInput>
+  connectOrCreate?: Prisma.SkillCreateOrConnectWithoutPositionForVAsInput
+  connect?: Prisma.SkillWhereUniqueInput
+}
+
+export type SkillUpdateOneWithoutPositionForVAsNestedInput = {
+  create?: Prisma.XOR<Prisma.SkillCreateWithoutPositionForVAsInput, Prisma.SkillUncheckedCreateWithoutPositionForVAsInput>
+  connectOrCreate?: Prisma.SkillCreateOrConnectWithoutPositionForVAsInput
+  upsert?: Prisma.SkillUpsertWithoutPositionForVAsInput
+  disconnect?: Prisma.SkillWhereInput | boolean
+  delete?: Prisma.SkillWhereInput | boolean
+  connect?: Prisma.SkillWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SkillUpdateToOneWithWhereWithoutPositionForVAsInput, Prisma.SkillUpdateWithoutPositionForVAsInput>, Prisma.SkillUncheckedUpdateWithoutPositionForVAsInput>
+}
+
 export type EnumSkillCategoryFieldUpdateOperationsInput = {
   set?: $Enums.SkillCategory
 }
@@ -466,6 +494,82 @@ export type SkillUpdateOneRequiredWithoutVaSkillsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SkillUpdateToOneWithWhereWithoutVaSkillsInput, Prisma.SkillUpdateWithoutVaSkillsInput>, Prisma.SkillUncheckedUpdateWithoutVaSkillsInput>
 }
 
+export type SkillCreateWithoutPositionForVAsInput = {
+  id?: string
+  name: string
+  shortName?: string | null
+  acronym?: string | null
+  category?: $Enums.SkillCategory
+  jobDescription?: string | null
+  attachmentUrl?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  vaSkills?: Prisma.VASkillCreateNestedManyWithoutSkillInput
+  departments?: Prisma.DepartmentSkillCreateNestedManyWithoutSkillInput
+}
+
+export type SkillUncheckedCreateWithoutPositionForVAsInput = {
+  id?: string
+  name: string
+  shortName?: string | null
+  acronym?: string | null
+  category?: $Enums.SkillCategory
+  jobDescription?: string | null
+  attachmentUrl?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  vaSkills?: Prisma.VASkillUncheckedCreateNestedManyWithoutSkillInput
+  departments?: Prisma.DepartmentSkillUncheckedCreateNestedManyWithoutSkillInput
+}
+
+export type SkillCreateOrConnectWithoutPositionForVAsInput = {
+  where: Prisma.SkillWhereUniqueInput
+  create: Prisma.XOR<Prisma.SkillCreateWithoutPositionForVAsInput, Prisma.SkillUncheckedCreateWithoutPositionForVAsInput>
+}
+
+export type SkillUpsertWithoutPositionForVAsInput = {
+  update: Prisma.XOR<Prisma.SkillUpdateWithoutPositionForVAsInput, Prisma.SkillUncheckedUpdateWithoutPositionForVAsInput>
+  create: Prisma.XOR<Prisma.SkillCreateWithoutPositionForVAsInput, Prisma.SkillUncheckedCreateWithoutPositionForVAsInput>
+  where?: Prisma.SkillWhereInput
+}
+
+export type SkillUpdateToOneWithWhereWithoutPositionForVAsInput = {
+  where?: Prisma.SkillWhereInput
+  data: Prisma.XOR<Prisma.SkillUpdateWithoutPositionForVAsInput, Prisma.SkillUncheckedUpdateWithoutPositionForVAsInput>
+}
+
+export type SkillUpdateWithoutPositionForVAsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.EnumSkillCategoryFieldUpdateOperationsInput | $Enums.SkillCategory
+  jobDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vaSkills?: Prisma.VASkillUpdateManyWithoutSkillNestedInput
+  departments?: Prisma.DepartmentSkillUpdateManyWithoutSkillNestedInput
+}
+
+export type SkillUncheckedUpdateWithoutPositionForVAsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.EnumSkillCategoryFieldUpdateOperationsInput | $Enums.SkillCategory
+  jobDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attachmentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vaSkills?: Prisma.VASkillUncheckedUpdateManyWithoutSkillNestedInput
+  departments?: Prisma.DepartmentSkillUncheckedUpdateManyWithoutSkillNestedInput
+}
+
 export type SkillCreateWithoutDepartmentsInput = {
   id?: string
   name: string
@@ -478,6 +582,7 @@ export type SkillCreateWithoutDepartmentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   vaSkills?: Prisma.VASkillCreateNestedManyWithoutSkillInput
+  positionForVAs?: Prisma.VAProfileCreateNestedManyWithoutPositionSkillInput
 }
 
 export type SkillUncheckedCreateWithoutDepartmentsInput = {
@@ -492,6 +597,7 @@ export type SkillUncheckedCreateWithoutDepartmentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   vaSkills?: Prisma.VASkillUncheckedCreateNestedManyWithoutSkillInput
+  positionForVAs?: Prisma.VAProfileUncheckedCreateNestedManyWithoutPositionSkillInput
 }
 
 export type SkillCreateOrConnectWithoutDepartmentsInput = {
@@ -522,6 +628,7 @@ export type SkillUpdateWithoutDepartmentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaSkills?: Prisma.VASkillUpdateManyWithoutSkillNestedInput
+  positionForVAs?: Prisma.VAProfileUpdateManyWithoutPositionSkillNestedInput
 }
 
 export type SkillUncheckedUpdateWithoutDepartmentsInput = {
@@ -536,6 +643,7 @@ export type SkillUncheckedUpdateWithoutDepartmentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaSkills?: Prisma.VASkillUncheckedUpdateManyWithoutSkillNestedInput
+  positionForVAs?: Prisma.VAProfileUncheckedUpdateManyWithoutPositionSkillNestedInput
 }
 
 export type SkillCreateWithoutVaSkillsInput = {
@@ -550,6 +658,7 @@ export type SkillCreateWithoutVaSkillsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   departments?: Prisma.DepartmentSkillCreateNestedManyWithoutSkillInput
+  positionForVAs?: Prisma.VAProfileCreateNestedManyWithoutPositionSkillInput
 }
 
 export type SkillUncheckedCreateWithoutVaSkillsInput = {
@@ -564,6 +673,7 @@ export type SkillUncheckedCreateWithoutVaSkillsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   departments?: Prisma.DepartmentSkillUncheckedCreateNestedManyWithoutSkillInput
+  positionForVAs?: Prisma.VAProfileUncheckedCreateNestedManyWithoutPositionSkillInput
 }
 
 export type SkillCreateOrConnectWithoutVaSkillsInput = {
@@ -594,6 +704,7 @@ export type SkillUpdateWithoutVaSkillsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   departments?: Prisma.DepartmentSkillUpdateManyWithoutSkillNestedInput
+  positionForVAs?: Prisma.VAProfileUpdateManyWithoutPositionSkillNestedInput
 }
 
 export type SkillUncheckedUpdateWithoutVaSkillsInput = {
@@ -608,6 +719,7 @@ export type SkillUncheckedUpdateWithoutVaSkillsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   departments?: Prisma.DepartmentSkillUncheckedUpdateManyWithoutSkillNestedInput
+  positionForVAs?: Prisma.VAProfileUncheckedUpdateManyWithoutPositionSkillNestedInput
 }
 
 
@@ -618,11 +730,13 @@ export type SkillUncheckedUpdateWithoutVaSkillsInput = {
 export type SkillCountOutputType = {
   vaSkills: number
   departments: number
+  positionForVAs: number
 }
 
 export type SkillCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vaSkills?: boolean | SkillCountOutputTypeCountVaSkillsArgs
   departments?: boolean | SkillCountOutputTypeCountDepartmentsArgs
+  positionForVAs?: boolean | SkillCountOutputTypeCountPositionForVAsArgs
 }
 
 /**
@@ -649,6 +763,13 @@ export type SkillCountOutputTypeCountDepartmentsArgs<ExtArgs extends runtime.Typ
   where?: Prisma.DepartmentSkillWhereInput
 }
 
+/**
+ * SkillCountOutputType without action
+ */
+export type SkillCountOutputTypeCountPositionForVAsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VAProfileWhereInput
+}
+
 
 export type SkillSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -663,6 +784,7 @@ export type SkillSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   updatedAt?: boolean
   vaSkills?: boolean | Prisma.Skill$vaSkillsArgs<ExtArgs>
   departments?: boolean | Prisma.Skill$departmentsArgs<ExtArgs>
+  positionForVAs?: boolean | Prisma.Skill$positionForVAsArgs<ExtArgs>
   _count?: boolean | Prisma.SkillCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["skill"]>
 
@@ -709,6 +831,7 @@ export type SkillOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
 export type SkillInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vaSkills?: boolean | Prisma.Skill$vaSkillsArgs<ExtArgs>
   departments?: boolean | Prisma.Skill$departmentsArgs<ExtArgs>
+  positionForVAs?: boolean | Prisma.Skill$positionForVAsArgs<ExtArgs>
   _count?: boolean | Prisma.SkillCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type SkillIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -719,6 +842,7 @@ export type $SkillPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   objects: {
     vaSkills: Prisma.$VASkillPayload<ExtArgs>[]
     departments: Prisma.$DepartmentSkillPayload<ExtArgs>[]
+    positionForVAs: Prisma.$VAProfilePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1127,6 +1251,7 @@ export interface Prisma__SkillClient<T, Null = never, ExtArgs extends runtime.Ty
   readonly [Symbol.toStringTag]: "PrismaPromise"
   vaSkills<T extends Prisma.Skill$vaSkillsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Skill$vaSkillsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VASkillPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   departments<T extends Prisma.Skill$departmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Skill$departmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DepartmentSkillPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  positionForVAs<T extends Prisma.Skill$positionForVAsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Skill$positionForVAsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VAProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1604,6 +1729,30 @@ export type Skill$departmentsArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.DepartmentSkillScalarFieldEnum | Prisma.DepartmentSkillScalarFieldEnum[]
+}
+
+/**
+ * Skill.positionForVAs
+ */
+export type Skill$positionForVAsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VAProfile
+   */
+  select?: Prisma.VAProfileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VAProfile
+   */
+  omit?: Prisma.VAProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VAProfileInclude<ExtArgs> | null
+  where?: Prisma.VAProfileWhereInput
+  orderBy?: Prisma.VAProfileOrderByWithRelationInput | Prisma.VAProfileOrderByWithRelationInput[]
+  cursor?: Prisma.VAProfileWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VAProfileScalarFieldEnum | Prisma.VAProfileScalarFieldEnum[]
 }
 
 /**

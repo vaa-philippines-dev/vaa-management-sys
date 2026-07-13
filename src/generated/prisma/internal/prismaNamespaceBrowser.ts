@@ -261,6 +261,7 @@ export const VAProfileScalarFieldEnum = {
   hourlyRate: 'hourlyRate',
   baseRate: 'baseRate',
   vaaPosition: 'vaaPosition',
+  positionSkillId: 'positionSkillId',
   level: 'level',
   availabilityStatus: 'availabilityStatus',
   recommendability: 'recommendability',
@@ -282,6 +283,8 @@ export const VAProfileScalarFieldEnum = {
   status: 'status',
   onHold: 'onHold',
   engagementStatus: 'engagementStatus',
+  currentHireDate: 'currentHireDate',
+  currentEndDate: 'currentEndDate',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

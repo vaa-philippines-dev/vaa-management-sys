@@ -469,6 +469,8 @@ model VAProfile {
   hourlyRate          Decimal?          @map("hourly_rate")
   baseRate            Decimal?          @map("base_rate")
   vaaPosition         String?           @map("vaa_position")
+  positionSkillId     String?           @map("position_skill_id")
+  positionSkill       Skill?            @relation(fields: [positionSkillId], references: [id], onDelete: SetNull)
   level               String?
   availabilityStatus  Availability      @default(AVAILABLE) @map("availability_status")
   recommendability    String?           @map("recommendability")
@@ -490,6 +492,8 @@ model VAProfile {
   status              GeneralStatus     @default(ACTIVE) @map("general_status")
   onHold              Boolean           @default(false) @map("on_hold")
   engagementStatus    EmploymentStatus? @map("engagement_status")
+  currentHireDate     DateTime?         @map("current_hire_date")
+  currentEndDate      DateTime?         @map("current_end_date")
   isActive            Boolean           @default(true) @map("is_active")
   createdAt           DateTime          @default(now()) @map("created_at")
   updatedAt           DateTime          @updatedAt @map("updated_at")
@@ -500,6 +504,8 @@ model VAProfile {
   documents   VADocument[]
 
   @@index([availabilityStatus])
+  @@index([positionSkillId])
+  @@index([currentHireDate])
   @@map("va_profiles")
 }
 
@@ -535,8 +541,9 @@ model Skill {
   createdAt      DateTime      @default(now()) @map("created_at")
   updatedAt      DateTime      @updatedAt @map("updated_at")
 
-  vaSkills    VASkill[]
-  departments DepartmentSkill[]
+  vaSkills        VASkill[]
+  departments     DepartmentSkill[]
+  positionForVAs  VAProfile[]
 
   @@map("skills")
 }

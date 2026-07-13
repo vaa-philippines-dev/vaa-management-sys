@@ -19,6 +19,8 @@ export async function createVA(formData: FormData) {
   const notes = (formData.get('notes') as string) || null
   const skillIds = formData.getAll('skillIds') as string[]
 
+  const hireDate = new Date()
+
   const user = await prisma.user.create({
     data: {
       email,
@@ -30,6 +32,7 @@ export async function createVA(formData: FormData) {
         create: {
           hourlyRate: hourlyRate ? Number(hourlyRate) : null,
           notes,
+          currentHireDate: hireDate,
           vaSkills: { create: skillIds.map((skillId) => ({ skillId })) },
         },
       },
@@ -50,8 +53,8 @@ export async function createVA(formData: FormData) {
       userId: user.id,
       contractType: 'REGULAR',
       employmentStatus: 'EMPLOYED',
-      startDate: new Date(),
-      effectiveDate: new Date(),
+      startDate: hireDate,
+      effectiveDate: hireDate,
       isCurrent: true,
       initiatedBy: actor.id,
     },
@@ -112,6 +115,8 @@ export type VACsvRow = {
   status?: string
   onHold?: string
   engagementStatus?: string
+  hireDate?: string
+  eocDate?: string
   hybrid?: string
   preferredWorkHours?: string
   availableSchedule?: string
@@ -191,6 +196,15 @@ export async function bulkImportVAs(rows: VACsvRow[], overwriteExisting = false)
     departments.map((d) => [normalizeDeptName(d.name), d.id]),
   )
 
+  // Match CSV position text against Skill.name or Skill.shortName; free text
+  // is always kept in vaaPosition regardless, so unmatched values aren't lost.
+  const skills = await prisma.skill.findMany({ select: { id: true, name: true, shortName: true } })
+  const skillIdByNormalizedText = new Map<string, string>()
+  for (const s of skills) {
+    skillIdByNormalizedText.set(s.name.trim().toLowerCase(), s.id)
+    if (s.shortName) skillIdByNormalizedText.set(s.shortName.trim().toLowerCase(), s.id)
+  }
+
   type PreparedRow = {
     rowNum: number
     email: string
@@ -201,12 +215,15 @@ export async function bulkImportVAs(rows: VACsvRow[], overwriteExisting = false)
     hourlyRate: number | null
     baseRate: number | null
     vaaPosition: string | null
+    positionSkillId: string | null
     level: string | null
     availabilityStatus: string | null
     recommendability: string | null
     status: string | null
     onHold: boolean
     engagementStatus: string | null
+    hireDate: Date | null
+    eocDate: Date | null
     hybrid: boolean
     preferredWorkHours: number | null
     availableSchedule: string | null
@@ -286,6 +303,8 @@ export async function bulkImportVAs(rows: VACsvRow[], overwriteExisting = false)
     const birthDate = (row.birthDate || '').trim() ? new Date((row.birthDate || '').trim()) : null
     const birthdayCelebrantInput = (row.birthdayCelebrant || '').trim().toLowerCase()
     const birthdayCelebrant = birthdayCelebrantInput ? (birthdayCelebrantInput === 'true' || birthdayCelebrantInput === 'yes') : undefined
+    const hireDate = (row.hireDate || '').trim() ? new Date((row.hireDate || '').trim()) : null
+    const eocDate = (row.eocDate || '').trim() ? new Date((row.eocDate || '').trim()) : null
 
     const departmentInput = (row.department || '').trim()
     const departmentId = departmentInput ? departmentIdByNormalizedName.get(normalizeDeptName(departmentInput)) ?? null : null
@@ -300,12 +319,17 @@ export async function bulkImportVAs(rows: VACsvRow[], overwriteExisting = false)
       hourlyRate,
       baseRate,
       vaaPosition: (row.vaaPosition || '').trim() || null,
+      positionSkillId: (row.vaaPosition || '').trim()
+        ? skillIdByNormalizedText.get((row.vaaPosition || '').trim().toLowerCase()) ?? null
+        : null,
       level: (row.level || '').trim() || null,
       availabilityStatus: normalizeEnum(row.availabilityStatus, CSV_AVAILABILITY_VALUES),
       recommendability: (row.recommendability || '').trim() || null,
       status: normalizeEnum(row.status, CSV_STATUS_VALUES),
       onHold,
       engagementStatus: normalizeEnum(row.engagementStatus, CSV_ENGAGEMENT_VALUES),
+      hireDate,
+      eocDate,
       hybrid,
       preferredWorkHours,
       availableSchedule: (row.availableSchedule || '').trim() || null,
@@ -348,12 +372,17 @@ export async function bulkImportVAs(rows: VACsvRow[], overwriteExisting = false)
       const vaProfileData: Record<string, unknown> = { onHold: p.onHold }
       if (p.hourlyRate !== null) vaProfileData.hourlyRate = p.hourlyRate
       if (p.baseRate !== null) vaProfileData.baseRate = p.baseRate
-      if (p.vaaPosition !== null) vaProfileData.vaaPosition = p.vaaPosition
+      if (p.vaaPosition !== null) {
+        vaProfileData.vaaPosition = p.vaaPosition
+        vaProfileData.positionSkillId = p.positionSkillId
+      }
       if (p.level !== null) vaProfileData.level = p.level
       if (p.availabilityStatus !== null) vaProfileData.availabilityStatus = p.availabilityStatus as any
       if (p.recommendability !== null) vaProfileData.recommendability = p.recommendability
       if (p.status !== null) vaProfileData.status = p.status as any
       if (p.engagementStatus !== null) vaProfileData.engagementStatus = p.engagementStatus as any
+      if (p.hireDate !== null) vaProfileData.currentHireDate = p.hireDate
+      if (p.eocDate !== null) vaProfileData.currentEndDate = p.eocDate
       if (p.preferredWorkHours !== null) vaProfileData.preferredWorkHours = p.preferredWorkHours
       if (p.availableSchedule !== null) vaProfileData.availableSchedule = p.availableSchedule
       if (p.notes !== null) vaProfileData.notes = p.notes
@@ -431,12 +460,15 @@ export async function bulkImportVAs(rows: VACsvRow[], overwriteExisting = false)
               hourlyRate: p.hourlyRate,
               baseRate: p.baseRate,
               vaaPosition: p.vaaPosition,
+              positionSkillId: p.positionSkillId,
               level: p.level,
               availabilityStatus: (p.availabilityStatus as any) ?? undefined,
               recommendability: p.recommendability,
               status: (p.status as any) ?? undefined,
               onHold: p.onHold,
               engagementStatus: (p.engagementStatus as any) ?? undefined,
+              currentHireDate: p.hireDate ?? new Date(),
+              currentEndDate: p.eocDate,
               hybrid: p.hybrid,
               preferredWorkHours: p.preferredWorkHours,
               availableSchedule: p.availableSchedule,
@@ -486,9 +518,10 @@ export async function bulkImportVAs(rows: VACsvRow[], overwriteExisting = false)
             departmentId: p.departmentId,
             contractType: 'REGULAR',
             employmentStatus: (p.engagementStatus as EmploymentStatus | null) ?? 'EMPLOYED',
-            startDate: new Date(),
-            effectiveDate: new Date(),
-            isCurrent: true,
+            startDate: p.hireDate ?? new Date(),
+            endDate: p.eocDate,
+            effectiveDate: p.hireDate ?? new Date(),
+            isCurrent: !p.eocDate,
             initiatedBy: actor.id,
           },
         }),
@@ -641,6 +674,10 @@ export async function changeVAStatus(
         where: { id: currentRecord.id },
         data: { isCurrent: false, endDate: effective, employmentStatus: newValue as EmploymentStatus },
       })
+      await prisma.vAProfile.update({
+        where: { id: vaProfileId },
+        data: { currentEndDate: effective },
+      })
     }
   }
 
@@ -756,6 +793,11 @@ export async function transferVA(
         initiatedBy: actor.id,
         reason: reason?.trim() || null,
       },
+    })
+
+    await tx.vAProfile.update({
+      where: { id: vaProfileId },
+      data: { currentHireDate: effective, currentEndDate: null },
     })
 
     return created

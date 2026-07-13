@@ -23,18 +23,29 @@ import {
   Pencil,
   Eye,
   LayoutList,
+  ArrowUp,
+  ArrowDown,
+  ArrowUpDown,
 } from 'lucide-react'
 
 const PAGE_SIZE = 20
 
+type SortField = 'name' | 'position' | 'status' | 'engagement' | 'hireDate' | 'eocDate'
+const DEFAULT_SORT: `${SortField}:${'asc' | 'desc'}` = 'hireDate:desc'
+const SORT_FIELDS: SortField[] = ['name', 'position', 'status', 'engagement', 'hireDate', 'eocDate']
+
+function parseSort(raw: string | undefined): { field: SortField; dir: 'asc' | 'desc' } {
+  const [field, dir] = (raw || DEFAULT_SORT).split(':')
+  return {
+    field: SORT_FIELDS.includes(field as SortField) ? (field as SortField) : 'hireDate',
+    dir: dir === 'asc' ? 'asc' : 'desc',
+  }
+}
+
 type Tone = 'success' | 'warning' | 'destructive' | 'info' | 'neutral'
 
-const AVAILABILITY_TONE: Record<string, Tone> = {
-  AVAILABLE: 'success',
-  PARTIALLY_ASSIGNED: 'warning',
-  FULLY_ASSIGNED: 'info',
-  ON_LEAVE: 'warning',
-  UNAVAILABLE: 'destructive',
+function formatDate(date: Date) {
+  return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(date)
 }
 
 const STATUS_TONE: Record<string, Tone> = {
@@ -84,7 +95,7 @@ export default async function VAPage({
   const dept = typeof params.dept === 'string' ? params.dept : undefined
   const avail = typeof params.avail === 'string' ? params.avail : undefined
   const empStatus = typeof params.emp === 'string' ? params.emp : undefined
-  const sort = typeof params.sort === 'string' ? params.sort : 'az'
+  const sort = typeof params.sort === 'string' ? params.sort : DEFAULT_SORT
   const viewAll = params.view === 'all'
   const page = Math.max(1, parseInt(typeof params.page === 'string' ? params.page : '1', 10) || 1)
 
@@ -174,17 +185,6 @@ async function FilterWrapper() {
             { value: 'TERMINATED', label: 'Terminated' },
           ],
         },
-        {
-          key: 'sort',
-          label: 'Sort',
-          placeholder: 'A→Z',
-          options: [
-            { value: 'az', label: 'A → Z' },
-            { value: 'za', label: 'Z → A' },
-            { value: 'newest', label: 'Newest' },
-            { value: 'oldest', label: 'Oldest' },
-          ],
-        },
       ]}
       searchPlaceholder="Search name or email..."
     />
@@ -230,11 +230,15 @@ async function VATableSection({
   const vaWhere: Record<string, unknown> = {}
   if (avail) vaWhere.availabilityStatus = avail
 
-  const orderBy: Record<string, string> =
-    sort === 'za' ? { firstName: 'desc' } :
-    sort === 'newest' ? { createdAt: 'desc' } :
-    sort === 'oldest' ? { createdAt: 'asc' } :
-    { firstName: 'asc' }
+  const { field: sortField, dir: sortDir } = parseSort(sort)
+
+  const orderBy: Prisma.VAProfileOrderByWithRelationInput =
+    sortField === 'name' ? { user: { firstName: sortDir } } :
+    sortField === 'position' ? { positionSkill: { shortName: sortDir } } :
+    sortField === 'status' ? { status: sortDir } :
+    sortField === 'engagement' ? { engagementStatus: sortDir } :
+    sortField === 'eocDate' ? { currentEndDate: sortDir } :
+    { currentHireDate: sortDir }
 
   const where: Prisma.VAProfileWhereInput = {
     user: { userType: 'VIRTUAL_ASSISTANT', ...userWhere },
@@ -258,10 +262,11 @@ async function VATableSection({
               employmentRecords: { where: { isCurrent: true }, take: 1 },
             },
           },
+          positionSkill: true,
           vaSkills: { include: { skill: true } },
           assignments: { where: { status: 'ACTIVE' }, include: { client: true } },
         },
-        orderBy: { user: orderBy },
+        orderBy,
         ...(viewAll ? {} : { take: PAGE_SIZE, skip: (page - 1) * PAGE_SIZE }),
       })
     ),
@@ -310,6 +315,23 @@ async function VATableSection({
     return `?${sp.toString()}`
   })()
 
+  const buildSortHref = (field: SortField) => {
+    const nextDir = sortField === field && sortDir === 'desc' ? 'asc' : sortField === field ? 'desc' : (field === 'hireDate' || field === 'eocDate' ? 'desc' : 'asc')
+    const sp = new URLSearchParams()
+    if (q) sp.set('q', q)
+    if (dept) sp.set('dept', dept)
+    if (avail) sp.set('avail', avail)
+    if (empStatus) sp.set('emp', empStatus)
+    sp.set('sort', `${field}:${nextDir}`)
+    if (viewAll) sp.set('view', 'all')
+    return `?${sp.toString()}`
+  }
+
+  const sortIcon = (field: SortField) => {
+    if (sortField !== field) return <ArrowUpDown className="h-3 w-3 text-muted-foreground/50" />
+    return sortDir === 'asc' ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />
+  }
+
   return (
     <>
       <div className="flex items-center justify-between gap-3 px-3 py-2 rounded-lg border bg-muted/30 text-xs text-muted-foreground">
@@ -357,13 +379,38 @@ async function VATableSection({
                     <VASelectAllCheckbox ids={filteredVAs.map((va) => va.id)} />
                   </TableHead>
                 )}
-                <TableHead className="px-3 py-2.5 sticky left-0 bg-muted/30 z-10">Name</TableHead>
+                <TableHead className="px-3 py-2.5 sticky left-0 bg-muted/30 z-10">
+                  <Link href={buildSortHref('name')} className="flex items-center gap-1 hover:text-foreground">
+                    Name {sortIcon('name')}
+                  </Link>
+                </TableHead>
                 <TableHead className="px-3 py-2.5 hidden md:table-cell">Work Email</TableHead>
                 <TableHead className="px-3 py-2.5 hidden lg:table-cell">Department</TableHead>
-                <TableHead className="px-3 py-2.5 hidden lg:table-cell">Position</TableHead>
-                <TableHead className="px-3 py-2.5 hidden sm:table-cell">Availability</TableHead>
-                <TableHead className="px-3 py-2.5 hidden sm:table-cell">Status</TableHead>
-                <TableHead className="px-3 py-2.5 hidden md:table-cell">Engagement Status</TableHead>
+                <TableHead className="px-3 py-2.5 hidden lg:table-cell">
+                  <Link href={buildSortHref('position')} className="flex items-center gap-1 hover:text-foreground">
+                    Position {sortIcon('position')}
+                  </Link>
+                </TableHead>
+                <TableHead className="px-3 py-2.5 hidden sm:table-cell">
+                  <Link href={buildSortHref('status')} className="flex items-center gap-1 hover:text-foreground">
+                    Status {sortIcon('status')}
+                  </Link>
+                </TableHead>
+                <TableHead className="px-3 py-2.5 hidden md:table-cell">
+                  <Link href={buildSortHref('engagement')} className="flex items-center gap-1 hover:text-foreground">
+                    Engagement Status {sortIcon('engagement')}
+                  </Link>
+                </TableHead>
+                <TableHead className="px-3 py-2.5 hidden md:table-cell">
+                  <Link href={buildSortHref('hireDate')} className="flex items-center gap-1 hover:text-foreground">
+                    Hire Date {sortIcon('hireDate')}
+                  </Link>
+                </TableHead>
+                <TableHead className="px-3 py-2.5 hidden md:table-cell">
+                  <Link href={buildSortHref('eocDate')} className="flex items-center gap-1 hover:text-foreground">
+                    EOC/Transfer Date {sortIcon('eocDate')}
+                  </Link>
+                </TableHead>
                 <TableHead className="px-3 py-2.5 w-0"> </TableHead>
               </TableRow>
             </TableHeader>
@@ -396,12 +443,7 @@ async function VATableSection({
                       ) : <span className="text-muted-foreground">—</span>}
                     </TableCell>
                     <TableCell className="px-3 py-2.5 hidden lg:table-cell">
-                      {primaryMem?.position ? primaryMem.position.title : <span className="text-muted-foreground">—</span>}
-                    </TableCell>
-                    <TableCell className="px-3 py-2.5 hidden sm:table-cell">
-                      <StatusIndicator tone={AVAILABILITY_TONE[va.availabilityStatus] ?? 'neutral'}>
-                        {va.availabilityStatus.replace(/_/g, ' ')}
-                      </StatusIndicator>
+                      {va.positionSkill?.shortName ?? va.vaaPosition ?? <span className="text-muted-foreground">—</span>}
                     </TableCell>
                     <TableCell className="px-3 py-2.5 hidden sm:table-cell">
                       <div className="flex items-center gap-1">
@@ -417,6 +459,12 @@ async function VATableSection({
                           {emp.employmentStatus.replace(/_/g, ' ')}
                         </StatusIndicator>
                       ) : <span className="text-muted-foreground">—</span>}
+                    </TableCell>
+                    <TableCell className="px-3 py-2.5 text-muted-foreground hidden md:table-cell">
+                      {va.currentHireDate ? formatDate(va.currentHireDate) : <span className="text-muted-foreground/50">—</span>}
+                    </TableCell>
+                    <TableCell className="px-3 py-2.5 text-muted-foreground hidden md:table-cell">
+                      {va.currentEndDate ? formatDate(va.currentEndDate) : <span className="text-muted-foreground/50">—</span>}
                     </TableCell>
                     <TableCell className="px-3 py-2.5">
                       <Link href={`/vas/${va.id}`}>

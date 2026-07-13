@@ -50,6 +50,8 @@ function parseCsv(text: string): VACsvRow[] {
   const statusIdx = idx('status', 'active status')
   const onHoldIdx = idx('onhold', 'on hold', 'hold status', 'hold')
   const engagementIdx = idx('engagementstatus', 'engagement status')
+  const hireDateIdx = idx('hiredate', 'hire date')
+  const eocDateIdx = idx('eocdate', 'eoc date', 'eoc/transfer date', 'transfer date', 'end date')
   const hybridIdx = idx('hybrid')
   const preferredHoursIdx = idx('preferredworkhours', 'preferred work hours', 'preferred hours')
   const scheduleIdx = idx('availableschedule', 'available schedule', 'schedule')
@@ -96,6 +98,8 @@ function parseCsv(text: string): VACsvRow[] {
       status: cell(cells, statusIdx),
       onHold: cell(cells, onHoldIdx),
       engagementStatus: cell(cells, engagementIdx),
+      hireDate: cell(cells, hireDateIdx),
+      eocDate: cell(cells, eocDateIdx),
       hybrid: cell(cells, hybridIdx),
       preferredWorkHours: cell(cells, preferredHoursIdx),
       availableSchedule: cell(cells, scheduleIdx),
@@ -170,15 +174,15 @@ export function ImportVACsvModal() {
     const csvContent = [
       [
         'firstName', 'middleName', 'lastName', 'extName', 'email', 'hourlyRate', 'baseRate', 'vaaPosition', 'level', 'department',
-        'availabilityStatus', 'recommendability', 'status', 'onHold', 'engagementStatus', 'hybrid', 'preferredWorkHours', 'availableSchedule',
+        'availabilityStatus', 'recommendability', 'status', 'onHold', 'engagementStatus', 'hireDate', 'eocDate', 'hybrid', 'preferredWorkHours', 'availableSchedule',
         'phone', 'personalEmail', 'workEmail', 'gender', 'birthDate', 'birthdayCelebrant',
         'addressLine', 'barangay', 'cityMunicipality', 'province', 'zipCode', 'landmark', 'gcashNumber',
         'emergencyContactName', 'emergencyContactPhone', 'emergencyContactRelation',
         'facebookName', 'facebookUrl', 'linkedinUrl', 'notes',
       ].join(','),
       [
-        'Juan', 'Santos', 'Dela Cruz', 'Jr.', 'juan@example.com', '5.50', '350', 'Virtual Assistant', 'L1', 'Amazon',
-        'AVAILABLE', 'Highly Recommended', 'ACTIVE', 'false', 'EMPLOYED', 'false', '40', 'Mon-Fri 9am-6pm',
+        'Juan', 'Santos', 'Dela Cruz', 'Jr.', 'juan@example.com', '5.50', '350', 'Amazon Virtual Assistant', 'L1', 'Amazon',
+        'AVAILABLE', 'Highly Recommended', 'ACTIVE', 'false', 'EMPLOYED', '2024-03-01', '', 'false', '40', 'Mon-Fri 9am-6pm',
         '09171234567', 'juan.personal@example.com', 'juan.work@example.com', 'Male', '1995-01-15', 'true',
         '123 Sample St.', 'Barangay Sample', 'Quezon City', 'Metro Manila', '1100', 'Near sample landmark', '09171234567',
         'Maria Dela Cruz', '09179876543', 'Spouse',
@@ -200,7 +204,7 @@ export function ImportVACsvModal() {
       open={open}
       onOpenChange={(o) => !o && handleClose()}
       title="Import VAs from CSV"
-      description="Columns: firstName (required), middleName, lastName, extName, email, hourlyRate, baseRate, vaaPosition, level, department, availabilityStatus, recommendability, status (ACTIVE/PENDING/TRANSFERRED/RESIGNED/REMOVED/PROJECT_ENDED/CANCELLED), onHold, engagementStatus, hybrid, preferredWorkHours, availableSchedule, phone, personalEmail, workEmail, gender, birthDate, birthdayCelebrant, addressLine, barangay, cityMunicipality, province, zipCode, landmark, gcashNumber, emergencyContactName/Phone/Relation, facebookName, facebookUrl, linkedinUrl, notes"
+      description="Columns: firstName (required), middleName, lastName, extName, email, hourlyRate, baseRate, vaaPosition (matched against Service name/short name), level, department, availabilityStatus, recommendability, status (ACTIVE/PENDING/TRANSFERRED/RESIGNED/REMOVED/PROJECT_ENDED/CANCELLED), onHold, engagementStatus, hireDate, eocDate, hybrid, preferredWorkHours, availableSchedule, phone, personalEmail, workEmail, gender, birthDate, birthdayCelebrant, addressLine, barangay, cityMunicipality, province, zipCode, landmark, gcashNumber, emergencyContactName/Phone/Relation, facebookName, facebookUrl, linkedinUrl, notes"
       size="md"
       footer={
         <>
