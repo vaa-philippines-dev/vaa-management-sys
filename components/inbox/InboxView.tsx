@@ -1112,8 +1112,8 @@ function ChannelThread({
                     senderName: `${m.parent.sender.firstName} ${m.parent.sender.lastName}`,
                   }
                 : null
-              const prevMessage = messages[i - 1]
-              const nextMessage = messages[i + 1]
+              const prevMessage = [...messages.slice(0, i)].reverse().find((msg) => !msg.deletedAt)
+              const nextMessage = messages.slice(i + 1).find((msg) => !msg.deletedAt)
               const showDateSeparator = !prevMessage || dayKey(prevMessage.createdAt) !== dayKey(m.createdAt)
               const isGroupedWithPrev =
                 !showDateSeparator &&
@@ -1141,6 +1141,7 @@ function ChannelThread({
                       <div className="h-px flex-1 bg-border" />
                     </div>
                   )}
+                  {isDeleted ? null : (
                   <div
                     id={`message-${m.id}`}
                     className={cn(
@@ -1191,7 +1192,12 @@ function ChannelThread({
                           </p>
                         </div>
                       )}
-                      <div className={cn('flex items-center gap-2', isMe && 'flex-row-reverse')}>
+                      <div
+                        className={cn(
+                          'flex max-h-0 items-center gap-2 overflow-hidden transition-[max-height] duration-150 group-hover/message:max-h-5 group-focus-within/message:max-h-5',
+                          isMe && 'flex-row-reverse'
+                        )}
+                      >
                         {isGroupedWithPrev && (
                           <p className="text-[10.5px] text-muted-foreground opacity-0 transition-opacity group-hover/message:opacity-100">
                             {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -1262,11 +1268,10 @@ function ChannelThread({
                         className={cn(
                           'rounded-2xl px-3.5 py-2 text-[13px] whitespace-pre-wrap break-words shadow-sm',
                           isMe ? BUBBLE_COLOR[m.sender.messageColor] ?? BUBBLE_COLOR.BLUE : NEUTRAL_RECEIVED_BUBBLE,
-                          m.pending && 'opacity-60',
-                          isDeleted && 'italic text-muted-foreground shadow-none bg-transparent'
+                          m.pending && 'opacity-60'
                         )}
                       >
-                        {isDeleted ? 'Message deleted' : renderBody(m.body, currentUser.id)}
+                        {renderBody(m.body, currentUser.id)}
                       </div>
                       {isMe && !isDeleted && (m.pending || !isGroupedWithNext) && (
                         <p
@@ -1282,6 +1287,7 @@ function ChannelThread({
                       )}
                     </div>
                   </div>
+                  )}
                 </div>
               )
             })
