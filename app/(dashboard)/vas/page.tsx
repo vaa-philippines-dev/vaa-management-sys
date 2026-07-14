@@ -47,6 +47,7 @@ function parseSort(raw: string | undefined): { field: SortField; dir: 'asc' | 'd
 type Tone = 'success' | 'warning' | 'destructive' | 'info' | 'neutral'
 
 function formatDate(date: Date) {
+  if (isNaN(date.getTime())) return null
   return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(date)
 }
 
@@ -548,10 +549,10 @@ async function VATableSection({
                       ) : <span className="text-muted-foreground">—</span>}
                     </TableCell>
                     <TableCell className="px-3 py-2.5 text-muted-foreground hidden md:table-cell">
-                      {va.currentHireDate ? formatDate(va.currentHireDate) : <span className="text-muted-foreground/50">—</span>}
+                      {(va.currentHireDate && formatDate(va.currentHireDate)) || <span className="text-muted-foreground/50">—</span>}
                     </TableCell>
                     <TableCell className="px-3 py-2.5 text-muted-foreground hidden md:table-cell">
-                      {va.currentEndDate ? formatDate(va.currentEndDate) : <span className="text-muted-foreground/50">—</span>}
+                      {(va.currentEndDate && formatDate(va.currentEndDate)) || <span className="text-muted-foreground/50">—</span>}
                     </TableCell>
                     <TableCell className="px-3 py-2.5">
                       <Link href={`/vas/${va.id}`}>
