@@ -47,8 +47,9 @@ function parseSort(raw: string | undefined): { field: SortField; dir: 'asc' | 'd
 type Tone = 'success' | 'warning' | 'destructive' | 'info' | 'neutral'
 
 function formatDate(date: Date) {
-  if (isNaN(date.getTime())) return null
-  return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(date)
+  const d = date instanceof Date ? date : new Date(date)
+  if (isNaN(d.getTime())) return null
+  return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(d)
 }
 
 const STATUS_TONE: Record<string, Tone> = {

@@ -24,8 +24,9 @@ import {
   X,
   Ticket,
   MessageSquare,
-  PartyPopper,
-  Radar,
+  Calendar,
+  Cake,
+  Wine,
 } from 'lucide-react'
 import Image from 'next/image'
 import {
@@ -262,8 +263,7 @@ const managerRoutes = [
 const departmentRoutes = [
   { label: 'VA Roster', href: '/vas', icon: Users },
   { label: 'Teams', href: '/teams', icon: UsersRound },
-  { label: 'Celebrants', href: '/celebrants', icon: PartyPopper },
-  { label: 'Clients', href: '/clients/monitoring', icon: Radar },
+  { label: 'Celebrants', href: '/celebrants', icon: Calendar },
 ]
 
 const vaRoutes = [
@@ -447,7 +447,7 @@ export function Sidebar({
 
               <div className="group flex items-center gap-0.5">
                 <div className="flex-1">
-                  <NavButton href="/celebrants" isActive={isMainRowActive('/celebrants', isRouteActive('/celebrants'))} icon={PartyPopper}>
+                  <NavButton href="/celebrants" isActive={isMainRowActive('/celebrants', isRouteActive('/celebrants'))} icon={Calendar}>
                     Celebrants
                   </NavButton>
                 </div>
@@ -476,7 +476,7 @@ export function Sidebar({
                   <FavoritableRow
                     href="/celebrants/birthdays"
                     label="Birthdays"
-                    icon={PartyPopper}
+                    icon={Cake}
                     isActive={isMainRowActive('/celebrants/birthdays', isRouteActive('/celebrants/birthdays'))}
                     canFavorite={canFavorite}
                     favorite={favorites.find((f) => f.href === '/celebrants/birthdays')}
@@ -486,7 +486,7 @@ export function Sidebar({
                   <FavoritableRow
                     href="/celebrants/anniversary"
                     label="Anniversary"
-                    icon={PartyPopper}
+                    icon={Wine}
                     isActive={isMainRowActive('/celebrants/anniversary', isRouteActive('/celebrants/anniversary'))}
                     canFavorite={canFavorite}
                     favorite={favorites.find((f) => f.href === '/celebrants/anniversary')}
@@ -496,16 +496,6 @@ export function Sidebar({
                 </div>
               )}
 
-              <FavoritableRow
-                href="/clients/monitoring"
-                label="Clients"
-                icon={Radar}
-                isActive={isMainRowActive('/clients/monitoring', isRouteActive('/clients/monitoring'))}
-                canFavorite={canFavorite}
-                favorite={favorites.find((f) => f.href === '/clients/monitoring')}
-                atMax={atMax}
-                onChanged={setFavorites}
-              />
             </>
           )}
 

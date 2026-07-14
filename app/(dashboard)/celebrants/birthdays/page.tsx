@@ -7,6 +7,14 @@ import { Cake } from 'lucide-react'
 
 const FULL_ADMIN_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE']
 
+// Prisma's DateTime? type is Date | null at compile time, but a malformed
+// underlying value can still surface as something other than a real Date at
+// runtime — coerce defensively rather than assume the type holds.
+function toValidDate(value: unknown): Date | null {
+  const d = value instanceof Date ? value : new Date(value as string)
+  return isNaN(d.getTime()) ? null : d
+}
+
 function formatMonthDay(date: Date) {
   return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(date)
 }
@@ -44,12 +52,9 @@ export default async function BirthdaysPage() {
   today.setHours(0, 0, 0, 0)
 
   const celebrants = users
-    .map((u) => ({
-      id: u.id,
-      name: `${u.firstName} ${u.lastName}`,
-      birthDate: u.profile!.birthDate!,
-      daysUntil: daysUntilNext(u.profile!.birthDate!, today),
-    }))
+    .map((u) => ({ id: u.id, name: `${u.firstName} ${u.lastName}`, birthDate: toValidDate(u.profile!.birthDate) }))
+    .filter((c): c is { id: string; name: string; birthDate: Date } => c.birthDate !== null)
+    .map((c) => ({ ...c, daysUntil: daysUntilNext(c.birthDate, today) }))
     .sort((a, b) => a.daysUntil - b.daysUntil)
 
   return (
