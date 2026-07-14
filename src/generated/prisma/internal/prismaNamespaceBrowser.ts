@@ -77,7 +77,9 @@ export const ModelName = {
   ChannelRead: 'ChannelRead',
   AuditLog: 'AuditLog',
   Notification: 'Notification',
-  SidebarFavorite: 'SidebarFavorite'
+  SidebarFavorite: 'SidebarFavorite',
+  Team: 'Team',
+  TeamMembership: 'TeamMembership'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -586,6 +588,36 @@ export const SidebarFavoriteScalarFieldEnum = {
 } as const
 
 export type SidebarFavoriteScalarFieldEnum = (typeof SidebarFavoriteScalarFieldEnum)[keyof typeof SidebarFavoriteScalarFieldEnum]
+
+
+export const TeamScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  departmentId: 'departmentId',
+  leaderId: 'leaderId',
+  tempLeader1Id: 'tempLeader1Id',
+  tempLeader2Id: 'tempLeader2Id',
+  status: 'status',
+  onHold: 'onHold',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TeamScalarFieldEnum = (typeof TeamScalarFieldEnum)[keyof typeof TeamScalarFieldEnum]
+
+
+export const TeamMembershipScalarFieldEnum = {
+  id: 'id',
+  teamId: 'teamId',
+  userId: 'userId',
+  startedAt: 'startedAt',
+  endedAt: 'endedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TeamMembershipScalarFieldEnum = (typeof TeamMembershipScalarFieldEnum)[keyof typeof TeamMembershipScalarFieldEnum]
 
 
 export const SortOrder = {

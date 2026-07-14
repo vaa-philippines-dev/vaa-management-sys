@@ -176,3 +176,13 @@ export type Notification = Prisma.NotificationModel
  * 
  */
 export type SidebarFavorite = Prisma.SidebarFavoriteModel
+/**
+ * Model Team
+ * 
+ */
+export type Team = Prisma.TeamModel
+/**
+ * Model TeamMembership
+ * 
+ */
+export type TeamMembership = Prisma.TeamMembershipModel

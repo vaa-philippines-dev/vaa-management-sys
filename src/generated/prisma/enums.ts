@@ -16,6 +16,7 @@ export const SystemRole = {
   DEPT_MANAGER: 'DEPT_MANAGER',
   TEAM_LEADER: 'TEAM_LEADER',
   OPERATIONS_MANAGER: 'OPERATIONS_MANAGER',
+  HR: 'HR',
   STAFF: 'STAFF',
   VA: 'VA'
 } as const

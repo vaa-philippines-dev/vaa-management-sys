@@ -10,6 +10,10 @@ export const VA_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 
 // Everyone else (DEPT_MANAGER, STAFF, VA) only sees tickets they created or are assigned to.
 export const TICKET_VIEW_ALL_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE']
 export const TICKET_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN']
+// Team creation + membership composition (add/remove/transfer) — Dept Manager owns team composition.
+export const TEAM_MANAGE_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER']
+// Team Leader + both Temp Leader slots — Operations Manager owns who leads, not who's on the roster.
+export const TEAM_LEADER_ASSIGN_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'OPERATIONS_MANAGER']
 
 // Dev-only auth bypass for local testing of multi-user flows (e.g. Inbox
 // realtime) without needing two real Google OAuth logins. Only ever active
@@ -95,6 +99,15 @@ export function getPrimaryDepartment(user: Awaited<ReturnType<typeof getCurrentU
   if (!user) return null
   const primary = user.memberships?.find((m) => m.isPrimary)
   return primary?.department ?? user.memberships?.[0]?.department ?? null
+}
+
+// Returns the department ids a Dept/Ops Manager actively belongs to (and thus can
+// manage teams/celebrants/clients within). Returns [] for full admins too — callers
+// must branch on admin status separately (canMutate(user)/isAdmin) rather than
+// treating an empty array as "no access" for an admin.
+export function getManagedDepartmentIds(user: Awaited<ReturnType<typeof getCurrentUser>>): string[] {
+  if (!user) return []
+  return (user.memberships ?? []).filter((m) => !m.endedAt).map((m) => m.departmentId)
 }
 
 export function hasModuleAccess(

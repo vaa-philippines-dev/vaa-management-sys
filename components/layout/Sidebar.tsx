@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   Building2,
   Users,
+  UsersRound,
   Briefcase,
   Clock,
   UserCog,
@@ -23,6 +24,8 @@ import {
   X,
   Ticket,
   MessageSquare,
+  PartyPopper,
+  Radar,
 } from 'lucide-react'
 import Image from 'next/image'
 import {
@@ -35,6 +38,7 @@ import { useSidebarCollapse } from './SidebarCollapseContext'
 import { PanelLeftOpen } from 'lucide-react'
 
 const ADMIN_TREE_STORAGE_KEY = 'sidebar-admin-tree-expanded'
+const CELEBRANTS_TREE_STORAGE_KEY = 'sidebar-celebrants-tree-expanded'
 const MAX_FAVORITES = 3
 
 type FavoriteRecord = {
@@ -248,12 +252,18 @@ const managerRoutes = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { label: 'Inbox', href: '/inbox', icon: MessageSquare },
   { label: 'Clients', href: '/clients', icon: Building2 },
-  { label: 'VA Roster', href: '/vas', icon: Users },
   { label: 'Assignments', href: '/assignments', icon: Briefcase },
   { label: 'Work Logs', href: '/work-logs', icon: ListTodo },
   { label: 'Services', href: '/skills', icon: UserCog },
   { label: 'Tickets', href: '/tickets', icon: Ticket },
   { label: 'Monthly Report', href: '/reports', icon: BarChart3 },
+]
+
+const departmentRoutes = [
+  { label: 'VA Roster', href: '/vas', icon: Users },
+  { label: 'Teams', href: '/teams', icon: UsersRound },
+  { label: 'Celebrants', href: '/celebrants', icon: PartyPopper },
+  { label: 'Clients', href: '/clients/monitoring', icon: Radar },
 ]
 
 const vaRoutes = [
@@ -277,10 +287,12 @@ export function Sidebar({
   role = 'MANAGER',
   isAdmin = false,
   initialFavorites = [],
+  showDepartmentSection = false,
 }: {
   role?: 'MANAGER' | 'VA'
   isAdmin?: boolean
   initialFavorites?: FavoriteRecord[]
+  showDepartmentSection?: boolean
 }) {
   const pathname = usePathname()
   const routes = role === 'VA' ? vaRoutes : managerRoutes
@@ -297,6 +309,7 @@ export function Sidebar({
   const atMax = favorites.length >= MAX_FAVORITES
 
   const [adminTreeExpanded, setAdminTreeExpanded] = useState(true)
+  const [celebrantsTreeExpanded, setCelebrantsTreeExpanded] = useState(true)
 
   useEffect(() => {
     const stored = window.localStorage.getItem(ADMIN_TREE_STORAGE_KEY)
@@ -304,12 +317,24 @@ export function Sidebar({
       // eslint-disable-next-line react-hooks/set-state-in-effect -- restoring persisted collapse state after mount, unavoidable since localStorage isn't available during SSR
       setAdminTreeExpanded(false)
     }
+    const storedCelebrants = window.localStorage.getItem(CELEBRANTS_TREE_STORAGE_KEY)
+    if (storedCelebrants === '0') {
+      setCelebrantsTreeExpanded(false)
+    }
   }, [])
 
   const toggleAdminTree = () => {
     setAdminTreeExpanded((prev) => {
       const next = !prev
       window.localStorage.setItem(ADMIN_TREE_STORAGE_KEY, next ? '1' : '0')
+      return next
+    })
+  }
+
+  const toggleCelebrantsTree = () => {
+    setCelebrantsTreeExpanded((prev) => {
+      const next = !prev
+      window.localStorage.setItem(CELEBRANTS_TREE_STORAGE_KEY, next ? '1' : '0')
       return next
     })
   }
@@ -323,7 +348,7 @@ export function Sidebar({
     })
   }
 
-  const allRoutes = [...routes, ...(isAdmin ? adminRoutes : [])]
+  const allRoutes = [...routes, ...(showDepartmentSection ? departmentRoutes : []), ...(isAdmin ? adminRoutes : [])]
   const isRouteActive = (href: string) =>
     href === '/dashboard' ? pathname === '/dashboard' : pathname === href || pathname.startsWith(href + '/')
   const isFavorited = (href: string) => favorites.some((f) => f.href === href)
@@ -381,6 +406,7 @@ export function Sidebar({
       </div>
       <ScrollArea className="flex-1">
         <nav className="flex flex-col gap-px pr-1">
+          <p className="px-2 pb-1 text-[10.5px] tracking-wide text-sidebar-foreground/60">Main</p>
           {routes.map((route) => (
             <FavoritableRow
               key={route.href}
@@ -394,6 +420,94 @@ export function Sidebar({
               onChanged={setFavorites}
             />
           ))}
+
+          {showDepartmentSection && (
+            <>
+              <p className="px-2 pt-3.5 pb-1 text-[10.5px] tracking-wide text-sidebar-foreground/60">Department</p>
+              <FavoritableRow
+                href="/vas"
+                label="VA Roster"
+                icon={Users}
+                isActive={isMainRowActive('/vas', isRouteActive('/vas'))}
+                canFavorite={canFavorite}
+                favorite={favorites.find((f) => f.href === '/vas')}
+                atMax={atMax}
+                onChanged={setFavorites}
+              />
+              <FavoritableRow
+                href="/teams"
+                label="Teams"
+                icon={UsersRound}
+                isActive={isMainRowActive('/teams', isRouteActive('/teams'))}
+                canFavorite={canFavorite}
+                favorite={favorites.find((f) => f.href === '/teams')}
+                atMax={atMax}
+                onChanged={setFavorites}
+              />
+
+              <div className="group flex items-center gap-0.5">
+                <div className="flex-1">
+                  <NavButton href="/celebrants" isActive={isMainRowActive('/celebrants', isRouteActive('/celebrants'))} icon={PartyPopper}>
+                    Celebrants
+                  </NavButton>
+                </div>
+                {canFavorite && (
+                  <FavoriteStar
+                    href="/celebrants"
+                    label="Celebrants"
+                    favorite={favorites.find((f) => f.href === '/celebrants')}
+                    atMax={atMax}
+                    onChanged={setFavorites}
+                  />
+                )}
+                <button
+                  type="button"
+                  onClick={toggleCelebrantsTree}
+                  aria-expanded={celebrantsTreeExpanded}
+                  aria-label={celebrantsTreeExpanded ? 'Collapse celebrants links' : 'Expand celebrants links'}
+                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded text-sidebar-foreground/60 hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground"
+                >
+                  <ChevronDown className={cn('h-3 w-3 transition-transform', !celebrantsTreeExpanded && '-rotate-90')} />
+                </button>
+              </div>
+
+              {celebrantsTreeExpanded && (
+                <div className="relative ml-[13px] flex flex-col gap-px border-l border-sidebar-foreground/15 pl-3">
+                  <FavoritableRow
+                    href="/celebrants/birthdays"
+                    label="Birthdays"
+                    icon={PartyPopper}
+                    isActive={isMainRowActive('/celebrants/birthdays', isRouteActive('/celebrants/birthdays'))}
+                    canFavorite={canFavorite}
+                    favorite={favorites.find((f) => f.href === '/celebrants/birthdays')}
+                    atMax={atMax}
+                    onChanged={setFavorites}
+                  />
+                  <FavoritableRow
+                    href="/celebrants/anniversary"
+                    label="Anniversary"
+                    icon={PartyPopper}
+                    isActive={isMainRowActive('/celebrants/anniversary', isRouteActive('/celebrants/anniversary'))}
+                    canFavorite={canFavorite}
+                    favorite={favorites.find((f) => f.href === '/celebrants/anniversary')}
+                    atMax={atMax}
+                    onChanged={setFavorites}
+                  />
+                </div>
+              )}
+
+              <FavoritableRow
+                href="/clients/monitoring"
+                label="Clients"
+                icon={Radar}
+                isActive={isMainRowActive('/clients/monitoring', isRouteActive('/clients/monitoring'))}
+                canFavorite={canFavorite}
+                favorite={favorites.find((f) => f.href === '/clients/monitoring')}
+                atMax={atMax}
+                onChanged={setFavorites}
+              />
+            </>
+          )}
 
           {isAdmin && (
             <>

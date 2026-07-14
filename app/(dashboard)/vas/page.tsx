@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import type { Prisma } from '@/src/generated/prisma/client'
-import { getCurrentUser, canMutate } from '@/lib/auth'
+import { getCurrentUser, canMutate, getManagedDepartmentIds } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -10,6 +10,7 @@ import { Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table'
 import { StatusIndicator } from '@/components/ui/status-indicator'
+import { getOwnTeamIds } from '@/lib/teams'
 import { QuickAddVABtn } from '@/components/vas/QuickAddVABtn'
 import { VABulkSelectToggle } from '@/components/vas/VABulkSelectToggle'
 import { VARowCheckbox } from '@/components/vas/VARowCheckbox'
@@ -82,6 +83,30 @@ const EMPLOYMENT_TONE: Record<string, Tone> = {
 
 const hrgRoles = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'EXECUTIVE']
 
+const DEPARTMENT_SCOPED_ROLES = ['DEPT_MANAGER', 'OPERATIONS_MANAGER']
+
+type ViewerScope =
+  | { type: 'unrestricted' }
+  | { type: 'department'; departmentIds: string[] }
+  | { type: 'team'; teamIds: string[] }
+
+// Only the two explicitly-specified cases (Dept/Ops Manager -> own department,
+// team-affiliated VA -> own team) get restricted. Every other viewer (admins/HR/
+// EXECUTIVE, plain STAFF, non-team-affiliated VAs) keeps the pre-existing
+// unrestricted behavior — the task explicitly says not to invent new restrictions
+// for roles/situations not covered by the access matrix.
+async function getViewerScope(currentUser: Awaited<ReturnType<typeof getCurrentUser>>): Promise<ViewerScope> {
+  if (!currentUser) return { type: 'unrestricted' }
+  if (DEPARTMENT_SCOPED_ROLES.includes(currentUser.systemRole)) {
+    return { type: 'department', departmentIds: getManagedDepartmentIds(currentUser) }
+  }
+  if (currentUser.userType === 'VIRTUAL_ASSISTANT') {
+    const teamIds = await getOwnTeamIds(currentUser.id)
+    if (teamIds.length > 0) return { type: 'team', teamIds }
+  }
+  return { type: 'unrestricted' }
+}
+
 export default async function VAPage({
   searchParams,
 }: {
@@ -90,6 +115,7 @@ export default async function VAPage({
   const currentUser = await getCurrentUser()
   const isHRE = currentUser ? hrgRoles.includes(currentUser.systemRole) : false
   const isAdmin = currentUser ? canMutate(currentUser) : false
+  const viewerScope = await getViewerScope(currentUser)
 
   const params = await searchParams
   const q = typeof params.q === 'string' ? params.q : undefined
@@ -104,7 +130,7 @@ export default async function VAPage({
 
   const tableSection = (
     <Suspense key={`${q}-${dept}-${avail}-${empStatus}-${status}-${sort}-${viewAll}-${page}`} fallback={<TableSkeleton />}>
-      <VATableSection q={q} dept={dept} avail={avail} empStatus={empStatus} status={status} sort={sort} isHRE={isHRE} isAdmin={isAdmin} viewAll={viewAll} page={page} />
+      <VATableSection q={q} dept={dept} avail={avail} empStatus={empStatus} status={status} sort={sort} isHRE={isHRE} isAdmin={isAdmin} viewAll={viewAll} page={page} viewerScope={viewerScope} />
     </Suspense>
   )
 
@@ -220,6 +246,7 @@ async function VATableSection({
   isAdmin,
   viewAll,
   page,
+  viewerScope,
 }: {
   q?: string
   dept?: string
@@ -231,7 +258,33 @@ async function VATableSection({
   isAdmin: boolean
   viewAll: boolean
   page: number
+  viewerScope: ViewerScope
 }) {
+  // Row-level scoping layered on top of the filter-param where clause: Dept/Ops
+  // Managers only ever see VAs whose current department membership is one of
+  // their own; team-affiliated VA viewers only see VAs on the same team(s).
+  // Admins/HR/EXECUTIVE and any other untouched viewer stay unrestricted.
+  const scopeWhere: Prisma.VAProfileWhereInput =
+    viewerScope.type === 'department'
+      ? { user: { memberships: { some: { departmentId: { in: viewerScope.departmentIds }, endedAt: null } } } }
+      : viewerScope.type === 'team'
+        ? {
+            user: {
+              OR: [
+                { ledTeams: { some: { id: { in: viewerScope.teamIds } } } },
+                { tempLedTeams1: { some: { id: { in: viewerScope.teamIds } } } },
+                { tempLedTeams2: { some: { id: { in: viewerScope.teamIds } } } },
+                { teamMemberships: { some: { teamId: { in: viewerScope.teamIds }, endedAt: null } } },
+              ],
+            },
+          }
+        : {}
+  const scopeCacheKey = viewerScope.type === 'unrestricted'
+    ? 'all'
+    : viewerScope.type === 'department'
+      ? `dept:${viewerScope.departmentIds.slice().sort().join(',')}`
+      : `team:${viewerScope.teamIds.slice().sort().join(',')}`
+
   const userWhere: Record<string, unknown> = {}
   if (q) {
     userWhere.OR = [
@@ -264,9 +317,18 @@ async function VATableSection({
   const where: Prisma.VAProfileWhereInput = {
     user: { userType: 'VIRTUAL_ASSISTANT', ...userWhere },
     ...vaWhere,
+    ...(viewerScope.type === 'unrestricted' ? {} : { AND: [scopeWhere] }),
   }
 
-  const cacheKey = `vas:list:${JSON.stringify({ q, dept, avail, empStatus, status, sort, viewAll, page })}`
+  // Total roster count ("X / Y VAs" header stat) is scoped the same as the row
+  // query — otherwise a Dept Manager/team-scoped viewer sees a misleading total
+  // like "12 / 340 VAs" for a roster they can never see beyond their 12.
+  const allVAsWhere: Prisma.VAProfileWhereInput = {
+    user: { userType: 'VIRTUAL_ASSISTANT' },
+    ...(viewerScope.type === 'unrestricted' ? {} : { AND: [scopeWhere] }),
+  }
+
+  const cacheKey = `vas:list:${scopeCacheKey}:${JSON.stringify({ q, dept, avail, empStatus, status, sort, viewAll, page })}`
 
   const [filteredVAs, filteredCount, allVAs] = await Promise.all([
     cached(cacheKey, [CACHE_TAGS.vas], 60, () =>
@@ -291,11 +353,11 @@ async function VATableSection({
         ...(viewAll ? {} : { take: PAGE_SIZE, skip: (page - 1) * PAGE_SIZE }),
       })
     ),
-    cached(`vas:count:${JSON.stringify({ q, dept, avail, empStatus, status })}`, [CACHE_TAGS.vas], 60, () =>
+    cached(`vas:count:${scopeCacheKey}:${JSON.stringify({ q, dept, avail, empStatus, status })}`, [CACHE_TAGS.vas], 60, () =>
       prisma.vAProfile.count({ where })
     ),
-    cached('vas:count:all', [CACHE_TAGS.vas], 60, () =>
-      prisma.vAProfile.count({ where: { user: { userType: 'VIRTUAL_ASSISTANT' } } })
+    cached(`vas:count:all:${scopeCacheKey}`, [CACHE_TAGS.vas], 60, () =>
+      prisma.vAProfile.count({ where: allVAsWhere })
     ),
   ])
 
