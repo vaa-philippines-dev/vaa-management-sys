@@ -36,7 +36,7 @@ export default async function DashboardLayout({
             <div className="flex flex-1 flex-col overflow-hidden">
               <Navbar />
               <main className="flex-1 overflow-auto p-6 has-[[data-inbox-page]]:overflow-hidden has-[[data-inbox-page]]:p-0">
-                <div className="mx-auto max-w-7xl has-[[data-inbox-page]]:h-full has-[[data-inbox-page]]:max-w-none">
+                <div className="mx-auto max-w-7xl has-[[data-inbox-page]]:h-full has-[[data-inbox-page]]:max-w-none has-[[data-wide-page]]:max-w-none">
                   {children}
                 </div>
               </main>

@@ -137,7 +137,7 @@ export default async function VAPage({
   )
 
   return (
-    <div className="space-y-3">
+    <div data-wide-page className="space-y-3">
       {isAdmin ? (
         <VABulkSelectToggle
           headerActions={
@@ -460,8 +460,9 @@ async function VATableSection({
             <p className="text-sm text-muted-foreground">No VAs match your filters</p>
           </div>
         ) : (
+          <div className="max-h-[calc(100vh-19rem)] overflow-y-auto">
           <Table className="text-xs">
-            <TableHeader>
+            <TableHeader className="sticky top-0 z-20">
               <TableRow className="bg-muted/30">
                 {isAdmin && (
                   <TableHead className="px-3 py-2.5 w-0">
@@ -575,6 +576,7 @@ async function VATableSection({
               })}
             </TableBody>
           </Table>
+          </div>
         )}
       </div>
 
