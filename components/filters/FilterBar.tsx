@@ -14,6 +14,7 @@ type FilterConfig = {
   label: string
   options: FilterOption[]
   placeholder?: string
+  defaultValue?: string
 }
 
 type FilterBarProps = {
@@ -84,11 +85,11 @@ export function FilterBar({
       {filters.map((f) => (
         <select
           key={f.key}
-          value={searchParams.get(f.key) ?? ''}
+          value={searchParams.get(f.key) ?? f.defaultValue ?? ''}
           onChange={(e) => updateParam(f.key, e.target.value)}
           className="px-2.5 py-1.5 text-xs border rounded-md bg-background h-8 min-w-[100px]"
         >
-          <option value="">{f.placeholder ?? `All ${f.label}`}</option>
+          {!f.defaultValue && <option value="">{f.placeholder ?? `All ${f.label}`}</option>}
           {f.options.map((o) => (
             <option key={o.value} value={o.value}>{o.label}</option>
           ))}

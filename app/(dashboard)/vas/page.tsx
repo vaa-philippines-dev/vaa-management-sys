@@ -32,6 +32,7 @@ const PAGE_SIZE = 20
 
 type SortField = 'name' | 'position' | 'status' | 'engagement' | 'hireDate' | 'eocDate'
 const DEFAULT_SORT: `${SortField}:${'asc' | 'desc'}` = 'hireDate:desc'
+const DEFAULT_STATUS = 'ACTIVE'
 const SORT_FIELDS: SortField[] = ['name', 'position', 'status', 'engagement', 'hireDate', 'eocDate']
 
 function parseSort(raw: string | undefined): { field: SortField; dir: 'asc' | 'desc' } {
@@ -95,13 +96,15 @@ export default async function VAPage({
   const dept = typeof params.dept === 'string' ? params.dept : undefined
   const avail = typeof params.avail === 'string' ? params.avail : undefined
   const empStatus = typeof params.emp === 'string' ? params.emp : undefined
+  const statusParam = typeof params.status === 'string' ? params.status : DEFAULT_STATUS
+  const status = statusParam === 'ALL' ? undefined : statusParam
   const sort = typeof params.sort === 'string' ? params.sort : DEFAULT_SORT
   const viewAll = params.view === 'all'
   const page = Math.max(1, parseInt(typeof params.page === 'string' ? params.page : '1', 10) || 1)
 
   const tableSection = (
-    <Suspense key={`${q}-${dept}-${avail}-${empStatus}-${sort}-${viewAll}-${page}`} fallback={<TableSkeleton />}>
-      <VATableSection q={q} dept={dept} avail={avail} empStatus={empStatus} sort={sort} isHRE={isHRE} isAdmin={isAdmin} viewAll={viewAll} page={page} />
+    <Suspense key={`${q}-${dept}-${avail}-${empStatus}-${status}-${sort}-${viewAll}-${page}`} fallback={<TableSkeleton />}>
+      <VATableSection q={q} dept={dept} avail={avail} empStatus={empStatus} status={status} sort={sort} isHRE={isHRE} isAdmin={isAdmin} viewAll={viewAll} page={page} />
     </Suspense>
   )
 
@@ -158,6 +161,21 @@ async function FilterWrapper() {
   return (
     <FilterBar
       filters={[
+        {
+          key: 'status',
+          label: 'Status',
+          defaultValue: DEFAULT_STATUS,
+          options: [
+            { value: 'ALL', label: 'All Statuses' },
+            { value: 'ACTIVE', label: 'Active' },
+            { value: 'PENDING', label: 'Pending' },
+            { value: 'TRANSFERRED', label: 'Transferred' },
+            { value: 'RESIGNED', label: 'Resigned' },
+            { value: 'REMOVED', label: 'Removed' },
+            { value: 'PROJECT_ENDED', label: 'Project Ended' },
+            { value: 'CANCELLED', label: 'Cancelled' },
+          ],
+        },
         ...(departments.length > 0
           ? [{ key: 'dept', label: 'Dept', options: departments.map((d) => ({ value: d.id, label: d.name })) }]
           : []),
@@ -196,6 +214,7 @@ async function VATableSection({
   dept,
   avail,
   empStatus,
+  status,
   sort,
   isHRE,
   isAdmin,
@@ -206,6 +225,7 @@ async function VATableSection({
   dept?: string
   avail?: string
   empStatus?: string
+  status?: string
   sort: string
   isHRE: boolean
   isAdmin: boolean
@@ -229,6 +249,7 @@ async function VATableSection({
 
   const vaWhere: Record<string, unknown> = {}
   if (avail) vaWhere.availabilityStatus = avail
+  if (status) vaWhere.status = status
 
   const { field: sortField, dir: sortDir } = parseSort(sort)
 
@@ -245,7 +266,7 @@ async function VATableSection({
     ...vaWhere,
   }
 
-  const cacheKey = `vas:list:${JSON.stringify({ q, dept, avail, empStatus, sort, viewAll, page })}`
+  const cacheKey = `vas:list:${JSON.stringify({ q, dept, avail, empStatus, status, sort, viewAll, page })}`
 
   const [filteredVAs, filteredCount, allVAs] = await Promise.all([
     cached(cacheKey, [CACHE_TAGS.vas], 60, () =>
@@ -270,7 +291,7 @@ async function VATableSection({
         ...(viewAll ? {} : { take: PAGE_SIZE, skip: (page - 1) * PAGE_SIZE }),
       })
     ),
-    cached(`vas:count:${JSON.stringify({ q, dept, avail, empStatus })}`, [CACHE_TAGS.vas], 60, () =>
+    cached(`vas:count:${JSON.stringify({ q, dept, avail, empStatus, status })}`, [CACHE_TAGS.vas], 60, () =>
       prisma.vAProfile.count({ where })
     ),
     cached('vas:count:all', [CACHE_TAGS.vas], 60, () =>
@@ -280,7 +301,7 @@ async function VATableSection({
 
   const activeCount = filteredVAs.filter((v) => v.status === 'ACTIVE').length
   const availableCount = filteredVAs.filter((v) => v.availabilityStatus === 'AVAILABLE').length
-  const hasFilters = !!(q || dept || avail || empStatus)
+  const hasFilters = !!(q || dept || avail || empStatus || (status && status !== DEFAULT_STATUS))
   const pageCount = Math.max(1, Math.ceil(filteredCount / PAGE_SIZE))
 
   const buildHref = (targetPage: number) => {
@@ -289,6 +310,7 @@ async function VATableSection({
     if (dept) sp.set('dept', dept)
     if (avail) sp.set('avail', avail)
     if (empStatus) sp.set('emp', empStatus)
+    sp.set('status', status ?? 'ALL')
     if (sort) sp.set('sort', sort)
     if (targetPage > 1) sp.set('page', String(targetPage))
     return `?${sp.toString()}`
@@ -300,6 +322,7 @@ async function VATableSection({
     if (dept) sp.set('dept', dept)
     if (avail) sp.set('avail', avail)
     if (empStatus) sp.set('emp', empStatus)
+    sp.set('status', status ?? 'ALL')
     if (sort) sp.set('sort', sort)
     sp.set('view', 'all')
     return `?${sp.toString()}`
@@ -311,6 +334,7 @@ async function VATableSection({
     if (dept) sp.set('dept', dept)
     if (avail) sp.set('avail', avail)
     if (empStatus) sp.set('emp', empStatus)
+    sp.set('status', status ?? 'ALL')
     if (sort) sp.set('sort', sort)
     return `?${sp.toString()}`
   })()
@@ -322,6 +346,7 @@ async function VATableSection({
     if (dept) sp.set('dept', dept)
     if (avail) sp.set('avail', avail)
     if (empStatus) sp.set('emp', empStatus)
+    sp.set('status', status ?? 'ALL')
     sp.set('sort', `${field}:${nextDir}`)
     if (viewAll) sp.set('view', 'all')
     return `?${sp.toString()}`
