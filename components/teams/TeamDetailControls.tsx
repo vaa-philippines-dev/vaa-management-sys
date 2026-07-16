@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { StatusIndicator } from '@/components/ui/status-indicator'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { MemberCombobox } from '@/components/teams/MemberCombobox'
 import { toast } from 'sonner'
-import { Loader2, Crown, ArrowRightLeft, UserMinus, Users } from 'lucide-react'
+import { Loader2, Crown, ShieldHalf, ArrowRightLeft, UserMinus, Users } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
   setTeamLeader,
@@ -198,40 +199,49 @@ export function TeamDetailControls({
             <p className="text-sm text-muted-foreground">No members yet. Add one below to get started.</p>
           </div>
         ) : (
-          <div className="divide-y">
-            {members.map((m) => (
-              <div
-                key={m.membershipId}
-                className={cn(
-                  'flex items-center gap-3 px-4 py-2.5 transition-colors',
-                  selected.has(m.userId) && 'bg-accent/40'
-                )}
-              >
-                {canManageMembership && (
-                  <input
-                    type="checkbox"
-                    checked={selected.has(m.userId)}
-                    onChange={() => toggle(m.userId)}
-                    className="h-3.5 w-3.5 shrink-0 accent-primary"
-                    aria-label={`Select ${m.name}`}
-                  />
-                )}
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[11px] font-semibold text-primary">
-                  {initials(m.name)}
-                </span>
-                <span className="text-sm font-medium flex-1 truncate">{m.name}</span>
-                {(m.userId === leaderId || m.userId === tempLeader1Id || m.userId === tempLeader2Id) && (
-                  <Badge variant="outline" className="text-[10px] gap-1">
-                    <Crown className="h-2.5 w-2.5" />
-                    {m.userId === leaderId ? 'Leader' : 'Temp Leader'}
-                  </Badge>
-                )}
-                <StatusIndicator tone={AVAILABILITY_TONE[m.availabilityStatus ?? ''] ?? 'neutral'}>
-                  {AVAILABILITY_LABEL[m.availabilityStatus ?? ''] ?? m.availabilityStatus ?? 'Unknown'}
-                </StatusIndicator>
-              </div>
-            ))}
-          </div>
+          <ScrollArea className="max-h-[26rem]">
+            <div className="grid sm:grid-cols-2">
+              {members.map((m) => (
+                <div
+                  key={m.membershipId}
+                  className={cn(
+                    'flex items-center gap-3 border-b px-4 py-2.5 transition-colors min-w-0 sm:odd:border-r',
+                    selected.has(m.userId) && 'bg-accent/40'
+                  )}
+                >
+                  {canManageMembership && (
+                    <input
+                      type="checkbox"
+                      checked={selected.has(m.userId)}
+                      onChange={() => toggle(m.userId)}
+                      className="h-3.5 w-3.5 shrink-0 accent-primary"
+                      aria-label={`Select ${m.name}`}
+                    />
+                  )}
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[11px] font-semibold text-primary">
+                    {initials(m.name)}
+                  </span>
+                  <span className="text-sm font-medium flex-1 truncate min-w-0">{m.name}</span>
+                  {(m.userId === leaderId || m.userId === tempLeader1Id || m.userId === tempLeader2Id) && (
+                    <Badge variant="outline" className="text-[10px] gap-1 shrink-0">
+                      {m.userId === leaderId ? (
+                        <Crown className="h-2.5 w-2.5" />
+                      ) : (
+                        <ShieldHalf className="h-2.5 w-2.5" />
+                      )}
+                      {m.userId === leaderId ? 'Leader' : 'Temp Leader'}
+                    </Badge>
+                  )}
+                  <StatusIndicator
+                    tone={AVAILABILITY_TONE[m.availabilityStatus ?? ''] ?? 'neutral'}
+                    className="shrink-0"
+                  >
+                    {AVAILABILITY_LABEL[m.availabilityStatus ?? ''] ?? m.availabilityStatus ?? 'Unknown'}
+                  </StatusIndicator>
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
         )}
 
         {canManageMembership && (

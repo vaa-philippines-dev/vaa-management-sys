@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { StatusIndicator } from '@/components/ui/status-indicator'
-import { ArrowLeft, Crown, Users, UsersRound } from 'lucide-react'
+import { ArrowLeft, Crown, ShieldHalf, Users, UsersRound } from 'lucide-react'
 import { TeamDetailControls } from '@/components/teams/TeamDetailControls'
 import { cn } from '@/lib/utils'
 
@@ -140,9 +140,9 @@ export default async function TeamDetailPage({
       </div>
 
       <div className="grid gap-4 md:grid-cols-3 fade-in-stagger">
-        <LeaderCard label="Team Leader" user={team.leader} />
-        <LeaderCard label="Temp Leader 1" user={team.tempLeader1} />
-        <LeaderCard label="Temp Leader 2" user={team.tempLeader2} />
+        <LeaderCard label="Team Leader" user={team.leader} icon={Crown} />
+        <LeaderCard label="Temp Leader 1" user={team.tempLeader1} icon={ShieldHalf} />
+        <LeaderCard label="Temp Leader 2" user={team.tempLeader2} icon={ShieldHalf} />
       </div>
 
       {canManageMembership || canAssignLeaders ? (
@@ -178,7 +178,11 @@ export default async function TeamDetailPage({
                   <span className="text-sm font-medium flex-1 truncate">{m.name}</span>
                   {(m.userId === team.leaderId || m.userId === team.tempLeader1Id || m.userId === team.tempLeader2Id) && (
                     <Badge variant="outline" className="text-[10px] gap-1">
-                      <Crown className="h-2.5 w-2.5" />
+                      {m.userId === team.leaderId ? (
+                        <Crown className="h-2.5 w-2.5" />
+                      ) : (
+                        <ShieldHalf className="h-2.5 w-2.5" />
+                      )}
                       {m.userId === team.leaderId ? 'Leader' : 'Temp Leader'}
                     </Badge>
                   )}
@@ -195,11 +199,19 @@ export default async function TeamDetailPage({
   )
 }
 
-function LeaderCard({ label, user }: { label: string; user: { firstName: string; lastName: string } | null }) {
+function LeaderCard({
+  label,
+  user,
+  icon: Icon,
+}: {
+  label: string
+  user: { firstName: string; lastName: string } | null
+  icon: React.ComponentType<{ className?: string }>
+}) {
   return (
     <div className="rounded-lg border bg-card p-4 transition-shadow hover:shadow-sm">
       <div className="flex items-center gap-2">
-        <Crown className={cn('h-3.5 w-3.5', user ? 'text-primary' : 'text-muted-foreground/40')} />
+        <Icon className={cn('h-3.5 w-3.5', user ? 'text-primary' : 'text-muted-foreground/40')} />
         <p className="text-xs font-medium text-muted-foreground">{label}</p>
       </div>
       <div className="flex items-center gap-2 mt-2">
