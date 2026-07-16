@@ -199,13 +199,13 @@ export function TeamDetailControls({
             <p className="text-sm text-muted-foreground">No members yet. Add one below to get started.</p>
           </div>
         ) : (
-          <ScrollArea className="max-h-[26rem]">
+          <ScrollArea className="max-h-[14.0625rem]">
             <div className="grid sm:grid-cols-2">
               {members.map((m) => (
                 <div
                   key={m.membershipId}
                   className={cn(
-                    'flex items-center gap-3 border-b px-4 py-2.5 transition-colors min-w-0 sm:odd:border-r',
+                    'flex h-11 items-center gap-3 border-b px-4 transition-colors min-w-0 sm:odd:border-r',
                     selected.has(m.userId) && 'bg-accent/40'
                   )}
                 >
