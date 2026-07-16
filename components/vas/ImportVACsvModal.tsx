@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react'
 import { Modal } from '@/components/ui/modal'
 import { Button } from '@/components/ui/button'
-import { UploadCloud, FileText, X, Download, Minus } from 'lucide-react'
+import { UploadCloud, FileText, X, Download, Minus, ChevronDown, ChevronUp } from 'lucide-react'
 import { toast } from 'sonner'
 import type { VACsvRow } from '@/app/(dashboard)/vas/actions'
 import { useVACsvImport } from '@/components/vas/VACsvImportContext'
@@ -127,6 +127,127 @@ function parseCsv(text: string): VACsvRow[] {
   })
 }
 
+const COLUMN_GROUPS: { label: string; columns: { name: string; note?: string }[] }[] = [
+  {
+    label: 'Identity',
+    columns: [
+      { name: 'firstName', note: 'required' },
+      { name: 'middleName' },
+      { name: 'lastName' },
+      { name: 'extName' },
+      { name: 'email' },
+    ],
+  },
+  {
+    label: 'Employment',
+    columns: [
+      { name: 'hourlyRate' },
+      { name: 'baseRate' },
+      { name: 'vaaPosition', note: 'matched to Service' },
+      { name: 'level' },
+      { name: 'department' },
+      { name: 'availabilityStatus' },
+      { name: 'recommendability' },
+      { name: 'status', note: 'ACTIVE / PENDING / TRANSFERRED / RESIGNED / REMOVED / PROJECT_ENDED / CANCELLED / BLACKLISTED' },
+      { name: 'onHold' },
+      { name: 'engagementStatus' },
+      { name: 'hireDate' },
+      { name: 'eocDate' },
+    ],
+  },
+  {
+    label: 'Schedule',
+    columns: [
+      { name: 'hybrid' },
+      { name: 'preferredWorkHours' },
+      { name: 'availableSchedule' },
+    ],
+  },
+  {
+    label: 'Contact',
+    columns: [
+      { name: 'phone' },
+      { name: 'personalEmail' },
+      { name: 'workEmail' },
+      { name: 'gender' },
+      { name: 'birthDate' },
+      { name: 'birthdayCelebrant' },
+    ],
+  },
+  {
+    label: 'Address',
+    columns: [
+      { name: 'addressLine' },
+      { name: 'barangay' },
+      { name: 'cityMunicipality' },
+      { name: 'province' },
+      { name: 'zipCode' },
+      { name: 'landmark' },
+      { name: 'gcashNumber' },
+    ],
+  },
+  {
+    label: 'Emergency contact',
+    columns: [
+      { name: 'emergencyContactName' },
+      { name: 'emergencyContactPhone' },
+      { name: 'emergencyContactRelation' },
+    ],
+  },
+  {
+    label: 'Social & notes',
+    columns: [
+      { name: 'facebookName' },
+      { name: 'facebookUrl' },
+      { name: 'linkedinUrl' },
+      { name: 'notes' },
+    ],
+  },
+]
+
+function ColumnReference() {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className="rounded-lg border">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center justify-between px-3 py-2 text-xs font-medium hover:bg-muted/40 transition-colors"
+      >
+        <span>Column reference (40 columns)</span>
+        {open ? (
+          <ChevronUp className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+        ) : (
+          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+        )}
+      </button>
+      {open && (
+        <div className="border-t px-3 py-3 space-y-3 max-h-56 overflow-y-auto">
+          {COLUMN_GROUPS.map((group) => (
+            <div key={group.label}>
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground mb-1">
+                {group.label}
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {group.columns.map((col) => (
+                  <span
+                    key={col.name}
+                    title={col.note}
+                    className="inline-flex items-center gap-1 rounded-md border bg-muted/30 px-1.5 py-0.5 text-[11px] font-mono"
+                  >
+                    {col.name}
+                    {col.note && <span className="text-muted-foreground font-sans">· {col.note}</span>}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export function ImportVACsvModal() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [fileName, setFileName] = useState<string | null>(null)
@@ -147,7 +268,15 @@ export function ImportVACsvModal() {
   }
 
   const handleFile = async (file: File) => {
-    const text = await file.text()
+    const buffer = await file.arrayBuffer()
+    // Excel on Windows exports CSVs as Windows-1252/ANSI, not UTF-8. Decoding
+    // that as UTF-8 mangles accented characters (e.g. "ñ" -> "�"), which
+    // then breaks exact-name matching against existing VAs and can fork
+    // duplicate users. Detect the corruption and re-decode as Windows-1252.
+    let text = new TextDecoder('utf-8').decode(buffer)
+    if (text.includes('�')) {
+      text = new TextDecoder('windows-1252').decode(buffer)
+    }
     const parsed = parseCsv(text)
     if (parsed.length === 0) {
       toast.error('Could not find a "firstName" column, or file is empty')
@@ -204,7 +333,7 @@ export function ImportVACsvModal() {
       open={open}
       onOpenChange={(o) => !o && handleClose()}
       title="Import VAs from CSV"
-      description="Columns: firstName (required), middleName, lastName, extName, email, hourlyRate, baseRate, vaaPosition (matched against Service name/short name), level, department, availabilityStatus, recommendability, status (ACTIVE/PENDING/TRANSFERRED/RESIGNED/REMOVED/PROJECT_ENDED/CANCELLED), onHold, engagementStatus, hireDate, eocDate, hybrid, preferredWorkHours, availableSchedule, phone, personalEmail, workEmail, gender, birthDate, birthdayCelebrant, addressLine, barangay, cityMunicipality, province, zipCode, landmark, gcashNumber, emergencyContactName/Phone/Relation, facebookName, facebookUrl, linkedinUrl, notes"
+      description="Only firstName is required — everything else is optional and matched by header name."
       size="md"
       footer={
         <>
@@ -275,6 +404,8 @@ export function ImportVACsvModal() {
                 Download CSV Template
               </Button>
             )}
+
+            {!fileName && <ColumnReference />}
 
             {!fileName ? (
               <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-lg p-8 cursor-pointer hover:bg-muted/40 transition-colors">

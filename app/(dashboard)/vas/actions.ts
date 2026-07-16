@@ -158,6 +158,20 @@ function normalizeEnum(value: string | undefined, allowed: string[]): string | n
   return allowed.includes(normalized) ? normalized : null
 }
 
+// A malformed date cell (typo, wrong format, stray text) would otherwise
+// silently become `Invalid Date`, which Prisma either rejects with a
+// cryptic error or — depending on the field — can store as garbage.
+// Surface it as a normal per-row skip reason instead.
+function parseDateCell(value: string | undefined): { date: Date | null; error: string | null } {
+  const trimmed = (value || '').trim()
+  if (!trimmed) return { date: null, error: null }
+  const date = new Date(trimmed)
+  if (Number.isNaN(date.getTime())) {
+    return { date: null, error: `Invalid date "${trimmed}"` }
+  }
+  return { date, error: null }
+}
+
 const CSV_IMPORT_BATCH_SIZE = 20
 
 export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = false): Promise<VACsvImportResult> {
@@ -198,10 +212,6 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
   })
 
   // Pre-fetch lookups once instead of per-row to avoid thousands of sequential round-trips.
-  const emailInputs = rows
-    .map((row) => (row.email || '').trim().toLowerCase())
-    .filter(Boolean)
-
   // Match against every user, not just existing VAs — a CSV row can refer to
   // someone already in the system under a different userType (e.g. created
   // via another flow), and importing should promote that account to a VA
@@ -209,19 +219,44 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
   const existingVAs = await prisma.user.findMany({
     select: { id: true, email: true, firstName: true, middleName: true, lastName: true, extName: true, userType: true },
   })
-  const existingEmails = new Set(existingVAs.map((u) => u.email))
   const normalizeNameKey = (first: string, last: string) =>
     `${first.trim().toLowerCase()}|${last.trim().toLowerCase()}`
   // Full-name key catches VAs imported before the name-column split, whose
   // firstName/lastName boundary may not line up with a re-import's split.
   const normalizeFullNameKey = (...parts: (string | null | undefined)[]) =>
     parts.filter(Boolean).join(' ').trim().toLowerCase().replace(/\s+/g, ' ')
-  const existingIdByNameKey = new Map(
-    existingVAs.map((u) => [normalizeNameKey(u.firstName, u.lastName), u.id]),
-  )
-  const existingIdByFullNameKey = new Map(
+  // Two different people can share a first+last name. Building these as a
+  // plain Map means the second one silently overwrites the first's entry,
+  // so a CSV row can match — and get its data overwritten onto — the wrong
+  // person. Track keys that map to more than one user and refuse to
+  // auto-match on those; email match (which is unique) still works fine.
+  const AMBIGUOUS = Symbol('ambiguous')
+  const buildUniqueKeyMap = (entries: [string, string][]) => {
+    const map = new Map<string, string | typeof AMBIGUOUS>()
+    for (const [key, id] of entries) {
+      if (!key) continue
+      const existing = map.get(key)
+      if (existing === undefined) map.set(key, id)
+      else if (existing !== id) map.set(key, AMBIGUOUS)
+    }
+    return map
+  }
+  const nameKeyMap = buildUniqueKeyMap(existingVAs.map((u) => [normalizeNameKey(u.firstName, u.lastName), u.id]))
+  const fullNameKeyMap = buildUniqueKeyMap(
     existingVAs.map((u) => [normalizeFullNameKey(u.firstName, u.middleName, u.lastName, u.extName), u.id]),
   )
+  const existingIdByNameKey = {
+    get: (key: string): string | undefined => {
+      const v = nameKeyMap.get(key)
+      return v === AMBIGUOUS ? undefined : v
+    },
+  }
+  const existingIdByFullNameKey = {
+    get: (key: string): string | undefined => {
+      const v = fullNameKeyMap.get(key)
+      return v === AMBIGUOUS ? undefined : v
+    },
+  }
   const existingIdByEmail = new Map(existingVAs.map((u) => [u.email, u.id]))
 
   const departments = await prisma.department.findMany({ select: { id: true, name: true } })
@@ -305,7 +340,8 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
     const nameKey = normalizeNameKey(firstName, lastNameInput)
     const fullNameKey = normalizeFullNameKey(firstName, row.middleName, lastNameInput, row.extName)
 
-    const matchedUserId = (emailInput ? existingIdByEmail.get(emailInput) : undefined)
+    const matchedByEmail = emailInput ? existingIdByEmail.get(emailInput) : undefined
+    const matchedUserId = matchedByEmail
       ?? existingIdByNameKey.get(nameKey)
       ?? existingIdByFullNameKey.get(fullNameKey)
       ?? null
@@ -313,7 +349,7 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
     if (matchedUserId && !overwriteExisting) {
       result.skipped.push({
         row: rowNum,
-        reason: emailInput && existingEmails.has(emailInput)
+        reason: matchedByEmail
           ? `User already exists: ${emailInput}`
           : `User already exists: ${firstName} ${lastNameInput}`,
       })
@@ -323,6 +359,25 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
       result.skipped.push({ row: rowNum, reason: `Duplicate email in file: ${emailInput}` })
       continue
     }
+
+    const birthDateResult = parseDateCell(row.birthDate)
+    const hireDateResult = parseDateCell(row.hireDate)
+    const eocDateResult = parseDateCell(row.eocDate)
+    const dateError = birthDateResult.error
+      ? `birthDate: ${birthDateResult.error}`
+      : hireDateResult.error
+        ? `hireDate: ${hireDateResult.error}`
+        : eocDateResult.error
+          ? `eocDate: ${eocDateResult.error}`
+          : null
+    if (dateError) {
+      result.skipped.push({ row: rowNum, reason: dateError })
+      continue
+    }
+    const birthDate = birthDateResult.date
+    const hireDate = hireDateResult.date
+    const eocDate = eocDateResult.date
+
     if (emailInput) seenEmails.add(emailInput)
 
     const email = emailInput || `${firstName.toLowerCase().replace(/[^a-z0-9]/g, '')}-va-${Date.now()}-${i}@placeholder.vaa`
@@ -335,11 +390,8 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
     const preferredWorkHours = preferredWorkHoursInput && !Number.isNaN(Number(preferredWorkHoursInput)) ? Number(preferredWorkHoursInput) : null
     const hybrid = (row.hybrid || '').trim().toLowerCase() === 'true' || (row.hybrid || '').trim().toLowerCase() === 'yes'
     const onHold = (row.onHold || '').trim().toLowerCase() === 'true' || (row.onHold || '').trim().toLowerCase() === 'yes'
-    const birthDate = (row.birthDate || '').trim() ? new Date((row.birthDate || '').trim()) : null
     const birthdayCelebrantInput = (row.birthdayCelebrant || '').trim().toLowerCase()
     const birthdayCelebrant = birthdayCelebrantInput ? (birthdayCelebrantInput === 'true' || birthdayCelebrantInput === 'yes') : undefined
-    const hireDate = (row.hireDate || '').trim() ? new Date((row.hireDate || '').trim()) : null
-    const eocDate = (row.eocDate || '').trim() ? new Date((row.eocDate || '').trim()) : null
 
     const departmentInput = (row.department || '').trim()
     const departmentId = departmentInput ? departmentIdByNormalizedName.get(normalizeDeptName(departmentInput)) ?? null : null
