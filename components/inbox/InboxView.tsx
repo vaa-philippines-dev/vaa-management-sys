@@ -1145,12 +1145,41 @@ function ChannelThread({
                   <div
                     id={`message-${m.id}`}
                     className={cn(
-                      'group/message flex items-end gap-2 animate-in fade-in-0 slide-in-from-bottom-2 duration-200 rounded-lg transition-colors',
+                      'group/message relative flex items-end gap-2 animate-in fade-in-0 slide-in-from-bottom-2 duration-200 rounded-lg pr-9 transition-colors',
                       isMe && 'flex-row-reverse',
                       isGroupedWithPrev ? 'mt-px' : 'mt-3',
                       highlightedId === m.id && 'bg-primary/10'
                     )}
                   >
+                    {!isDeleted && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger
+                          className="absolute right-1 bottom-2 flex h-5 w-5 items-center justify-center rounded text-muted-foreground opacity-0 transition-opacity hover:bg-muted hover:text-foreground group-hover/message:opacity-100 group-focus-within/message:opacity-100"
+                          aria-label="Message actions"
+                        >
+                          <MoreHorizontal className="h-3.5 w-3.5" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => startReply(m)}>Reply</DropdownMenuItem>
+                          {canEdit && <DropdownMenuItem onClick={() => startEdit(m)}>Edit</DropdownMenuItem>}
+                          <DropdownMenuItem onClick={() => setForwardMessageId(m.id)}>Forward</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleBump(m)}>Bump</DropdownMenuItem>
+                          {canPin && (
+                            <DropdownMenuItem onClick={() => handleTogglePin(m)}>
+                              {m.pinned ? 'Unpin' : 'Pin'}
+                            </DropdownMenuItem>
+                          )}
+                          {canDelete && (
+                            <>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem variant="destructive" onClick={() => handleDelete(m)}>
+                                Delete
+                              </DropdownMenuItem>
+                            </>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
                     {isMe || isGroupedWithNext ? (
                       <div className="h-7 w-7 shrink-0" />
                     ) : (
@@ -1192,48 +1221,6 @@ function ChannelThread({
                           </p>
                         </div>
                       )}
-                      <div
-                        className={cn(
-                          'flex max-h-0 items-center gap-2 overflow-hidden transition-[max-height] duration-150 group-hover/message:max-h-5 group-focus-within/message:max-h-5',
-                          isMe && 'flex-row-reverse'
-                        )}
-                      >
-                        {isGroupedWithPrev && (
-                          <p className="text-[10.5px] text-muted-foreground opacity-0 transition-opacity group-hover/message:opacity-100">
-                            {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                            {m.editedAt && <span className="italic"> (edited)</span>}
-                          </p>
-                        )}
-                        {!isDeleted && (
-                          <DropdownMenu>
-                            <DropdownMenuTrigger
-                              className="opacity-0 transition-opacity group-hover/message:opacity-100 flex h-5 w-5 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground"
-                              aria-label="Message actions"
-                            >
-                              <MoreHorizontal className="h-3.5 w-3.5" />
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align={isMe ? 'end' : 'start'}>
-                              <DropdownMenuItem onClick={() => startReply(m)}>Reply</DropdownMenuItem>
-                              {canEdit && <DropdownMenuItem onClick={() => startEdit(m)}>Edit</DropdownMenuItem>}
-                              <DropdownMenuItem onClick={() => setForwardMessageId(m.id)}>Forward</DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleBump(m)}>Bump</DropdownMenuItem>
-                              {canPin && (
-                                <DropdownMenuItem onClick={() => handleTogglePin(m)}>
-                                  {m.pinned ? 'Unpin' : 'Pin'}
-                                </DropdownMenuItem>
-                              )}
-                              {canDelete && (
-                                <>
-                                  <DropdownMenuSeparator />
-                                  <DropdownMenuItem variant="destructive" onClick={() => handleDelete(m)}>
-                                    Delete
-                                  </DropdownMenuItem>
-                                </>
-                              )}
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        )}
-                      </div>
 
                       {replyPreview && (
                         <button
@@ -1276,10 +1263,8 @@ function ChannelThread({
                       {isMe && !isDeleted && (m.pending || !isGroupedWithNext) && (
                         <p
                           className={cn(
-                            'text-[10px] text-muted-foreground/70',
-                            m.pending
-                              ? 'leading-none'
-                              : 'max-h-0 overflow-hidden leading-none opacity-0 transition-[max-height,opacity] duration-150 group-hover/message:max-h-4 group-hover/message:opacity-100'
+                            'h-4 text-[10px] leading-none text-muted-foreground/70',
+                            m.pending ? '' : 'opacity-0 transition-opacity group-hover/message:opacity-100'
                           )}
                         >
                           {m.pending ? 'Sending…' : 'Sent'}
