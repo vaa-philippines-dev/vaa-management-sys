@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { cn } from '@/lib/utils'
 import { Search, UserPlus, X } from 'lucide-react'
 
@@ -29,7 +30,9 @@ export function MemberCombobox({
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [activeIndex, setActiveIndex] = useState(0)
+  const [rect, setRect] = useState<{ top: number; left: number; width: number } | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const selected = options.find((o) => o.userId === value) ?? null
 
@@ -39,9 +42,32 @@ export function MemberCombobox({
     return options.filter((o) => o.name.toLowerCase().includes(q))
   }, [query, options])
 
+  const updateRect = () => {
+    const el = inputRef.current
+    if (!el) return
+    const r = el.getBoundingClientRect()
+    setRect({ top: r.bottom + 4, left: r.left, width: r.width })
+  }
+
+  useLayoutEffect(() => {
+    if (open) updateRect()
+  }, [open])
+
+  useEffect(() => {
+    if (!open) return
+    const handle = () => updateRect()
+    window.addEventListener('scroll', handle, true)
+    window.addEventListener('resize', handle)
+    return () => {
+      window.removeEventListener('scroll', handle, true)
+      window.removeEventListener('resize', handle)
+    }
+  }, [open])
+
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      const target = e.target as Node
+      if (containerRef.current && !containerRef.current.contains(target)) {
         setOpen(false)
       }
     }
@@ -97,6 +123,7 @@ export function MemberCombobox({
       <div className="relative">
         <Search className="pointer-events-none absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
         <input
+          ref={inputRef}
           type="text"
           value={query}
           disabled={disabled}
@@ -115,38 +142,43 @@ export function MemberCombobox({
         />
       </div>
 
-      {open && (
-        <div className="absolute z-20 mt-1 max-h-56 w-full overflow-auto rounded-md border bg-popover shadow-lg animate-in fade-in-0 zoom-in-95 duration-100">
-          {results.length === 0 ? (
-            <p className="px-3 py-4 text-center text-xs text-muted-foreground">
-              {options.length === 0 ? 'No eligible members' : 'No matches found'}
-            </p>
-          ) : (
-            <ul role="listbox">
-              {results.map((option, i) => (
-                <li key={option.userId} role="option" aria-selected={i === activeIndex}>
-                  <button
-                    type="button"
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => handleSelect(option)}
-                    onMouseEnter={() => setActiveIndex(i)}
-                    className={cn(
-                      'flex w-full items-center gap-2 px-2.5 py-1.5 text-left text-xs transition-colors',
-                      i === activeIndex ? 'bg-accent text-accent-foreground' : 'hover:bg-muted'
-                    )}
-                  >
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-semibold text-primary">
-                      {initials(option.name)}
-                    </span>
-                    <span className="font-medium">{option.name}</span>
-                    <UserPlus className="ml-auto h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      )}
+      {open && rect && typeof document !== 'undefined' &&
+        createPortal(
+          <div
+            style={{ position: 'fixed', top: rect.top, left: rect.left, width: rect.width }}
+            className="z-50 max-h-56 overflow-auto rounded-md border bg-popover shadow-lg animate-in fade-in-0 zoom-in-95 duration-100"
+          >
+            {results.length === 0 ? (
+              <p className="px-3 py-4 text-center text-xs text-muted-foreground">
+                {options.length === 0 ? 'No eligible members' : 'No matches found'}
+              </p>
+            ) : (
+              <ul role="listbox">
+                {results.map((option, i) => (
+                  <li key={option.userId} role="option" aria-selected={i === activeIndex}>
+                    <button
+                      type="button"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => handleSelect(option)}
+                      onMouseEnter={() => setActiveIndex(i)}
+                      className={cn(
+                        'flex w-full items-center gap-2 px-2.5 py-1.5 text-left text-xs transition-colors',
+                        i === activeIndex ? 'bg-accent text-accent-foreground' : 'hover:bg-muted'
+                      )}
+                    >
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-semibold text-primary">
+                        {initials(option.name)}
+                      </span>
+                      <span className="font-medium">{option.name}</span>
+                      <UserPlus className="ml-auto h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>,
+          document.body
+        )}
     </div>
   )
 }
