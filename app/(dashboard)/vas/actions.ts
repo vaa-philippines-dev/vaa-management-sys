@@ -6,7 +6,7 @@ import { CACHE_TAGS } from '@/lib/cache'
 import { redirect } from 'next/navigation'
 import { requireRole, requireAdminMutator } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
-import type { Proficiency, EmploymentStatus } from '@/src/generated/prisma/enums'
+import type { Proficiency, EmploymentStatus, GeneralStatus } from '@/src/generated/prisma/enums'
 
 export async function createVA(formData: FormData) {
   const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER')
@@ -360,6 +360,15 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
       continue
     }
 
+    const statusInput = normalizeEnum(row.status, CSV_STATUS_VALUES)
+    if (!matchedUserId && !statusInput) {
+      // New VAs need an explicit Status from the sheet — don't guess ACTIVE
+      // via Prisma's column default. Existing VAs with a blank cell are fine;
+      // updateOne already leaves their current status untouched.
+      result.skipped.push({ row: rowNum, reason: 'Status is required for new VAs' })
+      continue
+    }
+
     const birthDateResult = parseDateCell(row.birthDate)
     const hireDateResult = parseDateCell(row.hireDate)
     const eocDateResult = parseDateCell(row.eocDate)
@@ -412,7 +421,7 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
       level: (row.level || '').trim() || null,
       availabilityStatus: normalizeEnum(row.availabilityStatus, CSV_AVAILABILITY_VALUES),
       recommendability: (row.recommendability || '').trim() || null,
-      status: normalizeEnum(row.status, CSV_STATUS_VALUES),
+      status: statusInput,
       onHold,
       engagementStatus: normalizeEnum(row.engagementStatus, CSV_ENGAGEMENT_VALUES),
       hireDate,
@@ -591,7 +600,7 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
               level: p.level,
               availabilityStatus: (p.availabilityStatus as any) ?? undefined,
               recommendability: p.recommendability,
-              status: (p.status as any) ?? undefined,
+              status: p.status as GeneralStatus,
               onHold: p.onHold,
               engagementStatus: (p.engagementStatus as any) ?? undefined,
               currentHireDate: p.hireDate ?? new Date(),

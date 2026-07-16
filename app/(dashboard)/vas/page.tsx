@@ -33,7 +33,7 @@ const PAGE_SIZE = 20
 
 type SortField = 'name' | 'position' | 'status' | 'engagement' | 'hireDate' | 'eocDate'
 const DEFAULT_SORT: `${SortField}:${'asc' | 'desc'}` = 'hireDate:desc'
-const DEFAULT_STATUS = 'ACTIVE'
+const DEFAULT_STATUS = 'ALL'
 const SORT_FIELDS: SortField[] = ['name', 'position', 'status', 'engagement', 'hireDate', 'eocDate']
 
 function parseSort(raw: string | undefined): { field: SortField; dir: 'asc' | 'desc' } {
@@ -204,6 +204,7 @@ async function FilterWrapper() {
             { value: 'REMOVED', label: 'Removed' },
             { value: 'PROJECT_ENDED', label: 'Project Ended' },
             { value: 'CANCELLED', label: 'Cancelled' },
+            { value: 'BLACKLISTED', label: 'Blacklisted' },
           ],
         },
         ...(departments.length > 0
