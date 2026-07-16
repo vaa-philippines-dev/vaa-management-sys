@@ -126,46 +126,50 @@ export function UserCard({
 
   return (
     <div className="rounded-lg border bg-card group/card">
-      <button
-        type="button"
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center gap-3 p-3 hover:bg-accent/30 transition-colors text-left"
-      >
-        <span
-          onClick={(e) => e.stopPropagation()}
-          className="flex items-center justify-center h-8 w-8 shrink-0 -m-1 p-1"
-        >
+      <div className="w-full flex items-center gap-3 p-3 hover:bg-accent/30 transition-colors">
+        <span className="flex items-center justify-center h-8 w-8 shrink-0 -m-1 p-1">
           <UserRowCheckbox id={user.id} />
         </span>
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
-          {(user.firstName || 'U')[0].toUpperCase()}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium truncate">
-              {user.firstName} {user.lastName}
-            </span>
-            {user.onHold && (
-              <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-warning/10 text-warning border-warning/20">
-                On Hold
-              </Badge>
-            )}
-            {!user.isActive && (
-              <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-destructive/10 text-destructive border-destructive/20">
-                Disabled
-              </Badge>
-            )}
+        <button
+          type="button"
+          onClick={() => setOpen(!open)}
+          className="flex flex-1 items-center gap-3 min-w-0 text-left"
+        >
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+            {(user.firstName || 'U')[0].toUpperCase()}
           </div>
-          <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-        </div>
-        <Badge variant="outline" className={`text-[10px] py-0 px-1.5 shrink-0 ${ROLE_COLORS[user.systemRole] ?? ''}`}>
-          {ROLE_LABELS[user.systemRole] ?? user.systemRole.replace(/_/g, ' ')}
-        </Badge>
-        <Badge variant="secondary" className="text-[10px] py-0 px-1.5 shrink-0">
-          {TYPE_LABELS[user.userType] ?? user.userType}
-        </Badge>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium truncate">
+                {user.firstName} {user.lastName}
+              </span>
+              {user.onHold && (
+                <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-warning/10 text-warning border-warning/20">
+                  On Hold
+                </Badge>
+              )}
+              {!user.isActive && (
+                <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-destructive/10 text-destructive border-destructive/20">
+                  Disabled
+                </Badge>
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+          </div>
+          <Badge variant="outline" className={`text-[10px] py-0 px-1.5 shrink-0 ${ROLE_COLORS[user.systemRole] ?? ''}`}>
+            {ROLE_LABELS[user.systemRole] ?? user.systemRole.replace(/_/g, ' ')}
+          </Badge>
+          <Badge variant="secondary" className="text-[10px] py-0 px-1.5 shrink-0">
+            {TYPE_LABELS[user.userType] ?? user.userType}
+          </Badge>
+          {open ? (
+            <ChevronUp className="h-4 w-4 text-muted-foreground shrink-0" />
+          ) : (
+            <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />
+          )}
+        </button>
         {canEdit && (
-          <form action={toggleUserActive.bind(null, user.id, !user.isActive)} onClick={(e) => e.stopPropagation()}>
+          <form action={toggleUserActive.bind(null, user.id, !user.isActive)}>
             <Button type="submit" variant="ghost" size="sm" className="h-7 px-2 text-xs shrink-0">
               {user.isActive ? (
                 <PowerOff className="h-3.5 w-3.5" />
@@ -175,12 +179,7 @@ export function UserCard({
             </Button>
           </form>
         )}
-        {open ? (
-          <ChevronUp className="h-4 w-4 text-muted-foreground shrink-0" />
-        ) : (
-          <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />
-        )}
-      </button>
+      </div>
 
       {open && (
         <div className="border-t p-3 space-y-3">
