@@ -228,6 +228,7 @@ enum GeneralStatus {
   PROJECT_ENDED
   CANCELLED
   BLACKLISTED
+  UNIDENTIFIED
 }
 
 // ──────────────────────────────────────────────────────────────────

@@ -391,14 +391,12 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
       continue
     }
 
-    const statusInput = normalizeEnum(row.status, CSV_STATUS_VALUES)
-    if (!matchedUserId && !statusInput) {
-      // New VAs need an explicit Status from the sheet — don't guess ACTIVE
-      // via Prisma's column default. Existing VAs with a blank cell are fine;
-      // updateOne already leaves their current status untouched.
-      result.skipped.push({ row: rowNum, reason: 'Status is required for new VAs' })
-      continue
-    }
+    // A blank Status cell must not fall through to Prisma's schema default of
+    // ACTIVE for a brand-new, unreviewed VA — land them on UNIDENTIFIED
+    // instead so HR can see they still need a real status assigned.
+    // Existing VAs with a blank cell are unaffected; updateOne already leaves
+    // their current status untouched rather than overwriting it.
+    const statusInput = normalizeEnum(row.status, CSV_STATUS_VALUES) ?? (matchedUserId ? null : 'UNIDENTIFIED')
 
     const birthDateResult = parseDateCell(row.birthDate)
     const hireDateResult = parseDateCell(row.hireDate)

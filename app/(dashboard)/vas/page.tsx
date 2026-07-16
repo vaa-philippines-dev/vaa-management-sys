@@ -61,6 +61,7 @@ const STATUS_TONE: Record<string, Tone> = {
   PROJECT_ENDED: 'neutral',
   CANCELLED: 'destructive',
   BLACKLISTED: 'destructive',
+  UNIDENTIFIED: 'neutral',
 }
 
 const STATUS_LABEL: Record<string, string> = {
@@ -72,6 +73,7 @@ const STATUS_LABEL: Record<string, string> = {
   PROJECT_ENDED: 'Project Ended',
   CANCELLED: 'Cancelled',
   BLACKLISTED: 'Blacklisted',
+  UNIDENTIFIED: 'Unidentified',
 }
 
 const EMPLOYMENT_TONE: Record<string, Tone> = {
@@ -205,6 +207,7 @@ async function FilterWrapper() {
             { value: 'PROJECT_ENDED', label: 'Project Ended' },
             { value: 'CANCELLED', label: 'Cancelled' },
             { value: 'BLACKLISTED', label: 'Blacklisted' },
+            { value: 'UNIDENTIFIED', label: 'Unidentified' },
           ],
         },
         ...(departments.length > 0

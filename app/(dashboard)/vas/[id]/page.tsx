@@ -25,6 +25,7 @@ const STATUS_DOT: Record<string, string> = {
   PROJECT_ENDED: 'bg-muted-foreground',
   CANCELLED: 'bg-destructive',
   BLACKLISTED: 'bg-destructive',
+  UNIDENTIFIED: 'bg-muted-foreground',
 }
 
 const STATUS_LABEL: Record<string, string> = {
@@ -36,6 +37,7 @@ const STATUS_LABEL: Record<string, string> = {
   PROJECT_ENDED: 'Project Ended',
   CANCELLED: 'Cancelled',
   BLACKLISTED: 'Blacklisted',
+  UNIDENTIFIED: 'Unidentified',
 }
 
 const AVAILABILITY_LABEL: Record<string, string> = {
