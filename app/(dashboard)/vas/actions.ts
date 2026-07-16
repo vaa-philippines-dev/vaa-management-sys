@@ -160,10 +160,42 @@ function normalizeEnum(value: string | undefined, allowed: string[]): string | n
 
 const CSV_IMPORT_BATCH_SIZE = 20
 
-export async function bulkImportVAs(rows: VACsvRow[], overwriteExisting = false): Promise<VACsvImportResult> {
+export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = false): Promise<VACsvImportResult> {
   const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER')
 
   const result: VACsvImportResult = { created: 0, updated: 0, skipped: [] }
+
+  // A VA can appear multiple times in the source file (department transfers,
+  // re-engagements, service changes). Keep only the row with the latest
+  // hireDate per person so currentHireDate/currentEndDate reflect their most
+  // recent engagement instead of whichever duplicate happened to be last in
+  // the file.
+  const dedupKey = (row: VACsvRow) => {
+    const email = (row.email || '').trim().toLowerCase()
+    if (email) return `email:${email}`
+    const first = (row.firstName || '').trim().toLowerCase()
+    const last = (row.lastName || '').trim().toLowerCase() || '-'
+    return `name:${first}|${last}`
+  }
+  const latestByKey = new Map<string, VACsvRow>()
+  for (const row of rowsInput) {
+    if (!(row.firstName || '').trim()) continue
+    const key = dedupKey(row)
+    const existing = latestByKey.get(key)
+    if (!existing) {
+      latestByKey.set(key, row)
+      continue
+    }
+    const existingHireTime = existing.hireDate ? new Date(existing.hireDate).getTime() : -Infinity
+    const rowHireTime = row.hireDate ? new Date(row.hireDate).getTime() : -Infinity
+    if (!Number.isNaN(rowHireTime) && (Number.isNaN(existingHireTime) || rowHireTime >= existingHireTime)) {
+      latestByKey.set(key, row)
+    }
+  }
+  const rows = rowsInput.filter((row) => {
+    if (!(row.firstName || '').trim()) return true // let the missing-name check below skip it with a proper message
+    return latestByKey.get(dedupKey(row)) === row
+  })
 
   // Pre-fetch lookups once instead of per-row to avoid thousands of sequential round-trips.
   const emailInputs = rows
