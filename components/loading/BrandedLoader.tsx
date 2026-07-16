@@ -57,8 +57,8 @@ export function BrandedLoader() {
           />
           <defs>
             <linearGradient id="brandedLoaderRing" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#F59B19" />
-              <stop offset="100%" stopColor="#1E6991" />
+              <stop offset="0%" stopColor="#4B5563" className="[stop-color:#4B5563] dark:[stop-color:#E5E7EB]" />
+              <stop offset="100%" stopColor="#D1D5DB" className="[stop-color:#D1D5DB] dark:[stop-color:#F9FAFB]" />
             </linearGradient>
           </defs>
           <circle
@@ -85,11 +85,20 @@ export function BrandedLoader() {
           }}
         >
           <Image
-            src="/vaalogo.svg"
+            src="/blackLogo.png"
             alt="VAA Philippines"
             width={112}
             height={112}
             priority
+            className="block dark:hidden"
+          />
+          <Image
+            src="/whiteLogo.png"
+            alt="VAA Philippines"
+            width={112}
+            height={112}
+            priority
+            className="hidden dark:block"
           />
         </div>
       </div>
