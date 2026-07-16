@@ -3,11 +3,10 @@ import { getCurrentUser, canMutate, getManagedDepartmentIds } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Plus, UsersRound } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { TEAM_MANAGE_ROLES } from '@/lib/auth'
+import { TeamsBrowser } from '@/components/teams/TeamsBrowser'
 
 export default async function TeamsPage() {
   const user = await getCurrentUser()
@@ -41,7 +40,7 @@ export default async function TeamsPage() {
           <h2 className="text-2xl font-bold tracking-tight">Teams</h2>
           <p className="text-sm text-muted-foreground mt-1">Teams you&apos;re affiliated with</p>
         </div>
-        <TeamGrid teams={affiliatedTeams} />
+        <TeamsBrowser teams={affiliatedTeams} />
       </div>
     )
   }
@@ -78,57 +77,7 @@ export default async function TeamsPage() {
         )}
       </div>
 
-      <TeamGrid teams={teams} />
-    </div>
-  )
-}
-
-function TeamGrid({
-  teams,
-}: {
-  teams: Array<{
-    id: string
-    name: string
-    department: { name: string }
-    _count?: { memberships: number }
-  }>
-}) {
-  if (teams.length === 0) {
-    return (
-      <Card>
-        <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted mb-3">
-            <UsersRound className="h-6 w-6 text-muted-foreground/60" />
-          </div>
-          <p className="text-sm font-medium">No teams yet</p>
-          <p className="text-xs text-muted-foreground mt-1">Create a team to start organizing members.</p>
-        </CardContent>
-      </Card>
-    )
-  }
-
-  return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 fade-in-stagger">
-      {teams.map((t) => (
-        <Link key={t.id} href={`/teams/${t.id}`}>
-          <Card className="group cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-primary/30">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors group-hover:bg-primary/15">
-                    <UsersRound className="h-4 w-4" />
-                  </div>
-                  <CardTitle className="text-base font-semibold truncate">{t.name}</CardTitle>
-                </div>
-                <Badge variant="outline" className="text-xs shrink-0">{t.department.name}</Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
-              {t._count?.memberships ?? 0} member{(t._count?.memberships ?? 0) === 1 ? '' : 's'}
-            </CardContent>
-          </Card>
-        </Link>
-      ))}
+      <TeamsBrowser teams={teams} />
     </div>
   )
 }
