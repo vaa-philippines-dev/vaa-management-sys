@@ -23,7 +23,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "VA Management System",
+  title: "VAA Workspace",
   description: "Manage virtual assistants, tasks, and deadlines",
   icons: { icon: "/icon.png" },
 };
