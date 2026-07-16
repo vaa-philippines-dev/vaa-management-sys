@@ -110,12 +110,12 @@ export function TeamsBrowser({ teams }: { teams: TeamListRow[] }) {
         {groups.map((group) => {
           const isCollapsed = collapsed.has(group.departmentName)
           return (
-            <div key={group.departmentName} className="rounded-lg border bg-card overflow-hidden">
+            <div key={group.departmentName} className="rounded-lg border bg-muted/30 overflow-hidden">
               {departments.length > 1 && (
                 <button
                   type="button"
                   onClick={() => toggleGroup(group.departmentName)}
-                  className="flex w-full items-center gap-2 px-4 py-2.5 bg-muted/20 hover:bg-muted/40 transition-colors text-left"
+                  className="flex w-full items-center gap-2 px-4 py-2.5 bg-muted/50 hover:bg-muted/70 transition-colors text-left"
                 >
                   <Building2 className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                   <span className="text-sm font-semibold truncate">{group.departmentName}</span>
@@ -132,7 +132,7 @@ export function TeamsBrowser({ teams }: { teams: TeamListRow[] }) {
                 <div className={cn('grid gap-4 md:grid-cols-2 lg:grid-cols-3 fade-in-stagger', departments.length > 1 && 'p-4')}>
                   {group.teams.map((t) => (
                     <Link key={t.id} href={`/teams/${t.id}`}>
-                      <Card className="group cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-primary/30">
+                      <Card className="group cursor-pointer border bg-card shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-primary/30">
                         <CardHeader className="pb-3">
                           <div className="flex items-center justify-between gap-2">
                             <div className="flex items-center gap-2.5 min-w-0">

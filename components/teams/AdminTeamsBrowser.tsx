@@ -116,11 +116,11 @@ export function AdminTeamsBrowser({ teams, canDelete }: { teams: AdminTeamRow[];
         {groups.map((group) => {
           const isCollapsed = collapsed.has(group.departmentId)
           return (
-            <div key={group.departmentId} className="rounded-lg border bg-card overflow-hidden">
+            <div key={group.departmentId} className="rounded-lg border bg-muted/30 overflow-hidden">
               <button
                 type="button"
                 onClick={() => toggleGroup(group.departmentId)}
-                className="flex w-full items-center gap-2 px-4 py-2.5 bg-muted/20 hover:bg-muted/40 transition-colors text-left"
+                className="flex w-full items-center gap-2 px-4 py-2.5 bg-muted/50 hover:bg-muted/70 transition-colors text-left"
               >
                 <Building2 className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                 <span className="text-sm font-semibold truncate">{group.departmentName}</span>
@@ -137,7 +137,7 @@ export function AdminTeamsBrowser({ teams, canDelete }: { teams: AdminTeamRow[];
                   {group.teams.map((t) => (
                     <div key={t.id} className="relative group">
                       <Link href={`/teams/${t.id}`}>
-                        <Card className="cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-primary/30">
+                        <Card className="cursor-pointer border bg-card shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-primary/30">
                           <CardHeader className="pb-2">
                             <div className="flex items-center justify-between gap-2">
                               <div className="flex items-center gap-2.5 min-w-0">
