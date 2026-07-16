@@ -288,7 +288,8 @@ export const GeneralStatus = {
   RESIGNED: 'RESIGNED',
   REMOVED: 'REMOVED',
   PROJECT_ENDED: 'PROJECT_ENDED',
-  CANCELLED: 'CANCELLED'
+  CANCELLED: 'CANCELLED',
+  BLACKLISTED: 'BLACKLISTED'
 } as const
 
 export type GeneralStatus = (typeof GeneralStatus)[keyof typeof GeneralStatus]

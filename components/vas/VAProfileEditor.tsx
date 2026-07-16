@@ -650,6 +650,7 @@ const GENERAL_STATUS_OPTIONS = [
   { value: 'REMOVED', label: 'Removed' },
   { value: 'PROJECT_ENDED', label: 'Project Ended' },
   { value: 'CANCELLED', label: 'Cancelled' },
+  { value: 'BLACKLISTED', label: 'Blacklisted' },
 ]
 
 const ENGAGEMENT_STATUS_OPTIONS = [

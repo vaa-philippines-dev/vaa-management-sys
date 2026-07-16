@@ -149,7 +149,7 @@ export type VACsvImportResult = {
 }
 
 const CSV_AVAILABILITY_VALUES = ['AVAILABLE', 'PARTIALLY_ASSIGNED', 'FULLY_ASSIGNED', 'ON_LEAVE', 'UNAVAILABLE']
-const CSV_STATUS_VALUES = ['ACTIVE', 'PENDING', 'TRANSFERRED', 'RESIGNED', 'REMOVED', 'PROJECT_ENDED', 'CANCELLED']
+const CSV_STATUS_VALUES = ['ACTIVE', 'PENDING', 'TRANSFERRED', 'RESIGNED', 'REMOVED', 'PROJECT_ENDED', 'CANCELLED', 'BLACKLISTED']
 const CSV_ENGAGEMENT_VALUES = ['EMPLOYED', 'ENGAGED', 'CONTRACTED', 'END_OF_CONTRACT', 'TRANSFERRED', 'RESIGNED', 'TERMINATED', 'BLACKLISTED']
 
 function normalizeEnum(value: string | undefined, allowed: string[]): string | null {
@@ -467,6 +467,39 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
         if (!existingMembership) {
           await prisma.departmentMembership.create({
             data: { userId, departmentId: p.departmentId, isPrimary: true },
+          })
+        }
+      }
+
+      // The Roster's "Engagement Status" column reads EmploymentRecord.employmentStatus,
+      // not VAProfile.engagementStatus directly — keep the current record in sync so an
+      // update (e.g. re-importing someone as BLACKLISTED) actually shows up there.
+      if (p.engagementStatus !== null) {
+        const currentRecord = await prisma.employmentRecord.findFirst({
+          where: { userId, isCurrent: true },
+        })
+        if (currentRecord) {
+          await prisma.employmentRecord.update({
+            where: { id: currentRecord.id },
+            data: {
+              employmentStatus: p.engagementStatus as EmploymentStatus,
+              endDate: p.eocDate ?? currentRecord.endDate,
+              isCurrent: !p.eocDate,
+            },
+          })
+        } else {
+          await prisma.employmentRecord.create({
+            data: {
+              userId,
+              departmentId: p.departmentId,
+              contractType: 'REGULAR',
+              employmentStatus: p.engagementStatus as EmploymentStatus,
+              startDate: p.hireDate ?? new Date(),
+              endDate: p.eocDate,
+              effectiveDate: p.hireDate ?? new Date(),
+              isCurrent: !p.eocDate,
+              initiatedBy: actor.id,
+            },
           })
         }
       }

@@ -24,6 +24,7 @@ const STATUS_DOT: Record<string, string> = {
   REMOVED: 'bg-destructive',
   PROJECT_ENDED: 'bg-muted-foreground',
   CANCELLED: 'bg-destructive',
+  BLACKLISTED: 'bg-destructive',
 }
 
 const STATUS_LABEL: Record<string, string> = {
@@ -34,6 +35,7 @@ const STATUS_LABEL: Record<string, string> = {
   REMOVED: 'Removed',
   PROJECT_ENDED: 'Project Ended',
   CANCELLED: 'Cancelled',
+  BLACKLISTED: 'Blacklisted',
 }
 
 const AVAILABILITY_LABEL: Record<string, string> = {

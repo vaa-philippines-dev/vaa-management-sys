@@ -227,6 +227,7 @@ enum GeneralStatus {
   REMOVED
   PROJECT_ENDED
   CANCELLED
+  BLACKLISTED
 }
 
 // ──────────────────────────────────────────────────────────────────

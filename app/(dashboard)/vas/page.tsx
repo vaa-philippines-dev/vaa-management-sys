@@ -60,6 +60,7 @@ const STATUS_TONE: Record<string, Tone> = {
   REMOVED: 'destructive',
   PROJECT_ENDED: 'neutral',
   CANCELLED: 'destructive',
+  BLACKLISTED: 'destructive',
 }
 
 const STATUS_LABEL: Record<string, string> = {
@@ -70,6 +71,7 @@ const STATUS_LABEL: Record<string, string> = {
   REMOVED: 'Removed',
   PROJECT_ENDED: 'Project Ended',
   CANCELLED: 'Cancelled',
+  BLACKLISTED: 'Blacklisted',
 }
 
 const EMPLOYMENT_TONE: Record<string, Tone> = {
