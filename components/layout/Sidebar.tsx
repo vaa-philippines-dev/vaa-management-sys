@@ -27,6 +27,7 @@ import {
   Calendar,
   Cake,
   Wine,
+  BriefcaseBusiness,
 } from 'lucide-react'
 import Image from 'next/image'
 import {
@@ -252,7 +253,7 @@ function FavoritableRow({
 const managerRoutes = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { label: 'Inbox', href: '/inbox', icon: MessageSquare },
-  { label: 'Clients', href: '/clients', icon: Building2 },
+  { label: 'Clients', href: '/clients', icon: BriefcaseBusiness },
   { label: 'Assignments', href: '/assignments', icon: Briefcase },
   { label: 'Work Logs', href: '/work-logs', icon: ListTodo },
   { label: 'Services', href: '/skills', icon: UserCog },
@@ -279,7 +280,7 @@ const adminRoutes = [
   { label: 'Users', href: '/admin/users', icon: UserPlus },
   { label: 'Departments', href: '/admin/departments', icon: Network },
   { label: 'Teams', href: '/admin/teams', icon: UsersRound },
-  { label: 'Clients', href: '/admin/clients', icon: Building2 },
+  { label: 'Clients', href: '/admin/clients', icon: BriefcaseBusiness },
   { label: 'Departments (org view)', href: '/departments', icon: Building2 },
   { label: 'Audit Log', href: '/admin/audit', icon: ClipboardList },
   { label: 'History', href: '/admin/history', icon: History },
@@ -565,7 +566,7 @@ export function Sidebar({
                   <FavoritableRow
                     href="/admin/clients"
                     label="Clients"
-                    icon={Building2}
+                    icon={BriefcaseBusiness}
                     isActive={isMainRowActive('/admin/clients', isRouteActive('/admin/clients'))}
                     canFavorite={canFavorite}
                     favorite={favorites.find((f) => f.href === '/admin/clients')}
