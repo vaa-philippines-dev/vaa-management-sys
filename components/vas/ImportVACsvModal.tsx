@@ -328,7 +328,7 @@ export function ImportVACsvModal() {
       ].join(','),
       [
         'Juan', 'Santos', 'Dela Cruz', 'Jr.', 'juan@example.com', '5.50', '350', 'Amazon Virtual Assistant', 'L1', 'Amazon',
-        'AVAILABLE', 'Highly Recommended', 'ACTIVE', 'false', 'EMPLOYED', '2024-03-01', '', 'false', '40', 'Mon-Fri 9am-6pm',
+        'AVAILABLE', 'Highly Recommended', 'ACTIVE', 'false', 'ENGAGED', '2024-03-01', '', 'false', '40', 'Mon-Fri 9am-6pm',
         '09171234567', 'juan.personal@example.com', 'juan.work@example.com', 'Male', '1995-01-15', 'true',
         '123 Sample St.', 'Barangay Sample', 'Quezon City', 'Metro Manila', '1100', 'Near sample landmark', '09171234567',
         'Maria Dela Cruz', '09179876543', 'Spouse',

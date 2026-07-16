@@ -52,7 +52,7 @@ export async function createVA(formData: FormData) {
     data: {
       userId: user.id,
       contractType: 'REGULAR',
-      employmentStatus: 'EMPLOYED',
+      employmentStatus: 'ENGAGED',
       startDate: hireDate,
       effectiveDate: hireDate,
       isCurrent: true,
@@ -536,7 +536,7 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
       const data = {
         departmentId: entry.departmentId,
         contractType: 'REGULAR' as const,
-        employmentStatus: entry.employmentStatus ?? (isCurrent ? 'EMPLOYED' as const : 'END_OF_CONTRACT' as const),
+        employmentStatus: entry.employmentStatus ?? (isCurrent ? 'ENGAGED' as const : 'END_OF_CONTRACT' as const),
         startDate: entry.startDate,
         endDate: entry.endDate,
         effectiveDate: entry.startDate,
@@ -984,7 +984,7 @@ export async function transferVA(
         userId: va.userId,
         departmentId: newDepartmentId,
         contractType: 'REGULAR',
-        employmentStatus: transferType === 'END_OF_CONTRACT' ? 'TRANSFERRED' : 'EMPLOYED',
+        employmentStatus: transferType === 'END_OF_CONTRACT' ? 'TRANSFERRED' : 'ENGAGED',
         startDate: effective,
         effectiveDate: effective,
         isCurrent: true,
