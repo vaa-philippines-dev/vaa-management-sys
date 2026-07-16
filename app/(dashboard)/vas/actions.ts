@@ -427,7 +427,12 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
     const baseRate = baseRateInput && !Number.isNaN(Number(baseRateInput)) ? Number(baseRateInput) : null
     const preferredWorkHours = preferredWorkHoursInput && !Number.isNaN(Number(preferredWorkHoursInput)) ? Number(preferredWorkHoursInput) : null
     const hybrid = (row.hybrid || '').trim().toLowerCase() === 'true' || (row.hybrid || '').trim().toLowerCase() === 'yes'
-    const onHold = (row.onHold || '').trim().toLowerCase() === 'true' || (row.onHold || '').trim().toLowerCase() === 'yes'
+    // A VA landing on UNIDENTIFIED hasn't been reviewed at all yet — don't
+    // pair that with an On Hold badge, since On Hold implies a real,
+    // reviewed status that's been deliberately paused.
+    const onHold = statusInput === 'UNIDENTIFIED'
+      ? false
+      : (row.onHold || '').trim().toLowerCase() === 'true' || (row.onHold || '').trim().toLowerCase() === 'yes'
     const birthdayCelebrantInput = (row.birthdayCelebrant || '').trim().toLowerCase()
     const birthdayCelebrant = birthdayCelebrantInput ? (birthdayCelebrantInput === 'true' || birthdayCelebrantInput === 'yes') : undefined
 
