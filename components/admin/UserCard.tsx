@@ -131,7 +131,10 @@ export function UserCard({
         onClick={() => setOpen(!open)}
         className="w-full flex items-center gap-3 p-3 hover:bg-accent/30 transition-colors text-left"
       >
-        <span onClick={(e) => e.stopPropagation()}>
+        <span
+          onClick={(e) => e.stopPropagation()}
+          className="flex items-center justify-center h-8 w-8 shrink-0 -m-1 p-1"
+        >
           <UserRowCheckbox id={user.id} />
         </span>
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
