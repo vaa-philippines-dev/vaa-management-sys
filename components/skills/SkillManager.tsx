@@ -285,7 +285,7 @@ function SkillRow({
   }
 
   return (
-    <TableRow className={`group border-l-4 ${skill.isActive ? 'border-l-success' : 'border-l-muted-foreground/30'}`}>
+    <TableRow className="group">
       <TableCell className="px-3 py-2.5 overflow-hidden">
         <span className="font-medium truncate block" title={skill.name}>{skill.name}</span>
       </TableCell>
