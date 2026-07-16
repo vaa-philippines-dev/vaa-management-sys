@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { CACHE_TAGS } from '@/lib/cache'
 import { redirect } from 'next/navigation'
-import { requireRole, canMutate, getManagedDepartmentIds, getCurrentUser, TEAM_MANAGE_ROLES, TEAM_LEADER_ASSIGN_ROLES } from '@/lib/auth'
+import { requireRole, requireAdminMutator, canMutate, getManagedDepartmentIds, getCurrentUser, TEAM_MANAGE_ROLES, TEAM_LEADER_ASSIGN_ROLES } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
 
 async function assertDepartmentManaged(actor: Awaited<ReturnType<typeof getCurrentUser>>, departmentId: string) {
@@ -216,5 +216,30 @@ export async function transferTeamMembers(fromTeamId: string, toTeamId: string, 
 
   revalidatePath(`/teams/${fromTeamId}`)
   revalidatePath(`/teams/${toTeamId}`)
+  revalidateTag(CACHE_TAGS.teams, 'default')
+}
+
+export async function deleteTeam(teamId: string) {
+  const actor = await requireAdminMutator()
+
+  const team = await prisma.team.findUnique({
+    where: { id: teamId },
+    select: { id: true, name: true, departmentId: true, _count: { select: { memberships: { where: { endedAt: null } } } } },
+  })
+  if (!team) throw new Error('Team not found')
+
+  await prisma.team.delete({ where: { id: teamId } })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'DELETE',
+    entityType: 'Team',
+    entityId: team.id,
+    before: { name: team.name, departmentId: team.departmentId, memberCount: team._count.memberships },
+    departmentId: team.departmentId,
+  })
+
+  revalidatePath('/teams')
+  revalidatePath('/admin/teams')
   revalidateTag(CACHE_TAGS.teams, 'default')
 }
