@@ -7,6 +7,47 @@ import { bulkImportVAs, type VACsvRow } from '@/app/(dashboard)/vas/actions'
 
 const CHUNK_SIZE = 100
 
+// The same person can appear as multiple rows (department transfers,
+// re-engagements) and the server groups a person's rows together to build
+// their full EmploymentRecord history. Keep every row for a person in the
+// same chunk so that grouping never gets split across separate server calls.
+function chunkRowsByPerson(rows: VACsvRow[], chunkSize: number): VACsvRow[][] {
+  const personKey = (row: VACsvRow) => {
+    const email = (row.email || '').trim().toLowerCase()
+    if (email) return `email:${email}`
+    const first = (row.firstName || '').trim().toLowerCase()
+    const last = (row.lastName || '').trim().toLowerCase()
+    return `name:${first}|${last}`
+  }
+
+  const groups = new Map<string, VACsvRow[]>()
+  const order: string[] = []
+  for (const row of rows) {
+    const key = personKey(row)
+    const existing = groups.get(key)
+    if (existing) {
+      existing.push(row)
+    } else {
+      groups.set(key, [row])
+      order.push(key)
+    }
+  }
+
+  const chunks: VACsvRow[][] = []
+  let current: VACsvRow[] = []
+  for (const key of order) {
+    const group = groups.get(key)!
+    if (current.length > 0 && current.length + group.length > chunkSize) {
+      chunks.push(current)
+      current = []
+    }
+    current.push(...group)
+  }
+  if (current.length > 0) chunks.push(current)
+
+  return chunks
+}
+
 type ImportStatus = 'idle' | 'running' | 'done' | 'cancelled'
 
 type SkippedRow = { row: number; reason: string }
@@ -64,12 +105,12 @@ export function VACsvImportProvider({ children }: { children: React.ReactNode })
     }))
 
     ;(async () => {
-      for (let i = 0; i < rows.length; i += CHUNK_SIZE) {
+      const chunks = chunkRowsByPerson(rows, CHUNK_SIZE)
+      for (const chunk of chunks) {
         if (cancelRef.current) {
           setState((prev) => ({ ...prev, status: 'cancelled' }))
           return
         }
-        const chunk = rows.slice(i, i + CHUNK_SIZE)
         try {
           const res = await bulkImportVAs(chunk, overwriteExisting)
           setState((prev) => ({

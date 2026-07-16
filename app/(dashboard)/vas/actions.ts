@@ -180,36 +180,55 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
   const result: VACsvImportResult = { created: 0, updated: 0, skipped: [] }
 
   // A VA can appear multiple times in the source file (department transfers,
-  // re-engagements, service changes). Keep only the row with the latest
-  // hireDate per person so currentHireDate/currentEndDate reflect their most
-  // recent engagement instead of whichever duplicate happened to be last in
-  // the file.
-  const dedupKey = (row: VACsvRow) => {
+  // re-engagements, service changes) — each row is a distinct employment
+  // episode, not a duplicate to discard. Group rows by person so the latest
+  // row drives the current User/VAProfile state while every row (including
+  // older ones) still becomes its own EmploymentRecord below.
+  const personKey = (row: VACsvRow) => {
     const email = (row.email || '').trim().toLowerCase()
     if (email) return `email:${email}`
     const first = (row.firstName || '').trim().toLowerCase()
     const last = (row.lastName || '').trim().toLowerCase() || '-'
     return `name:${first}|${last}`
   }
-  const latestByKey = new Map<string, VACsvRow>()
+  const rowGroups = new Map<string, VACsvRow[]>()
+  const rowGroupOrder: string[] = []
   for (const row of rowsInput) {
-    if (!(row.firstName || '').trim()) continue
-    const key = dedupKey(row)
-    const existing = latestByKey.get(key)
-    if (!existing) {
-      latestByKey.set(key, row)
+    if (!(row.firstName || '').trim()) {
+      // Let the missing-name check below skip it with a proper message —
+      // give it its own single-row group so it's still visited in order.
+      const soloKey = `__no-name-${rowGroupOrder.length}__`
+      rowGroups.set(soloKey, [row])
+      rowGroupOrder.push(soloKey)
       continue
     }
-    const existingHireTime = existing.hireDate ? new Date(existing.hireDate).getTime() : -Infinity
-    const rowHireTime = row.hireDate ? new Date(row.hireDate).getTime() : -Infinity
-    if (!Number.isNaN(rowHireTime) && (Number.isNaN(existingHireTime) || rowHireTime >= existingHireTime)) {
-      latestByKey.set(key, row)
+    const key = personKey(row)
+    const existing = rowGroups.get(key)
+    if (existing) {
+      existing.push(row)
+    } else {
+      rowGroups.set(key, [row])
+      rowGroupOrder.push(key)
     }
   }
-  const rows = rowsInput.filter((row) => {
-    if (!(row.firstName || '').trim()) return true // let the missing-name check below skip it with a proper message
-    return latestByKey.get(dedupKey(row)) === row
-  })
+  // Within each person's group, the row with the latest hireDate represents
+  // their current state; ties/unparseable dates fall back to file order.
+  const rows: VACsvRow[] = []
+  const currentRowOfGroup = new Map<VACsvRow, VACsvRow[]>()
+  for (const key of rowGroupOrder) {
+    const group = rowGroups.get(key)!
+    let latest = group[0]
+    let latestTime = latest.hireDate ? new Date(latest.hireDate).getTime() : -Infinity
+    for (const row of group.slice(1)) {
+      const rowTime = row.hireDate ? new Date(row.hireDate).getTime() : -Infinity
+      if (!Number.isNaN(rowTime) && (Number.isNaN(latestTime) || rowTime >= latestTime)) {
+        latest = row
+        latestTime = rowTime
+      }
+    }
+    rows.push(latest)
+    currentRowOfGroup.set(latest, group)
+  }
 
   // Pre-fetch lookups once instead of per-row to avoid thousands of sequential round-trips.
   // Match against every user, not just existing VAs — a CSV row can refer to
@@ -320,6 +339,18 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
     departmentInput: string
     departmentId: string | null
     matchedUserId: string | null
+    historyEntries: HistoryEntry[]
+  }
+
+  // One employment episode from the source file — the current row and every
+  // older/duplicate row for the same person each become one of these, so
+  // department transfers and re-engagements are preserved as real history
+  // instead of being discarded by the latest-row-wins grouping above.
+  type HistoryEntry = {
+    departmentId: string | null
+    employmentStatus: EmploymentStatus | null
+    startDate: Date
+    endDate: Date | null
   }
 
   const prepared: PreparedRow[] = []
@@ -405,6 +436,31 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
     const departmentInput = (row.department || '').trim()
     const departmentId = departmentInput ? departmentIdByNormalizedName.get(normalizeDeptName(departmentInput)) ?? null : null
 
+    // Build one history entry per row in this person's group (current row
+    // included) so every employment episode from the file — not just the
+    // latest — lands as its own EmploymentRecord. A sibling row with a bad
+    // date or no date at all just contributes no history entry rather than
+    // failing the whole person.
+    const siblingRows = currentRowOfGroup.get(row) ?? [row]
+    const historyEntries: HistoryEntry[] = []
+    for (const sibling of siblingRows) {
+      const siblingHire = parseDateCell(sibling.hireDate)
+      if (siblingHire.error || !siblingHire.date) continue
+      const siblingEoc = parseDateCell(sibling.eocDate)
+      if (siblingEoc.error) continue
+      const siblingDeptInput = (sibling.department || '').trim()
+      const siblingDeptId = siblingDeptInput
+        ? departmentIdByNormalizedName.get(normalizeDeptName(siblingDeptInput)) ?? null
+        : null
+      historyEntries.push({
+        departmentId: siblingDeptId,
+        employmentStatus: normalizeEnum(sibling.engagementStatus, CSV_ENGAGEMENT_VALUES) as EmploymentStatus | null,
+        startDate: siblingHire.date,
+        endDate: siblingEoc.date,
+      })
+    }
+    historyEntries.sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
+
     prepared.push({
       rowNum,
       email,
@@ -452,7 +508,45 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
       departmentInput,
       departmentId,
       matchedUserId,
+      historyEntries,
     })
+  }
+
+  // Reconciles a person's full employment history against `entries` (one per
+  // CSV row for that person, oldest first): matches existing EmploymentRecords
+  // by (startDate, departmentId) so re-importing the same file doesn't create
+  // duplicates, updates the matched ones, creates the rest, and marks exactly
+  // the last entry (by startDate) as isCurrent — everything older gets
+  // isCurrent:false so it reads as history rather than the active record.
+  const syncEmploymentHistory = async (userId: string, entries: HistoryEntry[]) => {
+    if (entries.length === 0) return
+    const existing = await prisma.employmentRecord.findMany({ where: { userId } })
+    const matchKey = (departmentId: string | null, startDate: Date) =>
+      `${departmentId ?? '-'}|${startDate.toISOString().slice(0, 10)}`
+    const existingByKey = new Map(existing.map((r) => [matchKey(r.departmentId, r.startDate), r]))
+
+    for (let i = 0; i < entries.length; i++) {
+      const entry = entries[i]
+      const isCurrent = i === entries.length - 1
+      const key = matchKey(entry.departmentId, entry.startDate)
+      const match = existingByKey.get(key)
+      const data = {
+        departmentId: entry.departmentId,
+        contractType: 'REGULAR' as const,
+        employmentStatus: entry.employmentStatus ?? (isCurrent ? 'EMPLOYED' as const : 'END_OF_CONTRACT' as const),
+        startDate: entry.startDate,
+        endDate: entry.endDate,
+        effectiveDate: entry.startDate,
+        isCurrent,
+      }
+      if (match) {
+        await prisma.employmentRecord.update({ where: { id: match.id }, data })
+      } else {
+        await prisma.employmentRecord.create({
+          data: { ...data, userId, initiatedBy: actor.id },
+        })
+      }
+    }
   }
 
   const updateOne = async (p: PreparedRow) => {
@@ -533,37 +627,9 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
       }
 
       // The Roster's "Engagement Status" column reads EmploymentRecord.employmentStatus,
-      // not VAProfile.engagementStatus directly — keep the current record in sync so an
-      // update (e.g. re-importing someone as BLACKLISTED) actually shows up there.
-      if (p.engagementStatus !== null) {
-        const currentRecord = await prisma.employmentRecord.findFirst({
-          where: { userId, isCurrent: true },
-        })
-        if (currentRecord) {
-          await prisma.employmentRecord.update({
-            where: { id: currentRecord.id },
-            data: {
-              employmentStatus: p.engagementStatus as EmploymentStatus,
-              endDate: p.eocDate ?? currentRecord.endDate,
-              isCurrent: !p.eocDate,
-            },
-          })
-        } else {
-          await prisma.employmentRecord.create({
-            data: {
-              userId,
-              departmentId: p.departmentId,
-              contractType: 'REGULAR',
-              employmentStatus: p.engagementStatus as EmploymentStatus,
-              startDate: p.hireDate ?? new Date(),
-              endDate: p.eocDate,
-              effectiveDate: p.hireDate ?? new Date(),
-              isCurrent: !p.eocDate,
-              initiatedBy: actor.id,
-            },
-          })
-        }
-      }
+      // not VAProfile.engagementStatus directly — sync every employment episode from
+      // this person's rows (not just the current one) so history stays intact.
+      await syncEmploymentHistory(userId, p.historyEntries)
 
       await logAudit({
         actorId: actor.id,
@@ -648,19 +714,12 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
           after: { email: p.email, firstName: p.firstName, lastName: p.lastName, hourlyRate: p.hourlyRate, department: p.departmentInput || null },
           metadata: { viaImport: 'vas/csv' },
         }),
-        prisma.employmentRecord.create({
-          data: {
-            userId: user.id,
-            departmentId: p.departmentId,
-            contractType: 'REGULAR',
-            employmentStatus: (p.engagementStatus as EmploymentStatus | null) ?? 'EMPLOYED',
-            startDate: p.hireDate ?? new Date(),
-            endDate: p.eocDate,
-            effectiveDate: p.hireDate ?? new Date(),
-            isCurrent: !p.eocDate,
-            initiatedBy: actor.id,
-          },
-        }),
+        syncEmploymentHistory(
+          user.id,
+          p.historyEntries.length > 0
+            ? p.historyEntries
+            : [{ departmentId: p.departmentId, employmentStatus: p.engagementStatus as EmploymentStatus | null, startDate: p.hireDate ?? new Date(), endDate: p.eocDate }],
+        ),
       ])
 
       result.created++

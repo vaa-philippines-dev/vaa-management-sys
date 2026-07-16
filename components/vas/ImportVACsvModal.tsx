@@ -8,31 +8,49 @@ import { toast } from 'sonner'
 import type { VACsvRow } from '@/app/(dashboard)/vas/actions'
 import { useVACsvImport } from '@/components/vas/VACsvImportContext'
 
-function parseCsv(text: string): VACsvRow[] {
-  const lines = text.split(/\r\n|\n|\r/).filter((line) => line.trim().length > 0)
-  if (lines.length === 0) return []
+// Parses the whole buffer as a single character stream (not line-by-line)
+// so a newline inside a quoted field — e.g. a multi-line "available
+// schedule" note — doesn't get treated as a row boundary and shred the
+// record's columns out of alignment.
+function parseCsvRecords(text: string): string[][] {
+  const records: string[][] = []
+  let cells: string[] = []
+  let current = ''
+  let inQuotes = false
+  let sawAnyContentOnLine = false
 
-  const parseLine = (line: string): string[] => {
-    const cells: string[] = []
-    let current = ''
-    let inQuotes = false
-    for (let i = 0; i < line.length; i++) {
-      const char = line[i]
-      if (inQuotes) {
-        if (char === '"' && line[i + 1] === '"') { current += '"'; i++ }
-        else if (char === '"') { inQuotes = false }
-        else { current += char }
-      } else {
-        if (char === '"') inQuotes = true
-        else if (char === ',') { cells.push(current); current = '' }
-        else current += char
-      }
-    }
-    cells.push(current)
-    return cells.map((c) => c.trim())
+  const endCell = () => { cells.push(current); current = '' }
+  const endRecord = () => {
+    endCell()
+    if (cells.some((c) => c.trim().length > 0)) records.push(cells.map((c) => c.trim()))
+    cells = []
+    sawAnyContentOnLine = false
   }
 
-  const header = parseLine(lines[0]).map((h) => h.toLowerCase())
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i]
+    if (inQuotes) {
+      if (char === '"' && text[i + 1] === '"') { current += '"'; i++ }
+      else if (char === '"') { inQuotes = false }
+      else { current += char }
+      continue
+    }
+    if (char === '"') { inQuotes = true; sawAnyContentOnLine = true }
+    else if (char === ',') { endCell(); sawAnyContentOnLine = true }
+    else if (char === '\r') { /* skip, \n (or EOF) ends the record */ }
+    else if (char === '\n') { if (sawAnyContentOnLine || current) endRecord() }
+    else { current += char; sawAnyContentOnLine = true }
+  }
+  if (sawAnyContentOnLine || current || cells.length > 0) endRecord()
+
+  return records
+}
+
+function parseCsv(text: string): VACsvRow[] {
+  const records = parseCsvRecords(text)
+  if (records.length === 0) return []
+
+  const header = records[0].map((h) => h.toLowerCase())
   const idx = (...names: string[]) => header.findIndex((h) => names.includes(h))
 
   const firstNameIdx = idx('firstname', 'first name')
@@ -80,8 +98,7 @@ function parseCsv(text: string): VACsvRow[] {
 
   const cell = (cells: string[], i: number) => (i !== -1 ? cells[i] : undefined)
 
-  return lines.slice(1).map((line) => {
-    const cells = parseLine(line)
+  return records.slice(1).map((cells) => {
     return {
       firstName: cells[firstNameIdx] || '',
       middleName: cell(cells, middleNameIdx),
