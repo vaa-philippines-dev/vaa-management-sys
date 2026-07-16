@@ -33,6 +33,7 @@ export function MemberCombobox({
   const [rect, setRect] = useState<{ top: number; left: number; width: number } | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   const selected = options.find((o) => o.userId === value) ?? null
 
@@ -67,9 +68,9 @@ export function MemberCombobox({
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       const target = e.target as Node
-      if (containerRef.current && !containerRef.current.contains(target)) {
-        setOpen(false)
-      }
+      if (containerRef.current?.contains(target)) return
+      if (dropdownRef.current?.contains(target)) return
+      setOpen(false)
     }
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
@@ -145,6 +146,7 @@ export function MemberCombobox({
       {open && rect && typeof document !== 'undefined' &&
         createPortal(
           <div
+            ref={dropdownRef}
             style={{ position: 'fixed', top: rect.top, left: rect.left, width: rect.width }}
             className="z-50 max-h-56 overflow-auto rounded-md border bg-popover shadow-lg animate-in fade-in-0 zoom-in-95 duration-100"
           >
