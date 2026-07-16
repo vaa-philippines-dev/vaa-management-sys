@@ -97,8 +97,11 @@ function TeamGrid({
     return (
       <Card>
         <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-          <UsersRound className="h-10 w-10 text-muted-foreground/50 mb-3" />
-          <p className="text-sm text-muted-foreground">No teams yet.</p>
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted mb-3">
+            <UsersRound className="h-6 w-6 text-muted-foreground/60" />
+          </div>
+          <p className="text-sm font-medium">No teams yet</p>
+          <p className="text-xs text-muted-foreground mt-1">Create a team to start organizing members.</p>
         </CardContent>
       </Card>
     )
@@ -108,10 +111,15 @@ function TeamGrid({
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 fade-in-stagger">
       {teams.map((t) => (
         <Link key={t.id} href={`/teams/${t.id}`}>
-          <Card className="group cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5">
+          <Card className="group cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-primary/30">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between gap-2">
-                <CardTitle className="text-base font-semibold">{t.name}</CardTitle>
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors group-hover:bg-primary/15">
+                    <UsersRound className="h-4 w-4" />
+                  </div>
+                  <CardTitle className="text-base font-semibold truncate">{t.name}</CardTitle>
+                </div>
                 <Badge variant="outline" className="text-xs shrink-0">{t.department.name}</Badge>
               </div>
             </CardHeader>

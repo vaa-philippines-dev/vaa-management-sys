@@ -276,9 +276,11 @@ const vaRoutes = [
 
 const adminRoutes = [
   { label: 'Admin Panel', href: '/admin', icon: LayoutDashboard },
-  { label: 'Manage Users', href: '/admin/users', icon: UserPlus },
-  { label: 'Manage Departments', href: '/admin/departments', icon: Network },
-  { label: 'Departments', href: '/departments', icon: Building2 },
+  { label: 'Users', href: '/admin/users', icon: UserPlus },
+  { label: 'Departments', href: '/admin/departments', icon: Network },
+  { label: 'Teams', href: '/admin/teams', icon: UsersRound },
+  { label: 'Clients', href: '/admin/clients', icon: Building2 },
+  { label: 'Departments (org view)', href: '/departments', icon: Building2 },
   { label: 'Audit Log', href: '/admin/audit', icon: ClipboardList },
   { label: 'History', href: '/admin/history', icon: History },
 ]
@@ -532,7 +534,7 @@ export function Sidebar({
                 <div className="relative ml-[13px] flex flex-col gap-px border-l border-sidebar-foreground/15 pl-3">
                   <FavoritableRow
                     href="/admin/users"
-                    label="Manage Users"
+                    label="Users"
                     icon={UserPlus}
                     isActive={isMainRowActive('/admin/users', isRouteActive('/admin/users'))}
                     canFavorite={canFavorite}
@@ -542,11 +544,31 @@ export function Sidebar({
                   />
                   <FavoritableRow
                     href="/admin/departments"
-                    label="Manage Departments"
+                    label="Departments"
                     icon={Network}
                     isActive={isMainRowActive('/admin/departments', isRouteActive('/admin/departments'))}
                     canFavorite={canFavorite}
                     favorite={favorites.find((f) => f.href === '/admin/departments')}
+                    atMax={atMax}
+                    onChanged={setFavorites}
+                  />
+                  <FavoritableRow
+                    href="/admin/teams"
+                    label="Teams"
+                    icon={UsersRound}
+                    isActive={isMainRowActive('/admin/teams', isRouteActive('/admin/teams'))}
+                    canFavorite={canFavorite}
+                    favorite={favorites.find((f) => f.href === '/admin/teams')}
+                    atMax={atMax}
+                    onChanged={setFavorites}
+                  />
+                  <FavoritableRow
+                    href="/admin/clients"
+                    label="Clients"
+                    icon={Building2}
+                    isActive={isMainRowActive('/admin/clients', isRouteActive('/admin/clients'))}
+                    canFavorite={canFavorite}
+                    favorite={favorites.find((f) => f.href === '/admin/clients')}
                     atMax={atMax}
                     onChanged={setFavorites}
                   />

@@ -5,8 +5,16 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { StatusIndicator } from '@/components/ui/status-indicator'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Crown, Users, UsersRound } from 'lucide-react'
 import { TeamDetailControls } from '@/components/teams/TeamDetailControls'
+import { cn } from '@/lib/utils'
+
+function initials(name: string) {
+  const parts = name.trim().split(/\s+/)
+  const first = parts[0]?.[0] ?? ''
+  const last = parts.length > 1 ? parts[parts.length - 1]?.[0] ?? '' : ''
+  return (first + last).toUpperCase()
+}
 
 type Tone = 'success' | 'warning' | 'destructive' | 'info' | 'neutral'
 
@@ -110,13 +118,16 @@ export default async function TeamDetailPage({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-in fade-in-0 duration-300">
       <div className="flex items-center gap-3">
         <Link href="/teams">
           <Button variant="ghost" size="icon">
             <ArrowLeft className="h-4 w-4" />
           </Button>
         </Link>
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <UsersRound className="h-5 w-5" />
+        </div>
         <div className="flex-1">
           <div className="flex items-center gap-3">
             <h2 className="text-2xl font-bold tracking-tight">{team.name}</h2>
@@ -128,7 +139,7 @@ export default async function TeamDetailPage({
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-3 fade-in-stagger">
         <LeaderCard label="Team Leader" user={team.leader} />
         <LeaderCard label="Temp Leader 1" user={team.tempLeader1} />
         <LeaderCard label="Temp Leader 2" user={team.tempLeader2} />
@@ -148,16 +159,29 @@ export default async function TeamDetailPage({
         />
       ) : (
         <div className="rounded-lg border bg-card overflow-hidden">
-          <div className="px-4 py-3 border-b">
+          <div className="flex items-center gap-2 px-4 py-3 border-b bg-muted/20">
+            <Users className="h-4 w-4 text-muted-foreground" />
             <p className="text-sm font-semibold">Members ({members.length})</p>
           </div>
           {members.length === 0 ? (
-            <p className="text-sm text-muted-foreground px-4 py-6 text-center">No members yet.</p>
+            <div className="flex flex-col items-center justify-center gap-2 px-4 py-10 text-center">
+              <Users className="h-8 w-8 text-muted-foreground/40" />
+              <p className="text-sm text-muted-foreground">No members yet.</p>
+            </div>
           ) : (
             <div className="divide-y">
               {members.map((m) => (
                 <div key={m.membershipId} className="flex items-center gap-3 px-4 py-2.5">
-                  <span className="text-sm font-medium flex-1">{m.name}</span>
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[11px] font-semibold text-primary">
+                    {initials(m.name)}
+                  </span>
+                  <span className="text-sm font-medium flex-1 truncate">{m.name}</span>
+                  {(m.userId === team.leaderId || m.userId === team.tempLeader1Id || m.userId === team.tempLeader2Id) && (
+                    <Badge variant="outline" className="text-[10px] gap-1">
+                      <Crown className="h-2.5 w-2.5" />
+                      {m.userId === team.leaderId ? 'Leader' : 'Temp Leader'}
+                    </Badge>
+                  )}
                   <StatusIndicator tone={AVAILABILITY_TONE[m.availabilityStatus ?? ''] ?? 'neutral'}>
                     {AVAILABILITY_LABEL[m.availabilityStatus ?? ''] ?? m.availabilityStatus ?? 'Unknown'}
                   </StatusIndicator>
@@ -173,11 +197,21 @@ export default async function TeamDetailPage({
 
 function LeaderCard({ label, user }: { label: string; user: { firstName: string; lastName: string } | null }) {
   return (
-    <div className="rounded-lg border bg-card p-4">
-      <p className="text-xs font-medium text-muted-foreground">{label}</p>
-      <p className="text-sm font-semibold mt-1">
-        {user ? userName(user) : <span className="text-muted-foreground/60">Vacant</span>}
-      </p>
+    <div className="rounded-lg border bg-card p-4 transition-shadow hover:shadow-sm">
+      <div className="flex items-center gap-2">
+        <Crown className={cn('h-3.5 w-3.5', user ? 'text-primary' : 'text-muted-foreground/40')} />
+        <p className="text-xs font-medium text-muted-foreground">{label}</p>
+      </div>
+      <div className="flex items-center gap-2 mt-2">
+        {user && (
+          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-semibold text-primary">
+            {initials(userName(user))}
+          </span>
+        )}
+        <p className="text-sm font-semibold">
+          {user ? userName(user) : <span className="text-muted-foreground/60 font-normal">Vacant</span>}
+        </p>
+      </div>
     </div>
   )
 }
