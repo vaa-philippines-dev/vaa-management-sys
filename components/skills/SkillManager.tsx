@@ -146,7 +146,7 @@ export function SkillManager({
                   <span className="text-xs font-semibold">{dept.name}</span>
                   <Badge variant="secondary" className="text-[10px] py-0 px-1.5">{items.length}</Badge>
                 </div>
-                <Table className="text-xs table-fixed">
+                <Table className="text-xs table-fixed" containerClassName="overflow-visible">
                   <TableHeader>
                     <TableRow className="bg-muted/10">
                       <TableHead className="px-3 py-2.5 w-[30%]">Name</TableHead>
@@ -198,7 +198,7 @@ export function SkillManager({
                 <span className="text-xs font-semibold">Unassigned</span>
                 <Badge variant="secondary" className="text-[10px] py-0 px-1.5">{byDept.get('__unassigned__')!.length}</Badge>
               </div>
-              <Table className="text-xs table-fixed">
+              <Table className="text-xs table-fixed" containerClassName="overflow-visible">
                 <TableHeader>
                   <TableRow className="bg-muted/10">
                     <TableHead className="px-3 py-2.5 w-[30%]">Name</TableHead>
