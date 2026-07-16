@@ -202,9 +202,12 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
     .map((row) => (row.email || '').trim().toLowerCase())
     .filter(Boolean)
 
+  // Match against every user, not just existing VAs — a CSV row can refer to
+  // someone already in the system under a different userType (e.g. created
+  // via another flow), and importing should promote that account to a VA
+  // rather than colliding on the unique email constraint trying to create one.
   const existingVAs = await prisma.user.findMany({
-    where: { userType: 'VIRTUAL_ASSISTANT' },
-    select: { id: true, email: true, firstName: true, middleName: true, lastName: true, extName: true },
+    select: { id: true, email: true, firstName: true, middleName: true, lastName: true, extName: true, userType: true },
   })
   const existingEmails = new Set(existingVAs.map((u) => u.email))
   const normalizeNameKey = (first: string, last: string) =>
@@ -311,8 +314,8 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
       result.skipped.push({
         row: rowNum,
         reason: emailInput && existingEmails.has(emailInput)
-          ? `Email already exists: ${emailInput}`
-          : `VA already exists: ${firstName} ${lastNameInput}`,
+          ? `User already exists: ${emailInput}`
+          : `User already exists: ${firstName} ${lastNameInput}`,
       })
       continue
     }
@@ -445,7 +448,14 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
         where: { id: userId },
         data: {
           ...userData,
-          vaProfile: { update: vaProfileData },
+          userType: 'VIRTUAL_ASSISTANT',
+          systemRole: 'VA',
+          vaProfile: {
+            upsert: {
+              create: { ...vaProfileData, currentHireDate: p.hireDate ?? new Date(), currentEndDate: p.eocDate },
+              update: vaProfileData,
+            },
+          },
           profile: { upsert: { create: profileData, update: profileData } },
         },
       })
