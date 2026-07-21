@@ -260,7 +260,6 @@ const managerRoutes = [
   { label: 'Services', href: '/skills', icon: UserCog },
   { label: 'Tickets', href: '/tickets', icon: Ticket },
   { label: 'Monthly Report', href: '/reports', icon: BarChart3 },
-  { label: 'VA Connections', href: '/va-connections', icon: Database },
 ]
 
 const departmentRoutes = [
@@ -286,6 +285,7 @@ const adminRoutes = [
   { label: 'Departments (org view)', href: '/departments', icon: Building2 },
   { label: 'Audit Log', href: '/admin/audit', icon: ClipboardList },
   { label: 'History', href: '/admin/history', icon: History },
+  { label: 'VA Connections', href: '/va-connections', icon: Database },
 ]
 
 export function Sidebar({
@@ -605,6 +605,16 @@ export function Sidebar({
                 isActive={isMainRowActive('/admin/history', isRouteActive('/admin/history'))}
                 canFavorite={canFavorite}
                 favorite={favorites.find((f) => f.href === '/admin/history')}
+                atMax={atMax}
+                onChanged={setFavorites}
+              />
+              <FavoritableRow
+                href="/va-connections"
+                label="VA Connections"
+                icon={Database}
+                isActive={isMainRowActive('/va-connections', isRouteActive('/va-connections'))}
+                canFavorite={canFavorite}
+                favorite={favorites.find((f) => f.href === '/va-connections')}
                 atMax={atMax}
                 onChanged={setFavorites}
               />
