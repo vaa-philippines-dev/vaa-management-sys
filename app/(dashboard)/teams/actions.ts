@@ -51,6 +51,47 @@ export async function createTeam(formData: FormData) {
   redirect(`/teams/${team.id}`)
 }
 
+export async function renameTeam(teamId: string, name: string) {
+  const actor = await requireRole(...TEAM_MANAGE_ROLES)
+
+  const trimmed = name.trim()
+  if (!trimmed) {
+    throw new Error('Team name is required')
+  }
+
+  const departmentId = await getTeamDepartmentId(teamId)
+  await assertDepartmentManaged(actor, departmentId)
+
+  const before = await prisma.team.findUnique({ where: { id: teamId }, select: { name: true } })
+  if (!before) throw new Error('Team not found')
+
+  if (trimmed === before.name) return
+
+  const duplicate = await prisma.team.findFirst({
+    where: { departmentId, name: trimmed, NOT: { id: teamId } },
+    select: { id: true },
+  })
+  if (duplicate) {
+    throw new Error('A team with this name already exists in this department')
+  }
+
+  await prisma.team.update({ where: { id: teamId }, data: { name: trimmed } })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'UPDATE',
+    entityType: 'Team',
+    entityId: teamId,
+    before: { name: before.name },
+    after: { name: trimmed },
+    departmentId,
+  })
+
+  revalidatePath(`/teams/${teamId}`)
+  revalidatePath('/teams')
+  revalidateTag(CACHE_TAGS.teams, 'default')
+}
+
 export async function setTeamLeader(teamId: string, userId: string | null) {
   const actor = await requireRole(...TEAM_LEADER_ASSIGN_ROLES)
 

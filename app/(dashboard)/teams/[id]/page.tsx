@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { StatusIndicator } from '@/components/ui/status-indicator'
 import { ArrowLeft, Crown, ShieldHalf, Users, UsersRound } from 'lucide-react'
 import { TeamDetailControls } from '@/components/teams/TeamDetailControls'
+import { TeamNameEditor } from '@/components/teams/TeamNameEditor'
 import { cn } from '@/lib/utils'
 
 function initials(name: string) {
@@ -130,7 +131,11 @@ export default async function TeamDetailPage({
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-3">
-            <h2 className="text-2xl font-bold tracking-tight">{team.name}</h2>
+            {canManageMembership ? (
+              <TeamNameEditor teamId={team.id} name={team.name} />
+            ) : (
+              <h2 className="text-2xl font-bold tracking-tight">{team.name}</h2>
+            )}
             <Badge variant="outline">{team.department.name}</Badge>
           </div>
           <p className="text-sm text-muted-foreground mt-1">
