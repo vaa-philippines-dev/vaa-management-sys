@@ -28,6 +28,7 @@ import {
   Cake,
   Wine,
   BriefcaseBusiness,
+  Database,
 } from 'lucide-react'
 import Image from 'next/image'
 import {
@@ -259,6 +260,7 @@ const managerRoutes = [
   { label: 'Services', href: '/skills', icon: UserCog },
   { label: 'Tickets', href: '/tickets', icon: Ticket },
   { label: 'Monthly Report', href: '/reports', icon: BarChart3 },
+  { label: 'VA Connections', href: '/va-connections', icon: Database },
 ]
 
 const departmentRoutes = [

@@ -4,6 +4,10 @@
     {
       "path": "/api/cron/check-hours",
       "schedule": "0 10 * * *"
+    },
+    {
+      "path": "/api/cron/sync-va-connections",
+      "schedule": "0 */6 * * *"
     }
   ]
 }

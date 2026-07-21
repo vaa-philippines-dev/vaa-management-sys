@@ -132,6 +132,11 @@ enum AssignmentStatus {
   ON_HOLD
 }
 
+enum AssignmentSource {
+  MANUAL
+  VA_CONNECTIONS_SYNC
+}
+
 enum SkillCategory {
   STANDARD
   UPSKILL
@@ -668,6 +673,9 @@ model Assignment {
   endDate           DateTime?        @map("end_date")
   notes             String?
   skillRequirements String[]         @map("skill_requirements")
+  source            AssignmentSource @default(MANUAL)
+  externalId        String?          @unique @map("external_id")
+  syncedAt          DateTime?        @map("synced_at")
   createdAt         DateTime         @default(now()) @map("created_at")
   updatedAt         DateTime         @updatedAt @map("updated_at")
 
@@ -869,6 +877,64 @@ model AuditLog {
   @@index([entityType, entityId, createdAt])
   @@index([actorId, createdAt])
   @@map("audit_logs")
+}
+
+// ──────────────────────────────────────────────────────────────────
+// MODELS — External Sync (VAConnections Google Sheet import)
+// ──────────────────────────────────────────────────────────────────
+
+enum SyncEntityType {
+  VA_PROFILE
+  CLIENT
+}
+
+// Maps the manager's Google Sheet IDs (VAID, ClientID) to this app's
+// VAProfile/Client records. Assignment itself doesn't need a row here —
+// it's matched directly via Assignment.externalId (the sheet's ConnectionID).
+model ExternalSyncMapping {
+  id         String         @id @default(cuid())
+  source     String         @default("va_connections_sheet")
+  entityType SyncEntityType @map("entity_type")
+  externalId String         @map("external_id")
+  internalId String         @map("internal_id")
+  createdAt  DateTime       @default(now()) @map("created_at")
+  updatedAt  DateTime       @updatedAt @map("updated_at")
+
+  @@unique([source, entityType, externalId])
+  @@index([internalId])
+  @@map("external_sync_mappings")
+}
+
+// Raw mirror of the manager's VAConnections sheet — "load" phase only.
+// Every row that has a ConnectionID gets stored here as-is on each sync run,
+// regardless of whether it resolves to a real VAProfile/Client. Turning a row
+// into an actual Assignment (the "connect" phase) is deliberately separate
+// and not wired in yet.
+model VAConnectionRecord {
+  id               String   @id @default(cuid())
+  connectionId     String   @unique @map("connection_id")
+  status           String
+  connectionType   String?  @map("connection_type")
+  vaExternalId     String?  @map("va_external_id")
+  vaName           String?  @map("va_name")
+  clientExternalId String?  @map("client_external_id")
+  clientName       String?  @map("client_name")
+  department       String?
+  service          String?
+  hours            String?
+  hoursType        String?  @map("hours_type")
+  connectionDate   String?  @map("connection_date")
+  startDate        String?  @map("start_date")
+  terminationDate  String?  @map("termination_date")
+  notes            String?
+  raw              Json
+  lastSyncedAt     DateTime @map("last_synced_at")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  @@index([status])
+  @@index([vaName])
+  @@index([clientName])
+  @@map("va_connection_records")
 }
 
 model Notification {

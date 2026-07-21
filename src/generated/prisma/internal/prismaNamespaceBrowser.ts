@@ -76,6 +76,8 @@ export const ModelName = {
   MessageMention: 'MessageMention',
   ChannelRead: 'ChannelRead',
   AuditLog: 'AuditLog',
+  ExternalSyncMapping: 'ExternalSyncMapping',
+  VAConnectionRecord: 'VAConnectionRecord',
   Notification: 'Notification',
   SidebarFavorite: 'SidebarFavorite',
   Team: 'Team',
@@ -421,6 +423,9 @@ export const AssignmentScalarFieldEnum = {
   endDate: 'endDate',
   notes: 'notes',
   skillRequirements: 'skillRequirements',
+  source: 'source',
+  externalId: 'externalId',
+  syncedAt: 'syncedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   vaProfileId: 'vaProfileId',
@@ -558,6 +563,44 @@ export const AuditLogScalarFieldEnum = {
 export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
 
 
+export const ExternalSyncMappingScalarFieldEnum = {
+  id: 'id',
+  source: 'source',
+  entityType: 'entityType',
+  externalId: 'externalId',
+  internalId: 'internalId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExternalSyncMappingScalarFieldEnum = (typeof ExternalSyncMappingScalarFieldEnum)[keyof typeof ExternalSyncMappingScalarFieldEnum]
+
+
+export const VAConnectionRecordScalarFieldEnum = {
+  id: 'id',
+  connectionId: 'connectionId',
+  status: 'status',
+  connectionType: 'connectionType',
+  vaExternalId: 'vaExternalId',
+  vaName: 'vaName',
+  clientExternalId: 'clientExternalId',
+  clientName: 'clientName',
+  department: 'department',
+  service: 'service',
+  hours: 'hours',
+  hoursType: 'hoursType',
+  connectionDate: 'connectionDate',
+  startDate: 'startDate',
+  terminationDate: 'terminationDate',
+  notes: 'notes',
+  raw: 'raw',
+  lastSyncedAt: 'lastSyncedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type VAConnectionRecordScalarFieldEnum = (typeof VAConnectionRecordScalarFieldEnum)[keyof typeof VAConnectionRecordScalarFieldEnum]
+
+
 export const NotificationScalarFieldEnum = {
   id: 'id',
   recipientId: 'recipientId',
@@ -634,6 +677,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

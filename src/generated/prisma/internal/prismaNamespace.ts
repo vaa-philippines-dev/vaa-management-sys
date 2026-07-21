@@ -409,6 +409,8 @@ export const ModelName = {
   MessageMention: 'MessageMention',
   ChannelRead: 'ChannelRead',
   AuditLog: 'AuditLog',
+  ExternalSyncMapping: 'ExternalSyncMapping',
+  VAConnectionRecord: 'VAConnectionRecord',
   Notification: 'Notification',
   SidebarFavorite: 'SidebarFavorite',
   Team: 'Team',
@@ -428,7 +430,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveRequest" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "notification" | "sidebarFavorite" | "team" | "teamMembership"
+    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveRequest" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "notification" | "sidebarFavorite" | "team" | "teamMembership"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2282,6 +2284,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ExternalSyncMapping: {
+      payload: Prisma.$ExternalSyncMappingPayload<ExtArgs>
+      fields: Prisma.ExternalSyncMappingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ExternalSyncMappingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalSyncMappingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ExternalSyncMappingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalSyncMappingPayload>
+        }
+        findFirst: {
+          args: Prisma.ExternalSyncMappingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalSyncMappingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ExternalSyncMappingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalSyncMappingPayload>
+        }
+        findMany: {
+          args: Prisma.ExternalSyncMappingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalSyncMappingPayload>[]
+        }
+        create: {
+          args: Prisma.ExternalSyncMappingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalSyncMappingPayload>
+        }
+        createMany: {
+          args: Prisma.ExternalSyncMappingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ExternalSyncMappingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalSyncMappingPayload>[]
+        }
+        delete: {
+          args: Prisma.ExternalSyncMappingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalSyncMappingPayload>
+        }
+        update: {
+          args: Prisma.ExternalSyncMappingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalSyncMappingPayload>
+        }
+        deleteMany: {
+          args: Prisma.ExternalSyncMappingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ExternalSyncMappingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ExternalSyncMappingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalSyncMappingPayload>[]
+        }
+        upsert: {
+          args: Prisma.ExternalSyncMappingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalSyncMappingPayload>
+        }
+        aggregate: {
+          args: Prisma.ExternalSyncMappingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExternalSyncMapping>
+        }
+        groupBy: {
+          args: Prisma.ExternalSyncMappingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExternalSyncMappingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ExternalSyncMappingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExternalSyncMappingCountAggregateOutputType> | number
+        }
+      }
+    }
+    VAConnectionRecord: {
+      payload: Prisma.$VAConnectionRecordPayload<ExtArgs>
+      fields: Prisma.VAConnectionRecordFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VAConnectionRecordFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAConnectionRecordPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VAConnectionRecordFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAConnectionRecordPayload>
+        }
+        findFirst: {
+          args: Prisma.VAConnectionRecordFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAConnectionRecordPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VAConnectionRecordFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAConnectionRecordPayload>
+        }
+        findMany: {
+          args: Prisma.VAConnectionRecordFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAConnectionRecordPayload>[]
+        }
+        create: {
+          args: Prisma.VAConnectionRecordCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAConnectionRecordPayload>
+        }
+        createMany: {
+          args: Prisma.VAConnectionRecordCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VAConnectionRecordCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAConnectionRecordPayload>[]
+        }
+        delete: {
+          args: Prisma.VAConnectionRecordDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAConnectionRecordPayload>
+        }
+        update: {
+          args: Prisma.VAConnectionRecordUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAConnectionRecordPayload>
+        }
+        deleteMany: {
+          args: Prisma.VAConnectionRecordDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VAConnectionRecordUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VAConnectionRecordUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAConnectionRecordPayload>[]
+        }
+        upsert: {
+          args: Prisma.VAConnectionRecordUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAConnectionRecordPayload>
+        }
+        aggregate: {
+          args: Prisma.VAConnectionRecordAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVAConnectionRecord>
+        }
+        groupBy: {
+          args: Prisma.VAConnectionRecordGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VAConnectionRecordGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VAConnectionRecordCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VAConnectionRecordCountAggregateOutputType> | number
+        }
+      }
+    }
     Notification: {
       payload: Prisma.$NotificationPayload<ExtArgs>
       fields: Prisma.NotificationFieldRefs
@@ -2940,6 +3090,9 @@ export const AssignmentScalarFieldEnum = {
   endDate: 'endDate',
   notes: 'notes',
   skillRequirements: 'skillRequirements',
+  source: 'source',
+  externalId: 'externalId',
+  syncedAt: 'syncedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   vaProfileId: 'vaProfileId',
@@ -3077,6 +3230,44 @@ export const AuditLogScalarFieldEnum = {
 export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
 
 
+export const ExternalSyncMappingScalarFieldEnum = {
+  id: 'id',
+  source: 'source',
+  entityType: 'entityType',
+  externalId: 'externalId',
+  internalId: 'internalId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExternalSyncMappingScalarFieldEnum = (typeof ExternalSyncMappingScalarFieldEnum)[keyof typeof ExternalSyncMappingScalarFieldEnum]
+
+
+export const VAConnectionRecordScalarFieldEnum = {
+  id: 'id',
+  connectionId: 'connectionId',
+  status: 'status',
+  connectionType: 'connectionType',
+  vaExternalId: 'vaExternalId',
+  vaName: 'vaName',
+  clientExternalId: 'clientExternalId',
+  clientName: 'clientName',
+  department: 'department',
+  service: 'service',
+  hours: 'hours',
+  hoursType: 'hoursType',
+  connectionDate: 'connectionDate',
+  startDate: 'startDate',
+  terminationDate: 'terminationDate',
+  notes: 'notes',
+  raw: 'raw',
+  lastSyncedAt: 'lastSyncedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type VAConnectionRecordScalarFieldEnum = (typeof VAConnectionRecordScalarFieldEnum)[keyof typeof VAConnectionRecordScalarFieldEnum]
+
+
 export const NotificationScalarFieldEnum = {
   id: 'id',
   recipientId: 'recipientId',
@@ -3153,6 +3344,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -3530,6 +3728,20 @@ export type ListEnumAssignmentStatusFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
+ * Reference to a field of type 'AssignmentSource'
+ */
+export type EnumAssignmentSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssignmentSource'>
+    
+
+
+/**
+ * Reference to a field of type 'AssignmentSource[]'
+ */
+export type ListEnumAssignmentSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssignmentSource[]'>
+    
+
+
+/**
  * Reference to a field of type 'TicketCategory'
  */
 export type EnumTicketCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketCategory'>
@@ -3624,6 +3836,20 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
  * Reference to a field of type 'QueryMode'
  */
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'SyncEntityType'
+ */
+export type EnumSyncEntityTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SyncEntityType'>
+    
+
+
+/**
+ * Reference to a field of type 'SyncEntityType[]'
+ */
+export type ListEnumSyncEntityTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SyncEntityType[]'>
     
 
 
@@ -3803,6 +4029,8 @@ export type GlobalOmitConfig = {
   messageMention?: Prisma.MessageMentionOmit
   channelRead?: Prisma.ChannelReadOmit
   auditLog?: Prisma.AuditLogOmit
+  externalSyncMapping?: Prisma.ExternalSyncMappingOmit
+  vAConnectionRecord?: Prisma.VAConnectionRecordOmit
   notification?: Prisma.NotificationOmit
   sidebarFavorite?: Prisma.SidebarFavoriteOmit
   team?: Prisma.TeamOmit

@@ -64,7 +64,13 @@ export async function createAssignment(formData: FormData) {
 export async function updateAssignmentStatus(id: string, status: string) {
   const actor = await requireRole(...ASSIGNMENT_MUTATOR_ROLES)
 
-  const before = await prisma.assignment.findUnique({ where: { id }, select: { status: true } })
+  const before = await prisma.assignment.findUnique({ where: { id }, select: { status: true, source: true } })
+
+  // Synced Assignments are owned by the VAConnections sheet import — manual edits
+  // here would just get silently overwritten by the next sync run.
+  if (before?.source === 'VA_CONNECTIONS_SYNC') {
+    throw new Error('This assignment is synced from the VAConnections sheet and cannot be edited here.')
+  }
 
   await prisma.assignment.update({ where: { id }, data: { status: status as any } })
 

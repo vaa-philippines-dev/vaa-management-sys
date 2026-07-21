@@ -50,12 +50,22 @@ export default async function AssignmentDetailPage({
               {assignment.status}
             </Badge>
             <Badge variant="outline">{assignment.type}</Badge>
+            {assignment.source === 'VA_CONNECTIONS_SYNC' && (
+              <Badge variant="outline">Synced from VAConnections</Badge>
+            )}
           </div>
           <p className="text-sm text-muted-foreground mt-1">
             Assigned to {assignment.vaProfile.user.firstName || assignment.vaProfile.user.email}
           </p>
+          {assignment.source === 'VA_CONNECTIONS_SYNC' && (
+            <p className="text-xs text-muted-foreground mt-1">
+              Managed by the VAConnections sheet — edit there, changes sync in automatically.
+            </p>
+          )}
         </div>
-        {ASSIGNMENT_MUTATOR_ROLES.includes(user.systemRole) && <AssignmentStatusButtons id={assignment.id} current={assignment.status} />}
+        {ASSIGNMENT_MUTATOR_ROLES.includes(user.systemRole) && assignment.source !== 'VA_CONNECTIONS_SYNC' && (
+          <AssignmentStatusButtons id={assignment.id} current={assignment.status} />
+        )}
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">

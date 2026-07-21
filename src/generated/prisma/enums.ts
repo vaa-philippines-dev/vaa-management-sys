@@ -170,6 +170,14 @@ export const AssignmentStatus = {
 export type AssignmentStatus = (typeof AssignmentStatus)[keyof typeof AssignmentStatus]
 
 
+export const AssignmentSource = {
+  MANUAL: 'MANUAL',
+  VA_CONNECTIONS_SYNC: 'VA_CONNECTIONS_SYNC'
+} as const
+
+export type AssignmentSource = (typeof AssignmentSource)[keyof typeof AssignmentSource]
+
+
 export const SkillCategory = {
   STANDARD: 'STANDARD',
   UPSKILL: 'UPSKILL',
@@ -303,6 +311,14 @@ export const ChannelKind = {
 } as const
 
 export type ChannelKind = (typeof ChannelKind)[keyof typeof ChannelKind]
+
+
+export const SyncEntityType = {
+  VA_PROFILE: 'VA_PROFILE',
+  CLIENT: 'CLIENT'
+} as const
+
+export type SyncEntityType = (typeof SyncEntityType)[keyof typeof SyncEntityType]
 
 
 export const FavoriteColor = {

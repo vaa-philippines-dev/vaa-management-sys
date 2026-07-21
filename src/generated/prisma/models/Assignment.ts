@@ -45,6 +45,9 @@ export type AssignmentMinAggregateOutputType = {
   startDate: Date | null
   endDate: Date | null
   notes: string | null
+  source: $Enums.AssignmentSource | null
+  externalId: string | null
+  syncedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
   vaProfileId: string | null
@@ -60,6 +63,9 @@ export type AssignmentMaxAggregateOutputType = {
   startDate: Date | null
   endDate: Date | null
   notes: string | null
+  source: $Enums.AssignmentSource | null
+  externalId: string | null
+  syncedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
   vaProfileId: string | null
@@ -76,6 +82,9 @@ export type AssignmentCountAggregateOutputType = {
   endDate: number
   notes: number
   skillRequirements: number
+  source: number
+  externalId: number
+  syncedAt: number
   createdAt: number
   updatedAt: number
   vaProfileId: number
@@ -103,6 +112,9 @@ export type AssignmentMinAggregateInputType = {
   startDate?: true
   endDate?: true
   notes?: true
+  source?: true
+  externalId?: true
+  syncedAt?: true
   createdAt?: true
   updatedAt?: true
   vaProfileId?: true
@@ -118,6 +130,9 @@ export type AssignmentMaxAggregateInputType = {
   startDate?: true
   endDate?: true
   notes?: true
+  source?: true
+  externalId?: true
+  syncedAt?: true
   createdAt?: true
   updatedAt?: true
   vaProfileId?: true
@@ -134,6 +149,9 @@ export type AssignmentCountAggregateInputType = {
   endDate?: true
   notes?: true
   skillRequirements?: true
+  source?: true
+  externalId?: true
+  syncedAt?: true
   createdAt?: true
   updatedAt?: true
   vaProfileId?: true
@@ -237,6 +255,9 @@ export type AssignmentGroupByOutputType = {
   endDate: Date | null
   notes: string | null
   skillRequirements: string[]
+  source: $Enums.AssignmentSource
+  externalId: string | null
+  syncedAt: Date | null
   createdAt: Date
   updatedAt: Date
   vaProfileId: string
@@ -276,6 +297,9 @@ export type AssignmentWhereInput = {
   endDate?: Prisma.DateTimeNullableFilter<"Assignment"> | Date | string | null
   notes?: Prisma.StringNullableFilter<"Assignment"> | string | null
   skillRequirements?: Prisma.StringNullableListFilter<"Assignment">
+  source?: Prisma.EnumAssignmentSourceFilter<"Assignment"> | $Enums.AssignmentSource
+  externalId?: Prisma.StringNullableFilter<"Assignment"> | string | null
+  syncedAt?: Prisma.DateTimeNullableFilter<"Assignment"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Assignment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Assignment"> | Date | string
   vaProfileId?: Prisma.StringFilter<"Assignment"> | string
@@ -295,6 +319,9 @@ export type AssignmentOrderByWithRelationInput = {
   endDate?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   skillRequirements?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  externalId?: Prisma.SortOrderInput | Prisma.SortOrder
+  syncedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   vaProfileId?: Prisma.SortOrder
@@ -306,6 +333,7 @@ export type AssignmentOrderByWithRelationInput = {
 
 export type AssignmentWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  externalId?: string
   AND?: Prisma.AssignmentWhereInput | Prisma.AssignmentWhereInput[]
   OR?: Prisma.AssignmentWhereInput[]
   NOT?: Prisma.AssignmentWhereInput | Prisma.AssignmentWhereInput[]
@@ -317,6 +345,8 @@ export type AssignmentWhereUniqueInput = Prisma.AtLeast<{
   endDate?: Prisma.DateTimeNullableFilter<"Assignment"> | Date | string | null
   notes?: Prisma.StringNullableFilter<"Assignment"> | string | null
   skillRequirements?: Prisma.StringNullableListFilter<"Assignment">
+  source?: Prisma.EnumAssignmentSourceFilter<"Assignment"> | $Enums.AssignmentSource
+  syncedAt?: Prisma.DateTimeNullableFilter<"Assignment"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Assignment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Assignment"> | Date | string
   vaProfileId?: Prisma.StringFilter<"Assignment"> | string
@@ -324,7 +354,7 @@ export type AssignmentWhereUniqueInput = Prisma.AtLeast<{
   vaProfile?: Prisma.XOR<Prisma.VAProfileScalarRelationFilter, Prisma.VAProfileWhereInput>
   client?: Prisma.XOR<Prisma.ClientScalarRelationFilter, Prisma.ClientWhereInput>
   workLogs?: Prisma.WorkLogListRelationFilter
-}, "id">
+}, "id" | "externalId">
 
 export type AssignmentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -336,6 +366,9 @@ export type AssignmentOrderByWithAggregationInput = {
   endDate?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   skillRequirements?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  externalId?: Prisma.SortOrderInput | Prisma.SortOrder
+  syncedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   vaProfileId?: Prisma.SortOrder
@@ -360,6 +393,9 @@ export type AssignmentScalarWhereWithAggregatesInput = {
   endDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Assignment"> | Date | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"Assignment"> | string | null
   skillRequirements?: Prisma.StringNullableListFilter<"Assignment">
+  source?: Prisma.EnumAssignmentSourceWithAggregatesFilter<"Assignment"> | $Enums.AssignmentSource
+  externalId?: Prisma.StringNullableWithAggregatesFilter<"Assignment"> | string | null
+  syncedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Assignment"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Assignment"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Assignment"> | Date | string
   vaProfileId?: Prisma.StringWithAggregatesFilter<"Assignment"> | string
@@ -376,6 +412,9 @@ export type AssignmentCreateInput = {
   endDate?: Date | string | null
   notes?: string | null
   skillRequirements?: Prisma.AssignmentCreateskillRequirementsInput | string[]
+  source?: $Enums.AssignmentSource
+  externalId?: string | null
+  syncedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutAssignmentsInput
@@ -393,6 +432,9 @@ export type AssignmentUncheckedCreateInput = {
   endDate?: Date | string | null
   notes?: string | null
   skillRequirements?: Prisma.AssignmentCreateskillRequirementsInput | string[]
+  source?: $Enums.AssignmentSource
+  externalId?: string | null
+  syncedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vaProfileId: string
@@ -410,6 +452,9 @@ export type AssignmentUpdateInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skillRequirements?: Prisma.AssignmentUpdateskillRequirementsInput | string[]
+  source?: Prisma.EnumAssignmentSourceFieldUpdateOperationsInput | $Enums.AssignmentSource
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutAssignmentsNestedInput
@@ -427,6 +472,9 @@ export type AssignmentUncheckedUpdateInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skillRequirements?: Prisma.AssignmentUpdateskillRequirementsInput | string[]
+  source?: Prisma.EnumAssignmentSourceFieldUpdateOperationsInput | $Enums.AssignmentSource
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfileId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -444,6 +492,9 @@ export type AssignmentCreateManyInput = {
   endDate?: Date | string | null
   notes?: string | null
   skillRequirements?: Prisma.AssignmentCreateskillRequirementsInput | string[]
+  source?: $Enums.AssignmentSource
+  externalId?: string | null
+  syncedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vaProfileId: string
@@ -460,6 +511,9 @@ export type AssignmentUpdateManyMutationInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skillRequirements?: Prisma.AssignmentUpdateskillRequirementsInput | string[]
+  source?: Prisma.EnumAssignmentSourceFieldUpdateOperationsInput | $Enums.AssignmentSource
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -474,6 +528,9 @@ export type AssignmentUncheckedUpdateManyInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skillRequirements?: Prisma.AssignmentUpdateskillRequirementsInput | string[]
+  source?: Prisma.EnumAssignmentSourceFieldUpdateOperationsInput | $Enums.AssignmentSource
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfileId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -500,6 +557,9 @@ export type AssignmentCountOrderByAggregateInput = {
   endDate?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   skillRequirements?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  externalId?: Prisma.SortOrder
+  syncedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   vaProfileId?: Prisma.SortOrder
@@ -520,6 +580,9 @@ export type AssignmentMaxOrderByAggregateInput = {
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  externalId?: Prisma.SortOrder
+  syncedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   vaProfileId?: Prisma.SortOrder
@@ -535,6 +598,9 @@ export type AssignmentMinOrderByAggregateInput = {
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  externalId?: Prisma.SortOrder
+  syncedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   vaProfileId?: Prisma.SortOrder
@@ -652,6 +718,10 @@ export type AssignmentUpdateskillRequirementsInput = {
   push?: string | string[]
 }
 
+export type EnumAssignmentSourceFieldUpdateOperationsInput = {
+  set?: $Enums.AssignmentSource
+}
+
 export type AssignmentCreateNestedOneWithoutWorkLogsInput = {
   create?: Prisma.XOR<Prisma.AssignmentCreateWithoutWorkLogsInput, Prisma.AssignmentUncheckedCreateWithoutWorkLogsInput>
   connectOrCreate?: Prisma.AssignmentCreateOrConnectWithoutWorkLogsInput
@@ -676,6 +746,9 @@ export type AssignmentCreateWithoutVaProfileInput = {
   endDate?: Date | string | null
   notes?: string | null
   skillRequirements?: Prisma.AssignmentCreateskillRequirementsInput | string[]
+  source?: $Enums.AssignmentSource
+  externalId?: string | null
+  syncedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   client: Prisma.ClientCreateNestedOneWithoutAssignmentsInput
@@ -692,6 +765,9 @@ export type AssignmentUncheckedCreateWithoutVaProfileInput = {
   endDate?: Date | string | null
   notes?: string | null
   skillRequirements?: Prisma.AssignmentCreateskillRequirementsInput | string[]
+  source?: $Enums.AssignmentSource
+  externalId?: string | null
+  syncedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   clientId: string
@@ -737,6 +813,9 @@ export type AssignmentScalarWhereInput = {
   endDate?: Prisma.DateTimeNullableFilter<"Assignment"> | Date | string | null
   notes?: Prisma.StringNullableFilter<"Assignment"> | string | null
   skillRequirements?: Prisma.StringNullableListFilter<"Assignment">
+  source?: Prisma.EnumAssignmentSourceFilter<"Assignment"> | $Enums.AssignmentSource
+  externalId?: Prisma.StringNullableFilter<"Assignment"> | string | null
+  syncedAt?: Prisma.DateTimeNullableFilter<"Assignment"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Assignment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Assignment"> | Date | string
   vaProfileId?: Prisma.StringFilter<"Assignment"> | string
@@ -753,6 +832,9 @@ export type AssignmentCreateWithoutClientInput = {
   endDate?: Date | string | null
   notes?: string | null
   skillRequirements?: Prisma.AssignmentCreateskillRequirementsInput | string[]
+  source?: $Enums.AssignmentSource
+  externalId?: string | null
+  syncedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutAssignmentsInput
@@ -769,6 +851,9 @@ export type AssignmentUncheckedCreateWithoutClientInput = {
   endDate?: Date | string | null
   notes?: string | null
   skillRequirements?: Prisma.AssignmentCreateskillRequirementsInput | string[]
+  source?: $Enums.AssignmentSource
+  externalId?: string | null
+  syncedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vaProfileId: string
@@ -811,6 +896,9 @@ export type AssignmentCreateWithoutWorkLogsInput = {
   endDate?: Date | string | null
   notes?: string | null
   skillRequirements?: Prisma.AssignmentCreateskillRequirementsInput | string[]
+  source?: $Enums.AssignmentSource
+  externalId?: string | null
+  syncedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutAssignmentsInput
@@ -827,6 +915,9 @@ export type AssignmentUncheckedCreateWithoutWorkLogsInput = {
   endDate?: Date | string | null
   notes?: string | null
   skillRequirements?: Prisma.AssignmentCreateskillRequirementsInput | string[]
+  source?: $Enums.AssignmentSource
+  externalId?: string | null
+  syncedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vaProfileId: string
@@ -859,6 +950,9 @@ export type AssignmentUpdateWithoutWorkLogsInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skillRequirements?: Prisma.AssignmentUpdateskillRequirementsInput | string[]
+  source?: Prisma.EnumAssignmentSourceFieldUpdateOperationsInput | $Enums.AssignmentSource
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutAssignmentsNestedInput
@@ -875,6 +969,9 @@ export type AssignmentUncheckedUpdateWithoutWorkLogsInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skillRequirements?: Prisma.AssignmentUpdateskillRequirementsInput | string[]
+  source?: Prisma.EnumAssignmentSourceFieldUpdateOperationsInput | $Enums.AssignmentSource
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfileId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -891,6 +988,9 @@ export type AssignmentCreateManyVaProfileInput = {
   endDate?: Date | string | null
   notes?: string | null
   skillRequirements?: Prisma.AssignmentCreateskillRequirementsInput | string[]
+  source?: $Enums.AssignmentSource
+  externalId?: string | null
+  syncedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   clientId: string
@@ -906,6 +1006,9 @@ export type AssignmentUpdateWithoutVaProfileInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skillRequirements?: Prisma.AssignmentUpdateskillRequirementsInput | string[]
+  source?: Prisma.EnumAssignmentSourceFieldUpdateOperationsInput | $Enums.AssignmentSource
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   client?: Prisma.ClientUpdateOneRequiredWithoutAssignmentsNestedInput
@@ -922,6 +1025,9 @@ export type AssignmentUncheckedUpdateWithoutVaProfileInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skillRequirements?: Prisma.AssignmentUpdateskillRequirementsInput | string[]
+  source?: Prisma.EnumAssignmentSourceFieldUpdateOperationsInput | $Enums.AssignmentSource
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -938,6 +1044,9 @@ export type AssignmentUncheckedUpdateManyWithoutVaProfileInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skillRequirements?: Prisma.AssignmentUpdateskillRequirementsInput | string[]
+  source?: Prisma.EnumAssignmentSourceFieldUpdateOperationsInput | $Enums.AssignmentSource
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -953,6 +1062,9 @@ export type AssignmentCreateManyClientInput = {
   endDate?: Date | string | null
   notes?: string | null
   skillRequirements?: Prisma.AssignmentCreateskillRequirementsInput | string[]
+  source?: $Enums.AssignmentSource
+  externalId?: string | null
+  syncedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vaProfileId: string
@@ -968,6 +1080,9 @@ export type AssignmentUpdateWithoutClientInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skillRequirements?: Prisma.AssignmentUpdateskillRequirementsInput | string[]
+  source?: Prisma.EnumAssignmentSourceFieldUpdateOperationsInput | $Enums.AssignmentSource
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutAssignmentsNestedInput
@@ -984,6 +1099,9 @@ export type AssignmentUncheckedUpdateWithoutClientInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skillRequirements?: Prisma.AssignmentUpdateskillRequirementsInput | string[]
+  source?: Prisma.EnumAssignmentSourceFieldUpdateOperationsInput | $Enums.AssignmentSource
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfileId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1000,6 +1118,9 @@ export type AssignmentUncheckedUpdateManyWithoutClientInput = {
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skillRequirements?: Prisma.AssignmentUpdateskillRequirementsInput | string[]
+  source?: Prisma.EnumAssignmentSourceFieldUpdateOperationsInput | $Enums.AssignmentSource
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfileId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1046,6 +1167,9 @@ export type AssignmentSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   endDate?: boolean
   notes?: boolean
   skillRequirements?: boolean
+  source?: boolean
+  externalId?: boolean
+  syncedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   vaProfileId?: boolean
@@ -1066,6 +1190,9 @@ export type AssignmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   endDate?: boolean
   notes?: boolean
   skillRequirements?: boolean
+  source?: boolean
+  externalId?: boolean
+  syncedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   vaProfileId?: boolean
@@ -1084,6 +1211,9 @@ export type AssignmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   endDate?: boolean
   notes?: boolean
   skillRequirements?: boolean
+  source?: boolean
+  externalId?: boolean
+  syncedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   vaProfileId?: boolean
@@ -1102,13 +1232,16 @@ export type AssignmentSelectScalar = {
   endDate?: boolean
   notes?: boolean
   skillRequirements?: boolean
+  source?: boolean
+  externalId?: boolean
+  syncedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   vaProfileId?: boolean
   clientId?: boolean
 }
 
-export type AssignmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "status" | "agreedHours" | "monthlyHours" | "startDate" | "endDate" | "notes" | "skillRequirements" | "createdAt" | "updatedAt" | "vaProfileId" | "clientId", ExtArgs["result"]["assignment"]>
+export type AssignmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "status" | "agreedHours" | "monthlyHours" | "startDate" | "endDate" | "notes" | "skillRequirements" | "source" | "externalId" | "syncedAt" | "createdAt" | "updatedAt" | "vaProfileId" | "clientId", ExtArgs["result"]["assignment"]>
 export type AssignmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vaProfile?: boolean | Prisma.VAProfileDefaultArgs<ExtArgs>
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
@@ -1141,6 +1274,9 @@ export type $AssignmentPayload<ExtArgs extends runtime.Types.Extensions.Internal
     endDate: Date | null
     notes: string | null
     skillRequirements: string[]
+    source: $Enums.AssignmentSource
+    externalId: string | null
+    syncedAt: Date | null
     createdAt: Date
     updatedAt: Date
     vaProfileId: string
@@ -1580,6 +1716,9 @@ export interface AssignmentFieldRefs {
   readonly endDate: Prisma.FieldRef<"Assignment", 'DateTime'>
   readonly notes: Prisma.FieldRef<"Assignment", 'String'>
   readonly skillRequirements: Prisma.FieldRef<"Assignment", 'String[]'>
+  readonly source: Prisma.FieldRef<"Assignment", 'AssignmentSource'>
+  readonly externalId: Prisma.FieldRef<"Assignment", 'String'>
+  readonly syncedAt: Prisma.FieldRef<"Assignment", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Assignment", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Assignment", 'DateTime'>
   readonly vaProfileId: Prisma.FieldRef<"Assignment", 'String'>

@@ -143,6 +143,16 @@ export type ChannelRead = Prisma.ChannelReadModel
  */
 export type AuditLog = Prisma.AuditLogModel
 /**
+ * Model ExternalSyncMapping
+ * 
+ */
+export type ExternalSyncMapping = Prisma.ExternalSyncMappingModel
+/**
+ * Model VAConnectionRecord
+ * 
+ */
+export type VAConnectionRecord = Prisma.VAConnectionRecordModel
+/**
  * Model Notification
  * 
  */
