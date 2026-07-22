@@ -8,34 +8,7 @@ import { Button } from '@/components/ui/button'
 import { ArrowLeft, Briefcase } from 'lucide-react'
 import { format } from 'date-fns'
 import { ClientDetailPanel } from '@/components/clients/ClientDetailPanel'
-
-const STATUS_DOT: Record<string, string> = {
-  ACTIVE: 'bg-success',
-  PENDING: 'bg-warning',
-  TRANSFERRED: 'bg-info',
-  RESIGNED: 'bg-destructive',
-  REMOVED: 'bg-destructive',
-  PROJECT_ENDED: 'bg-muted-foreground',
-  CANCELLED: 'bg-destructive',
-}
-
-const STATUS_LABEL: Record<string, string> = {
-  ACTIVE: 'Active',
-  PENDING: 'Pending',
-  TRANSFERRED: 'Transferred',
-  RESIGNED: 'Resigned',
-  REMOVED: 'Removed',
-  PROJECT_ENDED: 'Project Ended',
-  CANCELLED: 'Cancelled',
-}
-
-const PLATFORM_META: Record<string, { label: string; color: string }> = {
-  AMAZON: { label: 'Amazon', color: 'bg-orange-500/15 text-orange-700 border-orange-500/20' },
-  WALMART: { label: 'Walmart', color: 'bg-blue-500/15 text-blue-700 border-blue-500/20' },
-  TIKTOK_SHOP: { label: 'TikTok Shop', color: 'bg-pink-500/15 text-pink-700 border-pink-500/20' },
-  SHOPIFY: { label: 'Shopify', color: 'bg-green-500/15 text-green-700 border-green-500/20' },
-  MULTI: { label: 'Multi-platform', color: 'bg-gray-500/15 text-gray-700 border-gray-500/20' },
-}
+import { CLIENT_PLATFORM_META, CLIENT_STATUS_DOT, CLIENT_STATUS_LABEL } from '@/lib/clients/display'
 
 const CLIENT_VIEW_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'STAFF']
 
@@ -76,13 +49,13 @@ export default async function ClientDetailPage({
           <div className="flex items-center gap-3">
             <h2 className="text-2xl font-bold tracking-tight">{client.name}</h2>
             <Badge variant={client.status === 'ACTIVE' ? 'default' : 'secondary'}>
-              {client.onHold ? 'On Hold' : (STATUS_LABEL[client.status] ?? client.status)}
+              {client.onHold ? 'On Hold' : (CLIENT_STATUS_LABEL[client.status] ?? client.status)}
             </Badge>
             <Badge
               variant="outline"
-              className={PLATFORM_META[client.platform]?.color ?? ''}
+              className={CLIENT_PLATFORM_META[client.platform]?.color ?? ''}
             >
-              {PLATFORM_META[client.platform]?.label ?? client.platform}
+              {CLIENT_PLATFORM_META[client.platform]?.label ?? client.platform}
             </Badge>
           </div>
           <p className="text-sm text-muted-foreground mt-1">
@@ -162,8 +135,8 @@ export default async function ClientDetailPage({
         </div>
 
         <ClientDetailPanel
-          statusLabel={client.onHold ? 'On Hold' : (STATUS_LABEL[client.status] ?? client.status)}
-          statusDotClassName={client.onHold ? 'bg-warning' : (STATUS_DOT[client.status] ?? 'bg-muted-foreground')}
+          statusLabel={client.onHold ? 'On Hold' : (CLIENT_STATUS_LABEL[client.status] ?? client.status)}
+          statusDotClassName={client.onHold ? 'bg-warning' : (CLIENT_STATUS_DOT[client.status] ?? 'bg-muted-foreground')}
           contactName={client.contactName ?? null}
           contactEmail={client.contactEmail ?? null}
           industry={client.industry ?? null}

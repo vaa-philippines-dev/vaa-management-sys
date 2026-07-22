@@ -1,19 +1,15 @@
 import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-
-const PLATFORM_META: Record<string, { label: string; color: string }> = {
-  AMAZON: { label: 'Amazon', color: 'bg-orange-500/15 text-orange-700 border-orange-500/20' },
-  WALMART: { label: 'Walmart', color: 'bg-blue-500/15 text-blue-700 border-blue-500/20' },
-  TIKTOK_SHOP: { label: 'TikTok Shop', color: 'bg-pink-500/15 text-pink-700 border-pink-500/20' },
-  SHOPIFY: { label: 'Shopify', color: 'bg-green-500/15 text-green-700 border-green-500/20' },
-  MULTI: { label: 'Multi-platform', color: 'bg-gray-500/15 text-gray-700 border-gray-500/20' },
-}
+import { StatusIndicator } from '@/components/ui/status-indicator'
+import { CLIENT_PLATFORM_META, CLIENT_STATUS_LABEL, CLIENT_STATUS_TONE } from '@/lib/clients/display'
 
 export type ClientCardData = {
   id: string
   name: string
   platform: string
+  status: string
+  onHold: boolean
   contactName: string | null
   industry: string | null
   requiredSkills: string[]
@@ -23,32 +19,39 @@ export type ClientCardData = {
 export function ClientCard({ c }: { c: ClientCardData }) {
   return (
     <Link href={`/clients/${c.id}`}>
-      <Card className="group cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5">
-        <CardHeader className="pb-3">
+      <Card className="group cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 py-3">
+        <CardContent className="px-3 space-y-1.5">
           <div className="flex items-center justify-between gap-2">
-            <CardTitle className="text-base font-semibold">{c.name}</CardTitle>
+            <p className="text-sm font-semibold truncate">{c.name}</p>
             <Badge
               variant="outline"
-              className={`text-xs shrink-0 ${PLATFORM_META[c.platform]?.color ?? ''}`}
+              className={`text-[10px] py-0 px-1.5 shrink-0 ${CLIENT_PLATFORM_META[c.platform]?.color ?? ''}`}
             >
-              {PLATFORM_META[c.platform]?.label ?? c.platform}
+              {CLIENT_PLATFORM_META[c.platform]?.label ?? c.platform}
             </Badge>
           </div>
-        </CardHeader>
-        <CardContent className="text-sm text-muted-foreground space-y-2">
-          {c.contactName && <p className="text-xs">Contact: {c.contactName}</p>}
-          {c.industry && <p className="text-xs">{c.industry}</p>}
+
+          <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
+            <span className="truncate">{c.contactName || c.industry || '—'}</span>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <StatusIndicator tone={c.onHold ? 'warning' : (CLIENT_STATUS_TONE[c.status] ?? 'neutral')}>
+                {c.onHold ? 'On Hold' : (CLIENT_STATUS_LABEL[c.status] ?? c.status)}
+              </StatusIndicator>
+            </div>
+          </div>
+
           {c.requiredSkills.length > 0 && (
-            <div className="flex flex-wrap gap-1 pt-1">
-              {c.requiredSkills.slice(0, 3).map((s) => (
-                <Badge key={s} variant="outline" className="text-xs">{s}</Badge>
+            <div className="flex flex-wrap gap-1 pt-0.5">
+              {c.requiredSkills.slice(0, 2).map((s) => (
+                <Badge key={s} variant="outline" className="text-[10px] py-0 px-1.5">{s}</Badge>
               ))}
-              {c.requiredSkills.length > 3 && (
-                <span className="text-xs text-muted-foreground/70">+{c.requiredSkills.length - 3}</span>
+              {c.requiredSkills.length > 2 && (
+                <span className="text-[10px] text-muted-foreground/70">+{c.requiredSkills.length - 2}</span>
               )}
             </div>
           )}
-          <p className="text-xs text-muted-foreground/70 pt-1">
+
+          <p className="text-[10px] text-muted-foreground/70">
             {c.assignments.length} assignment{c.assignments.length === 1 ? '' : 's'}
           </p>
         </CardContent>

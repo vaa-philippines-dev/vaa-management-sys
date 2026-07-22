@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Plus, Building2 } from 'lucide-react'
-import { ClientCard } from '@/components/clients/ClientCard'
+import { ClientsBoard } from '@/components/clients/ClientsBoard'
 import { ImportClientCsvButton } from '@/components/clients/ImportClientCsvButton'
 import { FilterBar } from '@/components/filters/FilterBar'
 
@@ -93,6 +93,7 @@ export default async function ClientsPage({
       where,
       include: {
         assignments: { include: { vaProfile: { include: { user: true } } } },
+        department: { select: { id: true, name: true, sortOrder: true } },
       },
       orderBy: { createdAt: 'desc' },
     })
@@ -135,11 +136,7 @@ export default async function ClientsPage({
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 fade-in-stagger">
-          {clients.map((c) => (
-            <ClientCard key={c.id} c={c} />
-          ))}
-        </div>
+        <ClientsBoard clients={clients} />
       )}
     </div>
   )
