@@ -7,7 +7,7 @@ import { UploadCloud, FileText, X, Download, Minus, ChevronDown, ChevronUp } fro
 import { toast } from 'sonner'
 import type { ClientCsvRow } from '@/app/(dashboard)/clients/actions'
 import { useClientCsvImport } from '@/components/clients/ClientCsvImportContext'
-import { INTAKE_FIELD_CATALOG, getIntakeFieldsForDepartment, type IntakeFieldKey } from '@/lib/clients/intake-fields'
+import { INTAKE_FIELD_CATALOG, getIntakeFieldsForDepartment, isBlankCell, type IntakeFieldKey } from '@/lib/clients/intake-fields'
 
 export type ImportDepartmentOption = { id: string; name: string; shortName: string | null; acronym: string | null }
 
@@ -100,6 +100,36 @@ const NOTES_SOURCE_COLUMNS: { label: string; aliases: string[] }[] = [
 
 const INTAKE_FIELD_KEYS = Object.keys(INTAKE_FIELD_CATALOG) as IntakeFieldKey[]
 
+const ALL_KNOWN_HEADER_ALIASES = new Set([
+  ...Object.values(BASE_COLUMN_ALIASES).flat(),
+  ...COMPANY_NAME_ALIASES,
+  ...PRIMARY_ACCOUNT_ALIASES,
+  ...BUSINESS_MODEL_ALIASES,
+  ...SERVICE_TEXT_ALIASES,
+  ...NOTES_SOURCE_COLUMNS.flatMap((c) => c.aliases),
+  ...INTAKE_FIELD_KEYS.flatMap((k) => [k.toLowerCase(), INTAKE_FIELD_CATALOG[k].label.toLowerCase()]),
+])
+
+// Some exports (e.g. a sheet with grouped category headers like "CLIENT
+// DETAILS" / "SERVICE DETAILS" above the real column names) have more than
+// one row before the actual header — assuming row 0 is always the header
+// breaks on those. Scan the first several rows and pick whichever one has
+// the most cells matching a known column alias; falls back to row 0 (the
+// common case) when nothing scores higher.
+function findHeaderRowIndex(records: string[][]): number {
+  let bestIndex = 0
+  let bestScore = -1
+  const searchLimit = Math.min(records.length, 10)
+  for (let i = 0; i < searchLimit; i++) {
+    const score = records[i].reduce((acc, cellValue) => acc + (ALL_KNOWN_HEADER_ALIASES.has(cellValue.trim().toLowerCase()) ? 1 : 0), 0)
+    if (score > bestScore) {
+      bestScore = score
+      bestIndex = i
+    }
+  }
+  return bestIndex
+}
+
 // Precedence used to collapse one client's several source rows (e.g. one row
 // per VA ever assigned to that account) into a single client-level status:
 // as long as ANY row for that client is Active, the client counts as Active
@@ -122,7 +152,7 @@ function normalizeNameKey(name: string): string {
 function firstNonBlank(group: ClientCsvRow[], key: keyof ClientCsvRow): string | undefined {
   for (const r of group) {
     const v = r[key]
-    if (typeof v === 'string' && v.trim()) return v.trim()
+    if (typeof v === 'string' && !isBlankCell(v)) return v.trim()
   }
   return undefined
 }
@@ -169,11 +199,11 @@ function collapseRowsByClient(rawRows: ClientCsvRow[]): ClientCsvRow[] {
     if (status !== undefined) merged.status = status
 
     for (const intakeKey of INTAKE_FIELD_KEYS) {
-      const values = Array.from(new Set(group.map((r) => (r[intakeKey] || '').trim()).filter(Boolean)))
+      const values = Array.from(new Set(group.map((r) => (r[intakeKey] || '').trim()).filter((v) => !isBlankCell(v))))
       if (values.length > 0) merged[intakeKey] = values.join('\n\n')
     }
 
-    const notesValues = Array.from(new Set(group.map((r) => (r.notes || '').trim()).filter(Boolean)))
+    const notesValues = Array.from(new Set(group.map((r) => (r.notes || '').trim()).filter((v) => !isBlankCell(v))))
     if (notesValues.length > 0) merged.notes = notesValues.join('\n\n')
 
     return merged
@@ -184,7 +214,8 @@ function parseCsvRows(text: string): ClientCsvRow[] {
   const records = parseCsvRecords(text)
   if (records.length === 0) return []
 
-  const header = records[0].map((h) => h.toLowerCase())
+  const headerRowIndex = findHeaderRowIndex(records)
+  const header = records[headerRowIndex].map((h) => h.toLowerCase())
   const idx = (...names: string[]) => header.findIndex((h) => names.includes(h))
   const cell = (cells: string[], i: number) => (i !== -1 ? cells[i] : undefined)
 
@@ -205,11 +236,11 @@ function parseCsvRows(text: string): ClientCsvRow[] {
   const hasNameSource = baseIdx.name !== -1 || companyNameIdx !== -1 || primaryAccountIdx !== -1
   if (!hasNameSource) return []
 
-  return records.slice(1).map((cells) => {
+  return records.slice(headerRowIndex + 1).map((cells) => {
     const directName = cell(cells, baseIdx.name)
     const companyName = cell(cells, companyNameIdx)
     const primaryAccount = cell(cells, primaryAccountIdx)
-    const resolvedName = [directName, companyName, primaryAccount].find((v) => v && v.trim()) || ''
+    const resolvedName = [directName, companyName, primaryAccount].find((v) => v !== undefined && !isBlankCell(v)) || ''
 
     const row: ClientCsvRow = { name: resolvedName }
 
@@ -220,7 +251,7 @@ function parseCsvRows(text: string): ClientCsvRow[] {
     }
     // A "primary account" column is the contact person even when it also
     // ended up supplying the client's display name (company name blank).
-    if (!row.contactName && primaryAccount && primaryAccount.trim()) row.contactName = primaryAccount
+    if (!row.contactName && primaryAccount && !isBlankCell(primaryAccount)) row.contactName = primaryAccount
 
     for (const key of INTAKE_FIELD_KEYS) {
       const value = cell(cells, intakeIdx[key])
@@ -229,10 +260,10 @@ function parseCsvRows(text: string): ClientCsvRow[] {
 
     const notesParts: string[] = []
     const baseNotes = cell(cells, baseIdx.notes)
-    if (baseNotes && baseNotes.trim()) notesParts.push(baseNotes.trim())
+    if (baseNotes && !isBlankCell(baseNotes)) notesParts.push(baseNotes.trim())
     NOTES_SOURCE_COLUMNS.forEach((col, i) => {
       const value = cell(cells, notesSourceIdx[i])
-      if (value && value.trim()) notesParts.push(`${col.label}: ${value.trim()}`)
+      if (value && !isBlankCell(value)) notesParts.push(`${col.label}: ${value.trim()}`)
     })
     if (notesParts.length > 0) row.notes = notesParts.join('\n')
 
@@ -255,7 +286,7 @@ function parseCsvRows(text: string): ClientCsvRow[] {
   })
 }
 
-function parseCsv(text: string): { rows: ClientCsvRow[]; sourceRowCount: number } {
+export function parseCsv(text: string): { rows: ClientCsvRow[]; sourceRowCount: number } {
   const rawRows = parseCsvRows(text)
   const collapsed = collapseRowsByClient(rawRows)
   return { rows: collapsed, sourceRowCount: rawRows.length }

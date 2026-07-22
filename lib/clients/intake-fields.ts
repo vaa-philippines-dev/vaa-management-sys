@@ -41,3 +41,17 @@ export function getIntakeFieldsForDepartment(
   }
   return DEFAULT_INTAKE_FIELDS
 }
+
+// Spreadsheets commonly use a bare "-" (or "N/A"/"none") to mean "no data
+// entered" rather than leaving the cell empty. Treating that as real data
+// would, e.g., set a client's company name to the literal text "-". Shared
+// between the CSV parser (client-side) and the import server action so a
+// placeholder is dropped consistently regardless of which layer sees it.
+const BLANK_PLACEHOLDER_VALUES = new Set(['-', '--', 'n/a', 'na', 'none', 'null', 'tbd'])
+
+export function isBlankCell(value: string | null | undefined): boolean {
+  if (!value) return true
+  const trimmed = value.trim()
+  if (!trimmed) return true
+  return BLANK_PLACEHOLDER_VALUES.has(trimmed.toLowerCase())
+}
