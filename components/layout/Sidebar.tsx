@@ -262,8 +262,13 @@ const managerRoutes = [
   { label: 'Monthly Report', href: '/reports', icon: BarChart3 },
 ]
 
+// Rendered below VA Roster inside the "Department" section. Kept out of
+// managerRoutes' render loop (below) whenever the Department section is
+// shown, so Clients/Assignments appear once, not duplicated in both places.
 const departmentRoutes = [
   { label: 'VA Roster', href: '/vas', icon: Users },
+  { label: 'Clients', href: '/clients', icon: BriefcaseBusiness },
+  { label: 'Assignments', href: '/assignments', icon: Briefcase },
   { label: 'Teams', href: '/teams', icon: UsersRound },
   { label: 'Celebrants', href: '/celebrants', icon: Calendar },
 ]
@@ -301,6 +306,11 @@ export function Sidebar({
 }) {
   const pathname = usePathname()
   const routes = role === 'VA' ? vaRoutes : managerRoutes
+  // Clients/Assignments move into the Department section (below VA Roster)
+  // once it's shown, so they aren't listed twice for the same viewer.
+  const mainRoutes = showDepartmentSection
+    ? routes.filter((r) => r.href !== '/clients' && r.href !== '/assignments')
+    : routes
   const canFavorite = role === 'MANAGER'
   const { collapsed, setCollapsed } = useSidebarCollapse()
 
@@ -412,7 +422,7 @@ export function Sidebar({
       <ScrollArea className="flex-1">
         <nav className="flex flex-col gap-px pr-1">
           <p className="px-2 pb-1 text-[10.5px] tracking-wide text-sidebar-foreground/60">Main</p>
-          {routes.map((route) => (
+          {mainRoutes.map((route) => (
             <FavoritableRow
               key={route.href}
               href={route.href}
@@ -436,6 +446,26 @@ export function Sidebar({
                 isActive={isMainRowActive('/vas', isRouteActive('/vas'))}
                 canFavorite={canFavorite}
                 favorite={favorites.find((f) => f.href === '/vas')}
+                atMax={atMax}
+                onChanged={setFavorites}
+              />
+              <FavoritableRow
+                href="/clients"
+                label="Clients"
+                icon={BriefcaseBusiness}
+                isActive={isMainRowActive('/clients', isRouteActive('/clients'))}
+                canFavorite={canFavorite}
+                favorite={favorites.find((f) => f.href === '/clients')}
+                atMax={atMax}
+                onChanged={setFavorites}
+              />
+              <FavoritableRow
+                href="/assignments"
+                label="Assignments"
+                icon={Briefcase}
+                isActive={isMainRowActive('/assignments', isRouteActive('/assignments'))}
+                canFavorite={canFavorite}
+                favorite={favorites.find((f) => f.href === '/assignments')}
                 atMax={atMax}
                 onChanged={setFavorites}
               />

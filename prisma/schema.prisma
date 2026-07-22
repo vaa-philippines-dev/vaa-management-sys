@@ -331,21 +331,21 @@ model DepartmentMembership {
 // ──────────────────────────────────────────────────────────────────
 
 model User {
-  id         String        @id @default(cuid())
-  email      String        @unique
-  firstName  String        @map("first_name")
-  middleName String?       @map("middle_name")
-  lastName   String        @map("last_name")
-  extName    String?       @map("ext_name")
-  systemRole SystemRole    @map("system_role")
-  userType   UserType      @map("user_type")
-  avatarUrl  String?       @map("avatar_url")
-  messageColor MessageColor @default(BLUE) @map("message_color")
-  status     GeneralStatus @default(ACTIVE) @map("general_status")
-  onHold     Boolean       @default(false) @map("on_hold")
-  isActive   Boolean       @default(true) @map("is_active")
-  createdAt  DateTime      @default(now()) @map("created_at")
-  updatedAt  DateTime      @updatedAt @map("updated_at")
+  id           String        @id @default(cuid())
+  email        String        @unique
+  firstName    String        @map("first_name")
+  middleName   String?       @map("middle_name")
+  lastName     String        @map("last_name")
+  extName      String?       @map("ext_name")
+  systemRole   SystemRole    @map("system_role")
+  userType     UserType      @map("user_type")
+  avatarUrl    String?       @map("avatar_url")
+  messageColor MessageColor  @default(BLUE) @map("message_color")
+  status       GeneralStatus @default(ACTIVE) @map("general_status")
+  onHold       Boolean       @default(false) @map("on_hold")
+  isActive     Boolean       @default(true) @map("is_active")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
 
   profile                    UserProfile?
   vaProfile                  VAProfile?
@@ -370,12 +370,12 @@ model User {
   messages                   Message[]
   messageMentions            MessageMention[]
   channelReads               ChannelRead[]
-  pinnedMessages              Message[]              @relation("MessagePinnedBy")
-  channelParticipants         ChannelParticipant[]
+  pinnedMessages             Message[]              @relation("MessagePinnedBy")
+  channelParticipants        ChannelParticipant[]
   ledTeams                   Team[]                 @relation("TeamLeader")
-  tempLedTeams1               Team[]                 @relation("TeamTempLeader1")
-  tempLedTeams2               Team[]                 @relation("TeamTempLeader2")
-  teamMemberships             TeamMembership[]       @relation("TeamMember")
+  tempLedTeams1              Team[]                 @relation("TeamTempLeader1")
+  tempLedTeams2              Team[]                 @relation("TeamTempLeader2")
+  teamMemberships            TeamMembership[]       @relation("TeamMember")
 
   @@index([email])
   @@index([systemRole])
@@ -554,9 +554,9 @@ model Skill {
   createdAt      DateTime      @default(now()) @map("created_at")
   updatedAt      DateTime      @updatedAt @map("updated_at")
 
-  vaSkills        VASkill[]
-  departments     DepartmentSkill[]
-  positionForVAs  VAProfile[]
+  vaSkills       VASkill[]
+  departments    DepartmentSkill[]
+  positionForVAs VAProfile[]
 
   @@map("skills")
 }
@@ -652,7 +652,9 @@ model Client {
   departmentId        String?        @map("department_id")
   department          Department?    @relation(fields: [departmentId], references: [id], onDelete: SetNull)
   onboardingFolderUrl String?        @map("onboarding_folder_url")
+  website             String?
   requiredSkills      String[]       @map("required_skills")
+  intakeDetails       Json?          @map("intake_details")
   createdAt           DateTime       @default(now()) @map("created_at")
   updatedAt           DateTime       @updatedAt @map("updated_at")
 
@@ -801,14 +803,14 @@ model ChannelParticipant {
 }
 
 model Message {
-  id        String   @id @default(cuid())
-  channelId String   @map("channel_id")
-  channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
-  senderId  String   @map("sender_id")
-  sender    User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  id        String           @id @default(cuid())
+  channelId String           @map("channel_id")
+  channel   Channel          @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  senderId  String           @map("sender_id")
+  sender    User             @relation(fields: [senderId], references: [id], onDelete: Cascade)
   body      String
   mentions  MessageMention[]
-  createdAt DateTime @default(now()) @map("created_at")
+  createdAt DateTime         @default(now()) @map("created_at")
 
   editedAt  DateTime? @map("edited_at")
   deletedAt DateTime? @map("deleted_at")
@@ -833,12 +835,12 @@ model Message {
 }
 
 model MessageMention {
-  id            String   @id @default(cuid())
-  messageId     String   @map("message_id")
-  message       Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
-  mentionedUserId String @map("mentioned_user_id")
-  mentionedUser User     @relation(fields: [mentionedUserId], references: [id], onDelete: Cascade)
-  createdAt     DateTime @default(now()) @map("created_at")
+  id              String   @id @default(cuid())
+  messageId       String   @map("message_id")
+  message         Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  mentionedUserId String   @map("mentioned_user_id")
+  mentionedUser   User     @relation(fields: [mentionedUserId], references: [id], onDelete: Cascade)
+  createdAt       DateTime @default(now()) @map("created_at")
 
   @@index([mentionedUserId])
   @@map("message_mentions")
@@ -938,20 +940,20 @@ model VAConnectionRecord {
 }
 
 model Notification {
-  id             String           @id @default(cuid())
-  recipientId    String           @map("recipient_id")
-  recipient      User             @relation(fields: [recipientId], references: [id], onDelete: Cascade)
-  type           NotificationType
-  title          String
-  message        String
-  entityType     String?          @map("entity_type")
-  entityId       String?          @map("entity_id")
-  messageId          String? @map("message_id")
-  mentionerName      String? @map("mentioner_name")
-  mentionerAvatarUrl String? @map("mentioner_avatar_url")
-  departmentName     String? @map("department_name")
-  read           Boolean          @default(false)
-  createdAt      DateTime         @default(now()) @map("created_at")
+  id                 String           @id @default(cuid())
+  recipientId        String           @map("recipient_id")
+  recipient          User             @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  type               NotificationType
+  title              String
+  message            String
+  entityType         String?          @map("entity_type")
+  entityId           String?          @map("entity_id")
+  messageId          String?          @map("message_id")
+  mentionerName      String?          @map("mentioner_name")
+  mentionerAvatarUrl String?          @map("mentioner_avatar_url")
+  departmentName     String?          @map("department_name")
+  read               Boolean          @default(false)
+  createdAt          DateTime         @default(now()) @map("created_at")
 
   @@index([recipientId, read, createdAt])
   @@map("notifications")
@@ -995,25 +997,25 @@ model SidebarFavorite {
 // ──────────────────────────────────────────────────────────────────
 
 model Team {
-  id            String        @id @default(cuid())
-  name          String
-  departmentId  String        @map("department_id")
-  department    Department    @relation("DepartmentTeams", fields: [departmentId], references: [id], onDelete: Cascade)
+  id           String     @id @default(cuid())
+  name         String
+  departmentId String     @map("department_id")
+  department   Department @relation("DepartmentTeams", fields: [departmentId], references: [id], onDelete: Cascade)
 
-  leaderId      String?       @map("leader_id")
-  leader        User?         @relation("TeamLeader", fields: [leaderId], references: [id], onDelete: SetNull)
-  tempLeader1Id String?       @map("temp_leader1_id")
-  tempLeader1   User?         @relation("TeamTempLeader1", fields: [tempLeader1Id], references: [id], onDelete: SetNull)
-  tempLeader2Id String?       @map("temp_leader2_id")
-  tempLeader2   User?         @relation("TeamTempLeader2", fields: [tempLeader2Id], references: [id], onDelete: SetNull)
+  leaderId      String? @map("leader_id")
+  leader        User?   @relation("TeamLeader", fields: [leaderId], references: [id], onDelete: SetNull)
+  tempLeader1Id String? @map("temp_leader1_id")
+  tempLeader1   User?   @relation("TeamTempLeader1", fields: [tempLeader1Id], references: [id], onDelete: SetNull)
+  tempLeader2Id String? @map("temp_leader2_id")
+  tempLeader2   User?   @relation("TeamTempLeader2", fields: [tempLeader2Id], references: [id], onDelete: SetNull)
 
-  status        GeneralStatus @default(ACTIVE) @map("general_status")
-  onHold        Boolean       @default(false) @map("on_hold")
-  isActive      Boolean       @default(true) @map("is_active")
-  createdAt     DateTime      @default(now()) @map("created_at")
-  updatedAt     DateTime      @updatedAt @map("updated_at")
+  status    GeneralStatus @default(ACTIVE) @map("general_status")
+  onHold    Boolean       @default(false) @map("on_hold")
+  isActive  Boolean       @default(true) @map("is_active")
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
 
-  memberships   TeamMembership[]
+  memberships TeamMembership[]
 
   @@unique([name, departmentId])
   @@index([departmentId])

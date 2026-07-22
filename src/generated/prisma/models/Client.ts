@@ -40,6 +40,7 @@ export type ClientMinAggregateOutputType = {
   managerId: string | null
   departmentId: string | null
   onboardingFolderUrl: string | null
+  website: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -60,6 +61,7 @@ export type ClientMaxAggregateOutputType = {
   managerId: string | null
   departmentId: string | null
   onboardingFolderUrl: string | null
+  website: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -80,7 +82,9 @@ export type ClientCountAggregateOutputType = {
   managerId: number
   departmentId: number
   onboardingFolderUrl: number
+  website: number
   requiredSkills: number
+  intakeDetails: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -103,6 +107,7 @@ export type ClientMinAggregateInputType = {
   managerId?: true
   departmentId?: true
   onboardingFolderUrl?: true
+  website?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -123,6 +128,7 @@ export type ClientMaxAggregateInputType = {
   managerId?: true
   departmentId?: true
   onboardingFolderUrl?: true
+  website?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -143,7 +149,9 @@ export type ClientCountAggregateInputType = {
   managerId?: true
   departmentId?: true
   onboardingFolderUrl?: true
+  website?: true
   requiredSkills?: true
+  intakeDetails?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -237,7 +245,9 @@ export type ClientGroupByOutputType = {
   managerId: string | null
   departmentId: string | null
   onboardingFolderUrl: string | null
+  website: string | null
   requiredSkills: string[]
+  intakeDetails: runtime.JsonValue | null
   createdAt: Date
   updatedAt: Date
   _count: ClientCountAggregateOutputType | null
@@ -279,7 +289,9 @@ export type ClientWhereInput = {
   managerId?: Prisma.StringNullableFilter<"Client"> | string | null
   departmentId?: Prisma.StringNullableFilter<"Client"> | string | null
   onboardingFolderUrl?: Prisma.StringNullableFilter<"Client"> | string | null
+  website?: Prisma.StringNullableFilter<"Client"> | string | null
   requiredSkills?: Prisma.StringNullableListFilter<"Client">
+  intakeDetails?: Prisma.JsonNullableFilter<"Client">
   createdAt?: Prisma.DateTimeFilter<"Client"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Client"> | Date | string
   manager?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -304,7 +316,9 @@ export type ClientOrderByWithRelationInput = {
   managerId?: Prisma.SortOrderInput | Prisma.SortOrder
   departmentId?: Prisma.SortOrderInput | Prisma.SortOrder
   onboardingFolderUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  website?: Prisma.SortOrderInput | Prisma.SortOrder
   requiredSkills?: Prisma.SortOrder
+  intakeDetails?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   manager?: Prisma.UserOrderByWithRelationInput
@@ -332,7 +346,9 @@ export type ClientWhereUniqueInput = Prisma.AtLeast<{
   managerId?: Prisma.StringNullableFilter<"Client"> | string | null
   departmentId?: Prisma.StringNullableFilter<"Client"> | string | null
   onboardingFolderUrl?: Prisma.StringNullableFilter<"Client"> | string | null
+  website?: Prisma.StringNullableFilter<"Client"> | string | null
   requiredSkills?: Prisma.StringNullableListFilter<"Client">
+  intakeDetails?: Prisma.JsonNullableFilter<"Client">
   createdAt?: Prisma.DateTimeFilter<"Client"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Client"> | Date | string
   manager?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -357,7 +373,9 @@ export type ClientOrderByWithAggregationInput = {
   managerId?: Prisma.SortOrderInput | Prisma.SortOrder
   departmentId?: Prisma.SortOrderInput | Prisma.SortOrder
   onboardingFolderUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  website?: Prisma.SortOrderInput | Prisma.SortOrder
   requiredSkills?: Prisma.SortOrder
+  intakeDetails?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ClientCountOrderByAggregateInput
@@ -384,7 +402,9 @@ export type ClientScalarWhereWithAggregatesInput = {
   managerId?: Prisma.StringNullableWithAggregatesFilter<"Client"> | string | null
   departmentId?: Prisma.StringNullableWithAggregatesFilter<"Client"> | string | null
   onboardingFolderUrl?: Prisma.StringNullableWithAggregatesFilter<"Client"> | string | null
+  website?: Prisma.StringNullableWithAggregatesFilter<"Client"> | string | null
   requiredSkills?: Prisma.StringNullableListFilter<"Client">
+  intakeDetails?: Prisma.JsonNullableWithAggregatesFilter<"Client">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Client"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Client"> | Date | string
 }
@@ -403,7 +423,9 @@ export type ClientCreateInput = {
   onHold?: boolean
   isActive?: boolean
   onboardingFolderUrl?: string | null
+  website?: string | null
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   manager?: Prisma.UserCreateNestedOneWithoutManagedClientsInput
@@ -428,7 +450,9 @@ export type ClientUncheckedCreateInput = {
   managerId?: string | null
   departmentId?: string | null
   onboardingFolderUrl?: string | null
+  website?: string | null
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClientInput
@@ -449,7 +473,9 @@ export type ClientUpdateInput = {
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   manager?: Prisma.UserUpdateOneWithoutManagedClientsNestedInput
@@ -474,7 +500,9 @@ export type ClientUncheckedUpdateInput = {
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClientNestedInput
@@ -497,7 +525,9 @@ export type ClientCreateManyInput = {
   managerId?: string | null
   departmentId?: string | null
   onboardingFolderUrl?: string | null
+  website?: string | null
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -516,7 +546,9 @@ export type ClientUpdateManyMutationInput = {
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -537,7 +569,9 @@ export type ClientUncheckedUpdateManyInput = {
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -568,7 +602,9 @@ export type ClientCountOrderByAggregateInput = {
   managerId?: Prisma.SortOrder
   departmentId?: Prisma.SortOrder
   onboardingFolderUrl?: Prisma.SortOrder
+  website?: Prisma.SortOrder
   requiredSkills?: Prisma.SortOrder
+  intakeDetails?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -589,6 +625,7 @@ export type ClientMaxOrderByAggregateInput = {
   managerId?: Prisma.SortOrder
   departmentId?: Prisma.SortOrder
   onboardingFolderUrl?: Prisma.SortOrder
+  website?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -609,6 +646,7 @@ export type ClientMinOrderByAggregateInput = {
   managerId?: Prisma.SortOrder
   departmentId?: Prisma.SortOrder
   onboardingFolderUrl?: Prisma.SortOrder
+  website?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -764,7 +802,9 @@ export type ClientCreateWithoutDepartmentInput = {
   onHold?: boolean
   isActive?: boolean
   onboardingFolderUrl?: string | null
+  website?: string | null
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   manager?: Prisma.UserCreateNestedOneWithoutManagedClientsInput
@@ -787,7 +827,9 @@ export type ClientUncheckedCreateWithoutDepartmentInput = {
   isActive?: boolean
   managerId?: string | null
   onboardingFolderUrl?: string | null
+  website?: string | null
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClientInput
@@ -839,7 +881,9 @@ export type ClientScalarWhereInput = {
   managerId?: Prisma.StringNullableFilter<"Client"> | string | null
   departmentId?: Prisma.StringNullableFilter<"Client"> | string | null
   onboardingFolderUrl?: Prisma.StringNullableFilter<"Client"> | string | null
+  website?: Prisma.StringNullableFilter<"Client"> | string | null
   requiredSkills?: Prisma.StringNullableListFilter<"Client">
+  intakeDetails?: Prisma.JsonNullableFilter<"Client">
   createdAt?: Prisma.DateTimeFilter<"Client"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Client"> | Date | string
 }
@@ -858,7 +902,9 @@ export type ClientCreateWithoutManagerInput = {
   onHold?: boolean
   isActive?: boolean
   onboardingFolderUrl?: string | null
+  website?: string | null
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutClientsInput
@@ -881,7 +927,9 @@ export type ClientUncheckedCreateWithoutManagerInput = {
   isActive?: boolean
   departmentId?: string | null
   onboardingFolderUrl?: string | null
+  website?: string | null
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClientInput
@@ -928,7 +976,9 @@ export type ClientCreateWithoutAssignmentsInput = {
   onHold?: boolean
   isActive?: boolean
   onboardingFolderUrl?: string | null
+  website?: string | null
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   manager?: Prisma.UserCreateNestedOneWithoutManagedClientsInput
@@ -952,7 +1002,9 @@ export type ClientUncheckedCreateWithoutAssignmentsInput = {
   managerId?: string | null
   departmentId?: string | null
   onboardingFolderUrl?: string | null
+  website?: string | null
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutClientInput
@@ -988,7 +1040,9 @@ export type ClientUpdateWithoutAssignmentsInput = {
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   manager?: Prisma.UserUpdateOneWithoutManagedClientsNestedInput
@@ -1012,7 +1066,9 @@ export type ClientUncheckedUpdateWithoutAssignmentsInput = {
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutClientNestedInput
@@ -1032,7 +1088,9 @@ export type ClientCreateWithoutTicketsInput = {
   onHold?: boolean
   isActive?: boolean
   onboardingFolderUrl?: string | null
+  website?: string | null
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   manager?: Prisma.UserCreateNestedOneWithoutManagedClientsInput
@@ -1056,7 +1114,9 @@ export type ClientUncheckedCreateWithoutTicketsInput = {
   managerId?: string | null
   departmentId?: string | null
   onboardingFolderUrl?: string | null
+  website?: string | null
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClientInput
@@ -1092,7 +1152,9 @@ export type ClientUpdateWithoutTicketsInput = {
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   manager?: Prisma.UserUpdateOneWithoutManagedClientsNestedInput
@@ -1116,7 +1178,9 @@ export type ClientUncheckedUpdateWithoutTicketsInput = {
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClientNestedInput
@@ -1137,7 +1201,9 @@ export type ClientCreateManyDepartmentInput = {
   isActive?: boolean
   managerId?: string | null
   onboardingFolderUrl?: string | null
+  website?: string | null
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1156,7 +1222,9 @@ export type ClientUpdateWithoutDepartmentInput = {
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   manager?: Prisma.UserUpdateOneWithoutManagedClientsNestedInput
@@ -1179,7 +1247,9 @@ export type ClientUncheckedUpdateWithoutDepartmentInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClientNestedInput
@@ -1201,7 +1271,9 @@ export type ClientUncheckedUpdateManyWithoutDepartmentInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1221,7 +1293,9 @@ export type ClientCreateManyManagerInput = {
   isActive?: boolean
   departmentId?: string | null
   onboardingFolderUrl?: string | null
+  website?: string | null
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1240,7 +1314,9 @@ export type ClientUpdateWithoutManagerInput = {
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutClientsNestedInput
@@ -1263,7 +1339,9 @@ export type ClientUncheckedUpdateWithoutManagerInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClientNestedInput
@@ -1285,7 +1363,9 @@ export type ClientUncheckedUpdateManyWithoutManagerInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1346,7 +1426,9 @@ export type ClientSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   managerId?: boolean
   departmentId?: boolean
   onboardingFolderUrl?: boolean
+  website?: boolean
   requiredSkills?: boolean
+  intakeDetails?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   manager?: boolean | Prisma.Client$managerArgs<ExtArgs>
@@ -1372,7 +1454,9 @@ export type ClientSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   managerId?: boolean
   departmentId?: boolean
   onboardingFolderUrl?: boolean
+  website?: boolean
   requiredSkills?: boolean
+  intakeDetails?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   manager?: boolean | Prisma.Client$managerArgs<ExtArgs>
@@ -1395,7 +1479,9 @@ export type ClientSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   managerId?: boolean
   departmentId?: boolean
   onboardingFolderUrl?: boolean
+  website?: boolean
   requiredSkills?: boolean
+  intakeDetails?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   manager?: boolean | Prisma.Client$managerArgs<ExtArgs>
@@ -1418,12 +1504,14 @@ export type ClientSelectScalar = {
   managerId?: boolean
   departmentId?: boolean
   onboardingFolderUrl?: boolean
+  website?: boolean
   requiredSkills?: boolean
+  intakeDetails?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ClientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "contactName" | "contactEmail" | "contactPhone" | "platform" | "industry" | "timezone" | "notes" | "status" | "onHold" | "isActive" | "managerId" | "departmentId" | "onboardingFolderUrl" | "requiredSkills" | "createdAt" | "updatedAt", ExtArgs["result"]["client"]>
+export type ClientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "contactName" | "contactEmail" | "contactPhone" | "platform" | "industry" | "timezone" | "notes" | "status" | "onHold" | "isActive" | "managerId" | "departmentId" | "onboardingFolderUrl" | "website" | "requiredSkills" | "intakeDetails" | "createdAt" | "updatedAt", ExtArgs["result"]["client"]>
 export type ClientInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   manager?: boolean | Prisma.Client$managerArgs<ExtArgs>
   department?: boolean | Prisma.Client$departmentArgs<ExtArgs>
@@ -1464,7 +1552,9 @@ export type $ClientPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     managerId: string | null
     departmentId: string | null
     onboardingFolderUrl: string | null
+    website: string | null
     requiredSkills: string[]
+    intakeDetails: runtime.JsonValue | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["client"]>
@@ -1909,7 +1999,9 @@ export interface ClientFieldRefs {
   readonly managerId: Prisma.FieldRef<"Client", 'String'>
   readonly departmentId: Prisma.FieldRef<"Client", 'String'>
   readonly onboardingFolderUrl: Prisma.FieldRef<"Client", 'String'>
+  readonly website: Prisma.FieldRef<"Client", 'String'>
   readonly requiredSkills: Prisma.FieldRef<"Client", 'String[]'>
+  readonly intakeDetails: Prisma.FieldRef<"Client", 'Json'>
   readonly createdAt: Prisma.FieldRef<"Client", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Client", 'DateTime'>
 }

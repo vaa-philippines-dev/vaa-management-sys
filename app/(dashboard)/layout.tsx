@@ -5,9 +5,13 @@ import { SidebarCollapseProvider } from '@/components/layout/SidebarCollapseCont
 import { VACsvImportProvider } from '@/components/vas/VACsvImportContext'
 import { VACsvImportFloatingWidget } from '@/components/vas/VACsvImportFloatingWidget'
 import { ImportVACsvModal } from '@/components/vas/ImportVACsvModal'
-import { getCurrentUser } from '@/lib/auth'
+import { ClientCsvImportProvider } from '@/components/clients/ClientCsvImportContext'
+import { ClientCsvImportFloatingWidget } from '@/components/clients/ClientCsvImportFloatingWidget'
+import { ImportClientCsvModal } from '@/components/clients/ImportClientCsvModal'
+import { getCurrentUser, CLIENT_MUTATOR_ROLES } from '@/lib/auth'
 import { getSidebarFavorites } from '@/lib/favorites'
 import { isTeamAffiliated } from '@/lib/teams'
+import { prisma } from '@/lib/prisma'
 
 export default async function DashboardLayout({
   children,
@@ -27,23 +31,40 @@ export default async function DashboardLayout({
     isManagerDeptRole ||
     (user?.userType === 'VIRTUAL_ASSISTANT' ? await isTeamAffiliated(user.id) : false)
 
+  const canImportClients = user ? CLIENT_MUTATOR_ROLES.includes(user.systemRole) : false
+  const serviceDepartments = canImportClients
+    ? await prisma.department.findMany({
+        where: { level: 'SERVICE', status: 'ACTIVE' },
+        select: { id: true, name: true, shortName: true, acronym: true },
+        orderBy: { sortOrder: 'asc' },
+      })
+    : []
+
   return (
     <RealtimeProvider>
       <SidebarCollapseProvider>
         <VACsvImportProvider>
-          <div className="flex h-screen bg-background">
-            <Sidebar role={role} isAdmin={isAdmin} initialFavorites={favorites} showDepartmentSection={showDepartmentSection} />
-            <div className="flex flex-1 flex-col overflow-hidden">
-              <Navbar />
-              <main className="flex-1 overflow-auto p-6 has-[[data-inbox-page]]:overflow-hidden has-[[data-inbox-page]]:p-0">
-                <div className="mx-auto max-w-7xl has-[[data-inbox-page]]:h-full has-[[data-inbox-page]]:max-w-none has-[[data-wide-page]]:max-w-none">
-                  {children}
-                </div>
-              </main>
+          <ClientCsvImportProvider>
+            <div className="flex h-screen bg-background">
+              <Sidebar role={role} isAdmin={isAdmin} initialFavorites={favorites} showDepartmentSection={showDepartmentSection} />
+              <div className="flex flex-1 flex-col overflow-hidden">
+                <Navbar />
+                <main className="flex-1 overflow-auto p-6 has-[[data-inbox-page]]:overflow-hidden has-[[data-inbox-page]]:p-0">
+                  <div className="mx-auto max-w-7xl has-[[data-inbox-page]]:h-full has-[[data-inbox-page]]:max-w-none has-[[data-wide-page]]:max-w-none">
+                    {children}
+                  </div>
+                </main>
+              </div>
             </div>
-          </div>
-          <VACsvImportFloatingWidget />
-          <ImportVACsvModal />
+            <VACsvImportFloatingWidget />
+            <ImportVACsvModal />
+            {canImportClients && (
+              <>
+                <ClientCsvImportFloatingWidget />
+                <ImportClientCsvModal departments={serviceDepartments} />
+              </>
+            )}
+          </ClientCsvImportProvider>
         </VACsvImportProvider>
       </SidebarCollapseProvider>
     </RealtimeProvider>

@@ -405,7 +405,9 @@ export const ClientScalarFieldEnum = {
   managerId: 'managerId',
   departmentId: 'departmentId',
   onboardingFolderUrl: 'onboardingFolderUrl',
+  website: 'website',
   requiredSkills: 'requiredSkills',
+  intakeDetails: 'intakeDetails',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
