@@ -8,6 +8,7 @@ import { isServiceLevel, DepartmentValidationError } from '@/lib/departments'
 import { requireRole, CLIENT_MUTATOR_ROLES } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
 import { getIntakeFieldsForDepartment, type IntakeFieldKey } from '@/lib/clients/intake-fields'
+import { CLIENT_STATUS_LABEL } from '@/lib/clients/display'
 
 export async function createClient(formData: FormData) {
   const actor = await requireRole(...CLIENT_MUTATOR_ROLES)
@@ -62,10 +63,17 @@ export async function updateClient(id: string, formData: FormData) {
   const name = formData.get('name') as string
   const contactName = (formData.get('contactName') as string) || null
   const contactEmail = (formData.get('contactEmail') as string) || null
+  const contactPhone = (formData.get('contactPhone') as string) || null
   const platform = (formData.get('platform') as string) || 'MULTI'
   const industry = (formData.get('industry') as string) || null
+  const timezone = (formData.get('timezone') as string) || null
+  const website = (formData.get('website') as string) || null
   const notes = (formData.get('notes') as string) || null
   const isActive = formData.get('isActive') === 'on'
+  const onHold = formData.get('onHold') === 'on'
+  const statusRaw = formData.get('status') as string | null
+  const status = statusRaw && statusRaw in CLIENT_STATUS_LABEL ? statusRaw : undefined
+  const managerId = (formData.get('managerId') as string) || null
   const departmentId = (formData.get('departmentId') as string) || null
   const skills = (formData.getAll('requiredSkills') as string[]).filter(Boolean)
 
@@ -78,7 +86,7 @@ export async function updateClient(id: string, formData: FormData) {
 
   const before = await prisma.client.findUnique({
     where: { id },
-    select: { name: true, contactName: true, contactEmail: true, platform: true, industry: true, isActive: true, departmentId: true },
+    select: { name: true, contactName: true, contactEmail: true, contactPhone: true, platform: true, industry: true, timezone: true, website: true, isActive: true, onHold: true, status: true, managerId: true, departmentId: true },
   })
 
   await prisma.client.update({
@@ -87,10 +95,16 @@ export async function updateClient(id: string, formData: FormData) {
       name,
       contactName,
       contactEmail,
+      contactPhone,
       platform: platform as any,
       industry,
+      timezone,
+      website,
       notes,
       isActive,
+      onHold,
+      ...(status ? { status: status as any } : {}),
+      managerId,
       departmentId: departmentId || null,
       requiredSkills: skills,
     },
@@ -102,15 +116,48 @@ export async function updateClient(id: string, formData: FormData) {
     entityType: 'Client',
     entityId: id,
     before: before ? { ...before } : undefined,
-    after: { name, contactName, contactEmail, platform, industry, isActive, departmentId },
+    after: { name, contactName, contactEmail, contactPhone, platform, industry, timezone, website, isActive, onHold, status, managerId, departmentId },
   })
 
   revalidatePath('/clients')
-  revalidateTag(CACHE_TAGS.clients, 'default')
   revalidatePath(`/clients/${id}`)
+  revalidatePath('/admin/clients')
   revalidateTag(CACHE_TAGS.clients, 'default')
 }
 
+// Kept separate from updateClient so a table row's name can be edited
+// inline without opening the full edit form — mirrors renameTeam's pattern.
+export async function renameClient(id: string, name: string) {
+  const actor = await requireRole(...CLIENT_MUTATOR_ROLES)
+
+  const trimmed = name.trim()
+  if (!trimmed) throw new Error('Client name is required')
+
+  const before = await prisma.client.findUnique({ where: { id }, select: { name: true } })
+  if (!before) throw new Error('Client not found')
+  if (trimmed === before.name) return
+
+  await prisma.client.update({ where: { id }, data: { name: trimmed } })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'UPDATE',
+    entityType: 'Client',
+    entityId: id,
+    before: { name: before.name },
+    after: { name: trimmed },
+  })
+
+  revalidatePath('/clients')
+  revalidatePath(`/clients/${id}`)
+  revalidatePath('/admin/clients')
+  revalidateTag(CACHE_TAGS.clients, 'default')
+}
+
+// No caller currently redirects to /clients after deleting — the admin
+// table calls this directly and refreshes itself, so this intentionally
+// doesn't redirect (unlike createClient, which still lands on the new
+// client's detail page from the standalone /clients/new form).
 export async function deleteClient(id: string) {
   const actor = await requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN')
 
@@ -127,8 +174,8 @@ export async function deleteClient(id: string) {
   })
 
   revalidatePath('/clients')
+  revalidatePath('/admin/clients')
   revalidateTag(CACHE_TAGS.clients, 'default')
-  redirect('/clients')
 }
 
 // A CSV import is always scoped to one department at a time (the admin
