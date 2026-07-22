@@ -65,13 +65,6 @@ export function ClientAdminRow({
             <span className="font-medium">{client.name}</span>
           )}
         </TableCell>
-        <TableCell className="px-3 py-2 hidden md:table-cell">
-          {client.department ? (
-            <Badge variant="outline" className="text-[10px] py-0 px-1.5">{client.department.name}</Badge>
-          ) : (
-            <span className="text-muted-foreground/50">—</span>
-          )}
-        </TableCell>
         <TableCell className="px-3 py-2">
           <Badge variant="outline" className={`text-[10px] py-0 px-1.5 ${CLIENT_PLATFORM_META[client.platform]?.color ?? ''}`}>
             {CLIENT_PLATFORM_META[client.platform]?.label ?? client.platform}

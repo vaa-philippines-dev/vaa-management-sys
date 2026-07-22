@@ -39,18 +39,28 @@ export function ClientNameEditor({ clientId, name }: { clientId: string; name: s
 
   if (!editing) {
     return (
-      <button
-        type="button"
-        onClick={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          setEditing(true)
-        }}
-        className="group flex items-center gap-1.5 text-left font-medium"
-      >
-        {name}
-        <Pencil className="h-3 w-3 text-muted-foreground/0 group-hover:text-muted-foreground transition-colors shrink-0" />
-      </button>
+      // Fixed narrow width keeps the column compact; on hover, a solid-background
+      // overlay pops out on top of whatever's underneath (including the next
+      // column) to show the full name, rather than the column itself growing and
+      // pushing the rest of the row around.
+      <div className="group/name relative w-[110px]">
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            setEditing(true)
+          }}
+          className="flex w-full items-center gap-1 text-left font-medium"
+        >
+          <span className="truncate">{name}</span>
+          <Pencil className="h-3 w-3 text-muted-foreground/0 group-hover/name:text-muted-foreground transition-colors shrink-0" />
+        </button>
+
+        <div className="pointer-events-none absolute left-0 top-1/2 z-20 hidden max-w-[320px] -translate-y-1/2 items-center whitespace-nowrap rounded-md border bg-popover px-2 py-1 font-medium text-popover-foreground shadow-md group-hover/name:flex">
+          {name}
+        </div>
+      </div>
     )
   }
 
