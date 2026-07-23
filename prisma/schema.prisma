@@ -653,8 +653,15 @@ model Client {
   department          Department?    @relation(fields: [departmentId], references: [id], onDelete: SetNull)
   onboardingFolderUrl String?        @map("onboarding_folder_url")
   website             String?
+  requestType         String?        @map("request_type")
+  businessModel       String?        @map("business_model")
+  serviceType         String?        @map("service_type")
+  secondaryContact    String?        @map("secondary_contact")
+  meetingDate         DateTime?      @map("meeting_date")
+  targetStartDate     DateTime?      @map("target_start_date")
   requiredSkills      String[]       @map("required_skills")
   intakeDetails       Json?          @map("intake_details")
+  formDetails         Json?          @map("form_details")
   createdAt           DateTime       @default(now()) @map("created_at")
   updatedAt           DateTime       @updatedAt @map("updated_at")
 

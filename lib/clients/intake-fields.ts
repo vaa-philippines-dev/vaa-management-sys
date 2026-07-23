@@ -11,6 +11,12 @@ export const INTAKE_FIELD_CATALOG = {
   campaignBackground: { label: 'Campaign Background', type: 'textarea' },
   goals: { label: 'Goals', type: 'textarea' },
   advertisingBudget: { label: 'Advertising Budget', type: 'currency' },
+  accountPhase: {
+    label: 'Account Phase',
+    type: 'checkbox-group',
+    options: ['Launch Phase', 'Maintenance Phase', 'Liquidation Phase', 'Scaling Phase'],
+  },
+  assets: { label: 'Assets', type: 'textarea' },
 } as const
 
 export type IntakeFieldKey = keyof typeof INTAKE_FIELD_CATALOG
@@ -20,26 +26,37 @@ export type IntakeFieldKey = keyof typeof INTAKE_FIELD_CATALOG
 // department lookups can match on any of them.
 export const DEPARTMENT_INTAKE_FIELDS: Record<string, IntakeFieldKey[]> = {
   amazon: ['accountBackground', 'goals'],
-  ppc: ['accountBackground', 'campaignBackground', 'goals', 'advertisingBudget'],
-  wholesale: ['accountBackground'],
+  wholesale: ['accountBackground', 'goals'],
+  'social media': ['accountBackground', 'goals'],
+  walmart: ['accountBackground', 'goals'],
+  'executive assistant': ['accountBackground', 'goals'],
+  ppc: ['accountBackground', 'campaignBackground', 'goals', 'advertisingBudget', 'accountPhase'],
+  creatives: ['accountBackground', 'goals', 'assets'],
 }
 
 export const DEFAULT_INTAKE_FIELDS: IntakeFieldKey[] = ['accountBackground', 'goals']
 
-function normalizeDeptKey(key: string): string {
+export function normalizeDeptKey(key: string): string {
   return key.trim().toLowerCase()
+}
+
+export function matchDepartmentConfig<T>(
+  configByDept: Record<string, T>,
+  dept: { name?: string | null; shortName?: string | null; acronym?: string | null } | null | undefined
+): T | undefined {
+  if (!dept) return undefined
+  const candidates = [dept.name, dept.shortName, dept.acronym].filter(Boolean) as string[]
+  for (const candidate of candidates) {
+    const match = configByDept[normalizeDeptKey(candidate)]
+    if (match) return match
+  }
+  return undefined
 }
 
 export function getIntakeFieldsForDepartment(
   dept: { name?: string | null; shortName?: string | null; acronym?: string | null } | null | undefined
 ): IntakeFieldKey[] {
-  if (!dept) return DEFAULT_INTAKE_FIELDS
-  const candidates = [dept.name, dept.shortName, dept.acronym].filter(Boolean) as string[]
-  for (const candidate of candidates) {
-    const match = DEPARTMENT_INTAKE_FIELDS[normalizeDeptKey(candidate)]
-    if (match) return match
-  }
-  return DEFAULT_INTAKE_FIELDS
+  return matchDepartmentConfig(DEPARTMENT_INTAKE_FIELDS, dept) ?? DEFAULT_INTAKE_FIELDS
 }
 
 // Spreadsheets commonly use a bare "-" (or "N/A"/"none") to mean "no data

@@ -7,8 +7,36 @@ import { redirect } from 'next/navigation'
 import { isServiceLevel, DepartmentValidationError } from '@/lib/departments'
 import { requireRole, CLIENT_MUTATOR_ROLES } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
-import { getIntakeFieldsForDepartment, type IntakeFieldKey } from '@/lib/clients/intake-fields'
+import { getIntakeFieldsForDepartment, INTAKE_FIELD_CATALOG, type IntakeFieldKey } from '@/lib/clients/intake-fields'
 import { CLIENT_STATUS_LABEL } from '@/lib/clients/display'
+
+// Everything here is a free-text field shared across most departments'
+// intake forms (Customer/Company/Other Information categories) that isn't
+// worth its own Client column — collected into Client.formDetails instead.
+// Keyed identically to the form's input `name` so no key-mapping is needed.
+const FORM_DETAIL_KEYS = [
+  'companyBackground', 'brands', 'brandOwnership', 'brandRegistration',
+  'productNiche', 'productLinks', 'marketplace', 'dailyTasks', 'tools',
+  'scheduleType', 'scheduleDays', 'averageWorkHours', 'scheduleNotes', 'vaRequirements',
+] as const
+
+function buildFormDetails(formData: FormData): Record<string, string> | undefined {
+  const details: Record<string, string> = {}
+  for (const key of FORM_DETAIL_KEYS) {
+    const value = (formData.get(key) as string) || ''
+    if (value.trim()) details[key] = value.trim()
+  }
+  const vaConnectionDate = formData.get('vaConnectionDate') as string
+  if (vaConnectionDate) details.vaConnectionDate = vaConnectionDate
+  return Object.keys(details).length > 0 ? details : undefined
+}
+
+function parseDateField(formData: FormData, key: string): Date | undefined {
+  const value = formData.get(key) as string
+  if (!value) return undefined
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? undefined : date
+}
 
 export async function createClient(formData: FormData) {
   const actor = await requireRole(...CLIENT_MUTATOR_ROLES)
@@ -16,18 +44,37 @@ export async function createClient(formData: FormData) {
   const name = formData.get('name') as string
   const contactName = (formData.get('contactName') as string) || null
   const contactEmail = (formData.get('contactEmail') as string) || null
+  const contactPhone = (formData.get('contactPhone') as string) || null
+  const secondaryContact = (formData.get('secondaryContact') as string) || null
   const platform = (formData.get('platform') as string) || 'MULTI'
   const industry = (formData.get('industry') as string) || null
+  const timezone = (formData.get('timezone') as string) || null
+  const website = (formData.get('website') as string) || null
   const notes = (formData.get('notes') as string) || null
+  const requestType = (formData.get('requestType') as string) || null
+  const businessModel = (formData.get('businessModel') as string) || null
+  const serviceType = (formData.get('serviceType') as string) || null
   const managerId = (formData.get('managerId') as string) || null
   const departmentId = (formData.get('departmentId') as string) || null
   const skills = (formData.getAll('requiredSkills') as string[]).filter(Boolean)
+  const meetingDate = parseDateField(formData, 'meetingDate')
+  const targetStartDate = parseDateField(formData, 'targetStartDate')
+  const formDetails = buildFormDetails(formData)
 
-  if (departmentId) {
-    const ok = await isServiceLevel(departmentId)
-    if (!ok) {
-      throw new DepartmentValidationError([{ field: 'departmentId', message: 'Clients can only be assigned to Service-level departments' }])
-    }
+  const department = departmentId
+    ? await prisma.department.findUnique({ where: { id: departmentId }, select: { level: true, name: true, shortName: true, acronym: true } })
+    : null
+  if (departmentId && department?.level !== 'SERVICE') {
+    throw new DepartmentValidationError([{ field: 'departmentId', message: 'Clients can only be assigned to Service-level departments' }])
+  }
+
+  const intakeFieldKeys = getIntakeFieldsForDepartment(department)
+  const intakeDetails: Partial<Record<IntakeFieldKey, string>> = {}
+  for (const key of intakeFieldKeys) {
+    const value = INTAKE_FIELD_CATALOG[key].type === 'checkbox-group'
+      ? (formData.getAll(key) as string[]).filter(Boolean).join(', ')
+      : ((formData.get(key) as string) || '').trim()
+    if (value) intakeDetails[key] = value
   }
 
   const client = await prisma.client.create({
@@ -35,12 +82,23 @@ export async function createClient(formData: FormData) {
       name,
       contactName,
       contactEmail,
+      contactPhone,
+      secondaryContact,
       platform: platform as any,
       industry,
+      timezone,
+      website,
       notes,
+      requestType,
+      businessModel,
+      serviceType,
       managerId,
       departmentId: departmentId || null,
       requiredSkills: skills,
+      meetingDate,
+      targetStartDate,
+      ...(formDetails ? { formDetails } : {}),
+      ...(Object.keys(intakeDetails).length > 0 ? { intakeDetails } : {}),
     },
   })
 

@@ -3,12 +3,11 @@ import type { Prisma } from '@/src/generated/prisma/client'
 import { getCurrentUser, getManagedDepartmentIds, getPrimaryDepartment, CLIENT_MUTATOR_ROLES } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { isTeamAffiliated } from '@/lib/teams'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Plus, Building2 } from 'lucide-react'
+import { Building2 } from 'lucide-react'
 import { ClientsBoard } from '@/components/clients/ClientsBoard'
 import { ImportClientCsvButton } from '@/components/clients/ImportClientCsvButton'
+import { AddClientButton } from '@/components/clients/AddClientButton'
 import { FilterBar } from '@/components/filters/FilterBar'
 
 const DEPARTMENT_SCOPED_ROLES = ['DEPT_MANAGER', 'OPERATIONS_MANAGER']
@@ -67,8 +66,15 @@ export default async function ClientsPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
   const user = await getCurrentUser()
-  const isDevMode = !process.env.NEXT_PUBLIC_SUPABASE_URL
   const canImport = user ? CLIENT_MUTATOR_ROLES.includes(user.systemRole) : false
+
+  const serviceDepartments = canImport
+    ? await prisma.department.findMany({
+        where: { level: 'SERVICE', status: 'ACTIVE' },
+        select: { id: true, name: true, shortName: true, acronym: true },
+        orderBy: { sortOrder: 'asc' },
+      })
+    : []
 
   const params = await searchParams
   const statusTab = typeof params.status === 'string' && STATUS_TAB_OPTIONS.some((o) => o.value === params.status)
@@ -110,14 +116,7 @@ export default async function ClientsPage({
         </div>
         <div className="flex items-center gap-2">
           {canImport && <ImportClientCsvButton />}
-          {isDevMode && (
-            <Link href="/clients/new">
-              <Button className="gap-2">
-                <Plus className="h-4 w-4" />
-                Add Client
-              </Button>
-            </Link>
-          )}
+          {canImport && user && <AddClientButton departments={serviceDepartments} managerId={user.id} />}
         </div>
       </div>
 
