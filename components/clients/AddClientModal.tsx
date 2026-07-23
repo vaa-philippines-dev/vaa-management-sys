@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState, useTransition } from 'react'
+import { useMemo, useRef, useState, useTransition } from 'react'
 import { useRouter, unstable_rethrow } from 'next/navigation'
 import { toast } from 'sonner'
 import { Modal } from '@/components/ui/modal'
@@ -8,7 +8,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { createClient } from '@/app/(dashboard)/clients/actions'
+import { createClient, type ClientAutofillMatch } from '@/app/(dashboard)/clients/actions'
+import { ClientAutofillSearch } from '@/components/clients/ClientAutofillSearch'
 import { INTAKE_FIELD_CATALOG, getIntakeFieldsForDepartment, type IntakeFieldKey } from '@/lib/clients/intake-fields'
 import {
   REQUEST_TYPE_OPTIONS,
@@ -68,6 +69,48 @@ export function AddClientModal({
   const serviceTypeOptions = useMemo(() => getServiceTypeOptions(selectedDepartment), [selectedDepartment])
 
   const reset = () => setDepartmentId('')
+
+  // The rest of the form stays uncontrolled (native FormData submit), so
+  // autofill sets values imperatively via refs rather than converting every
+  // field to controlled state just for this one feature. Individual stable
+  // ref objects (not a per-field callback-ref factory) so React doesn't
+  // treat the ref as changing identity every render.
+  const nameRef = useRef<HTMLInputElement>(null)
+  const contactNameRef = useRef<HTMLInputElement>(null)
+  const secondaryContactRef = useRef<HTMLInputElement>(null)
+  const contactEmailRef = useRef<HTMLInputElement>(null)
+  const contactPhoneRef = useRef<HTMLInputElement>(null)
+  const timezoneRef = useRef<HTMLInputElement>(null)
+  const websiteRef = useRef<HTMLInputElement>(null)
+  const companyBackgroundRef = useRef<HTMLTextAreaElement>(null)
+  const brandsRef = useRef<HTMLTextAreaElement>(null)
+  const brandOwnershipRef = useRef<HTMLSelectElement>(null)
+  const productNicheRef = useRef<HTMLTextAreaElement>(null)
+  const brandRegistrationRef = useRef<HTMLSelectElement>(null)
+  const productLinksRef = useRef<HTMLTextAreaElement>(null)
+  const marketplaceRef = useRef<HTMLTextAreaElement>(null)
+
+  const applyAutofill = (match: ClientAutofillMatch) => {
+    const setValue = (ref: React.RefObject<{ value: string } | null>, value: string | null | undefined) => {
+      if (ref.current && value) ref.current.value = value
+    }
+    setValue(nameRef, match.name)
+    setValue(contactNameRef, match.contactName)
+    setValue(secondaryContactRef, match.secondaryContact)
+    setValue(contactEmailRef, match.contactEmail)
+    setValue(contactPhoneRef, match.contactPhone)
+    setValue(timezoneRef, match.timezone)
+    setValue(websiteRef, match.website)
+    setValue(companyBackgroundRef, match.formDetails.companyBackground)
+    setValue(brandsRef, match.formDetails.brands)
+    setValue(brandOwnershipRef, match.formDetails.brandOwnership)
+    setValue(productNicheRef, match.formDetails.productNiche)
+    setValue(brandRegistrationRef, match.formDetails.brandRegistration)
+    setValue(productLinksRef, match.formDetails.productLinks)
+    setValue(marketplaceRef, match.formDetails.marketplace)
+    if (match.departmentId) setDepartmentId(match.departmentId)
+    toast.success(`Autofilled from ${match.name}'s existing record — this still creates a new client entry`)
+  }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -135,6 +178,8 @@ export function AddClientModal({
       <form id="add-client-form" onSubmit={handleSubmit} className="space-y-4">
         <input type="hidden" name="managerId" value={managerId} />
 
+        <ClientAutofillSearch onSelect={applyAutofill} />
+
         <div className="space-y-1.5">
           <Label htmlFor="meetingDate">Meeting Date</Label>
           <Input id="meetingDate" name="meetingDate" type="date" className="h-9 max-w-[180px]" />
@@ -174,27 +219,27 @@ export function AddClientModal({
         <div className="grid gap-3 md:grid-cols-2">
           <div className="space-y-1.5">
             <Label htmlFor="contactName">Primary Account Name</Label>
-            <Input id="contactName" name="contactName" className="h-9" />
+            <Input id="contactName" name="contactName" ref={contactNameRef} className="h-9" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="secondaryContact">Secondary Contact</Label>
-            <Input id="secondaryContact" name="secondaryContact" className="h-9" />
+            <Input id="secondaryContact" name="secondaryContact" ref={secondaryContactRef} className="h-9" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="contactEmail">Email Address</Label>
-            <Input id="contactEmail" name="contactEmail" type="email" className="h-9" />
+            <Input id="contactEmail" name="contactEmail" type="email" ref={contactEmailRef} className="h-9" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="contactPhone">WhatsApp Number</Label>
-            <Input id="contactPhone" name="contactPhone" className="h-9" />
+            <Input id="contactPhone" name="contactPhone" ref={contactPhoneRef} className="h-9" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="name">Company Name *</Label>
-            <Input id="name" name="name" required className="h-9" />
+            <Input id="name" name="name" required ref={nameRef} className="h-9" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="timezone">Timezone</Label>
-            <Input id="timezone" name="timezone" className="h-9" />
+            <Input id="timezone" name="timezone" ref={timezoneRef} className="h-9" />
           </div>
         </div>
 
@@ -202,20 +247,20 @@ export function AddClientModal({
         <div className="grid gap-3 md:grid-cols-2">
           <div className="space-y-1.5 md:col-span-2">
             <Label htmlFor="companyBackground">Company/Client Background</Label>
-            <Textarea id="companyBackground" name="companyBackground" className="min-h-20 text-sm" />
+            <Textarea id="companyBackground" name="companyBackground" ref={companyBackgroundRef} className="min-h-20 text-sm" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="website">Website</Label>
-            <Input id="website" name="website" type="url" className="h-9" />
+            <Input id="website" name="website" type="url" ref={websiteRef} className="h-9" />
           </div>
           <div />
           <div className="space-y-1.5">
             <Label htmlFor="brands">Brand/s</Label>
-            <Textarea id="brands" name="brands" className="min-h-16 text-sm" placeholder="One per line" />
+            <Textarea id="brands" name="brands" ref={brandsRef} className="min-h-16 text-sm" placeholder="One per line" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="brandOwnership">Brand Ownership</Label>
-            <select id="brandOwnership" name="brandOwnership" defaultValue="" className={SELECT_CLASS}>
+            <select id="brandOwnership" name="brandOwnership" ref={brandOwnershipRef} defaultValue="" className={SELECT_CLASS}>
               <option value="">Select…</option>
               {BRAND_OWNERSHIP_OPTIONS.map((o) => (
                 <option key={o} value={o}>{o}</option>
@@ -224,11 +269,11 @@ export function AddClientModal({
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="productNiche">Product Background / Niche</Label>
-            <Textarea id="productNiche" name="productNiche" className="min-h-16 text-sm" placeholder="One per line" />
+            <Textarea id="productNiche" name="productNiche" ref={productNicheRef} className="min-h-16 text-sm" placeholder="One per line" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="brandRegistration">Brand Registration</Label>
-            <select id="brandRegistration" name="brandRegistration" defaultValue="" className={SELECT_CLASS}>
+            <select id="brandRegistration" name="brandRegistration" ref={brandRegistrationRef} defaultValue="" className={SELECT_CLASS}>
               <option value="">Select…</option>
               {BRAND_REGISTRATION_OPTIONS.map((o) => (
                 <option key={o} value={o}>{o}</option>
@@ -237,11 +282,11 @@ export function AddClientModal({
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="productLinks">Product and Link/s</Label>
-            <Textarea id="productLinks" name="productLinks" className="min-h-16 text-sm" placeholder="One per line" />
+            <Textarea id="productLinks" name="productLinks" ref={productLinksRef} className="min-h-16 text-sm" placeholder="One per line" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="marketplace">Marketplace</Label>
-            <Textarea id="marketplace" name="marketplace" className="min-h-16 text-sm" />
+            <Textarea id="marketplace" name="marketplace" ref={marketplaceRef} className="min-h-16 text-sm" />
           </div>
         </div>
 

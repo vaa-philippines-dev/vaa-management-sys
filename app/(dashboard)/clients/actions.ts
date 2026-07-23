@@ -115,6 +115,82 @@ export async function createClient(formData: FormData) {
   redirect(`/clients/${client.id}`)
 }
 
+function asStringRecord(value: unknown): Record<string, string> {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {}
+  const result: Record<string, string> = {}
+  for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+    if (typeof v === 'string') result[k] = v
+  }
+  return result
+}
+
+export type ClientAutofillMatch = {
+  id: string
+  name: string
+  contactName: string | null
+  contactEmail: string | null
+  contactPhone: string | null
+  secondaryContact: string | null
+  timezone: string | null
+  website: string | null
+  departmentId: string | null
+  departmentName: string | null
+  formDetails: Record<string, string>
+}
+
+// Many "new" client records are really a repeat request for a client who
+// already worked with a VA in the past — their contact/company info hasn't
+// changed, only the current staffing need has. This lets the Add Record
+// form look up that existing record and autofill the static parts (name,
+// contact info, timezone, brand/company background) instead of retyping
+// them, while leaving the request-specific fields (department, business
+// model, account background, schedule, etc.) blank for the new intake.
+export async function searchClientsForAutofill(query: string): Promise<ClientAutofillMatch[]> {
+  await requireRole(...CLIENT_MUTATOR_ROLES)
+
+  const trimmed = query.trim()
+  if (trimmed.length < 2) return []
+
+  const clients = await prisma.client.findMany({
+    where: {
+      OR: [
+        { name: { contains: trimmed, mode: 'insensitive' } },
+        { contactName: { contains: trimmed, mode: 'insensitive' } },
+        { contactEmail: { contains: trimmed, mode: 'insensitive' } },
+      ],
+    },
+    select: {
+      id: true,
+      name: true,
+      contactName: true,
+      contactEmail: true,
+      contactPhone: true,
+      secondaryContact: true,
+      timezone: true,
+      website: true,
+      departmentId: true,
+      department: { select: { name: true } },
+      formDetails: true,
+    },
+    orderBy: { updatedAt: 'desc' },
+    take: 8,
+  })
+
+  return clients.map((c) => ({
+    id: c.id,
+    name: c.name,
+    contactName: c.contactName,
+    contactEmail: c.contactEmail,
+    contactPhone: c.contactPhone,
+    secondaryContact: c.secondaryContact,
+    timezone: c.timezone,
+    website: c.website,
+    departmentId: c.departmentId,
+    departmentName: c.department?.name ?? null,
+    formDetails: asStringRecord(c.formDetails),
+  }))
+}
+
 export async function updateClient(id: string, formData: FormData) {
   const actor = await requireRole(...CLIENT_MUTATOR_ROLES)
 
