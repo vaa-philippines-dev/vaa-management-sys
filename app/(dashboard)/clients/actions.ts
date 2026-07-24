@@ -56,6 +56,7 @@ export async function createClient(formData: FormData) {
   const serviceType = (formData.get('serviceType') as string) || null
   const managerId = (formData.get('managerId') as string) || null
   const departmentId = (formData.get('departmentId') as string) || null
+  const accountId = (formData.get('accountId') as string) || null
   const skills = (formData.getAll('requiredSkills') as string[]).filter(Boolean)
   const meetingDate = parseDateField(formData, 'meetingDate')
   const targetStartDate = parseDateField(formData, 'targetStartDate')
@@ -77,6 +78,10 @@ export async function createClient(formData: FormData) {
     if (value) intakeDetails[key] = value
   }
 
+  // accountId comes from the Customer/Account autofill picker, not typed in
+  // directly — validate it's real rather than trusting the client blindly.
+  const validAccountId = accountId && (await prisma.account.findUnique({ where: { id: accountId }, select: { id: true } })) ? accountId : null
+
   const client = await prisma.client.create({
     data: {
       name,
@@ -94,6 +99,7 @@ export async function createClient(formData: FormData) {
       serviceType,
       managerId,
       departmentId: departmentId || null,
+      accountId: validAccountId,
       requiredSkills: skills,
       meetingDate,
       targetStartDate,
@@ -107,7 +113,7 @@ export async function createClient(formData: FormData) {
     action: 'CREATE',
     entityType: 'Client',
     entityId: client.id,
-    after: { name, contactName, contactEmail, platform, industry, managerId, departmentId },
+    after: { name, contactName, contactEmail, platform, industry, managerId, departmentId, accountId: validAccountId },
   })
 
   revalidatePath('/clients')
@@ -115,80 +121,68 @@ export async function createClient(formData: FormData) {
   redirect(`/clients/${client.id}`)
 }
 
-function asStringRecord(value: unknown): Record<string, string> {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return {}
-  const result: Record<string, string> = {}
-  for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
-    if (typeof v === 'string') result[k] = v
-  }
-  return result
-}
-
-export type ClientAutofillMatch = {
+export type AccountAutofillOption = {
   id: string
-  name: string
-  contactName: string | null
-  contactEmail: string | null
-  contactPhone: string | null
+  accountName: string | null
+  companyName: string | null
+  primaryContact: string | null
   secondaryContact: string | null
-  timezone: string | null
-  website: string | null
-  departmentId: string | null
-  departmentName: string | null
-  formDetails: Record<string, string>
+  primaryEmail: string | null
+  category: string | null
+  type: string | null
+  countryRegion: string | null
+  status: string | null
 }
 
-// Many "new" client records are really a repeat request for a client who
-// already worked with a VA in the past — their contact/company info hasn't
-// changed, only the current staffing need has. This lets the Add Record
-// form look up that existing record and autofill the static parts (name,
-// contact info, timezone, brand/company background) instead of retyping
-// them, while leaving the request-specific fields (department, business
-// model, account background, schedule, etc.) blank for the new intake.
-export async function searchClientsForAutofill(query: string): Promise<ClientAutofillMatch[]> {
+export type CustomerAutofillMatch = {
+  id: string
+  externalCustomerId: string
+  name: string
+  status: string | null
+  accounts: AccountAutofillOption[]
+}
+
+// The authoritative version of searchClientsForAutofill above — searches
+// the CMS-sourced Customer/Account mirror instead of guessing from past
+// Client Assignment records. Excludes Terminated customers by default,
+// same as the /customers and /accounts list pages, since a terminated
+// customer's account is unlikely to be who a new assignment is for.
+export async function searchCustomersForAutofill(query: string): Promise<CustomerAutofillMatch[]> {
   await requireRole(...CLIENT_MUTATOR_ROLES)
 
   const trimmed = query.trim()
   if (trimmed.length < 2) return []
 
-  const clients = await prisma.client.findMany({
+  const customers = await prisma.customer.findMany({
     where: {
-      OR: [
-        { name: { contains: trimmed, mode: 'insensitive' } },
-        { contactName: { contains: trimmed, mode: 'insensitive' } },
-        { contactEmail: { contains: trimmed, mode: 'insensitive' } },
-      ],
+      name: { contains: trimmed, mode: 'insensitive' },
+      status: { not: 'Terminated' },
     },
     select: {
       id: true,
+      externalCustomerId: true,
       name: true,
-      contactName: true,
-      contactEmail: true,
-      contactPhone: true,
-      secondaryContact: true,
-      timezone: true,
-      website: true,
-      departmentId: true,
-      department: { select: { name: true } },
-      formDetails: true,
+      status: true,
+      accounts: {
+        select: {
+          id: true,
+          accountName: true,
+          companyName: true,
+          primaryContact: true,
+          secondaryContact: true,
+          primaryEmail: true,
+          category: true,
+          type: true,
+          countryRegion: true,
+          status: true,
+        },
+      },
     },
-    orderBy: { updatedAt: 'desc' },
+    orderBy: { name: 'asc' },
     take: 8,
   })
 
-  return clients.map((c) => ({
-    id: c.id,
-    name: c.name,
-    contactName: c.contactName,
-    contactEmail: c.contactEmail,
-    contactPhone: c.contactPhone,
-    secondaryContact: c.secondaryContact,
-    timezone: c.timezone,
-    website: c.website,
-    departmentId: c.departmentId,
-    departmentName: c.department?.name ?? null,
-    formDetails: asStringRecord(c.formDetails),
-  }))
+  return customers
 }
 
 export async function updateClient(id: string, formData: FormData) {
