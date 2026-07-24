@@ -109,9 +109,9 @@ export default async function ClientsPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Clients</h2>
+          <h2 className="text-2xl font-bold tracking-tight">Client Assignments</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            E-commerce sellers and brands receiving VA support
+            Staffing requests for e-commerce sellers and brands receiving VA support
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -122,7 +122,7 @@ export default async function ClientsPage({
 
       <FilterBar
         filters={[{ key: 'status', label: 'Status', defaultValue: DEFAULT_STATUS_TAB, options: STATUS_TAB_OPTIONS }]}
-        searchPlaceholder="Search clients..."
+        searchPlaceholder="Search client assignments..."
       />
 
       {clients.length === 0 ? (
@@ -130,7 +130,7 @@ export default async function ClientsPage({
           <CardContent className="flex flex-col items-center justify-center py-12 text-center">
             <Building2 className="h-10 w-10 text-muted-foreground/50 mb-3" />
             <p className="text-sm text-muted-foreground">
-              No {statusTab !== 'ALL' ? STATUS_TAB_OPTIONS.find((o) => o.value === statusTab)?.label.toLowerCase() : ''} clients yet.
+              No {statusTab !== 'ALL' ? STATUS_TAB_OPTIONS.find((o) => o.value === statusTab)?.label.toLowerCase() : ''} client assignments yet.
             </p>
           </CardContent>
         </Card>

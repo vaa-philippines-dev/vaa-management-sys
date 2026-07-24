@@ -111,9 +111,9 @@ export default async function AdminClientsPage({
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-bold tracking-tight">Clients</h2>
+          <h2 className="text-lg font-bold tracking-tight">Client Assignments</h2>
           <p className="text-xs text-muted-foreground">
-            {canEdit ? 'Rename, edit, or delete any client across all departments.' : 'Admin-level client management (view-only).'}
+            {canEdit ? 'Rename, edit, or delete any client assignment across all departments.' : 'Admin-level client assignment management (view-only).'}
           </p>
         </div>
         {viewAll ? (
@@ -132,7 +132,7 @@ export default async function AdminClientsPage({
       </div>
 
       <div className="rounded-lg border bg-card p-2.5">
-        <FilterBar filters={[]} searchPlaceholder="Search clients..." />
+        <FilterBar filters={[]} searchPlaceholder="Search client assignments..." />
       </div>
 
       {clients.length === 0 ? (
@@ -141,9 +141,9 @@ export default async function AdminClientsPage({
             <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted mb-3">
               <Building2 className="h-6 w-6 text-muted-foreground/60" />
             </div>
-            <p className="text-sm font-medium">No clients found</p>
+            <p className="text-sm font-medium">No client assignments found</p>
             <p className="text-xs text-muted-foreground mt-1">
-              {q ? 'Try a different search.' : 'Clients created across the app will show up here.'}
+              {q ? 'Try a different search.' : 'Client assignments created across the app will show up here.'}
             </p>
           </CardContent>
         </Card>

@@ -446,7 +446,7 @@ export function ImportClientCsvModal({ departments }: { departments: ImportDepar
     <Modal
       open={open}
       onOpenChange={(o) => !o && handleClose()}
-      title="Import Clients from CSV"
+      title="Import Client Assignments from CSV"
       description="Pick the department this sheet belongs to — its intake form fields are matched automatically by column name."
       size="md"
       footer={

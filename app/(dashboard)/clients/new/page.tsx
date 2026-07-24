@@ -14,9 +14,9 @@ export default async function NewClientPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">New Client</h2>
+        <h2 className="text-2xl font-bold tracking-tight">New Client Assignment</h2>
         <p className="text-sm text-muted-foreground mt-1">
-          Add a new client and their required skills
+          Add a new client assignment and their required skills
         </p>
       </div>
       <ClientForm skills={skills.map((s) => s.name)} managerId={user?.id} />

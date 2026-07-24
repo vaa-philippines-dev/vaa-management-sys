@@ -105,7 +105,7 @@ export function ClientForm({
             <Input id="notes" name="notes" defaultValue={initial?.notes ?? ''} />
           </div>
           <div className="flex justify-end gap-2">
-            <Button type="submit">Create Client</Button>
+            <Button type="submit">Create Client Assignment</Button>
           </div>
         </form>
       </CardContent>
