@@ -634,6 +634,11 @@ model LeaveRequest {
 // MODELS — Phase 3: Clients & Service Lines
 // ──────────────────────────────────────────────────────────────────
 
+// NOTE: this model's UI label is "Client Assignment" — one row is one
+// company's staffing request for one department, not the company's overall
+// identity (that's Customer/Account below). Kept named `Client`/`clients`
+// internally to avoid a high-risk table rename; only user-facing copy says
+// "Client Assignment".
 model Client {
   id                  String         @id @default(cuid())
   name                String
@@ -662,6 +667,8 @@ model Client {
   requiredSkills      String[]       @map("required_skills")
   intakeDetails       Json?          @map("intake_details")
   formDetails         Json?          @map("form_details")
+  accountId           String?        @map("account_id")
+  account             Account?       @relation(fields: [accountId], references: [id], onDelete: SetNull)
   createdAt           DateTime       @default(now()) @map("created_at")
   updatedAt           DateTime       @updatedAt @map("updated_at")
 
@@ -669,6 +676,7 @@ model Client {
   tickets     Ticket[]
 
   @@index([departmentId])
+  @@index([accountId])
   @@map("clients")
 }
 
@@ -944,6 +952,99 @@ model VAConnectionRecord {
   @@index([vaName])
   @@index([clientName])
   @@map("va_connection_records")
+}
+
+// Mirror of the CMS's "Customers" tab — the real company/person identity.
+// One Customer can own several Accounts (see Account below); a Customer
+// itself is never directly staffed, only its Accounts are.
+model Customer {
+  id                  String    @id @default(cuid())
+  externalCustomerId  String    @unique @map("external_customer_id")
+  name                String
+  status              String?
+  statusDate          DateTime? @map("status_date")
+  assignedSpecialist  String?   @map("assigned_specialist")
+  createdByEmail      String?   @map("created_by_email")
+  updatedByEmail      String?   @map("updated_by_email")
+  notes               String?
+  paymentDate         DateTime? @map("payment_date")
+  noPaymentYet        Boolean?  @map("no_payment_yet")
+  terminationCount    Int?      @map("termination_count")
+  reactivationCount   Int?      @map("reactivation_count")
+  lastTerminatedDate  DateTime? @map("last_terminated_date")
+  lastReactivatedDate DateTime? @map("last_reactivated_date")
+  lastStatusReason    String?   @map("last_status_reason")
+  statusHistory       String?   @map("status_history")
+  cmsCreatedAt        DateTime? @map("cms_created_at")
+  cmsUpdatedAt        DateTime? @map("cms_updated_at")
+  raw                 Json
+  source              String    @default("cms_sheet")
+  lastSyncedAt        DateTime  @map("last_synced_at")
+  createdAt           DateTime  @default(now()) @map("created_at")
+  updatedAt           DateTime  @updatedAt @map("updated_at")
+
+  accounts Account[]
+
+  @@index([name])
+  @@index([status])
+  @@map("customers")
+}
+
+// Mirror of the CMS's "Clients" tab — labeled "Accounts" in this app to
+// avoid clashing with our own Client (Client Assignment) model. One Account
+// belongs to one Customer; one Account can have many Client Assignments
+// (one per department staffing request against that account).
+model Account {
+  id                 String    @id @default(cuid())
+  externalAccountId  String    @unique @map("external_account_id")
+  externalCustomerId String?   @map("external_customer_id")
+  customerId         String?   @map("customer_id")
+  customer           Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  customerName            String?   @map("customer_name")
+  accountName             String?   @map("account_name")
+  primaryContact          String?   @map("primary_contact")
+  secondaryContact        String?   @map("secondary_contact")
+  companyName             String?   @map("company_name")
+  accountManagers         String?   @map("account_managers")
+  invoiceContactName      String?   @map("invoice_contact_name")
+  invoiceContactRole      String?   @map("invoice_contact_role")
+  invoiceContactEmail     String?   @map("invoice_contact_email")
+  category                String?
+  type                    String?
+  countryRegion           String?   @map("country_region")
+  status                  String?
+  statusDate              DateTime? @map("status_date")
+  isReturning             Boolean?  @map("is_returning")
+  notes                   String?
+  primaryRole             String?   @map("primary_role")
+  primaryEmail            String?   @map("primary_email")
+  primaryIsFocal          Boolean?  @map("primary_is_focal")
+  secondaryRole           String?   @map("secondary_role")
+  secondaryEmail          String?   @map("secondary_email")
+  secondaryIsFocal        Boolean?  @map("secondary_is_focal")
+  primaryLinkedToCustomer Boolean?  @map("primary_linked_to_customer")
+  terminationReason       String?   @map("termination_reason")
+  sellerOnboardingLink    String?   @map("seller_onboarding_link")
+  contractId              String?   @map("contract_id")
+  createdByEmail          String?   @map("created_by_email")
+  updatedByEmail          String?   @map("updated_by_email")
+  cmsCreatedAt            DateTime? @map("cms_created_at")
+  cmsUpdatedAt            DateTime? @map("cms_updated_at")
+  raw                     Json
+  source                  String    @default("cms_sheet")
+  lastSyncedAt            DateTime  @map("last_synced_at")
+  createdAt               DateTime  @default(now()) @map("created_at")
+  updatedAt               DateTime  @updatedAt @map("updated_at")
+
+  clientAssignments Client[]
+
+  @@index([externalCustomerId])
+  @@index([customerId])
+  @@index([accountName])
+  @@index([companyName])
+  @@index([status])
+  @@map("accounts")
 }
 
 model Notification {

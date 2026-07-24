@@ -177,6 +177,16 @@ export type ExternalSyncMapping = Prisma.ExternalSyncMappingModel
  */
 export type VAConnectionRecord = Prisma.VAConnectionRecordModel
 /**
+ * Model Customer
+ * 
+ */
+export type Customer = Prisma.CustomerModel
+/**
+ * Model Account
+ * 
+ */
+export type Account = Prisma.AccountModel
+/**
  * Model Notification
  * 
  */

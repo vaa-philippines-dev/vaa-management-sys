@@ -78,6 +78,8 @@ export const ModelName = {
   AuditLog: 'AuditLog',
   ExternalSyncMapping: 'ExternalSyncMapping',
   VAConnectionRecord: 'VAConnectionRecord',
+  Customer: 'Customer',
+  Account: 'Account',
   Notification: 'Notification',
   SidebarFavorite: 'SidebarFavorite',
   Team: 'Team',
@@ -415,6 +417,7 @@ export const ClientScalarFieldEnum = {
   requiredSkills: 'requiredSkills',
   intakeDetails: 'intakeDetails',
   formDetails: 'formDetails',
+  accountId: 'accountId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -608,6 +611,81 @@ export const VAConnectionRecordScalarFieldEnum = {
 } as const
 
 export type VAConnectionRecordScalarFieldEnum = (typeof VAConnectionRecordScalarFieldEnum)[keyof typeof VAConnectionRecordScalarFieldEnum]
+
+
+export const CustomerScalarFieldEnum = {
+  id: 'id',
+  externalCustomerId: 'externalCustomerId',
+  name: 'name',
+  status: 'status',
+  statusDate: 'statusDate',
+  assignedSpecialist: 'assignedSpecialist',
+  createdByEmail: 'createdByEmail',
+  updatedByEmail: 'updatedByEmail',
+  notes: 'notes',
+  paymentDate: 'paymentDate',
+  noPaymentYet: 'noPaymentYet',
+  terminationCount: 'terminationCount',
+  reactivationCount: 'reactivationCount',
+  lastTerminatedDate: 'lastTerminatedDate',
+  lastReactivatedDate: 'lastReactivatedDate',
+  lastStatusReason: 'lastStatusReason',
+  statusHistory: 'statusHistory',
+  cmsCreatedAt: 'cmsCreatedAt',
+  cmsUpdatedAt: 'cmsUpdatedAt',
+  raw: 'raw',
+  source: 'source',
+  lastSyncedAt: 'lastSyncedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CustomerScalarFieldEnum = (typeof CustomerScalarFieldEnum)[keyof typeof CustomerScalarFieldEnum]
+
+
+export const AccountScalarFieldEnum = {
+  id: 'id',
+  externalAccountId: 'externalAccountId',
+  externalCustomerId: 'externalCustomerId',
+  customerId: 'customerId',
+  customerName: 'customerName',
+  accountName: 'accountName',
+  primaryContact: 'primaryContact',
+  secondaryContact: 'secondaryContact',
+  companyName: 'companyName',
+  accountManagers: 'accountManagers',
+  invoiceContactName: 'invoiceContactName',
+  invoiceContactRole: 'invoiceContactRole',
+  invoiceContactEmail: 'invoiceContactEmail',
+  category: 'category',
+  type: 'type',
+  countryRegion: 'countryRegion',
+  status: 'status',
+  statusDate: 'statusDate',
+  isReturning: 'isReturning',
+  notes: 'notes',
+  primaryRole: 'primaryRole',
+  primaryEmail: 'primaryEmail',
+  primaryIsFocal: 'primaryIsFocal',
+  secondaryRole: 'secondaryRole',
+  secondaryEmail: 'secondaryEmail',
+  secondaryIsFocal: 'secondaryIsFocal',
+  primaryLinkedToCustomer: 'primaryLinkedToCustomer',
+  terminationReason: 'terminationReason',
+  sellerOnboardingLink: 'sellerOnboardingLink',
+  contractId: 'contractId',
+  createdByEmail: 'createdByEmail',
+  updatedByEmail: 'updatedByEmail',
+  cmsCreatedAt: 'cmsCreatedAt',
+  cmsUpdatedAt: 'cmsUpdatedAt',
+  raw: 'raw',
+  source: 'source',
+  lastSyncedAt: 'lastSyncedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
 
 
 export const NotificationScalarFieldEnum = {
