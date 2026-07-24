@@ -29,6 +29,8 @@ import {
   Wine,
   BriefcaseBusiness,
   Database,
+  IdCard,
+  RefreshCw,
 } from 'lucide-react'
 import Image from 'next/image'
 import {
@@ -254,7 +256,7 @@ function FavoritableRow({
 const managerRoutes = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { label: 'Inbox', href: '/inbox', icon: MessageSquare },
-  { label: 'Clients', href: '/clients', icon: BriefcaseBusiness },
+  { label: 'Client Assignments', href: '/clients', icon: BriefcaseBusiness },
   { label: 'Assignments', href: '/assignments', icon: Briefcase },
   { label: 'Work Logs', href: '/work-logs', icon: ListTodo },
   { label: 'Services', href: '/skills', icon: UserCog },
@@ -267,7 +269,9 @@ const managerRoutes = [
 // shown, so Clients/Assignments appear once, not duplicated in both places.
 const departmentRoutes = [
   { label: 'VA Roster', href: '/vas', icon: Users },
-  { label: 'Clients', href: '/clients', icon: BriefcaseBusiness },
+  { label: 'Customers', href: '/customers', icon: Building2 },
+  { label: 'Accounts', href: '/accounts', icon: IdCard },
+  { label: 'Client Assignments', href: '/clients', icon: BriefcaseBusiness },
   { label: 'Assignments', href: '/assignments', icon: Briefcase },
   { label: 'Teams', href: '/teams', icon: UsersRound },
   { label: 'Celebrants', href: '/celebrants', icon: Calendar },
@@ -286,11 +290,12 @@ const adminRoutes = [
   { label: 'Users', href: '/admin/users', icon: UserPlus },
   { label: 'Departments', href: '/admin/departments', icon: Network },
   { label: 'Teams', href: '/admin/teams', icon: UsersRound },
-  { label: 'Clients', href: '/admin/clients', icon: BriefcaseBusiness },
+  { label: 'Client Assignments', href: '/admin/clients', icon: BriefcaseBusiness },
   { label: 'Departments (org view)', href: '/departments', icon: Building2 },
   { label: 'Audit Log', href: '/admin/audit', icon: ClipboardList },
   { label: 'History', href: '/admin/history', icon: History },
   { label: 'VA Connections', href: '/va-connections', icon: Database },
+  { label: 'Sync from CMS', href: '/admin/cms-sync', icon: RefreshCw },
 ]
 
 export function Sidebar({
@@ -450,8 +455,28 @@ export function Sidebar({
                 onChanged={setFavorites}
               />
               <FavoritableRow
+                href="/customers"
+                label="Customers"
+                icon={Building2}
+                isActive={isMainRowActive('/customers', isRouteActive('/customers'))}
+                canFavorite={canFavorite}
+                favorite={favorites.find((f) => f.href === '/customers')}
+                atMax={atMax}
+                onChanged={setFavorites}
+              />
+              <FavoritableRow
+                href="/accounts"
+                label="Accounts"
+                icon={IdCard}
+                isActive={isMainRowActive('/accounts', isRouteActive('/accounts'))}
+                canFavorite={canFavorite}
+                favorite={favorites.find((f) => f.href === '/accounts')}
+                atMax={atMax}
+                onChanged={setFavorites}
+              />
+              <FavoritableRow
                 href="/clients"
-                label="Clients"
+                label="Client Assignments"
                 icon={BriefcaseBusiness}
                 isActive={isMainRowActive('/clients', isRouteActive('/clients'))}
                 canFavorite={canFavorite}
@@ -597,7 +622,7 @@ export function Sidebar({
                   />
                   <FavoritableRow
                     href="/admin/clients"
-                    label="Clients"
+                    label="Client Assignments"
                     icon={BriefcaseBusiness}
                     isActive={isMainRowActive('/admin/clients', isRouteActive('/admin/clients'))}
                     canFavorite={canFavorite}
@@ -645,6 +670,16 @@ export function Sidebar({
                 isActive={isMainRowActive('/va-connections', isRouteActive('/va-connections'))}
                 canFavorite={canFavorite}
                 favorite={favorites.find((f) => f.href === '/va-connections')}
+                atMax={atMax}
+                onChanged={setFavorites}
+              />
+              <FavoritableRow
+                href="/admin/cms-sync"
+                label="Sync from CMS"
+                icon={RefreshCw}
+                isActive={isMainRowActive('/admin/cms-sync', isRouteActive('/admin/cms-sync'))}
+                canFavorite={canFavorite}
+                favorite={favorites.find((f) => f.href === '/admin/cms-sync')}
                 atMax={atMax}
                 onChanged={setFavorites}
               />
