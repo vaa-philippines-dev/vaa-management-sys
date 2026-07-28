@@ -18,30 +18,39 @@ export type TicketDraft = {
   priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT'
 }
 
-const MODEL = 'meta-llama/llama-4-scout-17b-16e-instruct'
+const CATEGORIES = new Set(['TECHNICAL', 'HR', 'CLIENT', 'VA_SUPPORT', 'GENERAL'])
+const PRIORITIES = new Set(['LOW', 'MEDIUM', 'HIGH', 'URGENT'])
 
-const DRAFT_JSON_SCHEMA = {
-  type: 'object',
-  properties: {
-    title: { type: 'string', description: 'Short, specific bug title (max ~80 chars)' },
-    description: {
-      type: 'string',
-      description:
-        'Clear technical description: what the user was trying to do, what happened instead, and any visible error text. Written for a developer, not the VA.',
-    },
-    category: { type: 'string', enum: ['TECHNICAL', 'HR', 'CLIENT', 'VA_SUPPORT', 'GENERAL'] },
-    priority: { type: 'string', enum: ['LOW', 'MEDIUM', 'HIGH', 'URGENT'] },
-  },
-  required: ['title', 'description', 'category', 'priority'],
-  additionalProperties: false,
-} as const
+function parseDraft(text: string): TicketDraft {
+  const parsed = JSON.parse(text)
+  if (
+    typeof parsed?.title !== 'string' ||
+    typeof parsed?.description !== 'string' ||
+    !CATEGORIES.has(parsed?.category) ||
+    !PRIORITIES.has(parsed?.priority)
+  ) {
+    throw new Error('AI draft model returned a malformed ticket draft')
+  }
+  return parsed as TicketDraft
+}
+
+// meta-llama/llama-4-scout-17b-16e-instruct was deprecated by Groq on 2026-07-17;
+// qwen/qwen3.6-27b is the current vision-capable model on Groq's free tier.
+const MODEL = 'qwen/qwen3.6-27b'
 
 const SYSTEM_INSTRUCTION = `You help non-technical virtual assistants report software bugs.
 You will be given a screenshot of the problem and optionally a short note from the VA in their own words.
 Write a clear, specific bug report a developer can act on immediately: what the user was doing, what went wrong, and any visible error text or UI state.
 Do not invent details that aren't visible in the screenshot or stated in the note. If something is unclear, describe only what you can observe.
 Pick the most fitting category and a priority reflecting how much the bug blocks the VA's work (URGENT = completely blocked, HIGH = major feature broken, MEDIUM = workaround exists, LOW = cosmetic/minor).
-Respond with JSON only, matching the given schema.`
+
+Respond with JSON only, matching exactly this shape:
+{
+  "title": string (short, specific bug title, max ~80 chars),
+  "description": string (clear technical description for a developer, not the VA),
+  "category": "TECHNICAL" | "HR" | "CLIENT" | "VA_SUPPORT" | "GENERAL",
+  "priority": "LOW" | "MEDIUM" | "HIGH" | "URGENT"
+}`
 
 let client: Groq | null = null
 
@@ -92,16 +101,13 @@ export async function draftTicketFromReport(input: {
             ],
           },
         ],
-        response_format: {
-          type: 'json_schema',
-          json_schema: { name: 'ticket_draft', schema: DRAFT_JSON_SCHEMA, strict: true },
-        },
+        response_format: { type: 'json_object' },
       })
 
       const text = response.choices[0]?.message?.content
       if (!text) throw new Error('Empty response from AI draft model')
 
-      return JSON.parse(text) as TicketDraft
+      return parseDraft(text)
     } catch (error) {
       lastError = error
       if (attempt < MAX_ATTEMPTS && isRetryable(error)) {

@@ -14,7 +14,6 @@ import { transferVA } from '@/app/(dashboard)/vas/actions'
 type DepartmentOption = { id: string; name: string; positions: { id: string; title: string }[] }
 
 const TRANSFER_TYPE_OPTIONS = [
-  { value: 'ACTIVE', label: 'Transfer — remain active', description: 'Ends current department membership, starts a new one.' },
   { value: 'END_OF_CONTRACT', label: 'Transfer — end of contract', description: 'Closes out the current contract, then onboards to the new department.' },
   { value: 'HYBRID', label: 'Hybrid — split across both', description: 'Keeps the current department active and adds a second, concurrent one.' },
 ] as const
@@ -32,7 +31,7 @@ export function TransferVAModal({
 }) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
-  const [transferType, setTransferType] = useState<'ACTIVE' | 'END_OF_CONTRACT' | 'HYBRID'>('ACTIVE')
+  const [transferType, setTransferType] = useState<'END_OF_CONTRACT' | 'HYBRID'>('END_OF_CONTRACT')
   const [departmentId, setDepartmentId] = useState('')
   const [positionId, setPositionId] = useState('')
   const [effectiveDate, setEffectiveDate] = useState(format(new Date(), 'yyyy-MM-dd'))
@@ -44,7 +43,7 @@ export function TransferVAModal({
   const selectedDept = departments.find((d) => d.id === departmentId)
 
   const reset = () => {
-    setTransferType('ACTIVE')
+    setTransferType('END_OF_CONTRACT')
     setDepartmentId('')
     setPositionId('')
     setEffectiveDate(format(new Date(), 'yyyy-MM-dd'))
