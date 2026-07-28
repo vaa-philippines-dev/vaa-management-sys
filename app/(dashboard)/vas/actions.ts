@@ -66,6 +66,50 @@ export async function createVA(formData: FormData) {
   redirect(`/vas/${user.vaProfile!.id}`)
 }
 
+// Lightweight version of createVA for the VA Roster's "Add VA" quick-add modal —
+// name only (email optional, auto-generated as a placeholder if blank), no redirect
+// so the modal can close and refresh in place instead of navigating away.
+export async function quickAddVA(formData: FormData) {
+  const actor = await requireRole(...VA_MUTATOR_ROLES)
+
+  const name = ((formData.get('name') as string) ?? '').trim()
+  if (!name) throw new Error('Full name is required')
+
+  const parts = name.split(' ')
+  const firstName = parts[0]
+  const lastName = parts.slice(1).join(' ') || '-'
+  const emailInput = ((formData.get('email') as string) ?? '').trim().toLowerCase()
+  const email = emailInput || `${firstName.toLowerCase()}-va@placeholder.vaa`
+
+  const existing = await prisma.user.findUnique({ where: { email } })
+  if (existing) throw new Error('A user with this email already exists')
+
+  const user = await prisma.user.create({
+    data: {
+      email,
+      firstName,
+      lastName,
+      systemRole: 'VA',
+      userType: 'VIRTUAL_ASSISTANT',
+      isActive: true,
+      vaProfile: { create: { hourlyRate: null } },
+    },
+  })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'CREATE',
+    entityType: 'User',
+    entityId: user.id,
+    after: { email, firstName, lastName },
+    metadata: { viaForm: 'vas:quick-add' },
+  })
+
+  revalidatePath('/vas')
+  revalidateTag(CACHE_TAGS.vas, 'default')
+  revalidateTag(CACHE_TAGS.users, 'default')
+}
+
 export async function addVASkill(vaProfileId: string, skillId: string, proficiency: string, yearsExperience?: number) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
 

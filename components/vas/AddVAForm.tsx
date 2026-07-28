@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Loader2, Plus, X, UserPlus } from 'lucide-react'
-import { createUser } from '@/app/(dashboard)/admin/users/actions'
+import { quickAddVA } from '@/app/(dashboard)/vas/actions'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
@@ -25,19 +25,11 @@ export function AddVAModal({ open, onClose }: { open: boolean; onClose: () => vo
 
     if (!name) { toast.error('Full name is required'); setSubmitting(false); return }
 
-    const parts = name.split(' ')
-    const firstName = parts[0]
-    const lastName = parts.slice(1).join(' ') || '-'
-    const finalEmail = email || `${firstName.toLowerCase()}-va@placeholder.vaa`
-
     try {
       const fd = new FormData()
-      fd.set('email', finalEmail)
-      fd.set('firstName', firstName)
-      fd.set('lastName', lastName)
-      fd.set('systemRole', 'VA')
-      fd.set('userType', 'VIRTUAL_ASSISTANT')
-      await createUser(fd)
+      fd.set('name', name)
+      fd.set('email', email)
+      await quickAddVA(fd)
       toast.success(`${name} added`)
       onClose()
       form.reset()
