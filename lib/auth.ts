@@ -2,18 +2,20 @@ import { cache } from 'react'
 import { prisma } from '@/lib/prisma'
 import { createServerSupabase } from '@/lib/supabase/server'
 
-export const CLIENT_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'STAFF']
-export const ASSIGNMENT_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'STAFF']
-export const VA_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER']
+export const CLIENT_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'STAFF', 'HR']
+export const ASSIGNMENT_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'STAFF', 'HR']
+export const VA_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'HR']
 // Ticketing: only admins can view every ticket and manage them (assign/close/resolve).
 // EXECUTIVE can view every ticket but not mutate it (view-only, same as requireAdminMutator()).
 // Everyone else (DEPT_MANAGER, STAFF, VA) only sees tickets they created or are assigned to.
 export const TICKET_VIEW_ALL_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE']
 export const TICKET_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN']
 // Team creation + membership composition (add/remove/transfer) — Dept Manager owns team composition.
-export const TEAM_MANAGE_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER']
+// HR also gets this, elevated to an unscoped (all-department) grant — see assertDepartmentManaged() in teams/actions.ts.
+export const TEAM_MANAGE_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'HR']
 // Team Leader + both Temp Leader slots — Operations Manager owns who leads, not who's on the roster.
-export const TEAM_LEADER_ASSIGN_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'OPERATIONS_MANAGER']
+// HR is deliberately added here too (elevated beyond Dept Manager, who does NOT get this) per HR's expanded team-assignment mandate.
+export const TEAM_LEADER_ASSIGN_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'OPERATIONS_MANAGER', 'HR']
 
 // Dev-only auth bypass for local testing of multi-user flows (e.g. Inbox
 // realtime) without needing two real Google OAuth logins. Only ever active
@@ -85,8 +87,17 @@ export function canMutate(user: { systemRole: string } | null | undefined): bool
   return ['SUPER_ADMIN', 'SYSTEM_ADMIN'].includes(user.systemRole)
 }
 
+// Roles that see every department unscoped, same as full admins. Dept/Ops Manager
+// stay scoped to getManagedDepartmentIds(), but HR is deliberately elevated to an
+// all-department view (teams, celebrants) — use this instead of canMutate() wherever
+// a module branches "admin sees all / manager sees own department(s)".
+export function isDepartmentUnrestricted(user: { systemRole: string } | null | undefined): boolean {
+  if (!user) return false
+  return canMutate(user) || user.systemRole === 'HR'
+}
+
 export async function requireManager() {
-  return requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER')
+  return requireRole('SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'HR')
 }
 
 export async function requireVA() {

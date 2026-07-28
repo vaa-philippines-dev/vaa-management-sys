@@ -10,7 +10,7 @@ import { format } from 'date-fns'
 import { ClientDetailPanel } from '@/components/clients/ClientDetailPanel'
 import { CLIENT_PLATFORM_META, CLIENT_STATUS_DOT, CLIENT_STATUS_LABEL } from '@/lib/clients/display'
 
-const CLIENT_VIEW_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'STAFF']
+const CLIENT_VIEW_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'STAFF', 'HR']
 
 export default async function ClientDetailPage({
   params,

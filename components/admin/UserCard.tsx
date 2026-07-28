@@ -67,6 +67,7 @@ const ROLE_LABELS: Record<string, string> = {
   DEPT_MANAGER: 'Dept Manager',
   TEAM_LEADER: 'Team Leader',
   OPERATIONS_MANAGER: 'Operations Manager',
+  HR: 'HR',
   STAFF: 'Staff',
   VA: 'VA',
 }
@@ -83,11 +84,12 @@ const ROLE_COLORS: Record<string, string> = {
   DEPT_MANAGER: 'bg-blue-500/10 text-blue-600 border-blue-500/20',
   TEAM_LEADER: 'bg-cyan-500/10 text-cyan-600 border-cyan-500/20',
   OPERATIONS_MANAGER: 'bg-indigo-500/10 text-indigo-600 border-indigo-500/20',
+  HR: 'bg-pink-500/10 text-pink-600 border-pink-500/20',
   STAFF: 'bg-purple-500/10 text-purple-600 border-purple-500/20',
   VA: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
 }
 
-const systemRoles = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'STAFF', 'VA']
+const systemRoles = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'HR', 'STAFF', 'VA']
 const userTypes = ['INTERNAL_STAFF', 'VIRTUAL_ASSISTANT']
 const tempRoles = ['CONTRIBUTOR', 'VIEWER', 'APPROVER']
 const modules = ['clients', 'vas', 'assignments', 'work-logs', 'skills', 'reports', 'admin']

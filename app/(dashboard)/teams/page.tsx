@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { getCurrentUser, canMutate, getManagedDepartmentIds } from '@/lib/auth'
+import { getCurrentUser, isDepartmentUnrestricted, getManagedDepartmentIds } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
@@ -12,7 +12,7 @@ export default async function TeamsPage() {
   const user = await getCurrentUser()
   if (!user) return null
 
-  const isAdmin = canMutate(user)
+  const isAdmin = isDepartmentUnrestricted(user)
   const canCreate = TEAM_MANAGE_ROLES.includes(user.systemRole)
   const isVA = user.userType === 'VIRTUAL_ASSISTANT'
 

@@ -12,6 +12,7 @@ const SYSTEM_ROLES = [
   { value: 'DEPT_MANAGER', label: 'Dept Manager' },
   { value: 'TEAM_LEADER', label: 'Team Leader' },
   { value: 'OPERATIONS_MANAGER', label: 'Operations Manager' },
+  { value: 'HR', label: 'HR' },
   { value: 'STAFF', label: 'Staff' },
   { value: 'VA', label: 'VA' },
 ]

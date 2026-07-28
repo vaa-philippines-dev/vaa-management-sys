@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Wine } from 'lucide-react'
 
-const FULL_ADMIN_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE']
+const FULL_ADMIN_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'HR']
 
 // Prisma's DateTime? type is Date | null at compile time, but a malformed
 // underlying value can still surface as something other than a real Date at

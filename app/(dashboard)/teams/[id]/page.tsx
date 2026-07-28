@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { getCurrentUser, canMutate, getManagedDepartmentIds, TEAM_MANAGE_ROLES, TEAM_LEADER_ASSIGN_ROLES } from '@/lib/auth'
+import { getCurrentUser, isDepartmentUnrestricted, getManagedDepartmentIds, TEAM_MANAGE_ROLES, TEAM_LEADER_ASSIGN_ROLES } from '@/lib/auth'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -65,7 +65,7 @@ export default async function TeamDetailPage({
 
   if (!team) notFound()
 
-  const isAdmin = canMutate(user)
+  const isAdmin = isDepartmentUnrestricted(user)
   const isVA = user.userType === 'VIRTUAL_ASSISTANT'
 
   // Scope check: managers/ops managers must have this team's department in their

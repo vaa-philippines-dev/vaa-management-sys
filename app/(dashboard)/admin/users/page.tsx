@@ -20,7 +20,7 @@ export default async function AdminUsersPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
   const currentUser = await getCurrentUser()
-  if (!currentUser || !['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE'].includes(currentUser.systemRole)) {
+  if (!currentUser || !['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'HR'].includes(currentUser.systemRole)) {
     redirect('/dashboard')
   }
   const canEdit = canMutate(currentUser)
@@ -166,6 +166,7 @@ export default async function AdminUsersPage({
                   { value: 'DEPT_MANAGER', label: 'Dept Manager' },
                   { value: 'TEAM_LEADER', label: 'Team Leader' },
                   { value: 'OPERATIONS_MANAGER', label: 'Operations Manager' },
+                  { value: 'HR', label: 'HR' },
                   { value: 'STAFF', label: 'Staff' },
                   { value: 'VA', label: 'VA' },
                 ],

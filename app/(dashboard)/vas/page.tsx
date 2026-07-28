@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import type { Prisma } from '@/src/generated/prisma/client'
-import { getCurrentUser, canMutate, getManagedDepartmentIds } from '@/lib/auth'
+import { getCurrentUser, canMutate, getManagedDepartmentIds, VA_MUTATOR_ROLES } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -87,7 +87,7 @@ const EMPLOYMENT_TONE: Record<string, Tone> = {
   BLACKLISTED: 'neutral',
 }
 
-const hrgRoles = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'EXECUTIVE']
+const hrgRoles = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'EXECUTIVE', 'HR']
 
 const DEPARTMENT_SCOPED_ROLES = ['DEPT_MANAGER', 'OPERATIONS_MANAGER']
 
@@ -121,6 +121,7 @@ export default async function VAPage({
   const currentUser = await getCurrentUser()
   const isHRE = currentUser ? hrgRoles.includes(currentUser.systemRole) : false
   const isAdmin = currentUser ? canMutate(currentUser) : false
+  const canAddVA = currentUser ? VA_MUTATOR_ROLES.includes(currentUser.systemRole) : false
   const viewerScope = await getViewerScope(currentUser)
 
   const params = await searchParams
@@ -170,6 +171,7 @@ export default async function VAPage({
                 <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-info/10 text-info border-info/20">HR View</Badge>
               )}
             </div>
+            {canAddVA && <QuickAddVABtn />}
           </div>
 
           <div className="rounded-lg border bg-card p-2.5">

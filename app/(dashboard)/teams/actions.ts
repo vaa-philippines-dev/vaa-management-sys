@@ -4,11 +4,11 @@ import { prisma } from '@/lib/prisma'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { CACHE_TAGS } from '@/lib/cache'
 import { redirect } from 'next/navigation'
-import { requireRole, requireAdminMutator, canMutate, getManagedDepartmentIds, getCurrentUser, TEAM_MANAGE_ROLES, TEAM_LEADER_ASSIGN_ROLES } from '@/lib/auth'
+import { requireRole, requireAdminMutator, isDepartmentUnrestricted, getManagedDepartmentIds, getCurrentUser, TEAM_MANAGE_ROLES, TEAM_LEADER_ASSIGN_ROLES } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
 
 async function assertDepartmentManaged(actor: Awaited<ReturnType<typeof getCurrentUser>>, departmentId: string) {
-  if (!actor || canMutate(actor)) return
+  if (!actor || isDepartmentUnrestricted(actor)) return
   const managedIds = getManagedDepartmentIds(actor)
   if (!managedIds.includes(departmentId)) {
     throw new Error('Forbidden: department not in your managed scope')

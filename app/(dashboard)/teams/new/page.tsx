@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { getCurrentUser, canMutate, getManagedDepartmentIds, TEAM_MANAGE_ROLES } from '@/lib/auth'
+import { getCurrentUser, isDepartmentUnrestricted, getManagedDepartmentIds, TEAM_MANAGE_ROLES } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -13,7 +13,7 @@ export default async function NewTeamPage() {
     redirect('/teams')
   }
 
-  const isAdmin = canMutate(user)
+  const isAdmin = isDepartmentUnrestricted(user)
   const managedIds = getManagedDepartmentIds(user)
 
   const departments = await prisma.department.findMany({
