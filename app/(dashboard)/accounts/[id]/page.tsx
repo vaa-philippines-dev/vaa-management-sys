@@ -72,7 +72,7 @@ export default async function AccountDetailPage({
           <Card>
             <CardHeader className="pb-3 flex flex-row items-center gap-2">
               <Briefcase className="h-4 w-4 text-muted-foreground" />
-              <CardTitle className="text-base">Client Assignments</CardTitle>
+              <CardTitle className="text-base">Client Request</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               {account.clientAssignments.length === 0 ? (

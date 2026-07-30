@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Loader2, Search, RefreshCw, CheckCircle2 } from 'lucide-react'
-import { previewCmsSync, runCmsSync, type CmsSyncPreview } from '@/app/(dashboard)/admin/cms-sync/actions'
+import { previewCmsSync, runCmsSync, type CmsSyncPreview } from '@/app/(dashboard)/customers/actions'
 import type { CmsSyncSummary } from '@/lib/sync/customers-accounts'
 
 export function CmsSyncPanel() {

@@ -35,7 +35,7 @@ type Shortcut = {
 const SHORTCUTS: Shortcut[] = [
   { label: 'Dashboard', description: 'Overview of activity and stats', href: '/dashboard', icon: LayoutDashboard },
   { label: 'VA Roster', description: 'Browse and manage virtual assistants', href: '/vas', icon: Users, keywords: 'va roster team' },
-  { label: 'Clients', description: 'View and manage clients', href: '/clients', icon: Building2 },
+  { label: 'Client Request', description: 'View and manage clients', href: '/clients', icon: Building2 },
   { label: 'Assignments', description: 'VA-to-client staffing assignments', href: '/assignments', icon: Briefcase },
   { label: 'Work Logs', description: 'Hours logged against assignments', href: '/work-logs', icon: ListTodo, keywords: 'hours timesheet' },
   { label: 'Services', description: 'Manage department services and skills', href: '/skills', icon: UserCog, keywords: 'skills services' },
@@ -46,7 +46,7 @@ const SHORTCUTS: Shortcut[] = [
   { label: 'Users (Admin)', description: 'Add, edit, or deactivate users', href: '/admin/users', icon: UserPlus, adminOnly: true, keywords: 'manage users' },
   { label: 'Departments (Admin)', description: 'Merge, split, and edit departments', href: '/admin/departments', icon: Network, adminOnly: true, keywords: 'manage departments' },
   { label: 'Teams (Admin)', description: 'Org-wide overview of all teams', href: '/admin/teams', icon: UsersRound, adminOnly: true, keywords: 'manage teams' },
-  { label: 'Clients (Admin)', description: 'Admin-level client management', href: '/admin/clients', icon: Building2, adminOnly: true, keywords: 'manage clients' },
+  { label: 'Client Request (Admin)', description: 'Admin-level client management', href: '/admin/clients', icon: Building2, adminOnly: true, keywords: 'manage clients' },
   { label: 'Audit Log', description: 'System-wide change history', href: '/admin/audit', icon: ClipboardList, adminOnly: true },
   { label: 'History', description: 'VA history events', href: '/admin/history', icon: History, adminOnly: true },
 ]

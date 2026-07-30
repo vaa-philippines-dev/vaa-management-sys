@@ -10,6 +10,7 @@ import { Pagination } from '@/components/ui/pagination'
 import { Building2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { CUSTOMER_ACCOUNT_STATUS_COLORS } from '@/lib/cms/display'
+import { CmsSyncPanel } from '@/components/admin/CmsSyncPanel'
 
 const CUSTOMERS_VIEW_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE']
 const PAGE_SIZE = 30
@@ -65,6 +66,8 @@ export default async function CustomersPage({
           <p className="text-xs text-muted-foreground">Mirrored from the CMS · {totalCount} shown</p>
         </div>
       </div>
+
+      <CmsSyncPanel />
 
       <div className="rounded-lg border bg-card p-3">
         <FilterBar

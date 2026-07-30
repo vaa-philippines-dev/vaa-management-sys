@@ -30,7 +30,6 @@ import {
   BriefcaseBusiness,
   Database,
   IdCard,
-  RefreshCw,
 } from 'lucide-react'
 import Image from 'next/image'
 import {
@@ -256,22 +255,25 @@ function FavoritableRow({
 const managerRoutes = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { label: 'Inbox', href: '/inbox', icon: MessageSquare },
-  { label: 'Client Assignments', href: '/clients', icon: BriefcaseBusiness },
+  { label: 'Client Request', href: '/clients', icon: BriefcaseBusiness },
   { label: 'Assignments', href: '/assignments', icon: Briefcase },
+]
+
+// Rendered in the "On Going" section at the very bottom of the manager sidebar,
+// below Favorites — kept out of managerRoutes' render loop above.
+const onGoingRoutes = [
   { label: 'Work Logs', href: '/work-logs', icon: ListTodo },
   { label: 'Services', href: '/skills', icon: UserCog },
   { label: 'Tickets', href: '/tickets', icon: Ticket },
   { label: 'Monthly Report', href: '/reports', icon: BarChart3 },
 ]
 
-// Rendered below VA Roster inside the "Department" section. Kept out of
+// Rendered below VA Masterlist inside the "Department" section. Kept out of
 // managerRoutes' render loop (below) whenever the Department section is
 // shown, so Clients/Assignments appear once, not duplicated in both places.
 const departmentRoutes = [
-  { label: 'VA Roster', href: '/vas', icon: Users },
-  { label: 'Customers', href: '/customers', icon: Building2 },
-  { label: 'Accounts', href: '/accounts', icon: IdCard },
-  { label: 'Client Assignments', href: '/clients', icon: BriefcaseBusiness },
+  { label: 'VA Masterlist', href: '/vas', icon: Users },
+  { label: 'Client Request', href: '/clients', icon: BriefcaseBusiness },
   { label: 'Assignments', href: '/assignments', icon: Briefcase },
   { label: 'Teams', href: '/teams', icon: UsersRound },
   { label: 'Celebrants', href: '/celebrants', icon: Calendar },
@@ -290,12 +292,13 @@ const adminRoutes = [
   { label: 'Users', href: '/admin/users', icon: UserPlus },
   { label: 'Departments', href: '/admin/departments', icon: Network },
   { label: 'Teams', href: '/admin/teams', icon: UsersRound },
-  { label: 'Client Assignments', href: '/admin/clients', icon: BriefcaseBusiness },
+  { label: 'Client Request', href: '/admin/clients', icon: BriefcaseBusiness },
+  { label: 'Customers', href: '/customers', icon: Building2 },
+  { label: 'Accounts', href: '/accounts', icon: IdCard },
   { label: 'Departments (org view)', href: '/departments', icon: Building2 },
   { label: 'Audit Log', href: '/admin/audit', icon: ClipboardList },
   { label: 'History', href: '/admin/history', icon: History },
   { label: 'VA Connections', href: '/va-connections', icon: Database },
-  { label: 'Sync from CMS', href: '/admin/cms-sync', icon: RefreshCw },
 ]
 
 export function Sidebar({
@@ -368,7 +371,12 @@ export function Sidebar({
     })
   }
 
-  const allRoutes = [...routes, ...(showDepartmentSection ? departmentRoutes : []), ...(isAdmin ? adminRoutes : [])]
+  const allRoutes = [
+    ...routes,
+    ...(showDepartmentSection ? departmentRoutes : []),
+    ...(isAdmin ? adminRoutes : []),
+    ...(role === 'MANAGER' ? onGoingRoutes : []),
+  ]
   const isRouteActive = (href: string) =>
     href === '/dashboard' ? pathname === '/dashboard' : pathname === href || pathname.startsWith(href + '/')
   const isFavorited = (href: string) => favorites.some((f) => f.href === href)
@@ -446,7 +454,7 @@ export function Sidebar({
               <p className="px-2 pt-3.5 pb-1 text-[10.5px] tracking-wide text-sidebar-foreground/60">Department</p>
               <FavoritableRow
                 href="/vas"
-                label="VA Roster"
+                label="VA Masterlist"
                 icon={Users}
                 isActive={isMainRowActive('/vas', isRouteActive('/vas'))}
                 canFavorite={canFavorite}
@@ -455,28 +463,8 @@ export function Sidebar({
                 onChanged={setFavorites}
               />
               <FavoritableRow
-                href="/customers"
-                label="Customers"
-                icon={Building2}
-                isActive={isMainRowActive('/customers', isRouteActive('/customers'))}
-                canFavorite={canFavorite}
-                favorite={favorites.find((f) => f.href === '/customers')}
-                atMax={atMax}
-                onChanged={setFavorites}
-              />
-              <FavoritableRow
-                href="/accounts"
-                label="Accounts"
-                icon={IdCard}
-                isActive={isMainRowActive('/accounts', isRouteActive('/accounts'))}
-                canFavorite={canFavorite}
-                favorite={favorites.find((f) => f.href === '/accounts')}
-                atMax={atMax}
-                onChanged={setFavorites}
-              />
-              <FavoritableRow
                 href="/clients"
-                label="Client Assignments"
+                label="Client Request"
                 icon={BriefcaseBusiness}
                 isActive={isMainRowActive('/clients', isRouteActive('/clients'))}
                 canFavorite={canFavorite}
@@ -622,7 +610,7 @@ export function Sidebar({
                   />
                   <FavoritableRow
                     href="/admin/clients"
-                    label="Client Assignments"
+                    label="Client Request"
                     icon={BriefcaseBusiness}
                     isActive={isMainRowActive('/admin/clients', isRouteActive('/admin/clients'))}
                     canFavorite={canFavorite}
@@ -633,6 +621,26 @@ export function Sidebar({
                 </div>
               )}
 
+              <FavoritableRow
+                href="/customers"
+                label="Customers"
+                icon={Building2}
+                isActive={isMainRowActive('/customers', isRouteActive('/customers'))}
+                canFavorite={canFavorite}
+                favorite={favorites.find((f) => f.href === '/customers')}
+                atMax={atMax}
+                onChanged={setFavorites}
+              />
+              <FavoritableRow
+                href="/accounts"
+                label="Accounts"
+                icon={IdCard}
+                isActive={isMainRowActive('/accounts', isRouteActive('/accounts'))}
+                canFavorite={canFavorite}
+                favorite={favorites.find((f) => f.href === '/accounts')}
+                atMax={atMax}
+                onChanged={setFavorites}
+              />
               <FavoritableRow
                 href="/departments"
                 label="Departments"
@@ -673,16 +681,6 @@ export function Sidebar({
                 atMax={atMax}
                 onChanged={setFavorites}
               />
-              <FavoritableRow
-                href="/admin/cms-sync"
-                label="Sync from CMS"
-                icon={RefreshCw}
-                isActive={isMainRowActive('/admin/cms-sync', isRouteActive('/admin/cms-sync'))}
-                canFavorite={canFavorite}
-                favorite={favorites.find((f) => f.href === '/admin/cms-sync')}
-                atMax={atMax}
-                onChanged={setFavorites}
-              />
             </>
           )}
 
@@ -707,6 +705,25 @@ export function Sidebar({
                   </div>
                 )
               })}
+            </>
+          )}
+
+          {role === 'MANAGER' && (
+            <>
+              <p className="px-2 pt-3.5 pb-1 text-[10.5px] tracking-wide text-sidebar-foreground/60">On Going</p>
+              {onGoingRoutes.map((route) => (
+                <FavoritableRow
+                  key={route.href}
+                  href={route.href}
+                  label={route.label}
+                  icon={route.icon}
+                  isActive={isMainRowActive(route.href, isRouteActive(route.href))}
+                  canFavorite={canFavorite}
+                  favorite={favorites.find((f) => f.href === route.href)}
+                  atMax={atMax}
+                  onChanged={setFavorites}
+                />
+              ))}
             </>
           )}
         </nav>

@@ -111,7 +111,7 @@ export default async function AdminClientsPage({
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-bold tracking-tight">Client Assignments</h2>
+          <h2 className="text-lg font-bold tracking-tight">Client Request</h2>
           <p className="text-xs text-muted-foreground">
             {canEdit ? 'Rename, edit, or delete any client assignment across all departments.' : 'Admin-level client assignment management (view-only).'}
           </p>
