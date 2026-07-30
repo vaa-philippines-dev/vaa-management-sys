@@ -22,6 +22,13 @@ import {
 
 const SELECT_CLASS = 'flex h-9 w-full rounded-md border border-input bg-background px-2.5 text-sm'
 
+// Local (not UTC) YYYY-MM-DD — toISOString() would roll back a day for
+// timezones ahead of UTC (e.g. PHT) in the early-morning hours.
+function todayLocalDateString() {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
 export type AddClientDepartmentOption = { id: string; name: string; shortName: string | null; acronym: string | null }
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
@@ -148,6 +155,7 @@ export function AddClientModal({
       title="Add Client Assignment"
       description="Every field except Company Name is optional — fill in what you have now."
       size="lg"
+      closeOnOverlayClick={false}
       footer={
         <>
           <Button type="button" variant="outline" size="sm" onClick={onClose} disabled={isPending}>
@@ -167,7 +175,7 @@ export function AddClientModal({
 
         <div className="space-y-1.5">
           <Label htmlFor="meetingDate">Meeting Date</Label>
-          <Input id="meetingDate" name="meetingDate" type="date" className="h-9 max-w-[180px]" />
+          <Input id="meetingDate" name="meetingDate" type="date" defaultValue={todayLocalDateString()} className="h-9 max-w-[180px]" />
         </div>
 
         <SectionTitle>Request Information</SectionTitle>

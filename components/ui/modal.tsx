@@ -14,6 +14,7 @@ type ModalProps = {
   size?: ModalSize
   children: React.ReactNode
   footer?: React.ReactNode
+  closeOnOverlayClick?: boolean
 }
 
 const sizeClass: Record<ModalSize, string> = {
@@ -22,7 +23,16 @@ const sizeClass: Record<ModalSize, string> = {
   lg: 'max-w-2xl',
 }
 
-export function Modal({ open, onOpenChange, title, description, size = 'md', children, footer }: ModalProps) {
+export function Modal({
+  open,
+  onOpenChange,
+  title,
+  description,
+  size = 'md',
+  children,
+  footer,
+  closeOnOverlayClick = true,
+}: ModalProps) {
   useEffect(() => {
     if (open) {
       const original = document.body.style.overflow
@@ -42,7 +52,7 @@ export function Modal({ open, onOpenChange, title, description, size = 'md', chi
     >
       <div
         className="absolute inset-0 bg-overlay backdrop-blur-sm animate-in fade-in-0 duration-200"
-        onClick={() => onOpenChange(false)}
+        onClick={() => closeOnOverlayClick && onOpenChange(false)}
       />
       <div
         className={cn(
