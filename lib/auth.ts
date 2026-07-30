@@ -1,4 +1,5 @@
 import { cache } from 'react'
+import { cookies } from 'next/headers'
 import { prisma } from '@/lib/prisma'
 import { createServerSupabase } from '@/lib/supabase/server'
 
@@ -17,6 +18,13 @@ export const TEAM_MANAGE_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER',
 // HR is deliberately added here too (elevated beyond Dept Manager, who does NOT get this) per HR's expanded team-assignment mandate.
 export const TEAM_LEADER_ASSIGN_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'OPERATIONS_MANAGER', 'HR']
 
+// "View as" — lets a full admin (SUPER_ADMIN/SYSTEM_ADMIN) temporarily browse the app
+// simulating another SystemRole, via a cookie read in getCurrentUser() below. Deliberately
+// excludes SUPER_ADMIN/SYSTEM_ADMIN as targets (no viewing-as into another full admin).
+export const VIEW_AS_ROLES = ['EXECUTIVE', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'HR', 'STAFF', 'VA'] as const
+export type ViewAsRole = (typeof VIEW_AS_ROLES)[number]
+export const VIEW_AS_COOKIE = 'view_as_role'
+
 // Dev-only auth bypass for local testing of multi-user flows (e.g. Inbox
 // realtime) without needing two real Google OAuth logins. Only ever active
 // when NODE_ENV !== 'production' AND DEV_AUTH_BYPASS_EMAIL is set locally —
@@ -24,7 +32,7 @@ export const TEAM_LEADER_ASSIGN_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'OPERATI
 const DEV_AUTH_BYPASS_EMAIL =
   process.env.NODE_ENV !== 'production' ? process.env.DEV_AUTH_BYPASS_EMAIL : undefined
 
-export const getCurrentUser = cache(async () => {
+const getRealCurrentUser = cache(async () => {
   if (DEV_AUTH_BYPASS_EMAIL) {
     return prisma.user.findUnique({
       where: { email: DEV_AUTH_BYPASS_EMAIL },
@@ -56,6 +64,28 @@ export const getCurrentUser = cache(async () => {
       roleAssignments: { where: { status: 'ACTIVE' } },
     },
   })
+})
+
+// Wraps getRealCurrentUser() with the "view as" override: when the real user is a full
+// admin and a valid VIEW_AS_COOKIE is set, every downstream requireRole()/requireAdminMutator()/
+// canMutate() etc. call sees the simulated systemRole instead of the real one — a genuine
+// permission simulation, not just a UI relabel. realSystemRole/isViewingAs stay attached so
+// the navbar can show/exit the simulation regardless of which role is currently active.
+export const getCurrentUser = cache(async () => {
+  const realUser = await getRealCurrentUser()
+  if (!realUser) return null
+
+  const canViewAs = ['SUPER_ADMIN', 'SYSTEM_ADMIN'].includes(realUser.systemRole)
+  const cookieStore = await cookies()
+  const viewAsRole = canViewAs ? cookieStore.get(VIEW_AS_COOKIE)?.value : undefined
+  const isViewingAs = !!viewAsRole && (VIEW_AS_ROLES as readonly string[]).includes(viewAsRole)
+
+  return {
+    ...realUser,
+    systemRole: isViewingAs ? (viewAsRole as ViewAsRole) : realUser.systemRole,
+    realSystemRole: realUser.systemRole,
+    isViewingAs,
+  }
 })
 
 export async function requireAuth() {

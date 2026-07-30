@@ -1,22 +1,13 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
-import { LogOut, Settings, Building2, Briefcase } from 'lucide-react'
-
-const ROLE_LABELS: Record<string, string> = {
-  SUPER_ADMIN: 'Super Admin',
-  SYSTEM_ADMIN: 'System Admin',
-  EXECUTIVE: 'Executive',
-  DEPT_MANAGER: 'Dept Manager',
-  TEAM_LEADER: 'Team Leader',
-  OPERATIONS_MANAGER: 'Operations Manager',
-  HR: 'HR',
-  STAFF: 'Staff',
-  VA: 'Virtual Assistant',
-}
+import { LogOut, Settings, Building2, Briefcase, Eye } from 'lucide-react'
+import { ROLE_LABELS } from '@/lib/role-labels'
+import { setViewAsRole, clearViewAsRole } from '@/app/(dashboard)/_view-as/actions'
+import type { ViewAsRole } from '@/lib/auth'
 
 type ProfileCardProps = {
   firstName: string | null
@@ -26,6 +17,9 @@ type ProfileCardProps = {
   systemRole: string
   departmentName?: string | null
   positionTitle?: string | null
+  canViewAs?: boolean
+  isViewingAs?: boolean
+  viewAsRoleOptions?: readonly string[]
 }
 
 export function ProfileCard({
@@ -36,10 +30,14 @@ export function ProfileCard({
   systemRole,
   departmentName,
   positionTitle,
+  canViewAs = false,
+  isViewingAs = false,
+  viewAsRoleOptions = [],
 }: ProfileCardProps) {
   const [open, setOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
+  const [isPending, startTransition] = useTransition()
 
   useEffect(() => {
     if (!open) return
@@ -71,6 +69,22 @@ export function ProfileCard({
       // Supabase not configured — just redirect
     }
     router.push('/login')
+  }
+
+  const handleViewAs = (role: string) => {
+    setOpen(false)
+    startTransition(async () => {
+      await setViewAsRole(role as ViewAsRole)
+      router.refresh()
+    })
+  }
+
+  const handleExitViewAs = () => {
+    setOpen(false)
+    startTransition(async () => {
+      await clearViewAsRole()
+      router.refresh()
+    })
   }
 
   return (
@@ -127,7 +141,48 @@ export function ProfileCard({
                 </span>
               </div>
             )}
+            {isViewingAs && (
+              <div className="flex items-center justify-between gap-2 rounded-md bg-amber-500/10 px-2 py-1.5 text-amber-700 dark:text-amber-400">
+                <span className="flex items-center gap-1.5">
+                  <Eye className="h-3 w-3" />
+                  Viewing as {ROLE_LABELS[systemRole] ?? systemRole}
+                </span>
+                <button
+                  type="button"
+                  onClick={handleExitViewAs}
+                  disabled={isPending}
+                  className="font-semibold underline decoration-dotted hover:no-underline disabled:opacity-50"
+                >
+                  Exit
+                </button>
+              </div>
+            )}
           </div>
+
+          {canViewAs && viewAsRoleOptions.length > 0 && (
+            <div className="p-1.5 border-b">
+              <p className="px-2.5 pb-1 pt-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                View as
+              </p>
+              <div className="max-h-44 space-y-0.5 overflow-y-auto">
+                {viewAsRoleOptions.map((role) => (
+                  <button
+                    key={role}
+                    type="button"
+                    disabled={isPending}
+                    onClick={() => handleViewAs(role)}
+                    className={cn(
+                      'flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-xs font-medium hover:bg-muted transition-colors disabled:opacity-50',
+                      isViewingAs && systemRole === role && 'bg-muted'
+                    )}
+                  >
+                    <Eye className="h-3.5 w-3.5" />
+                    {ROLE_LABELS[role] ?? role}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="p-1.5 border-b">
             <Link
