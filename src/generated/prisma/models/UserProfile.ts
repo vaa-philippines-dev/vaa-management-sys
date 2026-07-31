@@ -36,6 +36,7 @@ export type UserProfileMinAggregateOutputType = {
   barangay: string | null
   cityMunicipality: string | null
   province: string | null
+  houseNumber: string | null
   zipCode: string | null
   landmark: string | null
   address: string | null
@@ -75,6 +76,7 @@ export type UserProfileMaxAggregateOutputType = {
   barangay: string | null
   cityMunicipality: string | null
   province: string | null
+  houseNumber: string | null
   zipCode: string | null
   landmark: string | null
   address: string | null
@@ -114,6 +116,7 @@ export type UserProfileCountAggregateOutputType = {
   barangay: number
   cityMunicipality: number
   province: number
+  houseNumber: number
   zipCode: number
   landmark: number
   address: number
@@ -156,6 +159,7 @@ export type UserProfileMinAggregateInputType = {
   barangay?: true
   cityMunicipality?: true
   province?: true
+  houseNumber?: true
   zipCode?: true
   landmark?: true
   address?: true
@@ -195,6 +199,7 @@ export type UserProfileMaxAggregateInputType = {
   barangay?: true
   cityMunicipality?: true
   province?: true
+  houseNumber?: true
   zipCode?: true
   landmark?: true
   address?: true
@@ -234,6 +239,7 @@ export type UserProfileCountAggregateInputType = {
   barangay?: true
   cityMunicipality?: true
   province?: true
+  houseNumber?: true
   zipCode?: true
   landmark?: true
   address?: true
@@ -347,6 +353,7 @@ export type UserProfileGroupByOutputType = {
   barangay: string | null
   cityMunicipality: string | null
   province: string | null
+  houseNumber: string | null
   zipCode: string | null
   landmark: string | null
   address: string | null
@@ -408,6 +415,7 @@ export type UserProfileWhereInput = {
   barangay?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   cityMunicipality?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   province?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  houseNumber?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   zipCode?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   landmark?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   address?: Prisma.StringNullableFilter<"UserProfile"> | string | null
@@ -449,6 +457,7 @@ export type UserProfileOrderByWithRelationInput = {
   barangay?: Prisma.SortOrderInput | Prisma.SortOrder
   cityMunicipality?: Prisma.SortOrderInput | Prisma.SortOrder
   province?: Prisma.SortOrderInput | Prisma.SortOrder
+  houseNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   zipCode?: Prisma.SortOrderInput | Prisma.SortOrder
   landmark?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -493,6 +502,7 @@ export type UserProfileWhereUniqueInput = Prisma.AtLeast<{
   barangay?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   cityMunicipality?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   province?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+  houseNumber?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   zipCode?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   landmark?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   address?: Prisma.StringNullableFilter<"UserProfile"> | string | null
@@ -534,6 +544,7 @@ export type UserProfileOrderByWithAggregationInput = {
   barangay?: Prisma.SortOrderInput | Prisma.SortOrder
   cityMunicipality?: Prisma.SortOrderInput | Prisma.SortOrder
   province?: Prisma.SortOrderInput | Prisma.SortOrder
+  houseNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   zipCode?: Prisma.SortOrderInput | Prisma.SortOrder
   landmark?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -580,6 +591,7 @@ export type UserProfileScalarWhereWithAggregatesInput = {
   barangay?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
   cityMunicipality?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
   province?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
+  houseNumber?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
   zipCode?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
   landmark?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
   address?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
@@ -619,6 +631,7 @@ export type UserProfileCreateInput = {
   barangay?: string | null
   cityMunicipality?: string | null
   province?: string | null
+  houseNumber?: string | null
   zipCode?: string | null
   landmark?: string | null
   address?: string | null
@@ -660,6 +673,7 @@ export type UserProfileUncheckedCreateInput = {
   barangay?: string | null
   cityMunicipality?: string | null
   province?: string | null
+  houseNumber?: string | null
   zipCode?: string | null
   landmark?: string | null
   address?: string | null
@@ -699,6 +713,7 @@ export type UserProfileUpdateInput = {
   barangay?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cityMunicipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   landmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -740,6 +755,7 @@ export type UserProfileUncheckedUpdateInput = {
   barangay?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cityMunicipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   landmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -780,6 +796,7 @@ export type UserProfileCreateManyInput = {
   barangay?: string | null
   cityMunicipality?: string | null
   province?: string | null
+  houseNumber?: string | null
   zipCode?: string | null
   landmark?: string | null
   address?: string | null
@@ -819,6 +836,7 @@ export type UserProfileUpdateManyMutationInput = {
   barangay?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cityMunicipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   landmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -859,6 +877,7 @@ export type UserProfileUncheckedUpdateManyInput = {
   barangay?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cityMunicipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   landmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -912,6 +931,7 @@ export type UserProfileCountOrderByAggregateInput = {
   barangay?: Prisma.SortOrder
   cityMunicipality?: Prisma.SortOrder
   province?: Prisma.SortOrder
+  houseNumber?: Prisma.SortOrder
   zipCode?: Prisma.SortOrder
   landmark?: Prisma.SortOrder
   address?: Prisma.SortOrder
@@ -952,6 +972,7 @@ export type UserProfileMaxOrderByAggregateInput = {
   barangay?: Prisma.SortOrder
   cityMunicipality?: Prisma.SortOrder
   province?: Prisma.SortOrder
+  houseNumber?: Prisma.SortOrder
   zipCode?: Prisma.SortOrder
   landmark?: Prisma.SortOrder
   address?: Prisma.SortOrder
@@ -991,6 +1012,7 @@ export type UserProfileMinOrderByAggregateInput = {
   barangay?: Prisma.SortOrder
   cityMunicipality?: Prisma.SortOrder
   province?: Prisma.SortOrder
+  houseNumber?: Prisma.SortOrder
   zipCode?: Prisma.SortOrder
   landmark?: Prisma.SortOrder
   address?: Prisma.SortOrder
@@ -1070,6 +1092,7 @@ export type UserProfileCreateWithoutUserInput = {
   barangay?: string | null
   cityMunicipality?: string | null
   province?: string | null
+  houseNumber?: string | null
   zipCode?: string | null
   landmark?: string | null
   address?: string | null
@@ -1109,6 +1132,7 @@ export type UserProfileUncheckedCreateWithoutUserInput = {
   barangay?: string | null
   cityMunicipality?: string | null
   province?: string | null
+  houseNumber?: string | null
   zipCode?: string | null
   landmark?: string | null
   address?: string | null
@@ -1164,6 +1188,7 @@ export type UserProfileUpdateWithoutUserInput = {
   barangay?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cityMunicipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   landmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1203,6 +1228,7 @@ export type UserProfileUncheckedUpdateWithoutUserInput = {
   barangay?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cityMunicipality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   province?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  houseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   landmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1245,6 +1271,7 @@ export type UserProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   barangay?: boolean
   cityMunicipality?: boolean
   province?: boolean
+  houseNumber?: boolean
   zipCode?: boolean
   landmark?: boolean
   address?: boolean
@@ -1286,6 +1313,7 @@ export type UserProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   barangay?: boolean
   cityMunicipality?: boolean
   province?: boolean
+  houseNumber?: boolean
   zipCode?: boolean
   landmark?: boolean
   address?: boolean
@@ -1327,6 +1355,7 @@ export type UserProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   barangay?: boolean
   cityMunicipality?: boolean
   province?: boolean
+  houseNumber?: boolean
   zipCode?: boolean
   landmark?: boolean
   address?: boolean
@@ -1368,6 +1397,7 @@ export type UserProfileSelectScalar = {
   barangay?: boolean
   cityMunicipality?: boolean
   province?: boolean
+  houseNumber?: boolean
   zipCode?: boolean
   landmark?: boolean
   address?: boolean
@@ -1396,7 +1426,7 @@ export type UserProfileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type UserProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "phone" | "whatsappNumber" | "gender" | "birthDate" | "nonCelebrant" | "birthdayCelebrant" | "barangay" | "cityMunicipality" | "province" | "zipCode" | "landmark" | "address" | "addressLine" | "emergencyContactName" | "emergencyContactPhone" | "emergencyContactRelation" | "gcashNumber" | "personalEmail" | "workEmail" | "regionCode" | "provinceCode" | "cityCode" | "barangayCode" | "facebookName" | "facebookUrl" | "linkedinUrl" | "payoneerAccount" | "passportNumber" | "passportPhoto" | "philhealthNumber" | "philhealthPhoto" | "signedContract" | "personalityTraits" | "createdAt" | "updatedAt", ExtArgs["result"]["userProfile"]>
+export type UserProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "phone" | "whatsappNumber" | "gender" | "birthDate" | "nonCelebrant" | "birthdayCelebrant" | "barangay" | "cityMunicipality" | "province" | "houseNumber" | "zipCode" | "landmark" | "address" | "addressLine" | "emergencyContactName" | "emergencyContactPhone" | "emergencyContactRelation" | "gcashNumber" | "personalEmail" | "workEmail" | "regionCode" | "provinceCode" | "cityCode" | "barangayCode" | "facebookName" | "facebookUrl" | "linkedinUrl" | "payoneerAccount" | "passportNumber" | "passportPhoto" | "philhealthNumber" | "philhealthPhoto" | "signedContract" | "personalityTraits" | "createdAt" | "updatedAt", ExtArgs["result"]["userProfile"]>
 export type UserProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -1424,6 +1454,7 @@ export type $UserProfilePayload<ExtArgs extends runtime.Types.Extensions.Interna
     barangay: string | null
     cityMunicipality: string | null
     province: string | null
+    houseNumber: string | null
     zipCode: string | null
     landmark: string | null
     address: string | null
@@ -1885,6 +1916,7 @@ export interface UserProfileFieldRefs {
   readonly barangay: Prisma.FieldRef<"UserProfile", 'String'>
   readonly cityMunicipality: Prisma.FieldRef<"UserProfile", 'String'>
   readonly province: Prisma.FieldRef<"UserProfile", 'String'>
+  readonly houseNumber: Prisma.FieldRef<"UserProfile", 'String'>
   readonly zipCode: Prisma.FieldRef<"UserProfile", 'String'>
   readonly landmark: Prisma.FieldRef<"UserProfile", 'String'>
   readonly address: Prisma.FieldRef<"UserProfile", 'String'>

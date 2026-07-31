@@ -6,7 +6,13 @@ import { Plus, Upload } from 'lucide-react'
 import { AddVAModal } from '@/components/vas/AddVAForm'
 import { useVACsvImport } from '@/components/vas/VACsvImportContext'
 
-export function QuickAddVABtn() {
+export function QuickAddVABtn({
+  departments = [],
+  positionSkills = [],
+}: {
+  departments?: { id: string; name: string }[]
+  positionSkills?: { id: string; name: string }[]
+}) {
   const [open, setOpen] = useState(false)
   const { openModal } = useVACsvImport()
   return (
@@ -21,7 +27,7 @@ export function QuickAddVABtn() {
           Add VA
         </Button>
       </div>
-      <AddVAModal open={open} onClose={() => setOpen(false)} />
+      <AddVAModal open={open} onClose={() => setOpen(false)} departments={departments} positionSkills={positionSkills} />
     </>
   )
 }

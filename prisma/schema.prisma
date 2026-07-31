@@ -333,6 +333,7 @@ model DepartmentMembership {
 model User {
   id           String        @id @default(cuid())
   email        String        @unique
+  employeeId   String?       @unique @map("employee_id")
   firstName    String        @map("first_name")
   middleName   String?       @map("middle_name")
   lastName     String        @map("last_name")
@@ -376,6 +377,8 @@ model User {
   tempLedTeams1              Team[]                 @relation("TeamTempLeader1")
   tempLedTeams2              Team[]                 @relation("TeamTempLeader2")
   teamMemberships            TeamMembership[]       @relation("TeamMember")
+  onboardingInvite           VAOnboardingInvite?
+  onboardingInvitesCreated   VAOnboardingInvite[]   @relation("OnboardingInviteCreator")
 
   @@index([email])
   @@index([systemRole])
@@ -396,6 +399,7 @@ model UserProfile {
   barangay                 String?
   cityMunicipality         String?   @map("city_municipality")
   province                 String?
+  houseNumber              String?   @map("house_number")
   zipCode                  String?   @map("zip_code")
   landmark                 String?
   address                  String?
@@ -628,6 +632,30 @@ model LeaveRequest {
   @@index([userId])
   @@index([status])
   @@map("leave_requests")
+}
+
+// Per-year sequence backing employeeId's "VA-<YY>-<seq>" format — a real
+// row-level UPDATE...RETURNING counter, not a count()-based scheme, so
+// concurrent VA creation can't produce duplicate employee IDs.
+model EmployeeIdCounter {
+  year    Int @id
+  lastSeq Int @default(0) @map("last_seq")
+
+  @@map("employee_id_counters")
+}
+
+model VAOnboardingInvite {
+  id          String    @id @default(cuid())
+  userId      String    @unique @map("user_id")
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token       String    @unique
+  expiresAt   DateTime  @map("expires_at")
+  completedAt DateTime? @map("completed_at")
+  createdBy   String    @map("created_by")
+  creator     User      @relation("OnboardingInviteCreator", fields: [createdBy], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@map("va_onboarding_invites")
 }
 
 // ──────────────────────────────────────────────────────────────────

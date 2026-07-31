@@ -156,8 +156,11 @@ export default async function VADetailPage({
     user: {
       id: va.user.id,
       email: va.user.email,
+      employeeId: va.user.employeeId ?? null,
       firstName: va.user.firstName,
+      middleName: va.user.middleName ?? null,
       lastName: va.user.lastName,
+      extName: va.user.extName ?? null,
     },
     profile: profile ? {
       gender: profile.gender ?? null,
@@ -170,6 +173,7 @@ export default async function VADetailPage({
       birthDate: toDateString(profile.birthDate),
       nonCelebrant: profile.nonCelebrant,
       address: profile.address ?? null,
+      houseNumber: profile.houseNumber ?? null,
       barangay: profile.barangay ?? null,
       cityMunicipality: profile.cityMunicipality ?? null,
       province: profile.province ?? null,
@@ -252,6 +256,7 @@ export default async function VADetailPage({
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-xl font-bold tracking-tight">{va.user.firstName} {va.user.lastName}</h2>
+                {va.user.employeeId && <Badge variant="outline" className="text-xs font-mono">{va.user.employeeId}</Badge>}
                 <Badge variant={va.status === 'ACTIVE' ? 'default' : 'secondary'} className="text-xs">{STATUS_LABEL[va.status] ?? va.status}</Badge>
                 {va.onHold && <Badge variant="outline" className="text-xs bg-warning/15 text-warning border-warning/20">On Hold</Badge>}
                 {va.hybrid && <Badge variant="outline" className="text-xs bg-info/15 text-info border-info/20">Hybrid</Badge>}

@@ -411,6 +411,8 @@ export const ModelName = {
   VASkill: 'VASkill',
   VADocument: 'VADocument',
   LeaveRequest: 'LeaveRequest',
+  EmployeeIdCounter: 'EmployeeIdCounter',
+  VAOnboardingInvite: 'VAOnboardingInvite',
   Client: 'Client',
   Assignment: 'Assignment',
   WorkLog: 'WorkLog',
@@ -445,7 +447,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveRequest" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "customer" | "account" | "notification" | "sidebarFavorite" | "team" | "teamMembership"
+    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveRequest" | "employeeIdCounter" | "vAOnboardingInvite" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "customer" | "account" | "notification" | "sidebarFavorite" | "team" | "teamMembership"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1482,6 +1484,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.LeaveRequestCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.LeaveRequestCountAggregateOutputType> | number
+        }
+      }
+    }
+    EmployeeIdCounter: {
+      payload: Prisma.$EmployeeIdCounterPayload<ExtArgs>
+      fields: Prisma.EmployeeIdCounterFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmployeeIdCounterFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeIdCounterPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmployeeIdCounterFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeIdCounterPayload>
+        }
+        findFirst: {
+          args: Prisma.EmployeeIdCounterFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeIdCounterPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmployeeIdCounterFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeIdCounterPayload>
+        }
+        findMany: {
+          args: Prisma.EmployeeIdCounterFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeIdCounterPayload>[]
+        }
+        create: {
+          args: Prisma.EmployeeIdCounterCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeIdCounterPayload>
+        }
+        createMany: {
+          args: Prisma.EmployeeIdCounterCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmployeeIdCounterCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeIdCounterPayload>[]
+        }
+        delete: {
+          args: Prisma.EmployeeIdCounterDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeIdCounterPayload>
+        }
+        update: {
+          args: Prisma.EmployeeIdCounterUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeIdCounterPayload>
+        }
+        deleteMany: {
+          args: Prisma.EmployeeIdCounterDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmployeeIdCounterUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmployeeIdCounterUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeIdCounterPayload>[]
+        }
+        upsert: {
+          args: Prisma.EmployeeIdCounterUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeIdCounterPayload>
+        }
+        aggregate: {
+          args: Prisma.EmployeeIdCounterAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmployeeIdCounter>
+        }
+        groupBy: {
+          args: Prisma.EmployeeIdCounterGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeIdCounterGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmployeeIdCounterCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeIdCounterCountAggregateOutputType> | number
+        }
+      }
+    }
+    VAOnboardingInvite: {
+      payload: Prisma.$VAOnboardingInvitePayload<ExtArgs>
+      fields: Prisma.VAOnboardingInviteFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VAOnboardingInviteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAOnboardingInvitePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VAOnboardingInviteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAOnboardingInvitePayload>
+        }
+        findFirst: {
+          args: Prisma.VAOnboardingInviteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAOnboardingInvitePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VAOnboardingInviteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAOnboardingInvitePayload>
+        }
+        findMany: {
+          args: Prisma.VAOnboardingInviteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAOnboardingInvitePayload>[]
+        }
+        create: {
+          args: Prisma.VAOnboardingInviteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAOnboardingInvitePayload>
+        }
+        createMany: {
+          args: Prisma.VAOnboardingInviteCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VAOnboardingInviteCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAOnboardingInvitePayload>[]
+        }
+        delete: {
+          args: Prisma.VAOnboardingInviteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAOnboardingInvitePayload>
+        }
+        update: {
+          args: Prisma.VAOnboardingInviteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAOnboardingInvitePayload>
+        }
+        deleteMany: {
+          args: Prisma.VAOnboardingInviteDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VAOnboardingInviteUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VAOnboardingInviteUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAOnboardingInvitePayload>[]
+        }
+        upsert: {
+          args: Prisma.VAOnboardingInviteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAOnboardingInvitePayload>
+        }
+        aggregate: {
+          args: Prisma.VAOnboardingInviteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVAOnboardingInvite>
+        }
+        groupBy: {
+          args: Prisma.VAOnboardingInviteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VAOnboardingInviteGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VAOnboardingInviteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VAOnboardingInviteCountAggregateOutputType> | number
         }
       }
     }
@@ -2990,6 +3140,7 @@ export type DepartmentMembershipScalarFieldEnum = (typeof DepartmentMembershipSc
 export const UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
+  employeeId: 'employeeId',
   firstName: 'firstName',
   middleName: 'middleName',
   lastName: 'lastName',
@@ -3020,6 +3171,7 @@ export const UserProfileScalarFieldEnum = {
   barangay: 'barangay',
   cityMunicipality: 'cityMunicipality',
   province: 'province',
+  houseNumber: 'houseNumber',
   zipCode: 'zipCode',
   landmark: 'landmark',
   address: 'address',
@@ -3217,6 +3369,27 @@ export const LeaveRequestScalarFieldEnum = {
 } as const
 
 export type LeaveRequestScalarFieldEnum = (typeof LeaveRequestScalarFieldEnum)[keyof typeof LeaveRequestScalarFieldEnum]
+
+
+export const EmployeeIdCounterScalarFieldEnum = {
+  year: 'year',
+  lastSeq: 'lastSeq'
+} as const
+
+export type EmployeeIdCounterScalarFieldEnum = (typeof EmployeeIdCounterScalarFieldEnum)[keyof typeof EmployeeIdCounterScalarFieldEnum]
+
+
+export const VAOnboardingInviteScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  token: 'token',
+  expiresAt: 'expiresAt',
+  completedAt: 'completedAt',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt'
+} as const
+
+export type VAOnboardingInviteScalarFieldEnum = (typeof VAOnboardingInviteScalarFieldEnum)[keyof typeof VAOnboardingInviteScalarFieldEnum]
 
 
 export const ClientScalarFieldEnum = {
@@ -4307,6 +4480,8 @@ export type GlobalOmitConfig = {
   vASkill?: Prisma.VASkillOmit
   vADocument?: Prisma.VADocumentOmit
   leaveRequest?: Prisma.LeaveRequestOmit
+  employeeIdCounter?: Prisma.EmployeeIdCounterOmit
+  vAOnboardingInvite?: Prisma.VAOnboardingInviteOmit
   client?: Prisma.ClientOmit
   assignment?: Prisma.AssignmentOmit
   workLog?: Prisma.WorkLogOmit

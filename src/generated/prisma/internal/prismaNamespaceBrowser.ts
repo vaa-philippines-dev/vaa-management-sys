@@ -65,6 +65,8 @@ export const ModelName = {
   VASkill: 'VASkill',
   VADocument: 'VADocument',
   LeaveRequest: 'LeaveRequest',
+  EmployeeIdCounter: 'EmployeeIdCounter',
+  VAOnboardingInvite: 'VAOnboardingInvite',
   Client: 'Client',
   Assignment: 'Assignment',
   WorkLog: 'WorkLog',
@@ -162,6 +164,7 @@ export type DepartmentMembershipScalarFieldEnum = (typeof DepartmentMembershipSc
 export const UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
+  employeeId: 'employeeId',
   firstName: 'firstName',
   middleName: 'middleName',
   lastName: 'lastName',
@@ -192,6 +195,7 @@ export const UserProfileScalarFieldEnum = {
   barangay: 'barangay',
   cityMunicipality: 'cityMunicipality',
   province: 'province',
+  houseNumber: 'houseNumber',
   zipCode: 'zipCode',
   landmark: 'landmark',
   address: 'address',
@@ -389,6 +393,27 @@ export const LeaveRequestScalarFieldEnum = {
 } as const
 
 export type LeaveRequestScalarFieldEnum = (typeof LeaveRequestScalarFieldEnum)[keyof typeof LeaveRequestScalarFieldEnum]
+
+
+export const EmployeeIdCounterScalarFieldEnum = {
+  year: 'year',
+  lastSeq: 'lastSeq'
+} as const
+
+export type EmployeeIdCounterScalarFieldEnum = (typeof EmployeeIdCounterScalarFieldEnum)[keyof typeof EmployeeIdCounterScalarFieldEnum]
+
+
+export const VAOnboardingInviteScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  token: 'token',
+  expiresAt: 'expiresAt',
+  completedAt: 'completedAt',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt'
+} as const
+
+export type VAOnboardingInviteScalarFieldEnum = (typeof VAOnboardingInviteScalarFieldEnum)[keyof typeof VAOnboardingInviteScalarFieldEnum]
 
 
 export const ClientScalarFieldEnum = {

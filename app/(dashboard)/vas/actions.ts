@@ -4,9 +4,14 @@ import { prisma } from '@/lib/prisma'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { CACHE_TAGS } from '@/lib/cache'
 import { redirect } from 'next/navigation'
+import { randomBytes } from 'node:crypto'
 import { requireRole, requireAdminMutator, VA_MUTATOR_ROLES } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
+import { generateEmployeeId } from '@/lib/employee-id'
+import { normalizeWhatsApp, normalizeGcash } from '@/lib/phone'
 import type { Proficiency, EmploymentStatus, GeneralStatus } from '@/src/generated/prisma/enums'
+
+const ONBOARDING_INVITE_TTL_MS = 7 * 24 * 60 * 60 * 1000 // 7 days
 
 export async function createVA(formData: FormData) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
@@ -21,23 +26,27 @@ export async function createVA(formData: FormData) {
 
   const hireDate = new Date()
 
-  const user = await prisma.user.create({
-    data: {
-      email,
-      firstName,
-      lastName,
-      systemRole: 'VA',
-      userType: 'VIRTUAL_ASSISTANT',
-      vaProfile: {
-        create: {
-          hourlyRate: hourlyRate ? Number(hourlyRate) : null,
-          notes,
-          currentHireDate: hireDate,
-          vaSkills: { create: skillIds.map((skillId) => ({ skillId })) },
+  const user = await prisma.$transaction(async (tx) => {
+    const employeeId = await generateEmployeeId(tx, hireDate)
+    return tx.user.create({
+      data: {
+        email,
+        employeeId,
+        firstName,
+        lastName,
+        systemRole: 'VA',
+        userType: 'VIRTUAL_ASSISTANT',
+        vaProfile: {
+          create: {
+            hourlyRate: hourlyRate ? Number(hourlyRate) : null,
+            notes,
+            currentHireDate: hireDate,
+            vaSkills: { create: skillIds.map((skillId) => ({ skillId })) },
+          },
         },
       },
-    },
-    include: { vaProfile: true },
+      include: { vaProfile: true },
+    })
   })
 
   await logAudit({
@@ -45,7 +54,7 @@ export async function createVA(formData: FormData) {
     action: 'CREATE',
     entityType: 'User',
     entityId: user.id,
-    after: { email, firstName, lastName },
+    after: { email, employeeId: user.employeeId, firstName, lastName },
   })
 
   await prisma.employmentRecord.create({
@@ -67,8 +76,9 @@ export async function createVA(formData: FormData) {
 }
 
 // Lightweight version of createVA for the VA Roster's "Add VA" quick-add modal —
-// name only (email optional, auto-generated as a placeholder if blank), no redirect
-// so the modal can close and refresh in place instead of navigating away.
+// name + department/position only (email optional, auto-generated as a
+// placeholder if blank), no redirect so the modal can close and refresh in
+// place instead of navigating away.
 export async function quickAddVA(formData: FormData) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
 
@@ -80,20 +90,29 @@ export async function quickAddVA(formData: FormData) {
   const lastName = parts.slice(1).join(' ') || '-'
   const emailInput = ((formData.get('email') as string) ?? '').trim().toLowerCase()
   const email = emailInput || `${firstName.toLowerCase()}-va@placeholder.vaa`
+  const departmentId = ((formData.get('departmentId') as string) ?? '').trim() || null
+  const positionSkillId = ((formData.get('positionSkillId') as string) ?? '').trim() || null
 
   const existing = await prisma.user.findUnique({ where: { email } })
   if (existing) throw new Error('A user with this email already exists')
 
-  const user = await prisma.user.create({
-    data: {
-      email,
-      firstName,
-      lastName,
-      systemRole: 'VA',
-      userType: 'VIRTUAL_ASSISTANT',
-      isActive: true,
-      vaProfile: { create: { hourlyRate: null } },
-    },
+  const hireDate = new Date()
+
+  const user = await prisma.$transaction(async (tx) => {
+    const employeeId = await generateEmployeeId(tx, hireDate)
+    return tx.user.create({
+      data: {
+        email,
+        employeeId,
+        firstName,
+        lastName,
+        systemRole: 'VA',
+        userType: 'VIRTUAL_ASSISTANT',
+        isActive: true,
+        vaProfile: { create: { hourlyRate: null, positionSkillId, currentHireDate: hireDate } },
+        ...(departmentId ? { memberships: { create: { departmentId, isPrimary: true } } } : {}),
+      },
+    })
   })
 
   await logAudit({
@@ -101,13 +120,47 @@ export async function quickAddVA(formData: FormData) {
     action: 'CREATE',
     entityType: 'User',
     entityId: user.id,
-    after: { email, firstName, lastName },
+    after: { email, employeeId: user.employeeId, firstName, lastName, departmentId, positionSkillId },
     metadata: { viaForm: 'vas:quick-add' },
   })
 
   revalidatePath('/vas')
   revalidateTag(CACHE_TAGS.vas, 'default')
   revalidateTag(CACHE_TAGS.users, 'default')
+
+  return { userId: user.id, employeeId: user.employeeId }
+}
+
+// Generates (or regenerates) a unique, time-limited onboarding invite for a
+// VA HR just created. The returned token is turned into a public link
+// (`/onboard/<token>`) that HR copies and sends manually — there's no email
+// integration yet. Re-calling this for the same VA rotates the token, which
+// doubles as "resend link" for an unused invite.
+export async function createVAOnboardingInvite(userId: string) {
+  const actor = await requireRole(...VA_MUTATOR_ROLES)
+
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, systemRole: true } })
+  if (!user) throw new Error('VA not found')
+  if (user.systemRole !== 'VA') throw new Error('Onboarding invites are only for VAs')
+
+  const token = randomBytes(32).toString('base64url')
+  const expiresAt = new Date(Date.now() + ONBOARDING_INVITE_TTL_MS)
+
+  const invite = await prisma.vAOnboardingInvite.upsert({
+    where: { userId },
+    create: { userId, token, expiresAt, createdBy: actor.id },
+    update: { token, expiresAt, completedAt: null, createdBy: actor.id },
+  })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'CREATE',
+    entityType: 'VAOnboardingInvite',
+    entityId: invite.id,
+    after: { userId, expiresAt },
+  })
+
+  return { token, expiresAt }
 }
 
 export async function addVASkill(vaProfileId: string, skillId: string, proficiency: string, yearsExperience?: number) {
@@ -545,7 +598,7 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
       province: (row.province || '').trim() || null,
       zipCode: (row.zipCode || '').trim() || null,
       landmark: (row.landmark || '').trim() || null,
-      gcashNumber: (row.gcashNumber || '').trim() || null,
+      gcashNumber: row.gcashNumber?.trim() ? normalizeGcash(row.gcashNumber) : null,
       emergencyContactName: (row.emergencyContactName || '').trim() || null,
       emergencyContactPhone: (row.emergencyContactPhone || '').trim() || null,
       emergencyContactRelation: (row.emergencyContactRelation || '').trim() || null,
@@ -1058,9 +1111,9 @@ export async function updateUserProfile(userId: string, formData: FormData) {
   const data: Record<string, any> = {}
   const userData: Record<string, any> = {}
   const allowedFields = [
-    'firstName', 'lastName', 'gender', 'birthDate', 'nonCelebrant',
+    'firstName', 'middleName', 'lastName', 'extName', 'gender', 'birthDate', 'nonCelebrant',
     'whatsappNumber', 'gcashNumber', 'phone',
-    'barangay', 'cityMunicipality', 'province', 'zipCode', 'landmark', 'address',
+    'barangay', 'cityMunicipality', 'province', 'houseNumber', 'zipCode', 'landmark', 'address',
     'regionCode', 'provinceCode', 'cityCode', 'barangayCode',
     'emergencyContactName', 'emergencyContactPhone', 'emergencyContactRelation',
     'facebookUrl', 'facebookName', 'linkedinUrl',
@@ -1069,13 +1122,24 @@ export async function updateUserProfile(userId: string, formData: FormData) {
     'signedContract',
   ]
 
+  // AddressFields (components/vas/AddressFields.tsx) submits the PSGC cascade
+  // under an "address." prefix (namePrefix="address"), not as bare field names.
+  const ADDRESS_CASCADE_FIELDS = new Set([
+    'barangay', 'cityMunicipality', 'province', 'regionCode', 'provinceCode', 'cityCode', 'barangayCode',
+  ])
+
   for (const field of allowedFields) {
-    const value = formData.get(field)
+    const formKey = ADDRESS_CASCADE_FIELDS.has(field) ? `address.${field}` : field
+    const value = formData.get(formKey)
     if (value !== null) {
       if (field === 'nonCelebrant') {
         data[field] = value === 'true'
       } else if (field === 'birthDate') {
         data[field] = value ? new Date(value as string) : null
+      } else if (field === 'whatsappNumber') {
+        data[field] = value ? normalizeWhatsApp(value as string) : null
+      } else if (field === 'gcashNumber') {
+        data[field] = value ? normalizeGcash(value as string) : null
       } else {
         data[field] = value || null
       }
@@ -1083,12 +1147,14 @@ export async function updateUserProfile(userId: string, formData: FormData) {
   }
 
   if ('firstName' in data) { userData.firstName = data.firstName; delete data.firstName }
+  if ('middleName' in data) { userData.middleName = data.middleName; delete data.middleName }
   if ('lastName' in data) { userData.lastName = data.lastName; delete data.lastName }
+  if ('extName' in data) { userData.extName = data.extName; delete data.extName }
 
   const changedFields: string[] = []
 
   if (Object.keys(userData).length > 0) {
-    const beforeUser = await prisma.user.findUnique({ where: { id: userId }, select: { firstName: true, lastName: true } })
+    const beforeUser = await prisma.user.findUnique({ where: { id: userId }, select: Object.fromEntries(Object.keys(userData).map(k => [k, true])) })
     await prisma.user.update({ where: { id: userId }, data: userData })
     changedFields.push(...Object.keys(userData))
     await logAudit({

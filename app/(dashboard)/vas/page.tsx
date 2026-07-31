@@ -124,6 +124,15 @@ export default async function VAPage({
   const canAddVA = currentUser ? VA_MUTATOR_ROLES.includes(currentUser.systemRole) : false
   const viewerScope = await getViewerScope(currentUser)
 
+  const [addVaDepartments, addVaSkills] = canAddVA
+    ? await Promise.all([
+        cached('vas:add-va-departments', [CACHE_TAGS.departments], 600, () =>
+          prisma.department.findMany({ where: { status: 'ACTIVE', parentId: { not: null } }, orderBy: { sortOrder: 'asc' }, select: { id: true, name: true } })
+        ),
+        prisma.skill.findMany({ where: { isActive: true }, orderBy: { name: 'asc' }, select: { id: true, name: true } }),
+      ])
+    : [[], []]
+
   const params = await searchParams
   const q = typeof params.q === 'string' ? params.q : undefined
   const dept = typeof params.dept === 'string' ? params.dept : undefined
@@ -153,7 +162,7 @@ export default async function VAPage({
               )}
             </div>
           }
-          extraActions={<QuickAddVABtn />}
+          extraActions={<QuickAddVABtn departments={addVaDepartments} positionSkills={addVaSkills} />}
         >
           <div className="rounded-lg border bg-card p-2.5">
             <Suspense fallback={<Skeleton className="h-8 w-full rounded-md" />}>
@@ -171,7 +180,7 @@ export default async function VAPage({
                 <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-info/10 text-info border-info/20">HR View</Badge>
               )}
             </div>
-            {canAddVA && <QuickAddVABtn />}
+            {canAddVA && <QuickAddVABtn departments={addVaDepartments} positionSkills={addVaSkills} />}
           </div>
 
           <div className="rounded-lg border bg-card p-2.5">
@@ -532,6 +541,9 @@ async function VATableSection({
                         <span className="font-medium">
                           {va.user.firstName} {va.user.lastName}
                         </span>
+                        {va.user.employeeId && (
+                          <span className="text-[10px] font-mono text-muted-foreground">{va.user.employeeId}</span>
+                        )}
                       </Link>
                     </TableCell>
                     <TableCell className="px-3 py-2.5 text-muted-foreground hidden md:table-cell">{va.user.profile?.workEmail || <span className="text-muted-foreground/50">—</span>}</TableCell>

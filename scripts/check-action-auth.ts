@@ -24,6 +24,16 @@ const GUARD_CALLS = [
 
 const GUARD_PATTERN = new RegExp(`\\b(${GUARD_CALLS.join('|')})\\s*\\(`)
 
+// Server Actions that are intentionally callable without a Supabase session
+// because they authenticate via a single-use token instead (e.g. an
+// onboarding invite link opened by someone who hasn't logged in yet). Each
+// listed function must validate that token itself as its first step before
+// touching the database. Keep this list short and named explicitly — it's
+// meant to be an auditable exception, not a general opt-out.
+const PUBLIC_TOKEN_ACTIONS: Record<string, string[]> = {
+  'app/onboard/[token]/actions.ts': ['completeOnboarding'],
+}
+
 function findActionFiles(dir: string, results: string[] = []): string[] {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     if (entry.name === 'node_modules' || entry.name.startsWith('.')) continue
@@ -94,8 +104,11 @@ function main() {
       }
     }
 
+    const relPath = path.relative(process.cwd(), file).split(path.sep).join('/')
+    const exempt = PUBLIC_TOKEN_ACTIONS[relPath] ?? []
+
     for (const { name } of fns) {
-      if (!guarded.has(name)) {
+      if (!guarded.has(name) && !exempt.includes(name)) {
         violations.push({ file, fn: name })
       }
     }

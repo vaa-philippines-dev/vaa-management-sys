@@ -112,6 +112,16 @@ export type VADocument = Prisma.VADocumentModel
  */
 export type LeaveRequest = Prisma.LeaveRequestModel
 /**
+ * Model EmployeeIdCounter
+ * 
+ */
+export type EmployeeIdCounter = Prisma.EmployeeIdCounterModel
+/**
+ * Model VAOnboardingInvite
+ * 
+ */
+export type VAOnboardingInvite = Prisma.VAOnboardingInviteModel
+/**
  * Model Client
  * 
  */

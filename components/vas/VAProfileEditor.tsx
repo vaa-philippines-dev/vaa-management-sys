@@ -40,14 +40,14 @@ type VAData = {
     vaProfileLink: string | null; payoutSummaryLink: string | null
     dept201FolderLink: string | null
   }
-  user: { id: string; email: string; firstName: string; lastName: string }
+  user: { id: string; email: string; employeeId: string | null; firstName: string; middleName: string | null; lastName: string; extName: string | null }
   profile: {
     gender: string | null; whatsappNumber: string | null
     gcashNumber: string | null; phone: string | null
     personalEmail: string | null; workEmail: string | null
     payoneerAccount: string | null
     birthDate: string | null; nonCelebrant: boolean
-    address: string | null; barangay: string | null
+    address: string | null; houseNumber: string | null; barangay: string | null
     cityMunicipality: string | null; province: string | null
     zipCode: string | null; landmark: string | null
     regionCode: string | null; provinceCode: string | null
@@ -320,6 +320,27 @@ function FI({ name, label, defaultValue, type, placeholder }: { name: string; la
   )
 }
 
+const EXT_NAME_OPTIONS = ['Jr.', 'Sr.', 'II', 'III', 'IV']
+
+function FS({ name, label, defaultValue, options }: { name: string; label: string; defaultValue?: string | null; options: string[] }) {
+  return (
+    <div>
+      <Label htmlFor={`fi-${name}`} className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">{label}</Label>
+      <select
+        id={`fi-${name}`}
+        name={name}
+        defaultValue={defaultValue ?? ''}
+        className="w-full h-8 text-xs rounded-md border bg-background px-2"
+      >
+        <option value="">None</option>
+        {options.map((opt) => (
+          <option key={opt} value={opt}>{opt}</option>
+        ))}
+      </select>
+    </div>
+  )
+}
+
 function SaveForm({ action, onClose, className, children, toastLabel }: {
   action: (formData: FormData) => Promise<void>
   onClose: () => void
@@ -359,7 +380,9 @@ function PersonalFormContent({ data, onClose }: { data: VAData; onClose: () => v
       {(saving) => (<>
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
           <FI name="firstName" label="First Name" defaultValue={data.user.firstName} />
+          <FI name="middleName" label="Middle Name" defaultValue={data.user.middleName} />
           <FI name="lastName" label="Last Name" defaultValue={data.user.lastName} />
+          <FS name="extName" label="Extension Name" defaultValue={data.user.extName} options={EXT_NAME_OPTIONS} />
           <FI name="workEmail" label="Work Email" defaultValue={data.profile?.workEmail} type="email" placeholder="work@vaa.com" />
           <FI name="personalEmail" label="Personal Email" defaultValue={data.profile?.personalEmail} type="email" placeholder="personal@email.com" />
           <FI name="whatsappNumber" label="WhatsApp Number" defaultValue={data.profile?.whatsappNumber} placeholder="09000000000" />
@@ -394,7 +417,8 @@ function AddressFormContent({ data, onClose }: { data: VAData; onClose: () => vo
             namePrefix="address"
           />
           <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
-            <FI name="address" label="House #, Building & Street Name" defaultValue={data.profile?.address} placeholder="123 Main St, Building A" />
+            <FI name="houseNumber" label="House Number" defaultValue={data.profile?.houseNumber} placeholder="123" />
+            <FI name="address" label="Building & Street Name" defaultValue={data.profile?.address} placeholder="Main St, Building A" />
             <FI name="zipCode" label="Zip Code" defaultValue={data.profile?.zipCode} placeholder="1000" />
             <FI name="landmark" label="Landmark" defaultValue={data.profile?.landmark} />
           </div>

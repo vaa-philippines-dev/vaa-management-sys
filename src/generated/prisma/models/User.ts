@@ -27,6 +27,7 @@ export type AggregateUser = {
 export type UserMinAggregateOutputType = {
   id: string | null
   email: string | null
+  employeeId: string | null
   firstName: string | null
   middleName: string | null
   lastName: string | null
@@ -45,6 +46,7 @@ export type UserMinAggregateOutputType = {
 export type UserMaxAggregateOutputType = {
   id: string | null
   email: string | null
+  employeeId: string | null
   firstName: string | null
   middleName: string | null
   lastName: string | null
@@ -63,6 +65,7 @@ export type UserMaxAggregateOutputType = {
 export type UserCountAggregateOutputType = {
   id: number
   email: number
+  employeeId: number
   firstName: number
   middleName: number
   lastName: number
@@ -83,6 +86,7 @@ export type UserCountAggregateOutputType = {
 export type UserMinAggregateInputType = {
   id?: true
   email?: true
+  employeeId?: true
   firstName?: true
   middleName?: true
   lastName?: true
@@ -101,6 +105,7 @@ export type UserMinAggregateInputType = {
 export type UserMaxAggregateInputType = {
   id?: true
   email?: true
+  employeeId?: true
   firstName?: true
   middleName?: true
   lastName?: true
@@ -119,6 +124,7 @@ export type UserMaxAggregateInputType = {
 export type UserCountAggregateInputType = {
   id?: true
   email?: true
+  employeeId?: true
   firstName?: true
   middleName?: true
   lastName?: true
@@ -210,6 +216,7 @@ export type UserGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type UserGroupByOutputType = {
   id: string
   email: string
+  employeeId: string | null
   firstName: string
   middleName: string | null
   lastName: string
@@ -249,6 +256,7 @@ export type UserWhereInput = {
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   id?: Prisma.StringFilter<"User"> | string
   email?: Prisma.StringFilter<"User"> | string
+  employeeId?: Prisma.StringNullableFilter<"User"> | string | null
   firstName?: Prisma.StringFilter<"User"> | string
   middleName?: Prisma.StringNullableFilter<"User"> | string | null
   lastName?: Prisma.StringFilter<"User"> | string
@@ -291,11 +299,14 @@ export type UserWhereInput = {
   tempLedTeams1?: Prisma.TeamListRelationFilter
   tempLedTeams2?: Prisma.TeamListRelationFilter
   teamMemberships?: Prisma.TeamMembershipListRelationFilter
+  onboardingInvite?: Prisma.XOR<Prisma.VAOnboardingInviteNullableScalarRelationFilter, Prisma.VAOnboardingInviteWhereInput> | null
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  employeeId?: Prisma.SortOrderInput | Prisma.SortOrder
   firstName?: Prisma.SortOrder
   middleName?: Prisma.SortOrderInput | Prisma.SortOrder
   lastName?: Prisma.SortOrder
@@ -338,11 +349,14 @@ export type UserOrderByWithRelationInput = {
   tempLedTeams1?: Prisma.TeamOrderByRelationAggregateInput
   tempLedTeams2?: Prisma.TeamOrderByRelationAggregateInput
   teamMemberships?: Prisma.TeamMembershipOrderByRelationAggregateInput
+  onboardingInvite?: Prisma.VAOnboardingInviteOrderByWithRelationInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   email?: string
+  employeeId?: string
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
@@ -388,11 +402,14 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   tempLedTeams1?: Prisma.TeamListRelationFilter
   tempLedTeams2?: Prisma.TeamListRelationFilter
   teamMemberships?: Prisma.TeamMembershipListRelationFilter
-}, "id" | "email">
+  onboardingInvite?: Prisma.XOR<Prisma.VAOnboardingInviteNullableScalarRelationFilter, Prisma.VAOnboardingInviteWhereInput> | null
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteListRelationFilter
+}, "id" | "email" | "employeeId">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  employeeId?: Prisma.SortOrderInput | Prisma.SortOrder
   firstName?: Prisma.SortOrder
   middleName?: Prisma.SortOrderInput | Prisma.SortOrder
   lastName?: Prisma.SortOrder
@@ -417,6 +434,7 @@ export type UserScalarWhereWithAggregatesInput = {
   NOT?: Prisma.UserScalarWhereWithAggregatesInput | Prisma.UserScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"User"> | string
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
+  employeeId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   firstName?: Prisma.StringWithAggregatesFilter<"User"> | string
   middleName?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   lastName?: Prisma.StringWithAggregatesFilter<"User"> | string
@@ -435,6 +453,7 @@ export type UserScalarWhereWithAggregatesInput = {
 export type UserCreateInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -477,11 +496,14 @@ export type UserCreateInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -524,11 +546,14 @@ export type UserUncheckedCreateInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -571,11 +596,14 @@ export type UserUpdateInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -618,11 +646,14 @@ export type UserUncheckedUpdateInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateManyInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -641,6 +672,7 @@ export type UserCreateManyInput = {
 export type UserUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -659,6 +691,7 @@ export type UserUpdateManyMutationInput = {
 export type UserUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -687,6 +720,7 @@ export type UserScalarRelationFilter = {
 export type UserCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  employeeId?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   middleName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
@@ -705,6 +739,7 @@ export type UserCountOrderByAggregateInput = {
 export type UserMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  employeeId?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   middleName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
@@ -723,6 +758,7 @@ export type UserMaxOrderByAggregateInput = {
 export type UserMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  employeeId?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   middleName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
@@ -936,6 +972,34 @@ export type UserUpdateOneWithoutApprovedLeavesNestedInput = {
   delete?: Prisma.UserWhereInput | boolean
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutApprovedLeavesInput, Prisma.UserUpdateWithoutApprovedLeavesInput>, Prisma.UserUncheckedUpdateWithoutApprovedLeavesInput>
+}
+
+export type UserCreateNestedOneWithoutOnboardingInviteInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOnboardingInviteInput, Prisma.UserUncheckedCreateWithoutOnboardingInviteInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOnboardingInviteInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutOnboardingInvitesCreatedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOnboardingInvitesCreatedInput, Prisma.UserUncheckedCreateWithoutOnboardingInvitesCreatedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOnboardingInvitesCreatedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutOnboardingInviteNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOnboardingInviteInput, Prisma.UserUncheckedCreateWithoutOnboardingInviteInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOnboardingInviteInput
+  upsert?: Prisma.UserUpsertWithoutOnboardingInviteInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOnboardingInviteInput, Prisma.UserUpdateWithoutOnboardingInviteInput>, Prisma.UserUncheckedUpdateWithoutOnboardingInviteInput>
+}
+
+export type UserUpdateOneRequiredWithoutOnboardingInvitesCreatedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOnboardingInvitesCreatedInput, Prisma.UserUncheckedCreateWithoutOnboardingInvitesCreatedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOnboardingInvitesCreatedInput
+  upsert?: Prisma.UserUpsertWithoutOnboardingInvitesCreatedInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOnboardingInvitesCreatedInput, Prisma.UserUpdateWithoutOnboardingInvitesCreatedInput>, Prisma.UserUncheckedUpdateWithoutOnboardingInvitesCreatedInput>
 }
 
 export type UserCreateNestedOneWithoutManagedClientsInput = {
@@ -1177,6 +1241,7 @@ export type UserUpdateOneRequiredWithoutTeamMembershipsNestedInput = {
 export type UserCreateWithoutDepartmentHeadInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -1218,11 +1283,14 @@ export type UserCreateWithoutDepartmentHeadInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutDepartmentHeadInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -1264,6 +1332,8 @@ export type UserUncheckedCreateWithoutDepartmentHeadInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutDepartmentHeadInput = {
@@ -1285,6 +1355,7 @@ export type UserUpdateToOneWithWhereWithoutDepartmentHeadInput = {
 export type UserUpdateWithoutDepartmentHeadInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1326,11 +1397,14 @@ export type UserUpdateWithoutDepartmentHeadInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDepartmentHeadInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1372,11 +1446,14 @@ export type UserUncheckedUpdateWithoutDepartmentHeadInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutMembershipsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -1418,11 +1495,14 @@ export type UserCreateWithoutMembershipsInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutMembershipsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -1464,6 +1544,8 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutMembershipsInput = {
@@ -1485,6 +1567,7 @@ export type UserUpdateToOneWithWhereWithoutMembershipsInput = {
 export type UserUpdateWithoutMembershipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1526,11 +1609,14 @@ export type UserUpdateWithoutMembershipsInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMembershipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1572,11 +1658,14 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutProfileInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -1618,11 +1707,14 @@ export type UserCreateWithoutProfileInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutProfileInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -1664,6 +1756,8 @@ export type UserUncheckedCreateWithoutProfileInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutProfileInput = {
@@ -1685,6 +1779,7 @@ export type UserUpdateToOneWithWhereWithoutProfileInput = {
 export type UserUpdateWithoutProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1726,11 +1821,14 @@ export type UserUpdateWithoutProfileInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1772,11 +1870,14 @@ export type UserUncheckedUpdateWithoutProfileInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutEmploymentRecordsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -1818,11 +1919,14 @@ export type UserCreateWithoutEmploymentRecordsInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutEmploymentRecordsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -1864,6 +1968,8 @@ export type UserUncheckedCreateWithoutEmploymentRecordsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutEmploymentRecordsInput = {
@@ -1874,6 +1980,7 @@ export type UserCreateOrConnectWithoutEmploymentRecordsInput = {
 export type UserCreateWithoutEmploymentRecordsInitiatedInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -1915,11 +2022,14 @@ export type UserCreateWithoutEmploymentRecordsInitiatedInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutEmploymentRecordsInitiatedInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -1961,6 +2071,8 @@ export type UserUncheckedCreateWithoutEmploymentRecordsInitiatedInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutEmploymentRecordsInitiatedInput = {
@@ -1982,6 +2094,7 @@ export type UserUpdateToOneWithWhereWithoutEmploymentRecordsInput = {
 export type UserUpdateWithoutEmploymentRecordsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2023,11 +2136,14 @@ export type UserUpdateWithoutEmploymentRecordsInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmploymentRecordsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2069,6 +2185,8 @@ export type UserUncheckedUpdateWithoutEmploymentRecordsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUpsertWithoutEmploymentRecordsInitiatedInput = {
@@ -2085,6 +2203,7 @@ export type UserUpdateToOneWithWhereWithoutEmploymentRecordsInitiatedInput = {
 export type UserUpdateWithoutEmploymentRecordsInitiatedInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2126,11 +2245,14 @@ export type UserUpdateWithoutEmploymentRecordsInitiatedInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmploymentRecordsInitiatedInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2172,11 +2294,14 @@ export type UserUncheckedUpdateWithoutEmploymentRecordsInitiatedInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutRoleAssignmentsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -2218,11 +2343,14 @@ export type UserCreateWithoutRoleAssignmentsInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutRoleAssignmentsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -2264,6 +2392,8 @@ export type UserUncheckedCreateWithoutRoleAssignmentsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutRoleAssignmentsInput = {
@@ -2274,6 +2404,7 @@ export type UserCreateOrConnectWithoutRoleAssignmentsInput = {
 export type UserCreateWithoutGrantedRoleAssignmentsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -2315,11 +2446,14 @@ export type UserCreateWithoutGrantedRoleAssignmentsInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutGrantedRoleAssignmentsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -2361,6 +2495,8 @@ export type UserUncheckedCreateWithoutGrantedRoleAssignmentsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutGrantedRoleAssignmentsInput = {
@@ -2382,6 +2518,7 @@ export type UserUpdateToOneWithWhereWithoutRoleAssignmentsInput = {
 export type UserUpdateWithoutRoleAssignmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2423,11 +2560,14 @@ export type UserUpdateWithoutRoleAssignmentsInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRoleAssignmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2469,6 +2609,8 @@ export type UserUncheckedUpdateWithoutRoleAssignmentsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUpsertWithoutGrantedRoleAssignmentsInput = {
@@ -2485,6 +2627,7 @@ export type UserUpdateToOneWithWhereWithoutGrantedRoleAssignmentsInput = {
 export type UserUpdateWithoutGrantedRoleAssignmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2526,11 +2669,14 @@ export type UserUpdateWithoutGrantedRoleAssignmentsInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGrantedRoleAssignmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2572,11 +2718,14 @@ export type UserUncheckedUpdateWithoutGrantedRoleAssignmentsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutVaProfileInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -2618,11 +2767,14 @@ export type UserCreateWithoutVaProfileInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutVaProfileInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -2664,6 +2816,8 @@ export type UserUncheckedCreateWithoutVaProfileInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutVaProfileInput = {
@@ -2685,6 +2839,7 @@ export type UserUpdateToOneWithWhereWithoutVaProfileInput = {
 export type UserUpdateWithoutVaProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2726,11 +2881,14 @@ export type UserUpdateWithoutVaProfileInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVaProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2772,11 +2930,14 @@ export type UserUncheckedUpdateWithoutVaProfileInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutVaHistoryEventsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -2818,11 +2979,14 @@ export type UserCreateWithoutVaHistoryEventsInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutVaHistoryEventsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -2864,6 +3028,8 @@ export type UserUncheckedCreateWithoutVaHistoryEventsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutVaHistoryEventsInput = {
@@ -2874,6 +3040,7 @@ export type UserCreateOrConnectWithoutVaHistoryEventsInput = {
 export type UserCreateWithoutVaHistoryChangesInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -2915,11 +3082,14 @@ export type UserCreateWithoutVaHistoryChangesInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutVaHistoryChangesInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -2961,6 +3131,8 @@ export type UserUncheckedCreateWithoutVaHistoryChangesInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutVaHistoryChangesInput = {
@@ -2982,6 +3154,7 @@ export type UserUpdateToOneWithWhereWithoutVaHistoryEventsInput = {
 export type UserUpdateWithoutVaHistoryEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3023,11 +3196,14 @@ export type UserUpdateWithoutVaHistoryEventsInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVaHistoryEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3069,6 +3245,8 @@ export type UserUncheckedUpdateWithoutVaHistoryEventsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUpsertWithoutVaHistoryChangesInput = {
@@ -3085,6 +3263,7 @@ export type UserUpdateToOneWithWhereWithoutVaHistoryChangesInput = {
 export type UserUpdateWithoutVaHistoryChangesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3126,11 +3305,14 @@ export type UserUpdateWithoutVaHistoryChangesInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVaHistoryChangesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3172,11 +3354,14 @@ export type UserUncheckedUpdateWithoutVaHistoryChangesInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutUploadedDocumentsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -3218,11 +3403,14 @@ export type UserCreateWithoutUploadedDocumentsInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutUploadedDocumentsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -3264,6 +3452,8 @@ export type UserUncheckedCreateWithoutUploadedDocumentsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutUploadedDocumentsInput = {
@@ -3285,6 +3475,7 @@ export type UserUpdateToOneWithWhereWithoutUploadedDocumentsInput = {
 export type UserUpdateWithoutUploadedDocumentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3326,11 +3517,14 @@ export type UserUpdateWithoutUploadedDocumentsInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadedDocumentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3372,11 +3566,14 @@ export type UserUncheckedUpdateWithoutUploadedDocumentsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutLeaveRequestsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -3418,11 +3615,14 @@ export type UserCreateWithoutLeaveRequestsInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutLeaveRequestsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -3464,6 +3664,8 @@ export type UserUncheckedCreateWithoutLeaveRequestsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutLeaveRequestsInput = {
@@ -3474,6 +3676,7 @@ export type UserCreateOrConnectWithoutLeaveRequestsInput = {
 export type UserCreateWithoutApprovedLeavesInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -3515,11 +3718,14 @@ export type UserCreateWithoutApprovedLeavesInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutApprovedLeavesInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -3561,6 +3767,8 @@ export type UserUncheckedCreateWithoutApprovedLeavesInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutApprovedLeavesInput = {
@@ -3582,6 +3790,7 @@ export type UserUpdateToOneWithWhereWithoutLeaveRequestsInput = {
 export type UserUpdateWithoutLeaveRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3623,11 +3832,14 @@ export type UserUpdateWithoutLeaveRequestsInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLeaveRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3669,6 +3881,8 @@ export type UserUncheckedUpdateWithoutLeaveRequestsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUpsertWithoutApprovedLeavesInput = {
@@ -3685,6 +3899,7 @@ export type UserUpdateToOneWithWhereWithoutApprovedLeavesInput = {
 export type UserUpdateWithoutApprovedLeavesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3726,11 +3941,14 @@ export type UserUpdateWithoutApprovedLeavesInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApprovedLeavesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3772,11 +3990,438 @@ export type UserUncheckedUpdateWithoutApprovedLeavesInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserCreateWithoutOnboardingInviteInput = {
+  id?: string
+  email: string
+  employeeId?: string | null
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  extName?: string | null
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  messageColor?: $Enums.MessageColor
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
+  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
+  vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
+  pinnedMessages?: Prisma.MessageCreateNestedManyWithoutPinnedByUserInput
+  channelParticipants?: Prisma.ChannelParticipantCreateNestedManyWithoutUserInput
+  ledTeams?: Prisma.TeamCreateNestedManyWithoutLeaderInput
+  tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
+  tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+}
+
+export type UserUncheckedCreateWithoutOnboardingInviteInput = {
+  id?: string
+  email: string
+  employeeId?: string | null
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  extName?: string | null
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  messageColor?: $Enums.MessageColor
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileUncheckedCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipUncheckedCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
+  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
+  vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
+  pinnedMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPinnedByUserInput
+  channelParticipants?: Prisma.ChannelParticipantUncheckedCreateNestedManyWithoutUserInput
+  ledTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutLeaderInput
+  tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
+  tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+}
+
+export type UserCreateOrConnectWithoutOnboardingInviteInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutOnboardingInviteInput, Prisma.UserUncheckedCreateWithoutOnboardingInviteInput>
+}
+
+export type UserCreateWithoutOnboardingInvitesCreatedInput = {
+  id?: string
+  email: string
+  employeeId?: string | null
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  extName?: string | null
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  messageColor?: $Enums.MessageColor
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
+  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
+  vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
+  pinnedMessages?: Prisma.MessageCreateNestedManyWithoutPinnedByUserInput
+  channelParticipants?: Prisma.ChannelParticipantCreateNestedManyWithoutUserInput
+  ledTeams?: Prisma.TeamCreateNestedManyWithoutLeaderInput
+  tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
+  tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutOnboardingInvitesCreatedInput = {
+  id?: string
+  email: string
+  employeeId?: string | null
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  extName?: string | null
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  messageColor?: $Enums.MessageColor
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileUncheckedCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipUncheckedCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
+  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
+  vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
+  pinnedMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPinnedByUserInput
+  channelParticipants?: Prisma.ChannelParticipantUncheckedCreateNestedManyWithoutUserInput
+  ledTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutLeaderInput
+  tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
+  tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutOnboardingInvitesCreatedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutOnboardingInvitesCreatedInput, Prisma.UserUncheckedCreateWithoutOnboardingInvitesCreatedInput>
+}
+
+export type UserUpsertWithoutOnboardingInviteInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutOnboardingInviteInput, Prisma.UserUncheckedUpdateWithoutOnboardingInviteInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutOnboardingInviteInput, Prisma.UserUncheckedCreateWithoutOnboardingInviteInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutOnboardingInviteInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutOnboardingInviteInput, Prisma.UserUncheckedUpdateWithoutOnboardingInviteInput>
+}
+
+export type UserUpdateWithoutOnboardingInviteInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  extName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumMessageColorFieldUpdateOperationsInput | $Enums.MessageColor
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  vaProfile?: Prisma.VAProfileUpdateOneWithoutUserNestedInput
+  departmentHead?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUpdateManyWithoutUserNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutUserNestedInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUpdateManyWithoutInitiatorNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
+  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
+  uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
+  createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
+  assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
+  ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
+  vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
+  pinnedMessages?: Prisma.MessageUpdateManyWithoutPinnedByUserNestedInput
+  channelParticipants?: Prisma.ChannelParticipantUpdateManyWithoutUserNestedInput
+  ledTeams?: Prisma.TeamUpdateManyWithoutLeaderNestedInput
+  tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
+  tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutOnboardingInviteInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  extName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumMessageColorFieldUpdateOperationsInput | $Enums.MessageColor
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  vaProfile?: Prisma.VAProfileUncheckedUpdateOneWithoutUserNestedInput
+  departmentHead?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUncheckedUpdateManyWithoutUserNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutUserNestedInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutInitiatorNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
+  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
+  createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
+  assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
+  ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
+  vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
+  pinnedMessages?: Prisma.MessageUncheckedUpdateManyWithoutPinnedByUserNestedInput
+  channelParticipants?: Prisma.ChannelParticipantUncheckedUpdateManyWithoutUserNestedInput
+  ledTeams?: Prisma.TeamUncheckedUpdateManyWithoutLeaderNestedInput
+  tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
+  tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserUpsertWithoutOnboardingInvitesCreatedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutOnboardingInvitesCreatedInput, Prisma.UserUncheckedUpdateWithoutOnboardingInvitesCreatedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutOnboardingInvitesCreatedInput, Prisma.UserUncheckedCreateWithoutOnboardingInvitesCreatedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutOnboardingInvitesCreatedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutOnboardingInvitesCreatedInput, Prisma.UserUncheckedUpdateWithoutOnboardingInvitesCreatedInput>
+}
+
+export type UserUpdateWithoutOnboardingInvitesCreatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  extName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumMessageColorFieldUpdateOperationsInput | $Enums.MessageColor
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  vaProfile?: Prisma.VAProfileUpdateOneWithoutUserNestedInput
+  departmentHead?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUpdateManyWithoutUserNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutUserNestedInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUpdateManyWithoutInitiatorNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
+  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
+  uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
+  createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
+  assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
+  ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
+  vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
+  pinnedMessages?: Prisma.MessageUpdateManyWithoutPinnedByUserNestedInput
+  channelParticipants?: Prisma.ChannelParticipantUpdateManyWithoutUserNestedInput
+  ledTeams?: Prisma.TeamUpdateManyWithoutLeaderNestedInput
+  tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
+  tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutOnboardingInvitesCreatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  extName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumMessageColorFieldUpdateOperationsInput | $Enums.MessageColor
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  vaProfile?: Prisma.VAProfileUncheckedUpdateOneWithoutUserNestedInput
+  departmentHead?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUncheckedUpdateManyWithoutUserNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutUserNestedInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutInitiatorNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
+  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
+  createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
+  assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
+  ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
+  vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
+  pinnedMessages?: Prisma.MessageUncheckedUpdateManyWithoutPinnedByUserNestedInput
+  channelParticipants?: Prisma.ChannelParticipantUncheckedUpdateManyWithoutUserNestedInput
+  ledTeams?: Prisma.TeamUncheckedUpdateManyWithoutLeaderNestedInput
+  tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
+  tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutManagedClientsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -3818,11 +4463,14 @@ export type UserCreateWithoutManagedClientsInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutManagedClientsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -3864,6 +4512,8 @@ export type UserUncheckedCreateWithoutManagedClientsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutManagedClientsInput = {
@@ -3885,6 +4535,7 @@ export type UserUpdateToOneWithWhereWithoutManagedClientsInput = {
 export type UserUpdateWithoutManagedClientsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3926,11 +4577,14 @@ export type UserUpdateWithoutManagedClientsInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutManagedClientsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3972,11 +4626,14 @@ export type UserUncheckedUpdateWithoutManagedClientsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutCreatedTicketsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -4018,11 +4675,14 @@ export type UserCreateWithoutCreatedTicketsInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutCreatedTicketsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -4064,6 +4724,8 @@ export type UserUncheckedCreateWithoutCreatedTicketsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutCreatedTicketsInput = {
@@ -4074,6 +4736,7 @@ export type UserCreateOrConnectWithoutCreatedTicketsInput = {
 export type UserCreateWithoutAssignedTicketsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -4115,11 +4778,14 @@ export type UserCreateWithoutAssignedTicketsInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutAssignedTicketsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -4161,6 +4827,8 @@ export type UserUncheckedCreateWithoutAssignedTicketsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutAssignedTicketsInput = {
@@ -4182,6 +4850,7 @@ export type UserUpdateToOneWithWhereWithoutCreatedTicketsInput = {
 export type UserUpdateWithoutCreatedTicketsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4223,11 +4892,14 @@ export type UserUpdateWithoutCreatedTicketsInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedTicketsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4269,6 +4941,8 @@ export type UserUncheckedUpdateWithoutCreatedTicketsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUpsertWithoutAssignedTicketsInput = {
@@ -4285,6 +4959,7 @@ export type UserUpdateToOneWithWhereWithoutAssignedTicketsInput = {
 export type UserUpdateWithoutAssignedTicketsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4326,11 +5001,14 @@ export type UserUpdateWithoutAssignedTicketsInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssignedTicketsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4372,11 +5050,14 @@ export type UserUncheckedUpdateWithoutAssignedTicketsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutTicketConversationsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -4418,11 +5099,14 @@ export type UserCreateWithoutTicketConversationsInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutTicketConversationsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -4464,6 +5148,8 @@ export type UserUncheckedCreateWithoutTicketConversationsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutTicketConversationsInput = {
@@ -4485,6 +5171,7 @@ export type UserUpdateToOneWithWhereWithoutTicketConversationsInput = {
 export type UserUpdateWithoutTicketConversationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4526,11 +5213,14 @@ export type UserUpdateWithoutTicketConversationsInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTicketConversationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4572,11 +5262,14 @@ export type UserUncheckedUpdateWithoutTicketConversationsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutChannelParticipantsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -4618,11 +5311,14 @@ export type UserCreateWithoutChannelParticipantsInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutChannelParticipantsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -4664,6 +5360,8 @@ export type UserUncheckedCreateWithoutChannelParticipantsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutChannelParticipantsInput = {
@@ -4685,6 +5383,7 @@ export type UserUpdateToOneWithWhereWithoutChannelParticipantsInput = {
 export type UserUpdateWithoutChannelParticipantsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4726,11 +5425,14 @@ export type UserUpdateWithoutChannelParticipantsInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutChannelParticipantsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4772,11 +5474,14 @@ export type UserUncheckedUpdateWithoutChannelParticipantsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutMessagesInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -4818,11 +5523,14 @@ export type UserCreateWithoutMessagesInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutMessagesInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -4864,6 +5572,8 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutMessagesInput = {
@@ -4874,6 +5584,7 @@ export type UserCreateOrConnectWithoutMessagesInput = {
 export type UserCreateWithoutPinnedMessagesInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -4915,11 +5626,14 @@ export type UserCreateWithoutPinnedMessagesInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutPinnedMessagesInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -4961,6 +5675,8 @@ export type UserUncheckedCreateWithoutPinnedMessagesInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutPinnedMessagesInput = {
@@ -4982,6 +5698,7 @@ export type UserUpdateToOneWithWhereWithoutMessagesInput = {
 export type UserUpdateWithoutMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5023,11 +5740,14 @@ export type UserUpdateWithoutMessagesInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5069,6 +5789,8 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUpsertWithoutPinnedMessagesInput = {
@@ -5085,6 +5807,7 @@ export type UserUpdateToOneWithWhereWithoutPinnedMessagesInput = {
 export type UserUpdateWithoutPinnedMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5126,11 +5849,14 @@ export type UserUpdateWithoutPinnedMessagesInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPinnedMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5172,11 +5898,14 @@ export type UserUncheckedUpdateWithoutPinnedMessagesInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutMessageMentionsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -5218,11 +5947,14 @@ export type UserCreateWithoutMessageMentionsInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutMessageMentionsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -5264,6 +5996,8 @@ export type UserUncheckedCreateWithoutMessageMentionsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutMessageMentionsInput = {
@@ -5285,6 +6019,7 @@ export type UserUpdateToOneWithWhereWithoutMessageMentionsInput = {
 export type UserUpdateWithoutMessageMentionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5326,11 +6061,14 @@ export type UserUpdateWithoutMessageMentionsInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMessageMentionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5372,11 +6110,14 @@ export type UserUncheckedUpdateWithoutMessageMentionsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutChannelReadsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -5418,11 +6159,14 @@ export type UserCreateWithoutChannelReadsInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutChannelReadsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -5464,6 +6208,8 @@ export type UserUncheckedCreateWithoutChannelReadsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutChannelReadsInput = {
@@ -5485,6 +6231,7 @@ export type UserUpdateToOneWithWhereWithoutChannelReadsInput = {
 export type UserUpdateWithoutChannelReadsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5526,11 +6273,14 @@ export type UserUpdateWithoutChannelReadsInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutChannelReadsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5572,11 +6322,14 @@ export type UserUncheckedUpdateWithoutChannelReadsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutAuditLogsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -5618,11 +6371,14 @@ export type UserCreateWithoutAuditLogsInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutAuditLogsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -5664,6 +6420,8 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutAuditLogsInput = {
@@ -5685,6 +6443,7 @@ export type UserUpdateToOneWithWhereWithoutAuditLogsInput = {
 export type UserUpdateWithoutAuditLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5726,11 +6485,14 @@ export type UserUpdateWithoutAuditLogsInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuditLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5772,11 +6534,14 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -5818,11 +6583,14 @@ export type UserCreateWithoutNotificationsInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -5864,6 +6632,8 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -5885,6 +6655,7 @@ export type UserUpdateToOneWithWhereWithoutNotificationsInput = {
 export type UserUpdateWithoutNotificationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5926,11 +6697,14 @@ export type UserUpdateWithoutNotificationsInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5972,11 +6746,14 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutSidebarFavoritesInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -6018,11 +6795,14 @@ export type UserCreateWithoutSidebarFavoritesInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutSidebarFavoritesInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -6064,6 +6844,8 @@ export type UserUncheckedCreateWithoutSidebarFavoritesInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutSidebarFavoritesInput = {
@@ -6085,6 +6867,7 @@ export type UserUpdateToOneWithWhereWithoutSidebarFavoritesInput = {
 export type UserUpdateWithoutSidebarFavoritesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6126,11 +6909,14 @@ export type UserUpdateWithoutSidebarFavoritesInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSidebarFavoritesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6172,11 +6958,14 @@ export type UserUncheckedUpdateWithoutSidebarFavoritesInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutLedTeamsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -6218,11 +7007,14 @@ export type UserCreateWithoutLedTeamsInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutLedTeamsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -6264,6 +7056,8 @@ export type UserUncheckedCreateWithoutLedTeamsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutLedTeamsInput = {
@@ -6274,6 +7068,7 @@ export type UserCreateOrConnectWithoutLedTeamsInput = {
 export type UserCreateWithoutTempLedTeams1Input = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -6315,11 +7110,14 @@ export type UserCreateWithoutTempLedTeams1Input = {
   ledTeams?: Prisma.TeamCreateNestedManyWithoutLeaderInput
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutTempLedTeams1Input = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -6361,6 +7159,8 @@ export type UserUncheckedCreateWithoutTempLedTeams1Input = {
   ledTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutLeaderInput
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutTempLedTeams1Input = {
@@ -6371,6 +7171,7 @@ export type UserCreateOrConnectWithoutTempLedTeams1Input = {
 export type UserCreateWithoutTempLedTeams2Input = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -6412,11 +7213,14 @@ export type UserCreateWithoutTempLedTeams2Input = {
   ledTeams?: Prisma.TeamCreateNestedManyWithoutLeaderInput
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutTempLedTeams2Input = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -6458,6 +7262,8 @@ export type UserUncheckedCreateWithoutTempLedTeams2Input = {
   ledTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutLeaderInput
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutTempLedTeams2Input = {
@@ -6479,6 +7285,7 @@ export type UserUpdateToOneWithWhereWithoutLedTeamsInput = {
 export type UserUpdateWithoutLedTeamsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6520,11 +7327,14 @@ export type UserUpdateWithoutLedTeamsInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLedTeamsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6566,6 +7376,8 @@ export type UserUncheckedUpdateWithoutLedTeamsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUpsertWithoutTempLedTeams1Input = {
@@ -6582,6 +7394,7 @@ export type UserUpdateToOneWithWhereWithoutTempLedTeams1Input = {
 export type UserUpdateWithoutTempLedTeams1Input = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6623,11 +7436,14 @@ export type UserUpdateWithoutTempLedTeams1Input = {
   ledTeams?: Prisma.TeamUpdateManyWithoutLeaderNestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTempLedTeams1Input = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6669,6 +7485,8 @@ export type UserUncheckedUpdateWithoutTempLedTeams1Input = {
   ledTeams?: Prisma.TeamUncheckedUpdateManyWithoutLeaderNestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUpsertWithoutTempLedTeams2Input = {
@@ -6685,6 +7503,7 @@ export type UserUpdateToOneWithWhereWithoutTempLedTeams2Input = {
 export type UserUpdateWithoutTempLedTeams2Input = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6726,11 +7545,14 @@ export type UserUpdateWithoutTempLedTeams2Input = {
   ledTeams?: Prisma.TeamUpdateManyWithoutLeaderNestedInput
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTempLedTeams2Input = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6772,11 +7594,14 @@ export type UserUncheckedUpdateWithoutTempLedTeams2Input = {
   ledTeams?: Prisma.TeamUncheckedUpdateManyWithoutLeaderNestedInput
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutTeamMembershipsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -6818,11 +7643,14 @@ export type UserCreateWithoutTeamMembershipsInput = {
   ledTeams?: Prisma.TeamCreateNestedManyWithoutLeaderInput
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   id?: string
   email: string
+  employeeId?: string | null
   firstName: string
   middleName?: string | null
   lastName: string
@@ -6864,6 +7692,8 @@ export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   ledTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutLeaderInput
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutTeamMembershipsInput = {
@@ -6885,6 +7715,7 @@ export type UserUpdateToOneWithWhereWithoutTeamMembershipsInput = {
 export type UserUpdateWithoutTeamMembershipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6926,11 +7757,14 @@ export type UserUpdateWithoutTeamMembershipsInput = {
   ledTeams?: Prisma.TeamUpdateManyWithoutLeaderNestedInput
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6972,6 +7806,8 @@ export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   ledTeams?: Prisma.TeamUncheckedUpdateManyWithoutLeaderNestedInput
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 
@@ -7007,6 +7843,7 @@ export type UserCountOutputType = {
   tempLedTeams1: number
   tempLedTeams2: number
   teamMemberships: number
+  onboardingInvitesCreated: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -7037,6 +7874,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   tempLedTeams1?: boolean | UserCountOutputTypeCountTempLedTeams1Args
   tempLedTeams2?: boolean | UserCountOutputTypeCountTempLedTeams2Args
   teamMemberships?: boolean | UserCountOutputTypeCountTeamMembershipsArgs
+  onboardingInvitesCreated?: boolean | UserCountOutputTypeCountOnboardingInvitesCreatedArgs
 }
 
 /**
@@ -7238,10 +8076,18 @@ export type UserCountOutputTypeCountTeamMembershipsArgs<ExtArgs extends runtime.
   where?: Prisma.TeamMembershipWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountOnboardingInvitesCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VAOnboardingInviteWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   email?: boolean
+  employeeId?: boolean
   firstName?: boolean
   middleName?: boolean
   lastName?: boolean
@@ -7284,12 +8130,15 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   tempLedTeams1?: boolean | Prisma.User$tempLedTeams1Args<ExtArgs>
   tempLedTeams2?: boolean | Prisma.User$tempLedTeams2Args<ExtArgs>
   teamMemberships?: boolean | Prisma.User$teamMembershipsArgs<ExtArgs>
+  onboardingInvite?: boolean | Prisma.User$onboardingInviteArgs<ExtArgs>
+  onboardingInvitesCreated?: boolean | Prisma.User$onboardingInvitesCreatedArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   email?: boolean
+  employeeId?: boolean
   firstName?: boolean
   middleName?: boolean
   lastName?: boolean
@@ -7308,6 +8157,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   email?: boolean
+  employeeId?: boolean
   firstName?: boolean
   middleName?: boolean
   lastName?: boolean
@@ -7326,6 +8176,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
 export type UserSelectScalar = {
   id?: boolean
   email?: boolean
+  employeeId?: boolean
   firstName?: boolean
   middleName?: boolean
   lastName?: boolean
@@ -7341,7 +8192,7 @@ export type UserSelectScalar = {
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "firstName" | "middleName" | "lastName" | "extName" | "systemRole" | "userType" | "avatarUrl" | "messageColor" | "status" | "onHold" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "employeeId" | "firstName" | "middleName" | "lastName" | "extName" | "systemRole" | "userType" | "avatarUrl" | "messageColor" | "status" | "onHold" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   profile?: boolean | Prisma.User$profileArgs<ExtArgs>
   vaProfile?: boolean | Prisma.User$vaProfileArgs<ExtArgs>
@@ -7372,6 +8223,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   tempLedTeams1?: boolean | Prisma.User$tempLedTeams1Args<ExtArgs>
   tempLedTeams2?: boolean | Prisma.User$tempLedTeams2Args<ExtArgs>
   teamMemberships?: boolean | Prisma.User$teamMembershipsArgs<ExtArgs>
+  onboardingInvite?: boolean | Prisma.User$onboardingInviteArgs<ExtArgs>
+  onboardingInvitesCreated?: boolean | Prisma.User$onboardingInvitesCreatedArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -7409,10 +8262,13 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     tempLedTeams1: Prisma.$TeamPayload<ExtArgs>[]
     tempLedTeams2: Prisma.$TeamPayload<ExtArgs>[]
     teamMemberships: Prisma.$TeamMembershipPayload<ExtArgs>[]
+    onboardingInvite: Prisma.$VAOnboardingInvitePayload<ExtArgs> | null
+    onboardingInvitesCreated: Prisma.$VAOnboardingInvitePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     email: string
+    employeeId: string | null
     firstName: string
     middleName: string | null
     lastName: string
@@ -7849,6 +8705,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   tempLedTeams1<T extends Prisma.User$tempLedTeams1Args<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tempLedTeams1Args<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tempLedTeams2<T extends Prisma.User$tempLedTeams2Args<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tempLedTeams2Args<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   teamMemberships<T extends Prisma.User$teamMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$teamMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamMembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  onboardingInvite<T extends Prisma.User$onboardingInviteArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$onboardingInviteArgs<ExtArgs>>): Prisma.Prisma__VAOnboardingInviteClient<runtime.Types.Result.GetResult<Prisma.$VAOnboardingInvitePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  onboardingInvitesCreated<T extends Prisma.User$onboardingInvitesCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$onboardingInvitesCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VAOnboardingInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7880,6 +8738,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
 export interface UserFieldRefs {
   readonly id: Prisma.FieldRef<"User", 'String'>
   readonly email: Prisma.FieldRef<"User", 'String'>
+  readonly employeeId: Prisma.FieldRef<"User", 'String'>
   readonly firstName: Prisma.FieldRef<"User", 'String'>
   readonly middleName: Prisma.FieldRef<"User", 'String'>
   readonly lastName: Prisma.FieldRef<"User", 'String'>
@@ -8969,6 +9828,49 @@ export type User$teamMembershipsArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.TeamMembershipScalarFieldEnum | Prisma.TeamMembershipScalarFieldEnum[]
+}
+
+/**
+ * User.onboardingInvite
+ */
+export type User$onboardingInviteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VAOnboardingInvite
+   */
+  select?: Prisma.VAOnboardingInviteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VAOnboardingInvite
+   */
+  omit?: Prisma.VAOnboardingInviteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VAOnboardingInviteInclude<ExtArgs> | null
+  where?: Prisma.VAOnboardingInviteWhereInput
+}
+
+/**
+ * User.onboardingInvitesCreated
+ */
+export type User$onboardingInvitesCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VAOnboardingInvite
+   */
+  select?: Prisma.VAOnboardingInviteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VAOnboardingInvite
+   */
+  omit?: Prisma.VAOnboardingInviteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VAOnboardingInviteInclude<ExtArgs> | null
+  where?: Prisma.VAOnboardingInviteWhereInput
+  orderBy?: Prisma.VAOnboardingInviteOrderByWithRelationInput | Prisma.VAOnboardingInviteOrderByWithRelationInput[]
+  cursor?: Prisma.VAOnboardingInviteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VAOnboardingInviteScalarFieldEnum | Prisma.VAOnboardingInviteScalarFieldEnum[]
 }
 
 /**
