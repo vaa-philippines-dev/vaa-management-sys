@@ -7,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Plus, Clock } from 'lucide-react'
 import { format } from 'date-fns'
+import { redirect } from 'next/navigation'
 
 export default async function WorkLogsPage({
   searchParams,
@@ -15,12 +16,23 @@ export default async function WorkLogsPage({
 }) {
   const { assignmentId } = await searchParams
   const user = await getCurrentUser()
+  if (!user) redirect('/login')
 
   const where: Record<string, unknown> = {}
   if (assignmentId) where.assignmentId = assignmentId
-  if (user?.userType === 'VIRTUAL_ASSISTANT') where.vaProfileId = user.vaProfile?.id
 
-  const logs = await cached('worklogs:list', [CACHE_TAGS.worklogs], 15, () =>
+  let scopeKey = 'all'
+  if (user.userType === 'VIRTUAL_ASSISTANT') {
+    // Scope to '' rather than undefined when a VA has no profile row yet — Prisma
+    // treats `undefined` as "filter not provided" and would return every log.
+    const vaProfileId = user.vaProfile?.id ?? ''
+    where.vaProfileId = vaProfileId
+    scopeKey = `va:${vaProfileId}`
+  }
+
+  // Cache key must carry every value the `where` closure depends on — a static
+  // key here served one viewer's scoped result set to the next viewer.
+  const logs = await cached(`worklogs:list:${scopeKey}:${assignmentId ?? ''}`, [CACHE_TAGS.worklogs], 15, () =>
     prisma.workLog.findMany({
       where,
       include: {

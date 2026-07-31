@@ -41,7 +41,10 @@ export default async function MergePage({ params }: { params: Promise<{ id: stri
     )
   }
 
-  const eligibleTargets = await cached('admin:mergeTargets', [CACHE_TAGS.departments], 60, () =>
+  // Key must carry both closed-over values (`source.level` and the excluded
+  // `id`) — a static key handed the previous department's level-filtered list
+  // to the next merge page, which could list the source itself as a target.
+  const eligibleTargets = await cached(`admin:mergeTargets:${source.level}:${id}`, [CACHE_TAGS.departments], 60, () =>
     prisma.department.findMany({
       where: {
         status: 'ACTIVE',

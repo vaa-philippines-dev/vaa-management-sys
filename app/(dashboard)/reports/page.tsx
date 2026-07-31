@@ -28,7 +28,10 @@ export default async function ReportsPage({
   const periodStart = startOfMonth(refDate)
   const periodEnd = endOfMonth(refDate)
 
-  const assignments = await cached('reports:assignments', [CACHE_TAGS.reports], 120, () =>
+  // The outer `where` is static but the nested workLogs filter closes over
+  // periodStart/periodEnd, so the month must be in the key — otherwise loading
+  // ?month=2026-07 then ?month=2026-08 renders August's header over July's logs.
+  const assignments = await cached(`reports:assignments:${format(refDate, 'yyyy-MM')}`, [CACHE_TAGS.reports], 120, () =>
     prisma.assignment.findMany({
       where: {
         status: { in: ['ACTIVE', 'COMPLETED'] },

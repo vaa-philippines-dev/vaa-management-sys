@@ -9,6 +9,7 @@ import { ClientsBoard } from '@/components/clients/ClientsBoard'
 import { ImportClientCsvButton } from '@/components/clients/ImportClientCsvButton'
 import { AddClientButton } from '@/components/clients/AddClientButton'
 import { FilterBar } from '@/components/filters/FilterBar'
+import { redirect } from 'next/navigation'
 
 const DEPARTMENT_SCOPED_ROLES = ['DEPT_MANAGER', 'OPERATIONS_MANAGER']
 const UNRESTRICTED_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'HR']
@@ -66,7 +67,8 @@ export default async function ClientsPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
   const user = await getCurrentUser()
-  const canImport = user ? CLIENT_MUTATOR_ROLES.includes(user.systemRole) : false
+  if (!user) redirect('/login')
+  const canImport = CLIENT_MUTATOR_ROLES.includes(user.systemRole)
 
   const serviceDepartments = canImport
     ? await prisma.department.findMany({

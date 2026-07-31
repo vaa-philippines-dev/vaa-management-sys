@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { WorkLogForm } from '@/components/work-logs/WorkLogForm'
@@ -11,10 +12,15 @@ export default async function NewWorkLogPage({
 }) {
   const { clientId: assignmentId } = await searchParams
   const user = await getCurrentUser()
+  if (!user) redirect('/login')
 
+  const isVA = user.userType === 'VIRTUAL_ASSISTANT'
   const where: Record<string, unknown> = { status: 'ACTIVE' }
-  if (user?.userType === 'VIRTUAL_ASSISTANT') {
-    where.vaProfileId = user.vaProfile?.id
+  if (isVA) {
+    // Scope to '' rather than undefined when a VA has no profile row yet —
+    // Prisma treats `undefined` as "filter not provided" and would return
+    // every active assignment in the system.
+    where.vaProfileId = user.vaProfile?.id ?? ''
   }
 
   const assignments = await prisma.assignment.findMany({
@@ -37,7 +43,7 @@ export default async function NewWorkLogPage({
       <WorkLogForm
         assignments={assignments.map((a) => ({
           id: a.id,
-          label: user?.userType === 'VIRTUAL_ASSISTANT' ? a.client.name : `${a.client.name} — ${a.vaProfile.user.firstName || a.vaProfile.user.email}`,
+          label: isVA ? a.client.name : `${a.client.name} — ${a.vaProfile.user.firstName || a.vaProfile.user.email}`,
         }))}
         defaultAssignmentId={assignmentId}
       />

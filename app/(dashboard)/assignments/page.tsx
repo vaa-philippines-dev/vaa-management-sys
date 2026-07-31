@@ -8,14 +8,25 @@ import { Plus, Briefcase } from 'lucide-react'
 import { format } from 'date-fns'
 import { AssignmentsBoard } from '@/components/assignments/AssignmentsBoard'
 import type { AssignmentRow } from '@/components/assignments/AssignmentCard'
+import { redirect } from 'next/navigation'
 
 export default async function AssignmentsPage() {
   const user = await getCurrentUser()
+  if (!user) redirect('/login')
 
   const where: Record<string, unknown> = {}
-  if (user?.userType === 'VIRTUAL_ASSISTANT') where.vaProfileId = user.vaProfile?.id
+  let scopeKey = 'all'
+  if (user.userType === 'VIRTUAL_ASSISTANT') {
+    // Scope to '' rather than undefined when a VA has no profile row yet — Prisma
+    // treats `undefined` as "filter not provided" and would return every assignment.
+    const vaProfileId = user.vaProfile?.id ?? ''
+    where.vaProfileId = vaProfileId
+    scopeKey = `va:${vaProfileId}`
+  }
 
-  const assignments = await cached('assignments:list', [CACHE_TAGS.assignments], 30, () =>
+  // Cache key must carry every value the `where` closure depends on — a static
+  // key here served an admin's full list to the next VA who loaded the page.
+  const assignments = await cached(`assignments:list:${scopeKey}`, [CACHE_TAGS.assignments], 30, () =>
     prisma.assignment.findMany({
       where: where as any,
       include: {
