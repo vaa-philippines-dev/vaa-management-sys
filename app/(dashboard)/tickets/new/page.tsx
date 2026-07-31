@@ -1,7 +1,16 @@
 import { prisma } from '@/lib/prisma'
+import { getCurrentUser } from '@/lib/auth'
+import { redirect } from 'next/navigation'
 import { NewTicketForm } from '@/components/tickets/NewTicketForm'
 
 export default async function NewTicketPage() {
+  // Without this guard the page's only protection was proxy.ts, whose
+  // getSession() check trusts the session cookie's shape rather than verifying
+  // it — so a stale or forged cookie reached these queries and disclosed every
+  // active client and department name.
+  const user = await getCurrentUser()
+  if (!user) redirect('/login')
+
   const [departments, clients] = await Promise.all([
     prisma.department.findMany({
       where: { status: 'ACTIVE', parentId: { not: null } },
