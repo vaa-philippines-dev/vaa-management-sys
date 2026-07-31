@@ -33,14 +33,7 @@ export default async function DashboardPage({
   const user = await getCurrentUser()
   const isDevMode = !process.env.NEXT_PUBLIC_SUPABASE_URL
 
-  if (!user) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20 text-center">
-        <AlertCircle className="h-10 w-10 text-muted-foreground mb-3" />
-        <p className="text-sm text-muted-foreground">Not authenticated.</p>
-      </div>
-    )
-  }
+  if (!user) redirect('/login')
 
   if (user.userType !== 'VIRTUAL_ASSISTANT' && !deptId) {
     const featured = await getFeaturedFavorite(user.id)
@@ -71,7 +64,7 @@ export default async function DashboardPage({
   }
 
   const department = deptId
-    ? await cached('dashboard:department', [CACHE_TAGS.departments, CACHE_TAGS.dashboard], 600, () =>
+    ? await cached(`dashboard:department:${deptId}`, [CACHE_TAGS.departments, CACHE_TAGS.dashboard], 600, () =>
         prisma.department.findUnique({ where: { id: deptId } })
       )
     : null
@@ -127,20 +120,25 @@ async function ManagerStats({ deptId }: { deptId: string | null }) {
     ? { status: 'ACTIVE', departmentId: deptId }
     : { status: 'ACTIVE' }
 
+  // Every cache key below is suffixed with the department scope — these were
+  // static keys over deptId-varying `where` clauses, so one department's counts
+  // were served to the next department that loaded the dashboard.
+  const deptKey = deptId ?? 'all'
+
   const [clientCount, vaCount, activeAssignments, monthLogs] = await Promise.all([
-    cached('dashboard:clientCount', [CACHE_TAGS.clients, CACHE_TAGS.dashboard], 60, () => prisma.client.count({ where: clientWhere })),
+    cached(`dashboard:clientCount:${deptKey}`, [CACHE_TAGS.clients, CACHE_TAGS.dashboard], 60, () => prisma.client.count({ where: clientWhere })),
     deptId
       ? cached(`dashboard:vaCount:${deptId}`, [CACHE_TAGS.vas, CACHE_TAGS.dashboard], 60, () =>
           prisma.vAProfile.count({ where: { status: 'ACTIVE', user: { memberships: { some: { departmentId: deptId, endedAt: null } } } } })
         )
       : cached('dashboard:vaCount', [CACHE_TAGS.vas, CACHE_TAGS.dashboard], 60, () => prisma.vAProfile.count({ where: { status: 'ACTIVE' } })),
-    cached('dashboard:activeAssignments', [CACHE_TAGS.assignments, CACHE_TAGS.dashboard], 60, () =>
+    cached(`dashboard:activeAssignments:${deptKey}`, [CACHE_TAGS.assignments, CACHE_TAGS.dashboard], 60, () =>
       prisma.assignment.findMany({
         where: { status: 'ACTIVE', ...(deptId ? { client: { departmentId: deptId } } : {}) },
         include: { vaProfile: { include: { user: true } }, client: true, workLogs: { where: { workDate: { gte: periodStart, lte: periodEnd } } } },
       })
     ),
-    cached('dashboard:monthLogs', [CACHE_TAGS.worklogs, CACHE_TAGS.dashboard], 60, () =>
+    cached(`dashboard:monthLogs:${deptKey}`, [CACHE_TAGS.worklogs, CACHE_TAGS.dashboard], 60, () =>
       deptId
         ? prisma.workLog.findMany({ where: { workDate: { gte: periodStart, lte: periodEnd }, assignment: { client: { departmentId: deptId } } } })
         : prisma.workLog.findMany({ where: { workDate: { gte: periodStart, lte: periodEnd } } })
@@ -164,7 +162,7 @@ async function ManagerAlerts({ deptId }: { deptId: string | null }) {
   const periodStart = startOfMonth(now)
   const periodEnd = endOfMonth(now)
 
-  const activeAssignments = await cached('dashboard:activeAssignments', [CACHE_TAGS.assignments, CACHE_TAGS.dashboard], 60, () =>
+  const activeAssignments = await cached(`dashboard:activeAssignments:${deptId ?? 'all'}`, [CACHE_TAGS.assignments, CACHE_TAGS.dashboard], 60, () =>
     prisma.assignment.findMany({
       where: { status: 'ACTIVE', ...(deptId ? { client: { departmentId: deptId } } : {}) },
       include: { vaProfile: { include: { user: true } }, client: true, workLogs: { where: { workDate: { gte: periodStart, lte: periodEnd } } } },
@@ -230,7 +228,7 @@ function QuickActionsPanel({ isDevMode }: { isDevMode: boolean }) {
     <Card>
       <CardHeader className="pb-3"><CardTitle className="text-base">Quick Actions</CardTitle></CardHeader>
       <CardContent className="grid gap-2 md:grid-cols-3">
-        {isDevMode && <><QuickAction href="/clients/new" icon={Plus} label="Add Client" /><QuickAction href="/vas/new" icon={Plus} label="Add VA" /><QuickAction href="/assignments/new" icon={Briefcase} label="New Assignment" /></>}
+        {isDevMode && <><QuickAction href="/clients/new" icon={Plus} label="Add Client" /><QuickAction href="/vas" icon={Plus} label="Add VA" /><QuickAction href="/assignments/new" icon={Briefcase} label="New Assignment" /></>}
         <QuickAction href="/work-logs/new" icon={Clock} label="Log Hours" />
         <QuickAction href="/reports" icon={BarChart3} label="Monthly Report" />
         <QuickAction href="/skills" icon={Users} label="Manage Services" />
@@ -240,7 +238,7 @@ function QuickActionsPanel({ isDevMode }: { isDevMode: boolean }) {
 }
 
 async function ManagerRecentAssignments({ deptId }: { deptId: string | null }) {
-  const recentAssignments = await cached('dashboard:recentAssignments', [CACHE_TAGS.assignments, CACHE_TAGS.dashboard], 60, () =>
+  const recentAssignments = await cached(`dashboard:recentAssignments:${deptId ?? 'all'}`, [CACHE_TAGS.assignments, CACHE_TAGS.dashboard], 60, () =>
     prisma.assignment.findMany({
       orderBy: { createdAt: 'desc' },
       take: 5,

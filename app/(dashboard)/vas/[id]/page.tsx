@@ -13,6 +13,7 @@ import { VAProfileEditor } from '@/components/vas/VAProfileEditor'
 import { TransferVAModal } from '@/components/vas/TransferVAModal'
 import { AddSkillCard } from '@/components/vas/AddSkillCard'
 import { VADetailPanel } from '@/components/vas/VADetailPanel'
+import { OnboardingInviteControl } from '@/components/vas/OnboardingInviteControl'
 
 const hrgRoles = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'EXECUTIVE', 'HR']
 
@@ -128,6 +129,18 @@ export default async function VADetailPage({
   )
 
   const driveFiles = await listDriveFiles().catch(() => [])
+
+  const onboardingInvite = await prisma.vAOnboardingInvite.findUnique({
+    where: { userId: va.user.id },
+    select: { expiresAt: true, completedAt: true },
+  })
+  const onboardingInviteStatus: 'never' | 'pending' | 'expired' | 'completed' = !onboardingInvite
+    ? 'never'
+    : onboardingInvite.completedAt
+      ? 'completed'
+      : onboardingInvite.expiresAt < new Date()
+        ? 'expired'
+        : 'pending'
 
   const editorData = {
     vaProfile: {
@@ -271,12 +284,19 @@ export default async function VADetailPage({
           </div>
         </div>
         {canEdit && (
-          <TransferVAModal
-            vaProfileId={va.id}
-            currentDepartmentName={primaryMem?.department.name ?? null}
-            departments={allDepartments}
-            canEdit={canEdit}
-          />
+          <div className="flex items-center gap-2">
+            <OnboardingInviteControl
+              userId={va.user.id}
+              status={onboardingInviteStatus}
+              expiresAt={toDateString(onboardingInvite?.expiresAt)}
+            />
+            <TransferVAModal
+              vaProfileId={va.id}
+              currentDepartmentName={primaryMem?.department.name ?? null}
+              departments={allDepartments}
+              canEdit={canEdit}
+            />
+          </div>
         )}
       </div>
 

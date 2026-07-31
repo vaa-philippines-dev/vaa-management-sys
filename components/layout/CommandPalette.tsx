@@ -34,7 +34,7 @@ type Shortcut = {
 
 const SHORTCUTS: Shortcut[] = [
   { label: 'Dashboard', description: 'Overview of activity and stats', href: '/dashboard', icon: LayoutDashboard },
-  { label: 'VA Roster', description: 'Browse and manage virtual assistants', href: '/vas', icon: Users, keywords: 'va roster team' },
+  { label: 'VA Masterlist', description: 'Browse and manage virtual assistants', href: '/vas', icon: Users, keywords: 'va roster masterlist team' },
   { label: 'Client Request', description: 'View and manage clients', href: '/clients', icon: Building2 },
   { label: 'Assignments', description: 'VA-to-client staffing assignments', href: '/assignments', icon: Briefcase },
   { label: 'Work Logs', description: 'Hours logged against assignments', href: '/work-logs', icon: ListTodo, keywords: 'hours timesheet' },

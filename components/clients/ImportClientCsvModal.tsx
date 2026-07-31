@@ -11,7 +11,7 @@ import { INTAKE_FIELD_CATALOG, getIntakeFieldsForDepartment, isBlankCell, type I
 
 export type ImportDepartmentOption = { id: string; name: string; shortName: string | null; acronym: string | null }
 
-// Same character-stream CSV parser as the VA Roster importer — handles
+// Same character-stream CSV parser as the VA Masterlist importer — handles
 // quoted multi-line cells (e.g. a long "account background" note) without
 // shredding columns at an embedded newline.
 function parseCsvRecords(text: string): string[][] {
@@ -380,7 +380,7 @@ export function ImportClientCsvModal({ departments }: { departments: ImportDepar
     const buffer = await file.arrayBuffer()
     // Excel on Windows exports CSVs as Windows-1252/ANSI, not UTF-8 — decoding
     // that as UTF-8 mangles accented characters, so detect the corruption and
-    // re-decode as Windows-1252 (same fix as the VA Roster importer).
+    // re-decode as Windows-1252 (same fix as the VA Masterlist importer).
     let text = new TextDecoder('utf-8').decode(buffer)
     if (text.includes('�')) {
       text = new TextDecoder('windows-1252').decode(buffer)

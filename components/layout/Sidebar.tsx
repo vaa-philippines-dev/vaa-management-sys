@@ -314,7 +314,7 @@ export function Sidebar({
 }) {
   const pathname = usePathname()
   const routes = role === 'VA' ? vaRoutes : managerRoutes
-  // Clients/Assignments move into the Department section (below VA Roster)
+  // Clients/Assignments move into the Department section (below VA Masterlist)
   // once it's shown, so they aren't listed twice for the same viewer.
   const mainRoutes = showDepartmentSection
     ? routes.filter((r) => r.href !== '/clients' && r.href !== '/assignments')
@@ -430,7 +430,7 @@ export function Sidebar({
           height={28}
           className="hidden h-7 w-7 shrink-0 object-contain dark:block"
         />
-        <span className="font-sans text-lg font-semibold tracking-tight text-sidebar-foreground">Workspace</span>
+        <span className="font-sans text-lg font-semibold tracking-tight text-sidebar-foreground">Workforce</span>
       </div>
       <ScrollArea className="flex-1">
         <nav className="flex flex-col gap-px pr-1">

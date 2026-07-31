@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma'
 import type { Prisma } from '@/src/generated/prisma/client'
 import { getCurrentUser, canMutate, getManagedDepartmentIds, VA_MUTATOR_ROLES } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -101,8 +102,9 @@ type ViewerScope =
 // EXECUTIVE, plain STAFF, non-team-affiliated VAs) keeps the pre-existing
 // unrestricted behavior — the task explicitly says not to invent new restrictions
 // for roles/situations not covered by the access matrix.
-async function getViewerScope(currentUser: Awaited<ReturnType<typeof getCurrentUser>>): Promise<ViewerScope> {
-  if (!currentUser) return { type: 'unrestricted' }
+async function getViewerScope(
+  currentUser: NonNullable<Awaited<ReturnType<typeof getCurrentUser>>>
+): Promise<ViewerScope> {
   if (DEPARTMENT_SCOPED_ROLES.includes(currentUser.systemRole)) {
     return { type: 'department', departmentIds: getManagedDepartmentIds(currentUser) }
   }
@@ -119,9 +121,11 @@ export default async function VAPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
   const currentUser = await getCurrentUser()
-  const isHRE = currentUser ? hrgRoles.includes(currentUser.systemRole) : false
-  const isAdmin = currentUser ? canMutate(currentUser) : false
-  const canAddVA = currentUser ? VA_MUTATOR_ROLES.includes(currentUser.systemRole) : false
+  if (!currentUser) redirect('/login')
+
+  const isHRE = hrgRoles.includes(currentUser.systemRole)
+  const isAdmin = canMutate(currentUser)
+  const canAddVA = VA_MUTATOR_ROLES.includes(currentUser.systemRole)
   const viewerScope = await getViewerScope(currentUser)
 
   const [addVaDepartments, addVaSkills] = canAddVA
@@ -156,7 +160,7 @@ export default async function VAPage({
         <VABulkSelectToggle
           headerActions={
             <div className="flex items-center gap-3">
-              <h2 className="text-lg font-bold tracking-tight">VA Roster</h2>
+              <h2 className="text-lg font-bold tracking-tight">VA Masterlist</h2>
               {isHRE && (
                 <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-info/10 text-info border-info/20">HR View</Badge>
               )}
@@ -175,7 +179,7 @@ export default async function VAPage({
         <>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <h2 className="text-lg font-bold tracking-tight">VA Roster</h2>
+              <h2 className="text-lg font-bold tracking-tight">VA Masterlist</h2>
               {isHRE && (
                 <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-info/10 text-info border-info/20">HR View</Badge>
               )}

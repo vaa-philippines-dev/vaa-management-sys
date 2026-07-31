@@ -3,7 +3,6 @@
 import { prisma } from '@/lib/prisma'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { CACHE_TAGS } from '@/lib/cache'
-import { redirect } from 'next/navigation'
 import { randomBytes } from 'node:crypto'
 import { requireRole, requireAdminMutator, VA_MUTATOR_ROLES } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
@@ -13,72 +12,11 @@ import type { Proficiency, EmploymentStatus, GeneralStatus } from '@/src/generat
 
 const ONBOARDING_INVITE_TTL_MS = 7 * 24 * 60 * 60 * 1000 // 7 days
 
-export async function createVA(formData: FormData) {
-  const actor = await requireRole(...VA_MUTATOR_ROLES)
-
-  const email = formData.get('email') as string
-  const nameVal = (formData.get('name') as string) || ''
-  const firstName = nameVal.split(' ')[0] || ''
-  const lastName = nameVal.split(' ').slice(1).join(' ') || ''
-  const hourlyRate = formData.get('hourlyRate') as string
-  const notes = (formData.get('notes') as string) || null
-  const skillIds = formData.getAll('skillIds') as string[]
-
-  const hireDate = new Date()
-
-  const user = await prisma.$transaction(async (tx) => {
-    const employeeId = await generateEmployeeId(tx, hireDate)
-    return tx.user.create({
-      data: {
-        email,
-        employeeId,
-        firstName,
-        lastName,
-        systemRole: 'VA',
-        userType: 'VIRTUAL_ASSISTANT',
-        vaProfile: {
-          create: {
-            hourlyRate: hourlyRate ? Number(hourlyRate) : null,
-            notes,
-            currentHireDate: hireDate,
-            vaSkills: { create: skillIds.map((skillId) => ({ skillId })) },
-          },
-        },
-      },
-      include: { vaProfile: true },
-    })
-  })
-
-  await logAudit({
-    actorId: actor.id,
-    action: 'CREATE',
-    entityType: 'User',
-    entityId: user.id,
-    after: { email, employeeId: user.employeeId, firstName, lastName },
-  })
-
-  await prisma.employmentRecord.create({
-    data: {
-      userId: user.id,
-      contractType: 'REGULAR',
-      employmentStatus: 'ENGAGED',
-      startDate: hireDate,
-      effectiveDate: hireDate,
-      isCurrent: true,
-      initiatedBy: actor.id,
-    },
-  })
-
-  revalidatePath('/vas')
-  revalidateTag(CACHE_TAGS.vas, 'default')
-  revalidateTag(CACHE_TAGS.users, 'default')
-  redirect(`/vas/${user.vaProfile!.id}`)
-}
-
-// Lightweight version of createVA for the VA Roster's "Add VA" quick-add modal —
+// The VA Masterlist's "Add VA" quick-add modal is the only VA creation path —
 // name + department/position only (email optional, auto-generated as a
 // placeholder if blank), no redirect so the modal can close and refresh in
-// place instead of navigating away.
+// place instead of navigating away. Rate, notes, and skills are filled in
+// afterward on the VA's profile page.
 export async function quickAddVA(formData: FormData) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
 
@@ -122,6 +60,18 @@ export async function quickAddVA(formData: FormData) {
     entityId: user.id,
     after: { email, employeeId: user.employeeId, firstName, lastName, departmentId, positionSkillId },
     metadata: { viaForm: 'vas:quick-add' },
+  })
+
+  await prisma.employmentRecord.create({
+    data: {
+      userId: user.id,
+      contractType: 'REGULAR',
+      employmentStatus: 'ENGAGED',
+      startDate: hireDate,
+      effectiveDate: hireDate,
+      isCurrent: true,
+      initiatedBy: actor.id,
+    },
   })
 
   revalidatePath('/vas')

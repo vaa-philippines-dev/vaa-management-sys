@@ -350,7 +350,7 @@ doc.add_paragraph(
     '- Filter: filter users by department via the FilterBar dropdown'
 )
 
-doc.add_heading('/vas?dept={id} — VA Roster (Department Filter)', 2)
+doc.add_heading('/vas?dept={id} — VA Masterlist (Department Filter)', 2)
 doc.add_paragraph(
     'The VA roster supports filtering by department via the FilterBar. When a department '
     'is selected, only VAs who are members of that department are shown. The table displays '
