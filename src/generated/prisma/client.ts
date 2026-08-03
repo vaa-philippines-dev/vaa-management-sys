@@ -216,3 +216,18 @@ export type Team = Prisma.TeamModel
  * 
  */
 export type TeamMembership = Prisma.TeamMembershipModel
+/**
+ * Model ClientPipeline
+ * 
+ */
+export type ClientPipeline = Prisma.ClientPipelineModel
+/**
+ * Model AgentSuggestion
+ * 
+ */
+export type AgentSuggestion = Prisma.AgentSuggestionModel
+/**
+ * Model AgentRun
+ * 
+ */
+export type AgentRun = Prisma.AgentRunModel

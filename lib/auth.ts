@@ -17,6 +17,12 @@ export const TEAM_MANAGE_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER',
 // Team Leader + both Temp Leader slots — Operations Manager owns who leads, not who's on the roster.
 // HR is deliberately added here too (elevated beyond Dept Manager, who does NOT get this) per HR's expanded team-assignment mandate.
 export const TEAM_LEADER_ASSIGN_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'OPERATIONS_MANAGER', 'HR']
+// AI Agent suggestions (VA matches, onboarding drafts, stalled-handoff flags):
+// deciding on one is a real staffing/onboarding call, owned by the same roles
+// that manage departments and staffing day-to-day. EXECUTIVE (e.g. the COO)
+// can view this page via requireManager() but is deliberately excluded here —
+// view-only, same principle as requireAdminMutator().
+export const AGENT_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'OPERATIONS_MANAGER', 'HR']
 
 // "View as" — lets a full admin (SUPER_ADMIN/SYSTEM_ADMIN) temporarily browse the app
 // simulating another SystemRole, via a cookie read in getCurrentUser() below. Deliberately

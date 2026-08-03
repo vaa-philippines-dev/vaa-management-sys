@@ -8,7 +8,7 @@ const MENTION_PATTERN = /@\[([^\]]+)\]\(([a-zA-Z0-9_-]+)\)/g
 const ANNOUNCEMENT_POSTER_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'HR']
 
 const MESSAGE_SENDER_SELECT = {
-  sender: { select: { id: true, firstName: true, lastName: true, messageColor: true, avatarUrl: true } },
+  sender: { select: { id: true, firstName: true, lastName: true, messageColor: true, avatarUrl: true, isBot: true } },
   parent: {
     select: {
       id: true,
@@ -163,7 +163,7 @@ export async function getMyChannels() {
           id: true,
           participants: {
             where: { userId: { not: user.id } },
-            select: { user: { select: { id: true, firstName: true, lastName: true, avatarUrl: true } } },
+            select: { user: { select: { id: true, firstName: true, lastName: true, avatarUrl: true, isBot: true } } },
           },
         },
       },
@@ -719,7 +719,7 @@ export async function getOrgUsersForDMPicker(query: string) {
           }
         : {}),
     },
-    select: { id: true, firstName: true, lastName: true, avatarUrl: true, email: true },
+    select: { id: true, firstName: true, lastName: true, avatarUrl: true, email: true, isBot: true },
     take: 25,
     orderBy: [{ firstName: 'asc' }, { lastName: 'asc' }],
   })

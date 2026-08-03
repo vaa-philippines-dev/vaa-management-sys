@@ -45,3 +45,7 @@ vaa-philippines-*.json
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Claude Code local tooling (dev launch config, permission settings, worktrees) —
+# machine-specific, not meant to be shared via the repo.
+.claude/

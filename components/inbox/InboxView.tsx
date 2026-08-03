@@ -43,6 +43,7 @@ import { DMUserPickerModal, type PickerUser } from './DMUserPickerModal'
 import { SearchMessagesPanel } from './SearchMessagesPanel'
 import { ConfirmDialog } from './ConfirmDialog'
 import { MessageListSkeleton } from './InboxSkeleton'
+import { BotBadge } from '@/components/ui/bot-badge'
 import { formatRelativeTime } from '@/lib/format-relative-time'
 import {
   getChannelMessages,
@@ -74,7 +75,7 @@ type DepartmentChannelSummary = {
 type DirectChannelSummary = {
   kind: 'DIRECT'
   channelId: string
-  otherUser: { id: string; firstName: string; lastName: string; avatarUrl: string | null } | null
+  otherUser: { id: string; firstName: string; lastName: string; avatarUrl: string | null; isBot: boolean } | null
   muted: boolean
   archived: boolean
   unreadCount: number
@@ -123,6 +124,7 @@ type MessageWithSender = {
     lastName: string
     messageColor: MessageColorValue
     avatarUrl?: string | null
+    isBot?: boolean
   }
 }
 
@@ -383,8 +385,11 @@ export function InboxView({
                         ) : (
                           <Hash className="h-3 w-3 shrink-0 opacity-60" />
                         )}
-                        <span className="truncate flex-1">
-                          {c.kind === 'DIRECT' ? (c.otherUser ? `${c.otherUser.firstName} ${c.otherUser.lastName}` : 'Direct Message') : c.departmentName}
+                        <span className="truncate flex-1 flex items-center gap-1.5">
+                          <span className="truncate">
+                            {c.kind === 'DIRECT' ? (c.otherUser ? `${c.otherUser.firstName} ${c.otherUser.lastName}` : 'Direct Message') : c.departmentName}
+                          </span>
+                          {c.kind === 'DIRECT' && c.otherUser?.isBot && <BotBadge />}
                         </span>
                         {c.unreadCount > 0 && (
                           <span className="rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-semibold text-primary-foreground">
@@ -1043,7 +1048,10 @@ function ChannelThread({
         ) : (
           <Hash className="h-4 w-4 text-muted-foreground" />
         )}
-        <p className="text-sm font-semibold flex-1">{headerTitle}</p>
+        <p className="text-sm font-semibold flex-1 flex items-center gap-1.5">
+          <span className="truncate">{headerTitle}</span>
+          {channel.kind === 'DIRECT' && channel.otherUser?.isBot && <BotBadge />}
+        </p>
         {channel.kind === 'DEPARTMENT' && (
           <DropdownMenu>
             <DropdownMenuTrigger
@@ -1207,13 +1215,16 @@ function ChannelThread({
                       {!isGroupedWithPrev && (
                         <div className={cn('flex items-baseline gap-2', isMe && 'flex-row-reverse')}>
                           {!isMe && (
-                            <button
-                              type="button"
-                              onClick={() => onOpenProfile(m.sender.id)}
-                              className="text-[12px] font-semibold hover:underline"
-                            >
-                              {m.sender.firstName} {m.sender.lastName}
-                            </button>
+                            <span className="flex items-center gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => onOpenProfile(m.sender.id)}
+                                className="text-[12px] font-semibold hover:underline"
+                              >
+                                {m.sender.firstName} {m.sender.lastName}
+                              </button>
+                              {m.sender.isBot && <BotBadge />}
+                            </span>
                           )}
                           <p className="text-[10.5px] text-muted-foreground">
                             {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}

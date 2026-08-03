@@ -2,9 +2,10 @@
 
 import { useEffect, useState, useTransition } from 'react'
 import { Modal } from '@/components/ui/modal'
+import { BotBadge } from '@/components/ui/bot-badge'
 import { getOrgUsersForDMPicker, findOrCreateDirectMessageChannel } from '@/app/(dashboard)/inbox/actions'
 
-export type PickerUser = { id: string; firstName: string; lastName: string; avatarUrl: string | null; email: string }
+export type PickerUser = { id: string; firstName: string; lastName: string; avatarUrl: string | null; email: string; isBot: boolean }
 
 export function DMUserPickerModal({
   open,
@@ -79,8 +80,11 @@ export function DMUserPickerModal({
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-[13px] font-medium">
-                  {u.firstName} {u.lastName}
+                <p className="flex items-center gap-1.5 truncate text-[13px] font-medium">
+                  <span className="truncate">
+                    {u.firstName} {u.lastName}
+                  </span>
+                  {u.isBot && <BotBadge />}
                 </p>
                 <p className="truncate text-[11px] text-muted-foreground">{u.email}</p>
               </div>

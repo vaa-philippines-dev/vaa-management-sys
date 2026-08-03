@@ -85,7 +85,10 @@ export const ModelName = {
   Notification: 'Notification',
   SidebarFavorite: 'SidebarFavorite',
   Team: 'Team',
-  TeamMembership: 'TeamMembership'
+  TeamMembership: 'TeamMembership',
+  ClientPipeline: 'ClientPipeline',
+  AgentSuggestion: 'AgentSuggestion',
+  AgentRun: 'AgentRun'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -176,6 +179,7 @@ export const UserScalarFieldEnum = {
   status: 'status',
   onHold: 'onHold',
   isActive: 'isActive',
+  isBot: 'isBot',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -773,6 +777,58 @@ export const TeamMembershipScalarFieldEnum = {
 } as const
 
 export type TeamMembershipScalarFieldEnum = (typeof TeamMembershipScalarFieldEnum)[keyof typeof TeamMembershipScalarFieldEnum]
+
+
+export const ClientPipelineScalarFieldEnum = {
+  id: 'id',
+  clientId: 'clientId',
+  stage: 'stage',
+  stageEnteredAt: 'stageEnteredAt',
+  stalledAt: 'stalledAt',
+  signedTrigger: 'signedTrigger',
+  signedAt: 'signedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ClientPipelineScalarFieldEnum = (typeof ClientPipelineScalarFieldEnum)[keyof typeof ClientPipelineScalarFieldEnum]
+
+
+export const AgentSuggestionScalarFieldEnum = {
+  id: 'id',
+  runId: 'runId',
+  kind: 'kind',
+  status: 'status',
+  clientId: 'clientId',
+  vaProfileId: 'vaProfileId',
+  rank: 'rank',
+  score: 'score',
+  rationale: 'rationale',
+  payload: 'payload',
+  decidedById: 'decidedById',
+  decidedAt: 'decidedAt',
+  editedPayload: 'editedPayload',
+  decisionNote: 'decisionNote',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AgentSuggestionScalarFieldEnum = (typeof AgentSuggestionScalarFieldEnum)[keyof typeof AgentSuggestionScalarFieldEnum]
+
+
+export const AgentRunScalarFieldEnum = {
+  id: 'id',
+  job: 'job',
+  status: 'status',
+  startedAt: 'startedAt',
+  finishedAt: 'finishedAt',
+  itemsProcessed: 'itemsProcessed',
+  suggestionsMade: 'suggestionsMade',
+  error: 'error',
+  trace: 'trace'
+} as const
+
+export type AgentRunScalarFieldEnum = (typeof AgentRunScalarFieldEnum)[keyof typeof AgentRunScalarFieldEnum]
 
 
 export const SortOrder = {

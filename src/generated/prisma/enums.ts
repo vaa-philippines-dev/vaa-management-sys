@@ -339,3 +339,43 @@ export const MessageColor = {
 } as const
 
 export type MessageColor = (typeof MessageColor)[keyof typeof MessageColor]
+
+
+export const ClientPipelineStage = {
+  SIGNED: 'SIGNED',
+  ONBOARDING: 'ONBOARDING',
+  ACTIVE: 'ACTIVE'
+} as const
+
+export type ClientPipelineStage = (typeof ClientPipelineStage)[keyof typeof ClientPipelineStage]
+
+
+export const AgentSuggestionKind = {
+  VA_MATCH: 'VA_MATCH',
+  NO_MATCH_FOUND: 'NO_MATCH_FOUND',
+  ONBOARDING_CHECKLIST: 'ONBOARDING_CHECKLIST',
+  WELCOME_MESSAGE: 'WELCOME_MESSAGE',
+  STALLED_HANDOFF: 'STALLED_HANDOFF'
+} as const
+
+export type AgentSuggestionKind = (typeof AgentSuggestionKind)[keyof typeof AgentSuggestionKind]
+
+
+export const AgentSuggestionStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  EDITED: 'EDITED',
+  REJECTED: 'REJECTED',
+  SUPERSEDED: 'SUPERSEDED'
+} as const
+
+export type AgentSuggestionStatus = (typeof AgentSuggestionStatus)[keyof typeof AgentSuggestionStatus]
+
+
+export const AgentRunStatus = {
+  RUNNING: 'RUNNING',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED'
+} as const
+
+export type AgentRunStatus = (typeof AgentRunStatus)[keyof typeof AgentRunStatus]

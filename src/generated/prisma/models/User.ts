@@ -39,6 +39,7 @@ export type UserMinAggregateOutputType = {
   status: $Enums.GeneralStatus | null
   onHold: boolean | null
   isActive: boolean | null
+  isBot: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -58,6 +59,7 @@ export type UserMaxAggregateOutputType = {
   status: $Enums.GeneralStatus | null
   onHold: boolean | null
   isActive: boolean | null
+  isBot: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -77,6 +79,7 @@ export type UserCountAggregateOutputType = {
   status: number
   onHold: number
   isActive: number
+  isBot: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -98,6 +101,7 @@ export type UserMinAggregateInputType = {
   status?: true
   onHold?: true
   isActive?: true
+  isBot?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -117,6 +121,7 @@ export type UserMaxAggregateInputType = {
   status?: true
   onHold?: true
   isActive?: true
+  isBot?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -136,6 +141,7 @@ export type UserCountAggregateInputType = {
   status?: true
   onHold?: true
   isActive?: true
+  isBot?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -228,6 +234,7 @@ export type UserGroupByOutputType = {
   status: $Enums.GeneralStatus
   onHold: boolean
   isActive: boolean
+  isBot: boolean
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -268,6 +275,7 @@ export type UserWhereInput = {
   status?: Prisma.EnumGeneralStatusFilter<"User"> | $Enums.GeneralStatus
   onHold?: Prisma.BoolFilter<"User"> | boolean
   isActive?: Prisma.BoolFilter<"User"> | boolean
+  isBot?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   profile?: Prisma.XOR<Prisma.UserProfileNullableScalarRelationFilter, Prisma.UserProfileWhereInput> | null
@@ -301,6 +309,7 @@ export type UserWhereInput = {
   teamMemberships?: Prisma.TeamMembershipListRelationFilter
   onboardingInvite?: Prisma.XOR<Prisma.VAOnboardingInviteNullableScalarRelationFilter, Prisma.VAOnboardingInviteWhereInput> | null
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteListRelationFilter
+  agentDecisions?: Prisma.AgentSuggestionListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -318,6 +327,7 @@ export type UserOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  isBot?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   profile?: Prisma.UserProfileOrderByWithRelationInput
@@ -351,6 +361,7 @@ export type UserOrderByWithRelationInput = {
   teamMemberships?: Prisma.TeamMembershipOrderByRelationAggregateInput
   onboardingInvite?: Prisma.VAOnboardingInviteOrderByWithRelationInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteOrderByRelationAggregateInput
+  agentDecisions?: Prisma.AgentSuggestionOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -371,6 +382,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumGeneralStatusFilter<"User"> | $Enums.GeneralStatus
   onHold?: Prisma.BoolFilter<"User"> | boolean
   isActive?: Prisma.BoolFilter<"User"> | boolean
+  isBot?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   profile?: Prisma.XOR<Prisma.UserProfileNullableScalarRelationFilter, Prisma.UserProfileWhereInput> | null
@@ -404,6 +416,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   teamMemberships?: Prisma.TeamMembershipListRelationFilter
   onboardingInvite?: Prisma.XOR<Prisma.VAOnboardingInviteNullableScalarRelationFilter, Prisma.VAOnboardingInviteWhereInput> | null
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteListRelationFilter
+  agentDecisions?: Prisma.AgentSuggestionListRelationFilter
 }, "id" | "email" | "employeeId">
 
 export type UserOrderByWithAggregationInput = {
@@ -421,6 +434,7 @@ export type UserOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  isBot?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -446,6 +460,7 @@ export type UserScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumGeneralStatusWithAggregatesFilter<"User"> | $Enums.GeneralStatus
   onHold?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   isActive?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  isBot?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -465,6 +480,7 @@ export type UserCreateInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -498,6 +514,7 @@ export type UserCreateInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -515,6 +532,7 @@ export type UserUncheckedCreateInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -548,6 +566,7 @@ export type UserUncheckedCreateInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUpdateInput = {
@@ -565,6 +584,7 @@ export type UserUpdateInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -598,6 +618,7 @@ export type UserUpdateInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -615,6 +636,7 @@ export type UserUncheckedUpdateInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -648,6 +670,7 @@ export type UserUncheckedUpdateInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -665,6 +688,7 @@ export type UserCreateManyInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -684,6 +708,7 @@ export type UserUpdateManyMutationInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -703,6 +728,7 @@ export type UserUncheckedUpdateManyInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -732,6 +758,7 @@ export type UserCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  isBot?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -751,6 +778,7 @@ export type UserMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  isBot?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -770,6 +798,7 @@ export type UserMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   onHold?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  isBot?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -1238,6 +1267,22 @@ export type UserUpdateOneRequiredWithoutTeamMembershipsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTeamMembershipsInput, Prisma.UserUpdateWithoutTeamMembershipsInput>, Prisma.UserUncheckedUpdateWithoutTeamMembershipsInput>
 }
 
+export type UserCreateNestedOneWithoutAgentDecisionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAgentDecisionsInput, Prisma.UserUncheckedCreateWithoutAgentDecisionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAgentDecisionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutAgentDecisionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAgentDecisionsInput, Prisma.UserUncheckedCreateWithoutAgentDecisionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAgentDecisionsInput
+  upsert?: Prisma.UserUpsertWithoutAgentDecisionsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAgentDecisionsInput, Prisma.UserUpdateWithoutAgentDecisionsInput>, Prisma.UserUncheckedUpdateWithoutAgentDecisionsInput>
+}
+
 export type UserCreateWithoutDepartmentHeadInput = {
   id?: string
   email: string
@@ -1253,6 +1298,7 @@ export type UserCreateWithoutDepartmentHeadInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -1285,6 +1331,7 @@ export type UserCreateWithoutDepartmentHeadInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutDepartmentHeadInput = {
@@ -1302,6 +1349,7 @@ export type UserUncheckedCreateWithoutDepartmentHeadInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -1334,6 +1382,7 @@ export type UserUncheckedCreateWithoutDepartmentHeadInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutDepartmentHeadInput = {
@@ -1367,6 +1416,7 @@ export type UserUpdateWithoutDepartmentHeadInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -1399,6 +1449,7 @@ export type UserUpdateWithoutDepartmentHeadInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDepartmentHeadInput = {
@@ -1416,6 +1467,7 @@ export type UserUncheckedUpdateWithoutDepartmentHeadInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -1448,6 +1500,7 @@ export type UserUncheckedUpdateWithoutDepartmentHeadInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserCreateWithoutMembershipsInput = {
@@ -1465,6 +1518,7 @@ export type UserCreateWithoutMembershipsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -1497,6 +1551,7 @@ export type UserCreateWithoutMembershipsInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutMembershipsInput = {
@@ -1514,6 +1569,7 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -1546,6 +1602,7 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutMembershipsInput = {
@@ -1579,6 +1636,7 @@ export type UserUpdateWithoutMembershipsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -1611,6 +1669,7 @@ export type UserUpdateWithoutMembershipsInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMembershipsInput = {
@@ -1628,6 +1687,7 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -1660,6 +1720,7 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserCreateWithoutProfileInput = {
@@ -1677,6 +1738,7 @@ export type UserCreateWithoutProfileInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   vaProfile?: Prisma.VAProfileCreateNestedOneWithoutUserInput
@@ -1709,6 +1771,7 @@ export type UserCreateWithoutProfileInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutProfileInput = {
@@ -1726,6 +1789,7 @@ export type UserUncheckedCreateWithoutProfileInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   vaProfile?: Prisma.VAProfileUncheckedCreateNestedOneWithoutUserInput
@@ -1758,6 +1822,7 @@ export type UserUncheckedCreateWithoutProfileInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutProfileInput = {
@@ -1791,6 +1856,7 @@ export type UserUpdateWithoutProfileInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfile?: Prisma.VAProfileUpdateOneWithoutUserNestedInput
@@ -1823,6 +1889,7 @@ export type UserUpdateWithoutProfileInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProfileInput = {
@@ -1840,6 +1907,7 @@ export type UserUncheckedUpdateWithoutProfileInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfile?: Prisma.VAProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -1872,6 +1940,7 @@ export type UserUncheckedUpdateWithoutProfileInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserCreateWithoutEmploymentRecordsInput = {
@@ -1889,6 +1958,7 @@ export type UserCreateWithoutEmploymentRecordsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -1921,6 +1991,7 @@ export type UserCreateWithoutEmploymentRecordsInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutEmploymentRecordsInput = {
@@ -1938,6 +2009,7 @@ export type UserUncheckedCreateWithoutEmploymentRecordsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -1970,6 +2042,7 @@ export type UserUncheckedCreateWithoutEmploymentRecordsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutEmploymentRecordsInput = {
@@ -1992,6 +2065,7 @@ export type UserCreateWithoutEmploymentRecordsInitiatedInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -2024,6 +2098,7 @@ export type UserCreateWithoutEmploymentRecordsInitiatedInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutEmploymentRecordsInitiatedInput = {
@@ -2041,6 +2116,7 @@ export type UserUncheckedCreateWithoutEmploymentRecordsInitiatedInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -2073,6 +2149,7 @@ export type UserUncheckedCreateWithoutEmploymentRecordsInitiatedInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutEmploymentRecordsInitiatedInput = {
@@ -2106,6 +2183,7 @@ export type UserUpdateWithoutEmploymentRecordsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -2138,6 +2216,7 @@ export type UserUpdateWithoutEmploymentRecordsInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmploymentRecordsInput = {
@@ -2155,6 +2234,7 @@ export type UserUncheckedUpdateWithoutEmploymentRecordsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -2187,6 +2267,7 @@ export type UserUncheckedUpdateWithoutEmploymentRecordsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUpsertWithoutEmploymentRecordsInitiatedInput = {
@@ -2215,6 +2296,7 @@ export type UserUpdateWithoutEmploymentRecordsInitiatedInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -2247,6 +2329,7 @@ export type UserUpdateWithoutEmploymentRecordsInitiatedInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmploymentRecordsInitiatedInput = {
@@ -2264,6 +2347,7 @@ export type UserUncheckedUpdateWithoutEmploymentRecordsInitiatedInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -2296,6 +2380,7 @@ export type UserUncheckedUpdateWithoutEmploymentRecordsInitiatedInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserCreateWithoutRoleAssignmentsInput = {
@@ -2313,6 +2398,7 @@ export type UserCreateWithoutRoleAssignmentsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -2345,6 +2431,7 @@ export type UserCreateWithoutRoleAssignmentsInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutRoleAssignmentsInput = {
@@ -2362,6 +2449,7 @@ export type UserUncheckedCreateWithoutRoleAssignmentsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -2394,6 +2482,7 @@ export type UserUncheckedCreateWithoutRoleAssignmentsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutRoleAssignmentsInput = {
@@ -2416,6 +2505,7 @@ export type UserCreateWithoutGrantedRoleAssignmentsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -2448,6 +2538,7 @@ export type UserCreateWithoutGrantedRoleAssignmentsInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutGrantedRoleAssignmentsInput = {
@@ -2465,6 +2556,7 @@ export type UserUncheckedCreateWithoutGrantedRoleAssignmentsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -2497,6 +2589,7 @@ export type UserUncheckedCreateWithoutGrantedRoleAssignmentsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutGrantedRoleAssignmentsInput = {
@@ -2530,6 +2623,7 @@ export type UserUpdateWithoutRoleAssignmentsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -2562,6 +2656,7 @@ export type UserUpdateWithoutRoleAssignmentsInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRoleAssignmentsInput = {
@@ -2579,6 +2674,7 @@ export type UserUncheckedUpdateWithoutRoleAssignmentsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -2611,6 +2707,7 @@ export type UserUncheckedUpdateWithoutRoleAssignmentsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUpsertWithoutGrantedRoleAssignmentsInput = {
@@ -2639,6 +2736,7 @@ export type UserUpdateWithoutGrantedRoleAssignmentsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -2671,6 +2769,7 @@ export type UserUpdateWithoutGrantedRoleAssignmentsInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGrantedRoleAssignmentsInput = {
@@ -2688,6 +2787,7 @@ export type UserUncheckedUpdateWithoutGrantedRoleAssignmentsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -2720,6 +2820,7 @@ export type UserUncheckedUpdateWithoutGrantedRoleAssignmentsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserCreateWithoutVaProfileInput = {
@@ -2737,6 +2838,7 @@ export type UserCreateWithoutVaProfileInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -2769,6 +2871,7 @@ export type UserCreateWithoutVaProfileInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutVaProfileInput = {
@@ -2786,6 +2889,7 @@ export type UserUncheckedCreateWithoutVaProfileInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -2818,6 +2922,7 @@ export type UserUncheckedCreateWithoutVaProfileInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutVaProfileInput = {
@@ -2851,6 +2956,7 @@ export type UserUpdateWithoutVaProfileInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -2883,6 +2989,7 @@ export type UserUpdateWithoutVaProfileInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVaProfileInput = {
@@ -2900,6 +3007,7 @@ export type UserUncheckedUpdateWithoutVaProfileInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -2932,6 +3040,7 @@ export type UserUncheckedUpdateWithoutVaProfileInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserCreateWithoutVaHistoryEventsInput = {
@@ -2949,6 +3058,7 @@ export type UserCreateWithoutVaHistoryEventsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -2981,6 +3091,7 @@ export type UserCreateWithoutVaHistoryEventsInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutVaHistoryEventsInput = {
@@ -2998,6 +3109,7 @@ export type UserUncheckedCreateWithoutVaHistoryEventsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -3030,6 +3142,7 @@ export type UserUncheckedCreateWithoutVaHistoryEventsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutVaHistoryEventsInput = {
@@ -3052,6 +3165,7 @@ export type UserCreateWithoutVaHistoryChangesInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -3084,6 +3198,7 @@ export type UserCreateWithoutVaHistoryChangesInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutVaHistoryChangesInput = {
@@ -3101,6 +3216,7 @@ export type UserUncheckedCreateWithoutVaHistoryChangesInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -3133,6 +3249,7 @@ export type UserUncheckedCreateWithoutVaHistoryChangesInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutVaHistoryChangesInput = {
@@ -3166,6 +3283,7 @@ export type UserUpdateWithoutVaHistoryEventsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -3198,6 +3316,7 @@ export type UserUpdateWithoutVaHistoryEventsInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVaHistoryEventsInput = {
@@ -3215,6 +3334,7 @@ export type UserUncheckedUpdateWithoutVaHistoryEventsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -3247,6 +3367,7 @@ export type UserUncheckedUpdateWithoutVaHistoryEventsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUpsertWithoutVaHistoryChangesInput = {
@@ -3275,6 +3396,7 @@ export type UserUpdateWithoutVaHistoryChangesInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -3307,6 +3429,7 @@ export type UserUpdateWithoutVaHistoryChangesInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVaHistoryChangesInput = {
@@ -3324,6 +3447,7 @@ export type UserUncheckedUpdateWithoutVaHistoryChangesInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -3356,6 +3480,7 @@ export type UserUncheckedUpdateWithoutVaHistoryChangesInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserCreateWithoutUploadedDocumentsInput = {
@@ -3373,6 +3498,7 @@ export type UserCreateWithoutUploadedDocumentsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -3405,6 +3531,7 @@ export type UserCreateWithoutUploadedDocumentsInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutUploadedDocumentsInput = {
@@ -3422,6 +3549,7 @@ export type UserUncheckedCreateWithoutUploadedDocumentsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -3454,6 +3582,7 @@ export type UserUncheckedCreateWithoutUploadedDocumentsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutUploadedDocumentsInput = {
@@ -3487,6 +3616,7 @@ export type UserUpdateWithoutUploadedDocumentsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -3519,6 +3649,7 @@ export type UserUpdateWithoutUploadedDocumentsInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadedDocumentsInput = {
@@ -3536,6 +3667,7 @@ export type UserUncheckedUpdateWithoutUploadedDocumentsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -3568,6 +3700,7 @@ export type UserUncheckedUpdateWithoutUploadedDocumentsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserCreateWithoutLeaveRequestsInput = {
@@ -3585,6 +3718,7 @@ export type UserCreateWithoutLeaveRequestsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -3617,6 +3751,7 @@ export type UserCreateWithoutLeaveRequestsInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutLeaveRequestsInput = {
@@ -3634,6 +3769,7 @@ export type UserUncheckedCreateWithoutLeaveRequestsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -3666,6 +3802,7 @@ export type UserUncheckedCreateWithoutLeaveRequestsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutLeaveRequestsInput = {
@@ -3688,6 +3825,7 @@ export type UserCreateWithoutApprovedLeavesInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -3720,6 +3858,7 @@ export type UserCreateWithoutApprovedLeavesInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutApprovedLeavesInput = {
@@ -3737,6 +3876,7 @@ export type UserUncheckedCreateWithoutApprovedLeavesInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -3769,6 +3909,7 @@ export type UserUncheckedCreateWithoutApprovedLeavesInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutApprovedLeavesInput = {
@@ -3802,6 +3943,7 @@ export type UserUpdateWithoutLeaveRequestsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -3834,6 +3976,7 @@ export type UserUpdateWithoutLeaveRequestsInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLeaveRequestsInput = {
@@ -3851,6 +3994,7 @@ export type UserUncheckedUpdateWithoutLeaveRequestsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -3883,6 +4027,7 @@ export type UserUncheckedUpdateWithoutLeaveRequestsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUpsertWithoutApprovedLeavesInput = {
@@ -3911,6 +4056,7 @@ export type UserUpdateWithoutApprovedLeavesInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -3943,6 +4089,7 @@ export type UserUpdateWithoutApprovedLeavesInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApprovedLeavesInput = {
@@ -3960,6 +4107,7 @@ export type UserUncheckedUpdateWithoutApprovedLeavesInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -3992,6 +4140,7 @@ export type UserUncheckedUpdateWithoutApprovedLeavesInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserCreateWithoutOnboardingInviteInput = {
@@ -4009,6 +4158,7 @@ export type UserCreateWithoutOnboardingInviteInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -4041,6 +4191,7 @@ export type UserCreateWithoutOnboardingInviteInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutOnboardingInviteInput = {
@@ -4058,6 +4209,7 @@ export type UserUncheckedCreateWithoutOnboardingInviteInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -4090,6 +4242,7 @@ export type UserUncheckedCreateWithoutOnboardingInviteInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutOnboardingInviteInput = {
@@ -4112,6 +4265,7 @@ export type UserCreateWithoutOnboardingInvitesCreatedInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -4144,6 +4298,7 @@ export type UserCreateWithoutOnboardingInvitesCreatedInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutOnboardingInvitesCreatedInput = {
@@ -4161,6 +4316,7 @@ export type UserUncheckedCreateWithoutOnboardingInvitesCreatedInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -4193,6 +4349,7 @@ export type UserUncheckedCreateWithoutOnboardingInvitesCreatedInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutOnboardingInvitesCreatedInput = {
@@ -4226,6 +4383,7 @@ export type UserUpdateWithoutOnboardingInviteInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -4258,6 +4416,7 @@ export type UserUpdateWithoutOnboardingInviteInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOnboardingInviteInput = {
@@ -4275,6 +4434,7 @@ export type UserUncheckedUpdateWithoutOnboardingInviteInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -4307,6 +4467,7 @@ export type UserUncheckedUpdateWithoutOnboardingInviteInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUpsertWithoutOnboardingInvitesCreatedInput = {
@@ -4335,6 +4496,7 @@ export type UserUpdateWithoutOnboardingInvitesCreatedInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -4367,6 +4529,7 @@ export type UserUpdateWithoutOnboardingInvitesCreatedInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOnboardingInvitesCreatedInput = {
@@ -4384,6 +4547,7 @@ export type UserUncheckedUpdateWithoutOnboardingInvitesCreatedInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -4416,6 +4580,7 @@ export type UserUncheckedUpdateWithoutOnboardingInvitesCreatedInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserCreateWithoutManagedClientsInput = {
@@ -4433,6 +4598,7 @@ export type UserCreateWithoutManagedClientsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -4465,6 +4631,7 @@ export type UserCreateWithoutManagedClientsInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutManagedClientsInput = {
@@ -4482,6 +4649,7 @@ export type UserUncheckedCreateWithoutManagedClientsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -4514,6 +4682,7 @@ export type UserUncheckedCreateWithoutManagedClientsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutManagedClientsInput = {
@@ -4547,6 +4716,7 @@ export type UserUpdateWithoutManagedClientsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -4579,6 +4749,7 @@ export type UserUpdateWithoutManagedClientsInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutManagedClientsInput = {
@@ -4596,6 +4767,7 @@ export type UserUncheckedUpdateWithoutManagedClientsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -4628,6 +4800,7 @@ export type UserUncheckedUpdateWithoutManagedClientsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserCreateWithoutCreatedTicketsInput = {
@@ -4645,6 +4818,7 @@ export type UserCreateWithoutCreatedTicketsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -4677,6 +4851,7 @@ export type UserCreateWithoutCreatedTicketsInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedTicketsInput = {
@@ -4694,6 +4869,7 @@ export type UserUncheckedCreateWithoutCreatedTicketsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -4726,6 +4902,7 @@ export type UserUncheckedCreateWithoutCreatedTicketsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedTicketsInput = {
@@ -4748,6 +4925,7 @@ export type UserCreateWithoutAssignedTicketsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -4780,6 +4958,7 @@ export type UserCreateWithoutAssignedTicketsInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutAssignedTicketsInput = {
@@ -4797,6 +4976,7 @@ export type UserUncheckedCreateWithoutAssignedTicketsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -4829,6 +5009,7 @@ export type UserUncheckedCreateWithoutAssignedTicketsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutAssignedTicketsInput = {
@@ -4862,6 +5043,7 @@ export type UserUpdateWithoutCreatedTicketsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -4894,6 +5076,7 @@ export type UserUpdateWithoutCreatedTicketsInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedTicketsInput = {
@@ -4911,6 +5094,7 @@ export type UserUncheckedUpdateWithoutCreatedTicketsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -4943,6 +5127,7 @@ export type UserUncheckedUpdateWithoutCreatedTicketsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUpsertWithoutAssignedTicketsInput = {
@@ -4971,6 +5156,7 @@ export type UserUpdateWithoutAssignedTicketsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -5003,6 +5189,7 @@ export type UserUpdateWithoutAssignedTicketsInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssignedTicketsInput = {
@@ -5020,6 +5207,7 @@ export type UserUncheckedUpdateWithoutAssignedTicketsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -5052,6 +5240,7 @@ export type UserUncheckedUpdateWithoutAssignedTicketsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserCreateWithoutTicketConversationsInput = {
@@ -5069,6 +5258,7 @@ export type UserCreateWithoutTicketConversationsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -5101,6 +5291,7 @@ export type UserCreateWithoutTicketConversationsInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutTicketConversationsInput = {
@@ -5118,6 +5309,7 @@ export type UserUncheckedCreateWithoutTicketConversationsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -5150,6 +5342,7 @@ export type UserUncheckedCreateWithoutTicketConversationsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutTicketConversationsInput = {
@@ -5183,6 +5376,7 @@ export type UserUpdateWithoutTicketConversationsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -5215,6 +5409,7 @@ export type UserUpdateWithoutTicketConversationsInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTicketConversationsInput = {
@@ -5232,6 +5427,7 @@ export type UserUncheckedUpdateWithoutTicketConversationsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -5264,6 +5460,7 @@ export type UserUncheckedUpdateWithoutTicketConversationsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserCreateWithoutChannelParticipantsInput = {
@@ -5281,6 +5478,7 @@ export type UserCreateWithoutChannelParticipantsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -5313,6 +5511,7 @@ export type UserCreateWithoutChannelParticipantsInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutChannelParticipantsInput = {
@@ -5330,6 +5529,7 @@ export type UserUncheckedCreateWithoutChannelParticipantsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -5362,6 +5562,7 @@ export type UserUncheckedCreateWithoutChannelParticipantsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutChannelParticipantsInput = {
@@ -5395,6 +5596,7 @@ export type UserUpdateWithoutChannelParticipantsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -5427,6 +5629,7 @@ export type UserUpdateWithoutChannelParticipantsInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutChannelParticipantsInput = {
@@ -5444,6 +5647,7 @@ export type UserUncheckedUpdateWithoutChannelParticipantsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -5476,6 +5680,7 @@ export type UserUncheckedUpdateWithoutChannelParticipantsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserCreateWithoutMessagesInput = {
@@ -5493,6 +5698,7 @@ export type UserCreateWithoutMessagesInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -5525,6 +5731,7 @@ export type UserCreateWithoutMessagesInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutMessagesInput = {
@@ -5542,6 +5749,7 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -5574,6 +5782,7 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutMessagesInput = {
@@ -5596,6 +5805,7 @@ export type UserCreateWithoutPinnedMessagesInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -5628,6 +5838,7 @@ export type UserCreateWithoutPinnedMessagesInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutPinnedMessagesInput = {
@@ -5645,6 +5856,7 @@ export type UserUncheckedCreateWithoutPinnedMessagesInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -5677,6 +5889,7 @@ export type UserUncheckedCreateWithoutPinnedMessagesInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutPinnedMessagesInput = {
@@ -5710,6 +5923,7 @@ export type UserUpdateWithoutMessagesInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -5742,6 +5956,7 @@ export type UserUpdateWithoutMessagesInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMessagesInput = {
@@ -5759,6 +5974,7 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -5791,6 +6007,7 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUpsertWithoutPinnedMessagesInput = {
@@ -5819,6 +6036,7 @@ export type UserUpdateWithoutPinnedMessagesInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -5851,6 +6069,7 @@ export type UserUpdateWithoutPinnedMessagesInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPinnedMessagesInput = {
@@ -5868,6 +6087,7 @@ export type UserUncheckedUpdateWithoutPinnedMessagesInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -5900,6 +6120,7 @@ export type UserUncheckedUpdateWithoutPinnedMessagesInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserCreateWithoutMessageMentionsInput = {
@@ -5917,6 +6138,7 @@ export type UserCreateWithoutMessageMentionsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -5949,6 +6171,7 @@ export type UserCreateWithoutMessageMentionsInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutMessageMentionsInput = {
@@ -5966,6 +6189,7 @@ export type UserUncheckedCreateWithoutMessageMentionsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -5998,6 +6222,7 @@ export type UserUncheckedCreateWithoutMessageMentionsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutMessageMentionsInput = {
@@ -6031,6 +6256,7 @@ export type UserUpdateWithoutMessageMentionsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -6063,6 +6289,7 @@ export type UserUpdateWithoutMessageMentionsInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMessageMentionsInput = {
@@ -6080,6 +6307,7 @@ export type UserUncheckedUpdateWithoutMessageMentionsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -6112,6 +6340,7 @@ export type UserUncheckedUpdateWithoutMessageMentionsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserCreateWithoutChannelReadsInput = {
@@ -6129,6 +6358,7 @@ export type UserCreateWithoutChannelReadsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -6161,6 +6391,7 @@ export type UserCreateWithoutChannelReadsInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutChannelReadsInput = {
@@ -6178,6 +6409,7 @@ export type UserUncheckedCreateWithoutChannelReadsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -6210,6 +6442,7 @@ export type UserUncheckedCreateWithoutChannelReadsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutChannelReadsInput = {
@@ -6243,6 +6476,7 @@ export type UserUpdateWithoutChannelReadsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -6275,6 +6509,7 @@ export type UserUpdateWithoutChannelReadsInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutChannelReadsInput = {
@@ -6292,6 +6527,7 @@ export type UserUncheckedUpdateWithoutChannelReadsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -6324,6 +6560,7 @@ export type UserUncheckedUpdateWithoutChannelReadsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserCreateWithoutAuditLogsInput = {
@@ -6341,6 +6578,7 @@ export type UserCreateWithoutAuditLogsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -6373,6 +6611,7 @@ export type UserCreateWithoutAuditLogsInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutAuditLogsInput = {
@@ -6390,6 +6629,7 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -6422,6 +6662,7 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutAuditLogsInput = {
@@ -6455,6 +6696,7 @@ export type UserUpdateWithoutAuditLogsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -6487,6 +6729,7 @@ export type UserUpdateWithoutAuditLogsInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuditLogsInput = {
@@ -6504,6 +6747,7 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -6536,6 +6780,7 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -6553,6 +6798,7 @@ export type UserCreateWithoutNotificationsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -6585,6 +6831,7 @@ export type UserCreateWithoutNotificationsInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -6602,6 +6849,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -6634,6 +6882,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -6667,6 +6916,7 @@ export type UserUpdateWithoutNotificationsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -6699,6 +6949,7 @@ export type UserUpdateWithoutNotificationsInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -6716,6 +6967,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -6748,6 +7000,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserCreateWithoutSidebarFavoritesInput = {
@@ -6765,6 +7018,7 @@ export type UserCreateWithoutSidebarFavoritesInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -6797,6 +7051,7 @@ export type UserCreateWithoutSidebarFavoritesInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutSidebarFavoritesInput = {
@@ -6814,6 +7069,7 @@ export type UserUncheckedCreateWithoutSidebarFavoritesInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -6846,6 +7102,7 @@ export type UserUncheckedCreateWithoutSidebarFavoritesInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutSidebarFavoritesInput = {
@@ -6879,6 +7136,7 @@ export type UserUpdateWithoutSidebarFavoritesInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -6911,6 +7169,7 @@ export type UserUpdateWithoutSidebarFavoritesInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSidebarFavoritesInput = {
@@ -6928,6 +7187,7 @@ export type UserUncheckedUpdateWithoutSidebarFavoritesInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -6960,6 +7220,7 @@ export type UserUncheckedUpdateWithoutSidebarFavoritesInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserCreateWithoutLedTeamsInput = {
@@ -6977,6 +7238,7 @@ export type UserCreateWithoutLedTeamsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -7009,6 +7271,7 @@ export type UserCreateWithoutLedTeamsInput = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutLedTeamsInput = {
@@ -7026,6 +7289,7 @@ export type UserUncheckedCreateWithoutLedTeamsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -7058,6 +7322,7 @@ export type UserUncheckedCreateWithoutLedTeamsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutLedTeamsInput = {
@@ -7080,6 +7345,7 @@ export type UserCreateWithoutTempLedTeams1Input = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -7112,6 +7378,7 @@ export type UserCreateWithoutTempLedTeams1Input = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutTempLedTeams1Input = {
@@ -7129,6 +7396,7 @@ export type UserUncheckedCreateWithoutTempLedTeams1Input = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -7161,6 +7429,7 @@ export type UserUncheckedCreateWithoutTempLedTeams1Input = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutTempLedTeams1Input = {
@@ -7183,6 +7452,7 @@ export type UserCreateWithoutTempLedTeams2Input = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -7215,6 +7485,7 @@ export type UserCreateWithoutTempLedTeams2Input = {
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutTempLedTeams2Input = {
@@ -7232,6 +7503,7 @@ export type UserUncheckedCreateWithoutTempLedTeams2Input = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -7264,6 +7536,7 @@ export type UserUncheckedCreateWithoutTempLedTeams2Input = {
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutTempLedTeams2Input = {
@@ -7297,6 +7570,7 @@ export type UserUpdateWithoutLedTeamsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -7329,6 +7603,7 @@ export type UserUpdateWithoutLedTeamsInput = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLedTeamsInput = {
@@ -7346,6 +7621,7 @@ export type UserUncheckedUpdateWithoutLedTeamsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -7378,6 +7654,7 @@ export type UserUncheckedUpdateWithoutLedTeamsInput = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUpsertWithoutTempLedTeams1Input = {
@@ -7406,6 +7683,7 @@ export type UserUpdateWithoutTempLedTeams1Input = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -7438,6 +7716,7 @@ export type UserUpdateWithoutTempLedTeams1Input = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTempLedTeams1Input = {
@@ -7455,6 +7734,7 @@ export type UserUncheckedUpdateWithoutTempLedTeams1Input = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -7487,6 +7767,7 @@ export type UserUncheckedUpdateWithoutTempLedTeams1Input = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUpsertWithoutTempLedTeams2Input = {
@@ -7515,6 +7796,7 @@ export type UserUpdateWithoutTempLedTeams2Input = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -7547,6 +7829,7 @@ export type UserUpdateWithoutTempLedTeams2Input = {
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTempLedTeams2Input = {
@@ -7564,6 +7847,7 @@ export type UserUncheckedUpdateWithoutTempLedTeams2Input = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -7596,6 +7880,7 @@ export type UserUncheckedUpdateWithoutTempLedTeams2Input = {
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserCreateWithoutTeamMembershipsInput = {
@@ -7613,6 +7898,7 @@ export type UserCreateWithoutTeamMembershipsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
@@ -7645,6 +7931,7 @@ export type UserCreateWithoutTeamMembershipsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserUncheckedCreateWithoutTeamMembershipsInput = {
@@ -7662,6 +7949,7 @@ export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   status?: $Enums.GeneralStatus
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
@@ -7694,6 +7982,7 @@ export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
 }
 
 export type UserCreateOrConnectWithoutTeamMembershipsInput = {
@@ -7727,6 +8016,7 @@ export type UserUpdateWithoutTeamMembershipsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
@@ -7759,6 +8049,7 @@ export type UserUpdateWithoutTeamMembershipsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
@@ -7776,6 +8067,7 @@ export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
   onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -7806,6 +8098,227 @@ export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   ledTeams?: Prisma.TeamUncheckedUpdateManyWithoutLeaderNestedInput
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
+}
+
+export type UserCreateWithoutAgentDecisionsInput = {
+  id?: string
+  email: string
+  employeeId?: string | null
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  extName?: string | null
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  messageColor?: $Enums.MessageColor
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  isBot?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
+  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
+  vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
+  pinnedMessages?: Prisma.MessageCreateNestedManyWithoutPinnedByUserInput
+  channelParticipants?: Prisma.ChannelParticipantCreateNestedManyWithoutUserInput
+  ledTeams?: Prisma.TeamCreateNestedManyWithoutLeaderInput
+  tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
+  tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+}
+
+export type UserUncheckedCreateWithoutAgentDecisionsInput = {
+  id?: string
+  email: string
+  employeeId?: string | null
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  extName?: string | null
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  messageColor?: $Enums.MessageColor
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  isBot?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileUncheckedCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipUncheckedCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
+  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
+  vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
+  pinnedMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPinnedByUserInput
+  channelParticipants?: Prisma.ChannelParticipantUncheckedCreateNestedManyWithoutUserInput
+  ledTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutLeaderInput
+  tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
+  tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+}
+
+export type UserCreateOrConnectWithoutAgentDecisionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAgentDecisionsInput, Prisma.UserUncheckedCreateWithoutAgentDecisionsInput>
+}
+
+export type UserUpsertWithoutAgentDecisionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAgentDecisionsInput, Prisma.UserUncheckedUpdateWithoutAgentDecisionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAgentDecisionsInput, Prisma.UserUncheckedCreateWithoutAgentDecisionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAgentDecisionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAgentDecisionsInput, Prisma.UserUncheckedUpdateWithoutAgentDecisionsInput>
+}
+
+export type UserUpdateWithoutAgentDecisionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  extName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumMessageColorFieldUpdateOperationsInput | $Enums.MessageColor
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  vaProfile?: Prisma.VAProfileUpdateOneWithoutUserNestedInput
+  departmentHead?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUpdateManyWithoutUserNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutUserNestedInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUpdateManyWithoutInitiatorNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
+  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
+  uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
+  createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
+  assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
+  ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
+  vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
+  pinnedMessages?: Prisma.MessageUpdateManyWithoutPinnedByUserNestedInput
+  channelParticipants?: Prisma.ChannelParticipantUpdateManyWithoutUserNestedInput
+  ledTeams?: Prisma.TeamUpdateManyWithoutLeaderNestedInput
+  tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
+  tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAgentDecisionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  extName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumMessageColorFieldUpdateOperationsInput | $Enums.MessageColor
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  vaProfile?: Prisma.VAProfileUncheckedUpdateOneWithoutUserNestedInput
+  departmentHead?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUncheckedUpdateManyWithoutUserNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutUserNestedInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutInitiatorNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
+  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
+  createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
+  assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
+  ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
+  vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
+  pinnedMessages?: Prisma.MessageUncheckedUpdateManyWithoutPinnedByUserNestedInput
+  channelParticipants?: Prisma.ChannelParticipantUncheckedUpdateManyWithoutUserNestedInput
+  ledTeams?: Prisma.TeamUncheckedUpdateManyWithoutLeaderNestedInput
+  tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
+  tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
 }
@@ -7844,6 +8357,7 @@ export type UserCountOutputType = {
   tempLedTeams2: number
   teamMemberships: number
   onboardingInvitesCreated: number
+  agentDecisions: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -7875,6 +8389,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   tempLedTeams2?: boolean | UserCountOutputTypeCountTempLedTeams2Args
   teamMemberships?: boolean | UserCountOutputTypeCountTeamMembershipsArgs
   onboardingInvitesCreated?: boolean | UserCountOutputTypeCountOnboardingInvitesCreatedArgs
+  agentDecisions?: boolean | UserCountOutputTypeCountAgentDecisionsArgs
 }
 
 /**
@@ -8083,6 +8598,13 @@ export type UserCountOutputTypeCountOnboardingInvitesCreatedArgs<ExtArgs extends
   where?: Prisma.VAOnboardingInviteWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAgentDecisionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AgentSuggestionWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -8099,6 +8621,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   status?: boolean
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   profile?: boolean | Prisma.User$profileArgs<ExtArgs>
@@ -8132,6 +8655,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   teamMemberships?: boolean | Prisma.User$teamMembershipsArgs<ExtArgs>
   onboardingInvite?: boolean | Prisma.User$onboardingInviteArgs<ExtArgs>
   onboardingInvitesCreated?: boolean | Prisma.User$onboardingInvitesCreatedArgs<ExtArgs>
+  agentDecisions?: boolean | Prisma.User$agentDecisionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -8150,6 +8674,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   status?: boolean
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -8169,6 +8694,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   status?: boolean
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -8188,11 +8714,12 @@ export type UserSelectScalar = {
   status?: boolean
   onHold?: boolean
   isActive?: boolean
+  isBot?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "employeeId" | "firstName" | "middleName" | "lastName" | "extName" | "systemRole" | "userType" | "avatarUrl" | "messageColor" | "status" | "onHold" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "employeeId" | "firstName" | "middleName" | "lastName" | "extName" | "systemRole" | "userType" | "avatarUrl" | "messageColor" | "status" | "onHold" | "isActive" | "isBot" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   profile?: boolean | Prisma.User$profileArgs<ExtArgs>
   vaProfile?: boolean | Prisma.User$vaProfileArgs<ExtArgs>
@@ -8225,6 +8752,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   teamMemberships?: boolean | Prisma.User$teamMembershipsArgs<ExtArgs>
   onboardingInvite?: boolean | Prisma.User$onboardingInviteArgs<ExtArgs>
   onboardingInvitesCreated?: boolean | Prisma.User$onboardingInvitesCreatedArgs<ExtArgs>
+  agentDecisions?: boolean | Prisma.User$agentDecisionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -8264,6 +8792,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     teamMemberships: Prisma.$TeamMembershipPayload<ExtArgs>[]
     onboardingInvite: Prisma.$VAOnboardingInvitePayload<ExtArgs> | null
     onboardingInvitesCreated: Prisma.$VAOnboardingInvitePayload<ExtArgs>[]
+    agentDecisions: Prisma.$AgentSuggestionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -8280,6 +8809,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     status: $Enums.GeneralStatus
     onHold: boolean
     isActive: boolean
+    isBot: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -8707,6 +9237,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   teamMemberships<T extends Prisma.User$teamMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$teamMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamMembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   onboardingInvite<T extends Prisma.User$onboardingInviteArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$onboardingInviteArgs<ExtArgs>>): Prisma.Prisma__VAOnboardingInviteClient<runtime.Types.Result.GetResult<Prisma.$VAOnboardingInvitePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   onboardingInvitesCreated<T extends Prisma.User$onboardingInvitesCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$onboardingInvitesCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VAOnboardingInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  agentDecisions<T extends Prisma.User$agentDecisionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$agentDecisionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AgentSuggestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8750,6 +9281,7 @@ export interface UserFieldRefs {
   readonly status: Prisma.FieldRef<"User", 'GeneralStatus'>
   readonly onHold: Prisma.FieldRef<"User", 'Boolean'>
   readonly isActive: Prisma.FieldRef<"User", 'Boolean'>
+  readonly isBot: Prisma.FieldRef<"User", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }
@@ -9871,6 +10403,30 @@ export type User$onboardingInvitesCreatedArgs<ExtArgs extends runtime.Types.Exte
   take?: number
   skip?: number
   distinct?: Prisma.VAOnboardingInviteScalarFieldEnum | Prisma.VAOnboardingInviteScalarFieldEnum[]
+}
+
+/**
+ * User.agentDecisions
+ */
+export type User$agentDecisionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AgentSuggestion
+   */
+  select?: Prisma.AgentSuggestionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AgentSuggestion
+   */
+  omit?: Prisma.AgentSuggestionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AgentSuggestionInclude<ExtArgs> | null
+  where?: Prisma.AgentSuggestionWhereInput
+  orderBy?: Prisma.AgentSuggestionOrderByWithRelationInput | Prisma.AgentSuggestionOrderByWithRelationInput[]
+  cursor?: Prisma.AgentSuggestionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AgentSuggestionScalarFieldEnum | Prisma.AgentSuggestionScalarFieldEnum[]
 }
 
 /**

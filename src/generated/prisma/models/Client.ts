@@ -359,6 +359,8 @@ export type ClientWhereInput = {
   account?: Prisma.XOR<Prisma.AccountNullableScalarRelationFilter, Prisma.AccountWhereInput> | null
   assignments?: Prisma.AssignmentListRelationFilter
   tickets?: Prisma.TicketListRelationFilter
+  pipeline?: Prisma.XOR<Prisma.ClientPipelineNullableScalarRelationFilter, Prisma.ClientPipelineWhereInput> | null
+  agentSuggestions?: Prisma.AgentSuggestionListRelationFilter
 }
 
 export type ClientOrderByWithRelationInput = {
@@ -395,6 +397,8 @@ export type ClientOrderByWithRelationInput = {
   account?: Prisma.AccountOrderByWithRelationInput
   assignments?: Prisma.AssignmentOrderByRelationAggregateInput
   tickets?: Prisma.TicketOrderByRelationAggregateInput
+  pipeline?: Prisma.ClientPipelineOrderByWithRelationInput
+  agentSuggestions?: Prisma.AgentSuggestionOrderByRelationAggregateInput
 }
 
 export type ClientWhereUniqueInput = Prisma.AtLeast<{
@@ -434,6 +438,8 @@ export type ClientWhereUniqueInput = Prisma.AtLeast<{
   account?: Prisma.XOR<Prisma.AccountNullableScalarRelationFilter, Prisma.AccountWhereInput> | null
   assignments?: Prisma.AssignmentListRelationFilter
   tickets?: Prisma.TicketListRelationFilter
+  pipeline?: Prisma.XOR<Prisma.ClientPipelineNullableScalarRelationFilter, Prisma.ClientPipelineWhereInput> | null
+  agentSuggestions?: Prisma.AgentSuggestionListRelationFilter
 }, "id">
 
 export type ClientOrderByWithAggregationInput = {
@@ -535,6 +541,8 @@ export type ClientCreateInput = {
   account?: Prisma.AccountCreateNestedOneWithoutClientAssignmentsInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutClientInput
   tickets?: Prisma.TicketCreateNestedManyWithoutClientInput
+  pipeline?: Prisma.ClientPipelineCreateNestedOneWithoutClientInput
+  agentSuggestions?: Prisma.AgentSuggestionCreateNestedManyWithoutClientInput
 }
 
 export type ClientUncheckedCreateInput = {
@@ -568,6 +576,8 @@ export type ClientUncheckedCreateInput = {
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClientInput
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutClientInput
+  pipeline?: Prisma.ClientPipelineUncheckedCreateNestedOneWithoutClientInput
+  agentSuggestions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutClientInput
 }
 
 export type ClientUpdateInput = {
@@ -601,6 +611,8 @@ export type ClientUpdateInput = {
   account?: Prisma.AccountUpdateOneWithoutClientAssignmentsNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutClientNestedInput
   tickets?: Prisma.TicketUpdateManyWithoutClientNestedInput
+  pipeline?: Prisma.ClientPipelineUpdateOneWithoutClientNestedInput
+  agentSuggestions?: Prisma.AgentSuggestionUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateInput = {
@@ -634,6 +646,8 @@ export type ClientUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClientNestedInput
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutClientNestedInput
+  pipeline?: Prisma.ClientPipelineUncheckedUpdateOneWithoutClientNestedInput
+  agentSuggestions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutClientNestedInput
 }
 
 export type ClientCreateManyInput = {
@@ -1002,6 +1016,36 @@ export type ClientUncheckedUpdateManyWithoutAccountNestedInput = {
   deleteMany?: Prisma.ClientScalarWhereInput | Prisma.ClientScalarWhereInput[]
 }
 
+export type ClientCreateNestedOneWithoutPipelineInput = {
+  create?: Prisma.XOR<Prisma.ClientCreateWithoutPipelineInput, Prisma.ClientUncheckedCreateWithoutPipelineInput>
+  connectOrCreate?: Prisma.ClientCreateOrConnectWithoutPipelineInput
+  connect?: Prisma.ClientWhereUniqueInput
+}
+
+export type ClientUpdateOneRequiredWithoutPipelineNestedInput = {
+  create?: Prisma.XOR<Prisma.ClientCreateWithoutPipelineInput, Prisma.ClientUncheckedCreateWithoutPipelineInput>
+  connectOrCreate?: Prisma.ClientCreateOrConnectWithoutPipelineInput
+  upsert?: Prisma.ClientUpsertWithoutPipelineInput
+  connect?: Prisma.ClientWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClientUpdateToOneWithWhereWithoutPipelineInput, Prisma.ClientUpdateWithoutPipelineInput>, Prisma.ClientUncheckedUpdateWithoutPipelineInput>
+}
+
+export type ClientCreateNestedOneWithoutAgentSuggestionsInput = {
+  create?: Prisma.XOR<Prisma.ClientCreateWithoutAgentSuggestionsInput, Prisma.ClientUncheckedCreateWithoutAgentSuggestionsInput>
+  connectOrCreate?: Prisma.ClientCreateOrConnectWithoutAgentSuggestionsInput
+  connect?: Prisma.ClientWhereUniqueInput
+}
+
+export type ClientUpdateOneWithoutAgentSuggestionsNestedInput = {
+  create?: Prisma.XOR<Prisma.ClientCreateWithoutAgentSuggestionsInput, Prisma.ClientUncheckedCreateWithoutAgentSuggestionsInput>
+  connectOrCreate?: Prisma.ClientCreateOrConnectWithoutAgentSuggestionsInput
+  upsert?: Prisma.ClientUpsertWithoutAgentSuggestionsInput
+  disconnect?: Prisma.ClientWhereInput | boolean
+  delete?: Prisma.ClientWhereInput | boolean
+  connect?: Prisma.ClientWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClientUpdateToOneWithWhereWithoutAgentSuggestionsInput, Prisma.ClientUpdateWithoutAgentSuggestionsInput>, Prisma.ClientUncheckedUpdateWithoutAgentSuggestionsInput>
+}
+
 export type ClientCreateWithoutDepartmentInput = {
   id?: string
   name: string
@@ -1032,6 +1076,8 @@ export type ClientCreateWithoutDepartmentInput = {
   account?: Prisma.AccountCreateNestedOneWithoutClientAssignmentsInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutClientInput
   tickets?: Prisma.TicketCreateNestedManyWithoutClientInput
+  pipeline?: Prisma.ClientPipelineCreateNestedOneWithoutClientInput
+  agentSuggestions?: Prisma.AgentSuggestionCreateNestedManyWithoutClientInput
 }
 
 export type ClientUncheckedCreateWithoutDepartmentInput = {
@@ -1064,6 +1110,8 @@ export type ClientUncheckedCreateWithoutDepartmentInput = {
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClientInput
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutClientInput
+  pipeline?: Prisma.ClientPipelineUncheckedCreateNestedOneWithoutClientInput
+  agentSuggestions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutClientInput
 }
 
 export type ClientCreateOrConnectWithoutDepartmentInput = {
@@ -1156,6 +1204,8 @@ export type ClientCreateWithoutManagerInput = {
   account?: Prisma.AccountCreateNestedOneWithoutClientAssignmentsInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutClientInput
   tickets?: Prisma.TicketCreateNestedManyWithoutClientInput
+  pipeline?: Prisma.ClientPipelineCreateNestedOneWithoutClientInput
+  agentSuggestions?: Prisma.AgentSuggestionCreateNestedManyWithoutClientInput
 }
 
 export type ClientUncheckedCreateWithoutManagerInput = {
@@ -1188,6 +1238,8 @@ export type ClientUncheckedCreateWithoutManagerInput = {
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClientInput
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutClientInput
+  pipeline?: Prisma.ClientPipelineUncheckedCreateNestedOneWithoutClientInput
+  agentSuggestions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutClientInput
 }
 
 export type ClientCreateOrConnectWithoutManagerInput = {
@@ -1246,6 +1298,8 @@ export type ClientCreateWithoutAssignmentsInput = {
   department?: Prisma.DepartmentCreateNestedOneWithoutClientsInput
   account?: Prisma.AccountCreateNestedOneWithoutClientAssignmentsInput
   tickets?: Prisma.TicketCreateNestedManyWithoutClientInput
+  pipeline?: Prisma.ClientPipelineCreateNestedOneWithoutClientInput
+  agentSuggestions?: Prisma.AgentSuggestionCreateNestedManyWithoutClientInput
 }
 
 export type ClientUncheckedCreateWithoutAssignmentsInput = {
@@ -1278,6 +1332,8 @@ export type ClientUncheckedCreateWithoutAssignmentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutClientInput
+  pipeline?: Prisma.ClientPipelineUncheckedCreateNestedOneWithoutClientInput
+  agentSuggestions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutClientInput
 }
 
 export type ClientCreateOrConnectWithoutAssignmentsInput = {
@@ -1326,6 +1382,8 @@ export type ClientUpdateWithoutAssignmentsInput = {
   department?: Prisma.DepartmentUpdateOneWithoutClientsNestedInput
   account?: Prisma.AccountUpdateOneWithoutClientAssignmentsNestedInput
   tickets?: Prisma.TicketUpdateManyWithoutClientNestedInput
+  pipeline?: Prisma.ClientPipelineUpdateOneWithoutClientNestedInput
+  agentSuggestions?: Prisma.AgentSuggestionUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateWithoutAssignmentsInput = {
@@ -1358,6 +1416,8 @@ export type ClientUncheckedUpdateWithoutAssignmentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutClientNestedInput
+  pipeline?: Prisma.ClientPipelineUncheckedUpdateOneWithoutClientNestedInput
+  agentSuggestions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutClientNestedInput
 }
 
 export type ClientCreateWithoutTicketsInput = {
@@ -1390,6 +1450,8 @@ export type ClientCreateWithoutTicketsInput = {
   department?: Prisma.DepartmentCreateNestedOneWithoutClientsInput
   account?: Prisma.AccountCreateNestedOneWithoutClientAssignmentsInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutClientInput
+  pipeline?: Prisma.ClientPipelineCreateNestedOneWithoutClientInput
+  agentSuggestions?: Prisma.AgentSuggestionCreateNestedManyWithoutClientInput
 }
 
 export type ClientUncheckedCreateWithoutTicketsInput = {
@@ -1422,6 +1484,8 @@ export type ClientUncheckedCreateWithoutTicketsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClientInput
+  pipeline?: Prisma.ClientPipelineUncheckedCreateNestedOneWithoutClientInput
+  agentSuggestions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutClientInput
 }
 
 export type ClientCreateOrConnectWithoutTicketsInput = {
@@ -1470,6 +1534,8 @@ export type ClientUpdateWithoutTicketsInput = {
   department?: Prisma.DepartmentUpdateOneWithoutClientsNestedInput
   account?: Prisma.AccountUpdateOneWithoutClientAssignmentsNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutClientNestedInput
+  pipeline?: Prisma.ClientPipelineUpdateOneWithoutClientNestedInput
+  agentSuggestions?: Prisma.AgentSuggestionUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateWithoutTicketsInput = {
@@ -1502,6 +1568,8 @@ export type ClientUncheckedUpdateWithoutTicketsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClientNestedInput
+  pipeline?: Prisma.ClientPipelineUncheckedUpdateOneWithoutClientNestedInput
+  agentSuggestions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutClientNestedInput
 }
 
 export type ClientCreateWithoutAccountInput = {
@@ -1534,6 +1602,8 @@ export type ClientCreateWithoutAccountInput = {
   department?: Prisma.DepartmentCreateNestedOneWithoutClientsInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutClientInput
   tickets?: Prisma.TicketCreateNestedManyWithoutClientInput
+  pipeline?: Prisma.ClientPipelineCreateNestedOneWithoutClientInput
+  agentSuggestions?: Prisma.AgentSuggestionCreateNestedManyWithoutClientInput
 }
 
 export type ClientUncheckedCreateWithoutAccountInput = {
@@ -1566,6 +1636,8 @@ export type ClientUncheckedCreateWithoutAccountInput = {
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClientInput
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutClientInput
+  pipeline?: Prisma.ClientPipelineUncheckedCreateNestedOneWithoutClientInput
+  agentSuggestions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutClientInput
 }
 
 export type ClientCreateOrConnectWithoutAccountInput = {
@@ -1592,6 +1664,310 @@ export type ClientUpdateWithWhereUniqueWithoutAccountInput = {
 export type ClientUpdateManyWithWhereWithoutAccountInput = {
   where: Prisma.ClientScalarWhereInput
   data: Prisma.XOR<Prisma.ClientUpdateManyMutationInput, Prisma.ClientUncheckedUpdateManyWithoutAccountInput>
+}
+
+export type ClientCreateWithoutPipelineInput = {
+  id?: string
+  name: string
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  platform?: $Enums.ClientPlatform
+  industry?: string | null
+  timezone?: string | null
+  notes?: string | null
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  onboardingFolderUrl?: string | null
+  website?: string | null
+  requestType?: string | null
+  businessModel?: string | null
+  serviceType?: string | null
+  secondaryContact?: string | null
+  meetingDate?: Date | string | null
+  targetStartDate?: Date | string | null
+  requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutManagedClientsInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutClientsInput
+  account?: Prisma.AccountCreateNestedOneWithoutClientAssignmentsInput
+  assignments?: Prisma.AssignmentCreateNestedManyWithoutClientInput
+  tickets?: Prisma.TicketCreateNestedManyWithoutClientInput
+  agentSuggestions?: Prisma.AgentSuggestionCreateNestedManyWithoutClientInput
+}
+
+export type ClientUncheckedCreateWithoutPipelineInput = {
+  id?: string
+  name: string
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  platform?: $Enums.ClientPlatform
+  industry?: string | null
+  timezone?: string | null
+  notes?: string | null
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  managerId?: string | null
+  departmentId?: string | null
+  onboardingFolderUrl?: string | null
+  website?: string | null
+  requestType?: string | null
+  businessModel?: string | null
+  serviceType?: string | null
+  secondaryContact?: string | null
+  meetingDate?: Date | string | null
+  targetStartDate?: Date | string | null
+  requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  accountId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClientInput
+  tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutClientInput
+  agentSuggestions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutClientInput
+}
+
+export type ClientCreateOrConnectWithoutPipelineInput = {
+  where: Prisma.ClientWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClientCreateWithoutPipelineInput, Prisma.ClientUncheckedCreateWithoutPipelineInput>
+}
+
+export type ClientUpsertWithoutPipelineInput = {
+  update: Prisma.XOR<Prisma.ClientUpdateWithoutPipelineInput, Prisma.ClientUncheckedUpdateWithoutPipelineInput>
+  create: Prisma.XOR<Prisma.ClientCreateWithoutPipelineInput, Prisma.ClientUncheckedCreateWithoutPipelineInput>
+  where?: Prisma.ClientWhereInput
+}
+
+export type ClientUpdateToOneWithWhereWithoutPipelineInput = {
+  where?: Prisma.ClientWhereInput
+  data: Prisma.XOR<Prisma.ClientUpdateWithoutPipelineInput, Prisma.ClientUncheckedUpdateWithoutPipelineInput>
+}
+
+export type ClientUpdateWithoutPipelineInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  platform?: Prisma.EnumClientPlatformFieldUpdateOperationsInput | $Enums.ClientPlatform
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requestType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  secondaryContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  targetStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutManagedClientsNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutClientsNestedInput
+  account?: Prisma.AccountUpdateOneWithoutClientAssignmentsNestedInput
+  assignments?: Prisma.AssignmentUpdateManyWithoutClientNestedInput
+  tickets?: Prisma.TicketUpdateManyWithoutClientNestedInput
+  agentSuggestions?: Prisma.AgentSuggestionUpdateManyWithoutClientNestedInput
+}
+
+export type ClientUncheckedUpdateWithoutPipelineInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  platform?: Prisma.EnumClientPlatformFieldUpdateOperationsInput | $Enums.ClientPlatform
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requestType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  secondaryContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  targetStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  accountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClientNestedInput
+  tickets?: Prisma.TicketUncheckedUpdateManyWithoutClientNestedInput
+  agentSuggestions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutClientNestedInput
+}
+
+export type ClientCreateWithoutAgentSuggestionsInput = {
+  id?: string
+  name: string
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  platform?: $Enums.ClientPlatform
+  industry?: string | null
+  timezone?: string | null
+  notes?: string | null
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  onboardingFolderUrl?: string | null
+  website?: string | null
+  requestType?: string | null
+  businessModel?: string | null
+  serviceType?: string | null
+  secondaryContact?: string | null
+  meetingDate?: Date | string | null
+  targetStartDate?: Date | string | null
+  requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  manager?: Prisma.UserCreateNestedOneWithoutManagedClientsInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutClientsInput
+  account?: Prisma.AccountCreateNestedOneWithoutClientAssignmentsInput
+  assignments?: Prisma.AssignmentCreateNestedManyWithoutClientInput
+  tickets?: Prisma.TicketCreateNestedManyWithoutClientInput
+  pipeline?: Prisma.ClientPipelineCreateNestedOneWithoutClientInput
+}
+
+export type ClientUncheckedCreateWithoutAgentSuggestionsInput = {
+  id?: string
+  name: string
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  platform?: $Enums.ClientPlatform
+  industry?: string | null
+  timezone?: string | null
+  notes?: string | null
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  managerId?: string | null
+  departmentId?: string | null
+  onboardingFolderUrl?: string | null
+  website?: string | null
+  requestType?: string | null
+  businessModel?: string | null
+  serviceType?: string | null
+  secondaryContact?: string | null
+  meetingDate?: Date | string | null
+  targetStartDate?: Date | string | null
+  requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  accountId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClientInput
+  tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutClientInput
+  pipeline?: Prisma.ClientPipelineUncheckedCreateNestedOneWithoutClientInput
+}
+
+export type ClientCreateOrConnectWithoutAgentSuggestionsInput = {
+  where: Prisma.ClientWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClientCreateWithoutAgentSuggestionsInput, Prisma.ClientUncheckedCreateWithoutAgentSuggestionsInput>
+}
+
+export type ClientUpsertWithoutAgentSuggestionsInput = {
+  update: Prisma.XOR<Prisma.ClientUpdateWithoutAgentSuggestionsInput, Prisma.ClientUncheckedUpdateWithoutAgentSuggestionsInput>
+  create: Prisma.XOR<Prisma.ClientCreateWithoutAgentSuggestionsInput, Prisma.ClientUncheckedCreateWithoutAgentSuggestionsInput>
+  where?: Prisma.ClientWhereInput
+}
+
+export type ClientUpdateToOneWithWhereWithoutAgentSuggestionsInput = {
+  where?: Prisma.ClientWhereInput
+  data: Prisma.XOR<Prisma.ClientUpdateWithoutAgentSuggestionsInput, Prisma.ClientUncheckedUpdateWithoutAgentSuggestionsInput>
+}
+
+export type ClientUpdateWithoutAgentSuggestionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  platform?: Prisma.EnumClientPlatformFieldUpdateOperationsInput | $Enums.ClientPlatform
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requestType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  secondaryContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  targetStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  manager?: Prisma.UserUpdateOneWithoutManagedClientsNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutClientsNestedInput
+  account?: Prisma.AccountUpdateOneWithoutClientAssignmentsNestedInput
+  assignments?: Prisma.AssignmentUpdateManyWithoutClientNestedInput
+  tickets?: Prisma.TicketUpdateManyWithoutClientNestedInput
+  pipeline?: Prisma.ClientPipelineUpdateOneWithoutClientNestedInput
+}
+
+export type ClientUncheckedUpdateWithoutAgentSuggestionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  platform?: Prisma.EnumClientPlatformFieldUpdateOperationsInput | $Enums.ClientPlatform
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requestType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serviceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  secondaryContact?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  targetStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
+  intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  accountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClientNestedInput
+  tickets?: Prisma.TicketUncheckedUpdateManyWithoutClientNestedInput
+  pipeline?: Prisma.ClientPipelineUncheckedUpdateOneWithoutClientNestedInput
 }
 
 export type ClientCreateManyDepartmentInput = {
@@ -1654,6 +2030,8 @@ export type ClientUpdateWithoutDepartmentInput = {
   account?: Prisma.AccountUpdateOneWithoutClientAssignmentsNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutClientNestedInput
   tickets?: Prisma.TicketUpdateManyWithoutClientNestedInput
+  pipeline?: Prisma.ClientPipelineUpdateOneWithoutClientNestedInput
+  agentSuggestions?: Prisma.AgentSuggestionUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateWithoutDepartmentInput = {
@@ -1686,6 +2064,8 @@ export type ClientUncheckedUpdateWithoutDepartmentInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClientNestedInput
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutClientNestedInput
+  pipeline?: Prisma.ClientPipelineUncheckedUpdateOneWithoutClientNestedInput
+  agentSuggestions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateManyWithoutDepartmentInput = {
@@ -1778,6 +2158,8 @@ export type ClientUpdateWithoutManagerInput = {
   account?: Prisma.AccountUpdateOneWithoutClientAssignmentsNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutClientNestedInput
   tickets?: Prisma.TicketUpdateManyWithoutClientNestedInput
+  pipeline?: Prisma.ClientPipelineUpdateOneWithoutClientNestedInput
+  agentSuggestions?: Prisma.AgentSuggestionUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateWithoutManagerInput = {
@@ -1810,6 +2192,8 @@ export type ClientUncheckedUpdateWithoutManagerInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClientNestedInput
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutClientNestedInput
+  pipeline?: Prisma.ClientPipelineUncheckedUpdateOneWithoutClientNestedInput
+  agentSuggestions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateManyWithoutManagerInput = {
@@ -1902,6 +2286,8 @@ export type ClientUpdateWithoutAccountInput = {
   department?: Prisma.DepartmentUpdateOneWithoutClientsNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutClientNestedInput
   tickets?: Prisma.TicketUpdateManyWithoutClientNestedInput
+  pipeline?: Prisma.ClientPipelineUpdateOneWithoutClientNestedInput
+  agentSuggestions?: Prisma.AgentSuggestionUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateWithoutAccountInput = {
@@ -1934,6 +2320,8 @@ export type ClientUncheckedUpdateWithoutAccountInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClientNestedInput
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutClientNestedInput
+  pipeline?: Prisma.ClientPipelineUncheckedUpdateOneWithoutClientNestedInput
+  agentSuggestions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateManyWithoutAccountInput = {
@@ -1974,11 +2362,13 @@ export type ClientUncheckedUpdateManyWithoutAccountInput = {
 export type ClientCountOutputType = {
   assignments: number
   tickets: number
+  agentSuggestions: number
 }
 
 export type ClientCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   assignments?: boolean | ClientCountOutputTypeCountAssignmentsArgs
   tickets?: boolean | ClientCountOutputTypeCountTicketsArgs
+  agentSuggestions?: boolean | ClientCountOutputTypeCountAgentSuggestionsArgs
 }
 
 /**
@@ -2003,6 +2393,13 @@ export type ClientCountOutputTypeCountAssignmentsArgs<ExtArgs extends runtime.Ty
  */
 export type ClientCountOutputTypeCountTicketsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.TicketWhereInput
+}
+
+/**
+ * ClientCountOutputType without action
+ */
+export type ClientCountOutputTypeCountAgentSuggestionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AgentSuggestionWhereInput
 }
 
 
@@ -2040,6 +2437,8 @@ export type ClientSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   account?: boolean | Prisma.Client$accountArgs<ExtArgs>
   assignments?: boolean | Prisma.Client$assignmentsArgs<ExtArgs>
   tickets?: boolean | Prisma.Client$ticketsArgs<ExtArgs>
+  pipeline?: boolean | Prisma.Client$pipelineArgs<ExtArgs>
+  agentSuggestions?: boolean | Prisma.Client$agentSuggestionsArgs<ExtArgs>
   _count?: boolean | Prisma.ClientCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["client"]>
 
@@ -2149,6 +2548,8 @@ export type ClientInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   account?: boolean | Prisma.Client$accountArgs<ExtArgs>
   assignments?: boolean | Prisma.Client$assignmentsArgs<ExtArgs>
   tickets?: boolean | Prisma.Client$ticketsArgs<ExtArgs>
+  pipeline?: boolean | Prisma.Client$pipelineArgs<ExtArgs>
+  agentSuggestions?: boolean | Prisma.Client$agentSuggestionsArgs<ExtArgs>
   _count?: boolean | Prisma.ClientCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ClientIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2170,6 +2571,8 @@ export type $ClientPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     account: Prisma.$AccountPayload<ExtArgs> | null
     assignments: Prisma.$AssignmentPayload<ExtArgs>[]
     tickets: Prisma.$TicketPayload<ExtArgs>[]
+    pipeline: Prisma.$ClientPipelinePayload<ExtArgs> | null
+    agentSuggestions: Prisma.$AgentSuggestionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2599,6 +3002,8 @@ export interface Prisma__ClientClient<T, Null = never, ExtArgs extends runtime.T
   account<T extends Prisma.Client$accountArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Client$accountArgs<ExtArgs>>): Prisma.Prisma__AccountClient<runtime.Types.Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   assignments<T extends Prisma.Client$assignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Client$assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tickets<T extends Prisma.Client$ticketsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Client$ticketsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  pipeline<T extends Prisma.Client$pipelineArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Client$pipelineArgs<ExtArgs>>): Prisma.Prisma__ClientPipelineClient<runtime.Types.Result.GetResult<Prisma.$ClientPipelinePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  agentSuggestions<T extends Prisma.Client$agentSuggestionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Client$agentSuggestionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AgentSuggestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3159,6 +3564,49 @@ export type Client$ticketsArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.TicketScalarFieldEnum | Prisma.TicketScalarFieldEnum[]
+}
+
+/**
+ * Client.pipeline
+ */
+export type Client$pipelineArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ClientPipeline
+   */
+  select?: Prisma.ClientPipelineSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ClientPipeline
+   */
+  omit?: Prisma.ClientPipelineOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ClientPipelineInclude<ExtArgs> | null
+  where?: Prisma.ClientPipelineWhereInput
+}
+
+/**
+ * Client.agentSuggestions
+ */
+export type Client$agentSuggestionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AgentSuggestion
+   */
+  select?: Prisma.AgentSuggestionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AgentSuggestion
+   */
+  omit?: Prisma.AgentSuggestionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AgentSuggestionInclude<ExtArgs> | null
+  where?: Prisma.AgentSuggestionWhereInput
+  orderBy?: Prisma.AgentSuggestionOrderByWithRelationInput | Prisma.AgentSuggestionOrderByWithRelationInput[]
+  cursor?: Prisma.AgentSuggestionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AgentSuggestionScalarFieldEnum | Prisma.AgentSuggestionScalarFieldEnum[]
 }
 
 /**

@@ -345,6 +345,9 @@ model User {
   status       GeneralStatus @default(ACTIVE) @map("general_status")
   onHold       Boolean       @default(false) @map("on_hold")
   isActive     Boolean       @default(true) @map("is_active")
+  // Marks a system/automation account (e.g. Vee) so the UI can show a "Bot"
+  // badge next to its name instead of it looking like a real staff member.
+  isBot        Boolean       @default(false) @map("is_bot")
   createdAt    DateTime      @default(now()) @map("created_at")
   updatedAt    DateTime      @updatedAt @map("updated_at")
 
@@ -379,6 +382,7 @@ model User {
   teamMemberships            TeamMembership[]       @relation("TeamMember")
   onboardingInvite           VAOnboardingInvite?
   onboardingInvitesCreated   VAOnboardingInvite[]   @relation("OnboardingInviteCreator")
+  agentDecisions             AgentSuggestion[]      @relation("AgentSuggestionDecidedBy")
 
   @@index([email])
   @@index([systemRole])
@@ -519,6 +523,8 @@ model VAProfile {
   workLogs    WorkLog[]
   vaSkills    VASkill[]
   documents   VADocument[]
+
+  agentSuggestions AgentSuggestion[]
 
   @@index([availabilityStatus])
   @@index([positionSkillId])
@@ -702,6 +708,9 @@ model Client {
 
   assignments Assignment[]
   tickets     Ticket[]
+
+  pipeline         ClientPipeline?
+  agentSuggestions AgentSuggestion[]
 
   @@index([departmentId])
   @@index([accountId])
@@ -1173,4 +1182,127 @@ model TeamMembership {
   @@index([teamId, userId])
   @@index([userId])
   @@map("team_memberships")
+}
+
+// ──────────────────────────────────────────────────────────────────
+// MODELS — AI Agent (vaa-agent)
+// ──────────────────────────────────────────────────────────────────
+// These tables are written by the separate `vaa-agent` service and read by
+// this app's review UI. This schema owns the migrations for them: vaa-agent
+// runs `prisma db pull` to generate its client and never migrates. If you add
+// a column here, re-run the introspection over there.
+//
+// Every row in agent_suggestions is a proposal awaiting a human — nothing the
+// agent produces reaches a client without an approval recorded here.
+
+enum ClientPipelineStage {
+  SIGNED
+  ONBOARDING
+  ACTIVE
+}
+
+enum AgentSuggestionKind {
+  VA_MATCH
+  NO_MATCH_FOUND
+  ONBOARDING_CHECKLIST
+  WELCOME_MESSAGE
+  STALLED_HANDOFF
+}
+
+enum AgentSuggestionStatus {
+  PENDING
+  APPROVED
+  EDITED
+  REJECTED
+  SUPERSEDED
+}
+
+enum AgentRunStatus {
+  RUNNING
+  SUCCEEDED
+  FAILED
+}
+
+// Post-signing stage tracking for a client. Rows only exist for clients the
+// agent has seen cross the "contract signed" line — an absent row means the
+// client predates the agent or was created by hand, not that it's unsigned.
+model ClientPipeline {
+  id             String              @id @default(cuid())
+  clientId       String              @unique @map("client_id")
+  client         Client              @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  stage          ClientPipelineStage @default(SIGNED)
+  stageEnteredAt DateTime            @default(now()) @map("stage_entered_at")
+  // Set once a stage has sat past its threshold without advancing; cleared on
+  // every advance so a re-stall re-flags rather than staying permanently stale.
+  stalledAt      DateTime?           @map("stalled_at")
+  // The raw CMS status string that tripped the signed trigger, kept so a
+  // wrongly-fired handoff can be traced back to the value that caused it.
+  signedTrigger  String?             @map("signed_trigger")
+  signedAt       DateTime?           @map("signed_at")
+  createdAt      DateTime            @default(now()) @map("created_at")
+  updatedAt      DateTime            @updatedAt @map("updated_at")
+
+  @@index([stage, stageEnteredAt])
+  @@index([stalledAt])
+  @@map("client_pipelines")
+}
+
+model AgentSuggestion {
+  id     String                @id @default(cuid())
+  runId  String                @map("run_id")
+  run    AgentRun              @relation(fields: [runId], references: [id], onDelete: Cascade)
+  kind   AgentSuggestionKind
+  status AgentSuggestionStatus @default(PENDING)
+
+  clientId    String?    @map("client_id")
+  client      Client?    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  vaProfileId String?    @map("va_profile_id")
+  vaProfile   VAProfile? @relation(fields: [vaProfileId], references: [id], onDelete: Cascade)
+
+  // 1-based position within a VA_MATCH shortlist; null for every other kind.
+  rank Int?
+  // Deterministic pre-score (0–100) from the matching criteria, recorded before
+  // the LLM reorders anything — so a bad ranking can be told apart from a bad filter.
+  score Decimal? @db.Decimal(5, 2)
+  // Plain-language justification shown to staff. Adoption depends on this being
+  // readable and overridable, so it is required for every suggestion.
+  rationale String
+  payload   Json
+
+  decidedById String?   @map("decided_by_id")
+  decidedBy   User?     @relation("AgentSuggestionDecidedBy", fields: [decidedById], references: [id], onDelete: SetNull)
+  decidedAt   DateTime? @map("decided_at")
+  // What staff changed the suggestion to when they edit instead of approving
+  // as-is. This is the feedback signal the written instructions get tuned against.
+  editedPayload Json?   @map("edited_payload")
+  decisionNote  String? @map("decision_note")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([status, kind, createdAt])
+  @@index([clientId, kind])
+  @@index([vaProfileId])
+  @@index([runId])
+  @@map("agent_suggestions")
+}
+
+// One row per cron invocation of an agent job — the run-by-run trace behind
+// the technical debugging view. `trace` is developer-facing, not business-facing.
+model AgentRun {
+  id              String         @id @default(cuid())
+  job             String
+  status          AgentRunStatus @default(RUNNING)
+  startedAt       DateTime       @default(now()) @map("started_at")
+  finishedAt      DateTime?      @map("finished_at")
+  itemsProcessed  Int            @default(0) @map("items_processed")
+  suggestionsMade Int            @default(0) @map("suggestions_made")
+  error           String?
+  trace           Json?
+
+  suggestions AgentSuggestion[]
+
+  @@index([job, startedAt])
+  @@index([status])
+  @@map("agent_runs")
 }

@@ -30,6 +30,7 @@ import {
   BriefcaseBusiness,
   Database,
   IdCard,
+  Bot,
 } from 'lucide-react'
 import Image from 'next/image'
 import {
@@ -262,6 +263,7 @@ const managerRoutes = [
 // Rendered in the "On Going" section at the very bottom of the manager sidebar,
 // below Favorites — kept out of managerRoutes' render loop above.
 const onGoingRoutes = [
+  { label: 'AI Agent', href: '/agent', icon: Bot },
   { label: 'Work Logs', href: '/work-logs', icon: ListTodo },
   { label: 'Services', href: '/skills', icon: UserCog },
   { label: 'Tickets', href: '/tickets', icon: Ticket },
