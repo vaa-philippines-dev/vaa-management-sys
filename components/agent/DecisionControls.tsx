@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
-import { decideSuggestion } from '@/app/(dashboard)/agent/actions'
+import { decideSuggestion } from '@/app/(dashboard)/matching/actions'
 
 export function DecisionControls({ suggestionId }: { suggestionId: string }) {
   const [note, setNote] = useState('')

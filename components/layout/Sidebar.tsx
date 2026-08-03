@@ -31,6 +31,7 @@ import {
   Database,
   IdCard,
   Bot,
+  Handshake,
 } from 'lucide-react'
 import Image from 'next/image'
 import {
@@ -263,7 +264,7 @@ const managerRoutes = [
 // Rendered in the "On Going" section at the very bottom of the manager sidebar,
 // below Favorites — kept out of managerRoutes' render loop above.
 const onGoingRoutes = [
-  { label: 'AI Agent', href: '/agent', icon: Bot },
+  { label: 'Matching', href: '/matching', icon: Handshake },
   { label: 'Work Logs', href: '/work-logs', icon: ListTodo },
   { label: 'Services', href: '/skills', icon: UserCog },
   { label: 'Tickets', href: '/tickets', icon: Ticket },
@@ -301,6 +302,7 @@ const adminRoutes = [
   { label: 'Audit Log', href: '/admin/audit', icon: ClipboardList },
   { label: 'History', href: '/admin/history', icon: History },
   { label: 'VA Connections', href: '/va-connections', icon: Database },
+  { label: 'Vee', href: '/vee', icon: Bot },
 ]
 
 export function Sidebar({
@@ -680,6 +682,16 @@ export function Sidebar({
                 isActive={isMainRowActive('/va-connections', isRouteActive('/va-connections'))}
                 canFavorite={canFavorite}
                 favorite={favorites.find((f) => f.href === '/va-connections')}
+                atMax={atMax}
+                onChanged={setFavorites}
+              />
+              <FavoritableRow
+                href="/vee"
+                label="Vee"
+                icon={Bot}
+                isActive={isMainRowActive('/vee', isRouteActive('/vee'))}
+                canFavorite={canFavorite}
+                favorite={favorites.find((f) => f.href === '/vee')}
                 atMax={atMax}
                 onChanged={setFavorites}
               />

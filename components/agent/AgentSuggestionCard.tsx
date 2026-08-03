@@ -20,7 +20,7 @@ export type SuggestionForCard = {
   decidedBy: { firstName: string; lastName: string } | null
 }
 
-const KIND_LABEL: Record<SuggestionForCard['kind'], string> = {
+export const KIND_LABEL: Record<SuggestionForCard['kind'], string> = {
   VA_MATCH: 'VA Match',
   NO_MATCH_FOUND: 'No Strong Match',
   ONBOARDING_CHECKLIST: 'Onboarding Checklist',
