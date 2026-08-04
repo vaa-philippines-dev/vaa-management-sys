@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
 import { format } from 'date-fns'
 import { AssignmentStatusButtons } from '@/components/assignments/AssignmentStatusButtons'
+import { AssignmentEditButton } from '@/components/assignments/AssignmentEditButton'
 
 export default async function AssignmentDetailPage({
   params,
@@ -64,7 +65,22 @@ export default async function AssignmentDetailPage({
           )}
         </div>
         {ASSIGNMENT_MUTATOR_ROLES.includes(user.systemRole) && assignment.source !== 'VA_CONNECTIONS_SYNC' && (
-          <AssignmentStatusButtons id={assignment.id} current={assignment.status} />
+          <div className="flex items-center gap-2">
+            <AssignmentEditButton
+              assignment={{
+                id: assignment.id,
+                clientName: assignment.client.name,
+                vaName: assignment.vaProfile.user.firstName || assignment.vaProfile.user.email,
+                type: assignment.type,
+                agreedHours: Number(assignment.agreedHours),
+                monthlyHours: assignment.monthlyHours ? Number(assignment.monthlyHours) : null,
+                startDate: assignment.startDate.toISOString(),
+                endDate: assignment.endDate?.toISOString() ?? null,
+                notes: assignment.notes,
+              }}
+            />
+            <AssignmentStatusButtons id={assignment.id} current={assignment.status} />
+          </div>
         )}
       </div>
 

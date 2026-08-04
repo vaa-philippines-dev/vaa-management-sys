@@ -61,6 +61,59 @@ export async function createAssignment(formData: FormData) {
   redirect(`/assignments/${assignment.id}`)
 }
 
+// Reassigning the client or VA isn't exposed here — that's a bigger business
+// action (akin to a VA transfer) than fixing a wrong hours/date/notes value,
+// so this only ever touches the assignment's own details.
+export async function updateAssignment(id: string, formData: FormData) {
+  const actor = await requireRole(...ASSIGNMENT_MUTATOR_ROLES)
+
+  const before = await prisma.assignment.findUnique({
+    where: { id },
+    select: { source: true, type: true, agreedHours: true, monthlyHours: true, startDate: true, endDate: true, notes: true },
+  })
+  if (!before) throw new Error('Assignment not found')
+
+  // Synced Assignments are owned by the VAConnections sheet import — manual edits
+  // here would just get silently overwritten by the next sync run.
+  if (before.source === 'VA_CONNECTIONS_SYNC') {
+    throw new Error('This assignment is synced from the VAConnections sheet and cannot be edited here.')
+  }
+
+  const type = formData.get('type') as 'REGULAR' | 'PROJECT'
+  const agreedHours = Number(formData.get('agreedHours'))
+  const startDate = new Date(formData.get('startDate') as string)
+  const endDateRaw = formData.get('endDate') as string | null
+  const endDate = endDateRaw && type === 'PROJECT' ? new Date(endDateRaw) : null
+  const monthlyHoursRaw = formData.get('monthlyHours') as string | null
+  const monthlyHours = type === 'REGULAR' && monthlyHoursRaw ? Number(monthlyHoursRaw) : null
+  const notes = (formData.get('notes') as string) || null
+
+  await prisma.assignment.update({
+    where: { id },
+    data: { type, agreedHours, startDate, endDate, monthlyHours, notes },
+  })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'UPDATE',
+    entityType: 'Assignment',
+    entityId: id,
+    before: {
+      type: before.type,
+      agreedHours: Number(before.agreedHours),
+      monthlyHours: before.monthlyHours ? Number(before.monthlyHours) : null,
+      startDate: before.startDate.toISOString(),
+      endDate: before.endDate?.toISOString() ?? null,
+      notes: before.notes,
+    },
+    after: { type, agreedHours, monthlyHours, startDate: startDate.toISOString(), endDate: endDate?.toISOString() ?? null, notes },
+  })
+
+  revalidatePath('/assignments')
+  revalidatePath(`/assignments/${id}`)
+  revalidateTag(CACHE_TAGS.assignments, 'default')
+}
+
 export async function updateAssignmentStatus(id: string, status: string) {
   const actor = await requireRole(...ASSIGNMENT_MUTATOR_ROLES)
 
