@@ -30,6 +30,12 @@ export const AGENT_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER
 export const VIEW_AS_ROLES = ['EXECUTIVE', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'HR', 'STAFF', 'VA'] as const
 export type ViewAsRole = (typeof VIEW_AS_ROLES)[number]
 export const VIEW_AS_COOKIE = 'view_as_role'
+// Dept Manager is department-scoped (see getManagedDepartmentIds() below), but the
+// real admin doing the simulating typically has no DepartmentMembership rows of
+// their own — so simulating the role alone renders every department-scoped page
+// (clients/VAs/teams/celebrants) empty. This second cookie lets the admin also pick
+// *which* department to preview as its manager.
+export const VIEW_AS_DEPARTMENT_COOKIE = 'view_as_department_id'
 
 // Dev-only auth bypass for local testing of multi-user flows (e.g. Inbox
 // realtime) without needing two real Google OAuth logins. Only ever active
@@ -86,11 +92,23 @@ export const getCurrentUser = cache(async () => {
   const viewAsRole = canViewAs ? cookieStore.get(VIEW_AS_COOKIE)?.value : undefined
   const isViewingAs = !!viewAsRole && (VIEW_AS_ROLES as readonly string[]).includes(viewAsRole)
 
+  // See VIEW_AS_DEPARTMENT_COOKIE above — only meaningful while simulating Dept
+  // Manager. getManagedDepartmentIds()/getPrimaryDepartment() special-case it.
+  let viewAsDepartment = null as Awaited<ReturnType<typeof prisma.department.findUnique>> | null
+  if (isViewingAs && viewAsRole === 'DEPT_MANAGER') {
+    const deptId = cookieStore.get(VIEW_AS_DEPARTMENT_COOKIE)?.value
+    if (deptId) {
+      viewAsDepartment = await prisma.department.findUnique({ where: { id: deptId } })
+    }
+  }
+
   return {
     ...realUser,
     systemRole: isViewingAs ? (viewAsRole as ViewAsRole) : realUser.systemRole,
     realSystemRole: realUser.systemRole,
     isViewingAs,
+    viewAsDepartment,
+    viewAsDepartmentId: viewAsDepartment?.id ?? null,
   }
 })
 
@@ -144,6 +162,7 @@ export async function requireVA() {
 
 export function getPrimaryDepartment(user: Awaited<ReturnType<typeof getCurrentUser>>) {
   if (!user) return null
+  if (user.viewAsDepartment) return user.viewAsDepartment
   const primary = user.memberships?.find((m) => m.isPrimary)
   return primary?.department ?? user.memberships?.[0]?.department ?? null
 }
@@ -152,8 +171,14 @@ export function getPrimaryDepartment(user: Awaited<ReturnType<typeof getCurrentU
 // manage teams/celebrants/clients within). Returns [] for full admins too — callers
 // must branch on admin status separately (canMutate(user)/isAdmin) rather than
 // treating an empty array as "no access" for an admin.
+//
+// While simulating Dept Manager via "view as" (see VIEW_AS_DEPARTMENT_COOKIE), the
+// chosen department wins over the real user's own memberships — otherwise this
+// would fall back to the admin's (usually empty) membership list and every
+// department-scoped page would render empty.
 export function getManagedDepartmentIds(user: Awaited<ReturnType<typeof getCurrentUser>>): string[] {
   if (!user) return []
+  if (user.viewAsDepartmentId) return [user.viewAsDepartmentId]
   return (user.memberships ?? []).filter((m) => !m.endedAt).map((m) => m.departmentId)
 }
 
