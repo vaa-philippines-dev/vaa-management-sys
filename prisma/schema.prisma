@@ -159,6 +159,21 @@ enum TicketCategory {
   CLIENT
   VA_SUPPORT
   GENERAL
+  TERMINATION
+}
+
+enum TerminationType {
+  EOC               // Type A — End of Contract, natural completion
+  CLIENT_INITIATED  // Type B — client requested the VA be removed
+  VAA_INITIATED     // Type C — VAA-initiated (resignation or removal)
+}
+
+enum TerminationWorkflowStatus {
+  INITIATED
+  EXIT_SURVEY_PENDING
+  CLEARANCE_PENDING
+  COMPLETED
+  CANCELLED
 }
 
 enum TicketStatus {
@@ -382,6 +397,8 @@ model User {
   teamMemberships            TeamMembership[]       @relation("TeamMember")
   onboardingInvite           VAOnboardingInvite?
   onboardingInvitesCreated   VAOnboardingInvite[]   @relation("OnboardingInviteCreator")
+  terminationsInitiated      Termination[]          @relation("TerminationInitiator")
+  clearancesCleared          ExitClearance[]        @relation("ClearanceClearedBy")
   agentDecisions             AgentSuggestion[]      @relation("AgentSuggestionDecidedBy")
 
   @@index([email])
@@ -411,6 +428,7 @@ model UserProfile {
   emergencyContactName     String?   @map("emergency_contact_name")
   emergencyContactPhone    String?   @map("emergency_contact_phone")
   emergencyContactRelation String?   @map("emergency_contact_relation")
+  religion                 String?
   gcashNumber              String?   @map("gcash_number")
   personalEmail            String?   @map("personal_email")
   workEmail                String?   @map("work_email")
@@ -422,6 +440,7 @@ model UserProfile {
   facebookUrl              String?   @map("facebook_url")
   linkedinUrl              String?   @map("linkedin_url")
   payoneerAccount          String?   @map("payoneer_account")
+  payoneerId               String?   @map("payoneer_id")
   passportNumber           String?   @map("passport_number")
   passportPhoto            String?   @map("passport_photo")
   philhealthNumber         String?   @map("philhealth_number")
@@ -519,10 +538,11 @@ model VAProfile {
   createdAt           DateTime          @default(now()) @map("created_at")
   updatedAt           DateTime          @updatedAt @map("updated_at")
 
-  assignments Assignment[]
-  workLogs    WorkLog[]
-  vaSkills    VASkill[]
-  documents   VADocument[]
+  assignments  Assignment[]
+  workLogs     WorkLog[]
+  vaSkills     VASkill[]
+  documents    VADocument[]
+  terminations Termination[]
 
   agentSuggestions AgentSuggestion[]
 
@@ -739,7 +759,8 @@ model Assignment {
   clientId String @map("client_id")
   client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
 
-  workLogs WorkLog[]
+  workLogs     WorkLog[]
+  terminations Termination[]
 
   @@index([vaProfileId])
   @@index([clientId])
@@ -793,6 +814,7 @@ model Ticket {
   updatedAt    DateTime       @updatedAt @map("updated_at")
 
   conversations TicketConversation[]
+  termination   Termination?
 
   @@index([assignedTo])
   @@index([departmentId])
@@ -813,6 +835,85 @@ model TicketConversation {
 
   @@index([ticketId, createdAt])
   @@map("ticket_conversations")
+}
+
+// ──────────────────────────────────────────────────────────────────
+// MODELS — Phase 5: Offboarding
+// ──────────────────────────────────────────────────────────────────
+
+model Termination {
+  id                 String                    @id @default(cuid())
+  vaProfileId        String                    @map("va_profile_id")
+  vaProfile          VAProfile                 @relation(fields: [vaProfileId], references: [id], onDelete: Cascade)
+  assignmentId       String?                   @map("assignment_id")
+  assignment         Assignment?               @relation(fields: [assignmentId], references: [id], onDelete: SetNull)
+  type               TerminationType
+  affectsBothParties Boolean                   @default(false) @map("affects_both_parties")
+  resultingStatus    EmploymentStatus          @map("resulting_status")
+  reason             String?
+  workflowStatus     TerminationWorkflowStatus @default(INITIATED) @map("workflow_status")
+  ticketId           String?                   @unique @map("ticket_id")
+  ticket             Ticket?                   @relation(fields: [ticketId], references: [id], onDelete: SetNull)
+  resignationDocUrl  String?                   @map("resignation_doc_url")
+  initiatedById      String                    @map("initiated_by_id")
+  initiatedBy        User                      @relation("TerminationInitiator", fields: [initiatedById], references: [id], onDelete: Cascade)
+  effectiveDate      DateTime                  @map("effective_date")
+  completedAt        DateTime?                 @map("completed_at")
+  createdAt          DateTime                  @default(now()) @map("created_at")
+  updatedAt          DateTime                  @updatedAt @map("updated_at")
+
+  exitSurveyInvite ExitSurveyInvite?
+  clearance        ExitClearance?
+
+  @@index([vaProfileId])
+  @@index([assignmentId])
+  @@index([workflowStatus])
+  @@map("terminations")
+}
+
+model ExitSurveyInvite {
+  id            String      @id @default(cuid())
+  terminationId String      @unique @map("termination_id")
+  termination   Termination @relation(fields: [terminationId], references: [id], onDelete: Cascade)
+  token         String      @unique
+  expiresAt     DateTime    @map("expires_at")
+  completedAt   DateTime?   @map("completed_at")
+  createdAt     DateTime    @default(now()) @map("created_at")
+
+  response ExitSurveyResponse?
+
+  @@map("exit_survey_invites")
+}
+
+model ExitSurveyResponse {
+  id                 String           @id @default(cuid())
+  inviteId           String           @unique @map("invite_id")
+  invite             ExitSurveyInvite @relation(fields: [inviteId], references: [id], onDelete: Cascade)
+  reasonForLeaving   String?          @map("reason_for_leaving")
+  feedback           String?
+  wouldRecommend     Boolean?         @map("would_recommend")
+  additionalComments String?          @map("additional_comments")
+  submittedAt        DateTime         @default(now()) @map("submitted_at")
+
+  @@map("exit_survey_responses")
+}
+
+model ExitClearance {
+  id                     String       @id @default(cuid())
+  terminationId          String       @unique @map("termination_id")
+  termination            Termination  @relation(fields: [terminationId], references: [id], onDelete: Cascade)
+  equipmentReturned      Boolean      @default(false) @map("equipment_returned")
+  accountsRevoked        Boolean      @default(false) @map("accounts_revoked")
+  documentsSubmitted     Boolean      @default(false) @map("documents_submitted")
+  finalPayCleared        Boolean      @default(false) @map("final_pay_cleared")
+  outstandingBalanceNote String?      @map("outstanding_balance_note")
+  clearedById            String?      @map("cleared_by_id")
+  clearedBy              User?        @relation("ClearanceClearedBy", fields: [clearedById], references: [id], onDelete: SetNull)
+  clearedAt              DateTime?    @map("cleared_at")
+  createdAt              DateTime     @default(now()) @map("created_at")
+  updatedAt              DateTime     @updatedAt @map("updated_at")
+
+  @@map("exit_clearances")
 }
 
 // ── Phase 5: Messaging ───────────────────────────────────────────

@@ -28,6 +28,13 @@ type Prefill = {
   linkedinUrl: string | null
   passportNumber: string | null
   philhealthNumber: string | null
+  birthDate: string | null
+  emergencyContactName: string | null
+  emergencyContactPhone: string | null
+  emergencyContactRelation: string | null
+  religion: string | null
+  payoneerAccount: string | null
+  payoneerId: string | null
 }
 
 function Field({ name, label, defaultValue, placeholder, type }: { name: string; label: string; defaultValue?: string | null; placeholder?: string; type?: string }) {
@@ -120,6 +127,23 @@ export function OnboardingForm({
       </div>
 
       <div className="space-y-3">
+        <p className="text-sm font-semibold">Personal Details</p>
+        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
+          <Field name="birthDate" label="Birth Date" defaultValue={prefill.birthDate} type="date" />
+          <Field name="religion" label="Religion" defaultValue={prefill.religion} />
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        <p className="text-sm font-semibold">Emergency Contact</p>
+        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
+          <Field name="emergencyContactName" label="Contact Name" defaultValue={prefill.emergencyContactName} />
+          <Field name="emergencyContactPhone" label="Contact Number" defaultValue={prefill.emergencyContactPhone} placeholder="09171234567" />
+          <Field name="emergencyContactRelation" label="Relationship" defaultValue={prefill.emergencyContactRelation} placeholder="Mother, Spouse, etc." />
+        </div>
+      </div>
+
+      <div className="space-y-3">
         <p className="text-sm font-semibold">Other Details</p>
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
           <Field name="facebookName" label="Facebook Name" defaultValue={prefill.facebookName} />
@@ -127,6 +151,8 @@ export function OnboardingForm({
           <Field name="linkedinUrl" label="LinkedIn URL" defaultValue={prefill.linkedinUrl} />
           <Field name="passportNumber" label="Passport Number" defaultValue={prefill.passportNumber} />
           <Field name="philhealthNumber" label="PhilHealth Number" defaultValue={prefill.philhealthNumber} />
+          <Field name="payoneerAccount" label="Payoneer Email (optional)" defaultValue={prefill.payoneerAccount} type="email" placeholder="email@example.com" />
+          <Field name="payoneerId" label="Payoneer ID (optional)" defaultValue={prefill.payoneerId} />
         </div>
       </div>
 

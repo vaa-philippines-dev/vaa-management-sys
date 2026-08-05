@@ -72,6 +72,10 @@ export const ModelName = {
   WorkLog: 'WorkLog',
   Ticket: 'Ticket',
   TicketConversation: 'TicketConversation',
+  Termination: 'Termination',
+  ExitSurveyInvite: 'ExitSurveyInvite',
+  ExitSurveyResponse: 'ExitSurveyResponse',
+  ExitClearance: 'ExitClearance',
   Channel: 'Channel',
   ChannelParticipant: 'ChannelParticipant',
   Message: 'Message',
@@ -207,6 +211,7 @@ export const UserProfileScalarFieldEnum = {
   emergencyContactName: 'emergencyContactName',
   emergencyContactPhone: 'emergencyContactPhone',
   emergencyContactRelation: 'emergencyContactRelation',
+  religion: 'religion',
   gcashNumber: 'gcashNumber',
   personalEmail: 'personalEmail',
   workEmail: 'workEmail',
@@ -218,6 +223,7 @@ export const UserProfileScalarFieldEnum = {
   facebookUrl: 'facebookUrl',
   linkedinUrl: 'linkedinUrl',
   payoneerAccount: 'payoneerAccount',
+  payoneerId: 'payoneerId',
   passportNumber: 'passportNumber',
   passportPhoto: 'passportPhoto',
   philhealthNumber: 'philhealthNumber',
@@ -522,6 +528,69 @@ export const TicketConversationScalarFieldEnum = {
 } as const
 
 export type TicketConversationScalarFieldEnum = (typeof TicketConversationScalarFieldEnum)[keyof typeof TicketConversationScalarFieldEnum]
+
+
+export const TerminationScalarFieldEnum = {
+  id: 'id',
+  vaProfileId: 'vaProfileId',
+  assignmentId: 'assignmentId',
+  type: 'type',
+  affectsBothParties: 'affectsBothParties',
+  resultingStatus: 'resultingStatus',
+  reason: 'reason',
+  workflowStatus: 'workflowStatus',
+  ticketId: 'ticketId',
+  resignationDocUrl: 'resignationDocUrl',
+  initiatedById: 'initiatedById',
+  effectiveDate: 'effectiveDate',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TerminationScalarFieldEnum = (typeof TerminationScalarFieldEnum)[keyof typeof TerminationScalarFieldEnum]
+
+
+export const ExitSurveyInviteScalarFieldEnum = {
+  id: 'id',
+  terminationId: 'terminationId',
+  token: 'token',
+  expiresAt: 'expiresAt',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ExitSurveyInviteScalarFieldEnum = (typeof ExitSurveyInviteScalarFieldEnum)[keyof typeof ExitSurveyInviteScalarFieldEnum]
+
+
+export const ExitSurveyResponseScalarFieldEnum = {
+  id: 'id',
+  inviteId: 'inviteId',
+  reasonForLeaving: 'reasonForLeaving',
+  feedback: 'feedback',
+  wouldRecommend: 'wouldRecommend',
+  additionalComments: 'additionalComments',
+  submittedAt: 'submittedAt'
+} as const
+
+export type ExitSurveyResponseScalarFieldEnum = (typeof ExitSurveyResponseScalarFieldEnum)[keyof typeof ExitSurveyResponseScalarFieldEnum]
+
+
+export const ExitClearanceScalarFieldEnum = {
+  id: 'id',
+  terminationId: 'terminationId',
+  equipmentReturned: 'equipmentReturned',
+  accountsRevoked: 'accountsRevoked',
+  documentsSubmitted: 'documentsSubmitted',
+  finalPayCleared: 'finalPayCleared',
+  outstandingBalanceNote: 'outstandingBalanceNote',
+  clearedById: 'clearedById',
+  clearedAt: 'clearedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExitClearanceScalarFieldEnum = (typeof ExitClearanceScalarFieldEnum)[keyof typeof ExitClearanceScalarFieldEnum]
 
 
 export const ChannelScalarFieldEnum = {

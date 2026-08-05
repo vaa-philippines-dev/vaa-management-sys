@@ -203,10 +203,31 @@ export const TicketCategory = {
   HR: 'HR',
   CLIENT: 'CLIENT',
   VA_SUPPORT: 'VA_SUPPORT',
-  GENERAL: 'GENERAL'
+  GENERAL: 'GENERAL',
+  TERMINATION: 'TERMINATION'
 } as const
 
 export type TicketCategory = (typeof TicketCategory)[keyof typeof TicketCategory]
+
+
+export const TerminationType = {
+  EOC: 'EOC',
+  CLIENT_INITIATED: 'CLIENT_INITIATED',
+  VAA_INITIATED: 'VAA_INITIATED'
+} as const
+
+export type TerminationType = (typeof TerminationType)[keyof typeof TerminationType]
+
+
+export const TerminationWorkflowStatus = {
+  INITIATED: 'INITIATED',
+  EXIT_SURVEY_PENDING: 'EXIT_SURVEY_PENDING',
+  CLEARANCE_PENDING: 'CLEARANCE_PENDING',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type TerminationWorkflowStatus = (typeof TerminationWorkflowStatus)[keyof typeof TerminationWorkflowStatus]
 
 
 export const TicketStatus = {

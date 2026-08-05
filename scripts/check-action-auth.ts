@@ -32,6 +32,7 @@ const GUARD_PATTERN = new RegExp(`\\b(${GUARD_CALLS.join('|')})\\s*\\(`)
 // meant to be an auditable exception, not a general opt-out.
 const PUBLIC_TOKEN_ACTIONS: Record<string, string[]> = {
   'app/onboard/[token]/actions.ts': ['completeOnboarding'],
+  'app/exit-survey/[token]/actions.ts': ['submitExitSurvey'],
 }
 
 function findActionFiles(dir: string, results: string[] = []): string[] {

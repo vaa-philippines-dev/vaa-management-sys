@@ -779,10 +779,6 @@ export type CustomerNullableScalarRelationFilter = {
   isNot?: Prisma.CustomerWhereInput | null
 }
 
-export type NullableBoolFieldUpdateOperationsInput = {
-  set?: boolean | null
-}
-
 export type CustomerCreateNestedOneWithoutAccountsInput = {
   create?: Prisma.XOR<Prisma.CustomerCreateWithoutAccountsInput, Prisma.CustomerUncheckedCreateWithoutAccountsInput>
   connectOrCreate?: Prisma.CustomerCreateOrConnectWithoutAccountsInput

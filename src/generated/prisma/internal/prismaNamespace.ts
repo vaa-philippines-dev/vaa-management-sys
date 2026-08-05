@@ -418,6 +418,10 @@ export const ModelName = {
   WorkLog: 'WorkLog',
   Ticket: 'Ticket',
   TicketConversation: 'TicketConversation',
+  Termination: 'Termination',
+  ExitSurveyInvite: 'ExitSurveyInvite',
+  ExitSurveyResponse: 'ExitSurveyResponse',
+  ExitClearance: 'ExitClearance',
   Channel: 'Channel',
   ChannelParticipant: 'ChannelParticipant',
   Message: 'Message',
@@ -450,7 +454,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveRequest" | "employeeIdCounter" | "vAOnboardingInvite" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "customer" | "account" | "notification" | "sidebarFavorite" | "team" | "teamMembership" | "clientPipeline" | "agentSuggestion" | "agentRun"
+    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveRequest" | "employeeIdCounter" | "vAOnboardingInvite" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "termination" | "exitSurveyInvite" | "exitSurveyResponse" | "exitClearance" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "customer" | "account" | "notification" | "sidebarFavorite" | "team" | "teamMembership" | "clientPipeline" | "agentSuggestion" | "agentRun"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2008,6 +2012,302 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Termination: {
+      payload: Prisma.$TerminationPayload<ExtArgs>
+      fields: Prisma.TerminationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TerminationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TerminationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TerminationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TerminationPayload>
+        }
+        findFirst: {
+          args: Prisma.TerminationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TerminationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TerminationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TerminationPayload>
+        }
+        findMany: {
+          args: Prisma.TerminationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TerminationPayload>[]
+        }
+        create: {
+          args: Prisma.TerminationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TerminationPayload>
+        }
+        createMany: {
+          args: Prisma.TerminationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TerminationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TerminationPayload>[]
+        }
+        delete: {
+          args: Prisma.TerminationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TerminationPayload>
+        }
+        update: {
+          args: Prisma.TerminationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TerminationPayload>
+        }
+        deleteMany: {
+          args: Prisma.TerminationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TerminationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TerminationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TerminationPayload>[]
+        }
+        upsert: {
+          args: Prisma.TerminationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TerminationPayload>
+        }
+        aggregate: {
+          args: Prisma.TerminationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTermination>
+        }
+        groupBy: {
+          args: Prisma.TerminationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TerminationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TerminationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TerminationCountAggregateOutputType> | number
+        }
+      }
+    }
+    ExitSurveyInvite: {
+      payload: Prisma.$ExitSurveyInvitePayload<ExtArgs>
+      fields: Prisma.ExitSurveyInviteFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ExitSurveyInviteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitSurveyInvitePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ExitSurveyInviteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitSurveyInvitePayload>
+        }
+        findFirst: {
+          args: Prisma.ExitSurveyInviteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitSurveyInvitePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ExitSurveyInviteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitSurveyInvitePayload>
+        }
+        findMany: {
+          args: Prisma.ExitSurveyInviteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitSurveyInvitePayload>[]
+        }
+        create: {
+          args: Prisma.ExitSurveyInviteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitSurveyInvitePayload>
+        }
+        createMany: {
+          args: Prisma.ExitSurveyInviteCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ExitSurveyInviteCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitSurveyInvitePayload>[]
+        }
+        delete: {
+          args: Prisma.ExitSurveyInviteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitSurveyInvitePayload>
+        }
+        update: {
+          args: Prisma.ExitSurveyInviteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitSurveyInvitePayload>
+        }
+        deleteMany: {
+          args: Prisma.ExitSurveyInviteDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ExitSurveyInviteUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ExitSurveyInviteUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitSurveyInvitePayload>[]
+        }
+        upsert: {
+          args: Prisma.ExitSurveyInviteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitSurveyInvitePayload>
+        }
+        aggregate: {
+          args: Prisma.ExitSurveyInviteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExitSurveyInvite>
+        }
+        groupBy: {
+          args: Prisma.ExitSurveyInviteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExitSurveyInviteGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ExitSurveyInviteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExitSurveyInviteCountAggregateOutputType> | number
+        }
+      }
+    }
+    ExitSurveyResponse: {
+      payload: Prisma.$ExitSurveyResponsePayload<ExtArgs>
+      fields: Prisma.ExitSurveyResponseFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ExitSurveyResponseFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitSurveyResponsePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ExitSurveyResponseFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitSurveyResponsePayload>
+        }
+        findFirst: {
+          args: Prisma.ExitSurveyResponseFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitSurveyResponsePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ExitSurveyResponseFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitSurveyResponsePayload>
+        }
+        findMany: {
+          args: Prisma.ExitSurveyResponseFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitSurveyResponsePayload>[]
+        }
+        create: {
+          args: Prisma.ExitSurveyResponseCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitSurveyResponsePayload>
+        }
+        createMany: {
+          args: Prisma.ExitSurveyResponseCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ExitSurveyResponseCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitSurveyResponsePayload>[]
+        }
+        delete: {
+          args: Prisma.ExitSurveyResponseDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitSurveyResponsePayload>
+        }
+        update: {
+          args: Prisma.ExitSurveyResponseUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitSurveyResponsePayload>
+        }
+        deleteMany: {
+          args: Prisma.ExitSurveyResponseDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ExitSurveyResponseUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ExitSurveyResponseUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitSurveyResponsePayload>[]
+        }
+        upsert: {
+          args: Prisma.ExitSurveyResponseUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitSurveyResponsePayload>
+        }
+        aggregate: {
+          args: Prisma.ExitSurveyResponseAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExitSurveyResponse>
+        }
+        groupBy: {
+          args: Prisma.ExitSurveyResponseGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExitSurveyResponseGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ExitSurveyResponseCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExitSurveyResponseCountAggregateOutputType> | number
+        }
+      }
+    }
+    ExitClearance: {
+      payload: Prisma.$ExitClearancePayload<ExtArgs>
+      fields: Prisma.ExitClearanceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ExitClearanceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitClearancePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ExitClearanceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitClearancePayload>
+        }
+        findFirst: {
+          args: Prisma.ExitClearanceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitClearancePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ExitClearanceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitClearancePayload>
+        }
+        findMany: {
+          args: Prisma.ExitClearanceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitClearancePayload>[]
+        }
+        create: {
+          args: Prisma.ExitClearanceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitClearancePayload>
+        }
+        createMany: {
+          args: Prisma.ExitClearanceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ExitClearanceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitClearancePayload>[]
+        }
+        delete: {
+          args: Prisma.ExitClearanceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitClearancePayload>
+        }
+        update: {
+          args: Prisma.ExitClearanceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitClearancePayload>
+        }
+        deleteMany: {
+          args: Prisma.ExitClearanceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ExitClearanceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ExitClearanceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitClearancePayload>[]
+        }
+        upsert: {
+          args: Prisma.ExitClearanceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitClearancePayload>
+        }
+        aggregate: {
+          args: Prisma.ExitClearanceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExitClearance>
+        }
+        groupBy: {
+          args: Prisma.ExitClearanceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExitClearanceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ExitClearanceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExitClearanceCountAggregateOutputType> | number
+        }
+      }
+    }
     Channel: {
       payload: Prisma.$ChannelPayload<ExtArgs>
       fields: Prisma.ChannelFieldRefs
@@ -3405,6 +3705,7 @@ export const UserProfileScalarFieldEnum = {
   emergencyContactName: 'emergencyContactName',
   emergencyContactPhone: 'emergencyContactPhone',
   emergencyContactRelation: 'emergencyContactRelation',
+  religion: 'religion',
   gcashNumber: 'gcashNumber',
   personalEmail: 'personalEmail',
   workEmail: 'workEmail',
@@ -3416,6 +3717,7 @@ export const UserProfileScalarFieldEnum = {
   facebookUrl: 'facebookUrl',
   linkedinUrl: 'linkedinUrl',
   payoneerAccount: 'payoneerAccount',
+  payoneerId: 'payoneerId',
   passportNumber: 'passportNumber',
   passportPhoto: 'passportPhoto',
   philhealthNumber: 'philhealthNumber',
@@ -3720,6 +4022,69 @@ export const TicketConversationScalarFieldEnum = {
 } as const
 
 export type TicketConversationScalarFieldEnum = (typeof TicketConversationScalarFieldEnum)[keyof typeof TicketConversationScalarFieldEnum]
+
+
+export const TerminationScalarFieldEnum = {
+  id: 'id',
+  vaProfileId: 'vaProfileId',
+  assignmentId: 'assignmentId',
+  type: 'type',
+  affectsBothParties: 'affectsBothParties',
+  resultingStatus: 'resultingStatus',
+  reason: 'reason',
+  workflowStatus: 'workflowStatus',
+  ticketId: 'ticketId',
+  resignationDocUrl: 'resignationDocUrl',
+  initiatedById: 'initiatedById',
+  effectiveDate: 'effectiveDate',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TerminationScalarFieldEnum = (typeof TerminationScalarFieldEnum)[keyof typeof TerminationScalarFieldEnum]
+
+
+export const ExitSurveyInviteScalarFieldEnum = {
+  id: 'id',
+  terminationId: 'terminationId',
+  token: 'token',
+  expiresAt: 'expiresAt',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ExitSurveyInviteScalarFieldEnum = (typeof ExitSurveyInviteScalarFieldEnum)[keyof typeof ExitSurveyInviteScalarFieldEnum]
+
+
+export const ExitSurveyResponseScalarFieldEnum = {
+  id: 'id',
+  inviteId: 'inviteId',
+  reasonForLeaving: 'reasonForLeaving',
+  feedback: 'feedback',
+  wouldRecommend: 'wouldRecommend',
+  additionalComments: 'additionalComments',
+  submittedAt: 'submittedAt'
+} as const
+
+export type ExitSurveyResponseScalarFieldEnum = (typeof ExitSurveyResponseScalarFieldEnum)[keyof typeof ExitSurveyResponseScalarFieldEnum]
+
+
+export const ExitClearanceScalarFieldEnum = {
+  id: 'id',
+  terminationId: 'terminationId',
+  equipmentReturned: 'equipmentReturned',
+  accountsRevoked: 'accountsRevoked',
+  documentsSubmitted: 'documentsSubmitted',
+  finalPayCleared: 'finalPayCleared',
+  outstandingBalanceNote: 'outstandingBalanceNote',
+  clearedById: 'clearedById',
+  clearedAt: 'clearedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExitClearanceScalarFieldEnum = (typeof ExitClearanceScalarFieldEnum)[keyof typeof ExitClearanceScalarFieldEnum]
 
 
 export const ChannelScalarFieldEnum = {
@@ -4511,6 +4876,34 @@ export type ListEnumTicketSourceFieldRefInput<$PrismaModel> = FieldRefInputType<
 
 
 /**
+ * Reference to a field of type 'TerminationType'
+ */
+export type EnumTerminationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TerminationType'>
+    
+
+
+/**
+ * Reference to a field of type 'TerminationType[]'
+ */
+export type ListEnumTerminationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TerminationType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'TerminationWorkflowStatus'
+ */
+export type EnumTerminationWorkflowStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TerminationWorkflowStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'TerminationWorkflowStatus[]'
+ */
+export type ListEnumTerminationWorkflowStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TerminationWorkflowStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'ChannelKind'
  */
 export type EnumChannelKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChannelKind'>
@@ -4821,6 +5214,10 @@ export type GlobalOmitConfig = {
   workLog?: Prisma.WorkLogOmit
   ticket?: Prisma.TicketOmit
   ticketConversation?: Prisma.TicketConversationOmit
+  termination?: Prisma.TerminationOmit
+  exitSurveyInvite?: Prisma.ExitSurveyInviteOmit
+  exitSurveyResponse?: Prisma.ExitSurveyResponseOmit
+  exitClearance?: Prisma.ExitClearanceOmit
   channel?: Prisma.ChannelOmit
   channelParticipant?: Prisma.ChannelParticipantOmit
   message?: Prisma.MessageOmit

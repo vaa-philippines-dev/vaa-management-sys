@@ -21,7 +21,7 @@ import {
   Wallet,
   User,
 } from 'lucide-react'
-import { updateUserProfileAction, updateEmployment, updateUserProfileFiles, changeVAStatus } from '@/app/(dashboard)/vas/actions'
+import { updateUserProfileAction, updateEmployment, updateUserProfileFiles, changeVAStatus, terminateVA } from '@/app/(dashboard)/vas/actions'
 import { Modal } from '@/components/ui/modal'
 import { format } from 'date-fns'
 import type { DriveFile } from '@/lib/google/drive'
@@ -32,6 +32,7 @@ type VAData = {
     id: string; status: string; engagementStatus: string | null; hybrid: boolean
     hourlyRate: number | null; baseRate: number | null
     vaaPosition: string | null; level: string | null
+    currentHireDate: string | null
     availabilityStatus: string; preferredWorkHours: number | null
     availableSchedule: string | null; notes: string | null
     contractLink: string | null; folder201Link: string | null
@@ -54,6 +55,7 @@ type VAData = {
     cityCode: string | null; barangayCode: string | null
     emergencyContactName: string | null; emergencyContactPhone: string | null
     emergencyContactRelation: string | null
+    religion: string | null; payoneerId: string | null
     facebookName: string | null; facebookUrl: string | null
     linkedinUrl: string | null
     passportNumber: string | null; passportPhoto: string | null
@@ -66,6 +68,7 @@ type VAData = {
 
 export function VAProfileEditor({
   data,
+  assignments,
   driveFiles,
   currentUserId,
   canEdit = false,
@@ -105,6 +108,7 @@ export function VAProfileEditor({
               ? `${data.profile.emergencyContactName}${data.profile?.emergencyContactPhone ? ` — ${data.profile.emergencyContactPhone}` : ''}`
               : null}
           />
+          <TableRow label="Religion" value={data.profile?.religion} />
         </EditableSection>
 
         <EditableSection
@@ -133,8 +137,10 @@ export function VAProfileEditor({
           <TableRow label="Hourly Rate" value={data.vaProfile.hourlyRate ? `$${Number(data.vaProfile.hourlyRate).toFixed(2)}/hr` : null} />
           <TableRow label="Birth Date" value={data.profile?.birthDate ? format(new Date(data.profile.birthDate), 'MMM dd, yyyy') + (data.profile.nonCelebrant ? ' (NC)' : '') : null} />
           <TableRow label="GCash" value={data.profile?.gcashNumber} />
-          <TableRow label="Payoneer" value={data.profile?.payoneerAccount} />
-          <TableRow label="Hired" value={data.employment?.startDate ? format(new Date(data.employment.startDate), 'MMM dd, yyyy') : null} />
+          <TableRow label="Payoneer Email" value={data.profile?.payoneerAccount} />
+          <TableRow label="Payoneer ID" value={data.profile?.payoneerId} />
+          <TableRow label="Hire Date" value={data.vaProfile.currentHireDate ? format(new Date(data.vaProfile.currentHireDate), 'MMM dd, yyyy') : null} />
+          <TableRow label="Hired (Employment Record)" value={data.employment?.startDate ? format(new Date(data.employment.startDate), 'MMM dd, yyyy') : null} />
         </EditableSection>
 
         <EditableSection
@@ -175,6 +181,8 @@ export function VAProfileEditor({
 
       <div className="space-y-4">
         <StatusCard vaProfileId={data.vaProfile.id} status={data.vaProfile.status} engagementStatus={data.vaProfile.engagementStatus} canEdit={canEdit} />
+
+        <TerminationCard vaProfileId={data.vaProfile.id} vaName={vaName} assignments={assignments} canEdit={canEdit} />
 
         <div className="rounded-2xl border bg-card p-4 shadow-sm">
           <p className="text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wider">Overview</p>
@@ -446,13 +454,16 @@ function EmploymentFormContent({ data, onClose }: { data: VAData; onClose: () =>
           <FI name="baseRate" label="Base Rate (PHP)" defaultValue={data.vaProfile.baseRate?.toString()} type="number" />
           <FI name="hourlyRate" label="Hourly Rate (USD)" defaultValue={data.vaProfile.hourlyRate?.toString()} type="number" />
           <FI name="preferredWorkHours" label="Preferred Hours (Weekly)" defaultValue={data.vaProfile.preferredWorkHours?.toString()} type="number" />
+          <FI name="currentHireDate" label="Hire Date" defaultValue={data.vaProfile.currentHireDate} type="date" />
           <FI name="birthDate" label="Birth Date" defaultValue={data.profile?.birthDate} type="date" />
           <div className="flex items-center gap-2 col-span-1 sm:col-span-2">
             <input type="checkbox" id="nonCelebrant" name="nonCelebrant" value="true" defaultChecked={data.profile?.nonCelebrant} className="rounded" />
             <Label htmlFor="nonCelebrant" className="text-xs cursor-pointer">I don&apos;t celebrate birthdays</Label>
           </div>
+          <FI name="religion" label="Religion" defaultValue={data.profile?.religion} />
           <FI name="gcashNumber" label="GCash Number" defaultValue={data.profile?.gcashNumber} placeholder="09000000000" />
-          <FI name="payoneerAccount" label="Payoneer Account" defaultValue={data.profile?.payoneerAccount} type="email" placeholder="email@example.com" />
+          <FI name="payoneerAccount" label="Payoneer Email" defaultValue={data.profile?.payoneerAccount} type="email" placeholder="email@example.com" />
+          <FI name="payoneerId" label="Payoneer ID" defaultValue={data.profile?.payoneerId} />
           <FI name="notes" label="Notes" defaultValue={data.vaProfile.notes} />
         </div>
         <div className="flex justify-end gap-2 pt-2 border-t">
@@ -796,6 +807,143 @@ function StatusCard({
           <div>
             <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Reason (optional)</Label>
             <Input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="e.g. Client contract ended" className="h-8 text-xs" />
+          </div>
+        </div>
+      </Modal>
+    </div>
+  )
+}
+
+const TERMINATION_TYPE_OPTIONS = [
+  { value: 'EOC', label: 'Type A — End of Contract' },
+  { value: 'CLIENT_INITIATED', label: 'Type B — Client-Initiated Removal' },
+  { value: 'VAA_INITIATED', label: 'Type C — VAA-Initiated' },
+]
+
+const OPEN_ASSIGNMENT_STATUSES = new Set(['ACTIVE', 'PAUSED', 'ON_HOLD'])
+
+// Replaces a raw status dropdown for terminal outcomes: generates a system
+// termination ticket instead, classified Type A/B/C, scoped to either one
+// Assignment (that client relationship ends) or the whole VA (all
+// assignments end + exit survey/clearance auto-created).
+function TerminationCard({
+  vaProfileId,
+  vaName,
+  assignments,
+  canEdit,
+}: {
+  vaProfileId: string
+  vaName: string
+  assignments: { id: string; clientName: string; status: string }[]
+  canEdit: boolean
+}) {
+  const [open, setOpen] = useState(false)
+  const [scope, setScope] = useState('VA')
+  const [type, setType] = useState('EOC')
+  const [voluntary, setVoluntary] = useState<'RESIGNED' | 'TERMINATED'>('RESIGNED')
+  const [affectsBothParties, setAffectsBothParties] = useState(false)
+  const [effectiveDate, setEffectiveDate] = useState('')
+  const [reason, setReason] = useState('')
+  const [saving, setSaving] = useState(false)
+
+  const openAssignments = assignments.filter((a) => OPEN_ASSIGNMENT_STATUSES.has(a.status))
+  const resultingStatus = type === 'EOC' ? 'END_OF_CONTRACT' : type === 'CLIENT_INITIATED' ? 'TERMINATED' : voluntary
+
+  const openModal = () => {
+    setScope('VA')
+    setType('EOC')
+    setVoluntary('RESIGNED')
+    setAffectsBothParties(false)
+    setEffectiveDate(format(new Date(), 'yyyy-MM-dd'))
+    setReason('')
+    setOpen(true)
+  }
+
+  const handleSubmit = async () => {
+    setSaving(true)
+    try {
+      const fd = new FormData()
+      fd.set('vaProfileId', vaProfileId)
+      if (scope !== 'VA') fd.set('assignmentId', scope)
+      fd.set('type', type)
+      fd.set('resultingStatus', resultingStatus)
+      fd.set('affectsBothParties', String(affectsBothParties))
+      fd.set('effectiveDate', effectiveDate)
+      fd.set('reason', reason)
+      await terminateVA(fd)
+      toast.success('Termination ticket created')
+      setOpen(false)
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to terminate')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  if (!canEdit) return null
+
+  return (
+    <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-4 shadow-sm">
+      <p className="text-xs font-medium text-destructive mb-3 uppercase tracking-wider">Offboarding</p>
+      <Button type="button" variant="destructive" size="sm" className="text-xs h-8 w-full" onClick={openModal}>
+        Terminate
+      </Button>
+
+      <Modal
+        open={open}
+        onOpenChange={setOpen}
+        title={`Terminate ${vaName}`}
+        description="Generates a system termination ticket instead of a status change."
+        size="sm"
+        footer={
+          <>
+            <button type="button" onClick={() => setOpen(false)} className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors">
+              Cancel
+            </button>
+            <Button type="button" size="sm" variant="destructive" className="text-xs h-8" disabled={saving || !effectiveDate} onClick={handleSubmit}>
+              {saving ? <><Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> Submitting...</> : 'Create Termination Ticket'}
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-3">
+          <div>
+            <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Scope</Label>
+            <select value={scope} onChange={(e) => setScope(e.target.value)} className="w-full h-8 text-xs rounded-md border bg-background px-2">
+              <option value="VA">Entire VA — end all assignments</option>
+              {openAssignments.map((a) => (
+                <option key={a.id} value={a.id}>Only: {a.clientName}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Type</Label>
+            <select value={type} onChange={(e) => setType(e.target.value)} className="w-full h-8 text-xs rounded-md border bg-background px-2">
+              {TERMINATION_TYPE_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+          </div>
+          {type === 'VAA_INITIATED' && (
+            <div>
+              <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Voluntary or Removal?</Label>
+              <select value={voluntary} onChange={(e) => setVoluntary(e.target.value as 'RESIGNED' | 'TERMINATED')} className="w-full h-8 text-xs rounded-md border bg-background px-2">
+                <option value="RESIGNED">Resignation (voluntary)</option>
+                <option value="TERMINATED">Removal (involuntary)</option>
+              </select>
+            </div>
+          )}
+          <div className="flex items-center gap-2">
+            <input type="checkbox" id="affectsBothParties" checked={affectsBothParties} onChange={(e) => setAffectsBothParties(e.target.checked)} className="rounded" />
+            <Label htmlFor="affectsBothParties" className="text-xs cursor-pointer">Affects both client and VAA</Label>
+          </div>
+          <div>
+            <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Effective Date</Label>
+            <Input type="date" value={effectiveDate} onChange={(e) => setEffectiveDate(e.target.value)} className="h-8 text-xs" />
+          </div>
+          <div>
+            <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Reason</Label>
+            <Input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="e.g. Client ended contract" className="h-8 text-xs" />
           </div>
         </div>
       </Modal>

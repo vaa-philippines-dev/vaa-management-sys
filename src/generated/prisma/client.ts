@@ -147,6 +147,26 @@ export type Ticket = Prisma.TicketModel
  */
 export type TicketConversation = Prisma.TicketConversationModel
 /**
+ * Model Termination
+ * 
+ */
+export type Termination = Prisma.TerminationModel
+/**
+ * Model ExitSurveyInvite
+ * 
+ */
+export type ExitSurveyInvite = Prisma.ExitSurveyInviteModel
+/**
+ * Model ExitSurveyResponse
+ * 
+ */
+export type ExitSurveyResponse = Prisma.ExitSurveyResponseModel
+/**
+ * Model ExitClearance
+ * 
+ */
+export type ExitClearance = Prisma.ExitClearanceModel
+/**
  * Model Channel
  * 
  */

@@ -19,6 +19,8 @@ const PROFILE_FIELDS = [
   'regionCode', 'provinceCode', 'cityCode', 'barangayCode',
   'facebookUrl', 'facebookName', 'linkedinUrl',
   'passportNumber', 'philhealthNumber',
+  'birthDate', 'emergencyContactName', 'emergencyContactPhone', 'emergencyContactRelation',
+  'religion', 'payoneerAccount', 'payoneerId',
 ] as const
 
 // AddressFields (components/vas/AddressFields.tsx) submits the PSGC cascade
@@ -42,6 +44,7 @@ export async function completeOnboarding(token: string, formData: FormData) {
     if (value === null) continue
     if (field === 'whatsappNumber') data[field] = value ? normalizeWhatsApp(value as string) : null
     else if (field === 'gcashNumber') data[field] = value ? normalizeGcash(value as string) : null
+    else if (field === 'birthDate') data[field] = value ? new Date(value as string) : null
     else data[field] = value || null
   }
   if ('middleName' in data) { userData.middleName = data.middleName; delete data.middleName }

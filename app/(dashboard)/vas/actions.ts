@@ -8,7 +8,7 @@ import { requireRole, requireAdminMutator, VA_MUTATOR_ROLES } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
 import { generateEmployeeId } from '@/lib/employee-id'
 import { normalizeWhatsApp, normalizeGcash } from '@/lib/phone'
-import type { Proficiency, EmploymentStatus, GeneralStatus } from '@/src/generated/prisma/enums'
+import type { Proficiency, EmploymentStatus, GeneralStatus, TerminationType } from '@/src/generated/prisma/enums'
 
 const ONBOARDING_INVITE_TTL_MS = 7 * 24 * 60 * 60 * 1000 // 7 days
 
@@ -800,7 +800,7 @@ export async function updateVAProfile(vaProfileId: string, formData: FormData) {
   const allowedFields = [
     'vaaPosition', 'level', 'baseRate', 'hourlyRate', 'notes',
     'preferredWorkHours', 'availableSchedule', 'hybrid', 'availabilityStatus',
-    'status', 'engagementStatus',
+    'status', 'engagementStatus', 'currentHireDate',
     'contractLink', 'folder201Link', 'file201Link', 'vaClientFileLink',
     'healthCheckFileLink', 'portfolioUrl', 'vaProfileLink', 'payoutSummaryLink', 'dept201FolderLink',
   ]
@@ -812,6 +812,8 @@ export async function updateVAProfile(vaProfileId: string, formData: FormData) {
         data[field] = value === 'true'
       } else if (field === 'baseRate' || field === 'hourlyRate' || field === 'preferredWorkHours') {
         data[field] = value ? Number(value) : null
+      } else if (field === 'currentHireDate') {
+        data[field] = value ? new Date(value as string) : null
       } else {
         data[field] = value || null
       }
@@ -1065,9 +1067,9 @@ export async function updateUserProfile(userId: string, formData: FormData) {
     'whatsappNumber', 'gcashNumber', 'phone',
     'barangay', 'cityMunicipality', 'province', 'houseNumber', 'zipCode', 'landmark', 'address',
     'regionCode', 'provinceCode', 'cityCode', 'barangayCode',
-    'emergencyContactName', 'emergencyContactPhone', 'emergencyContactRelation',
+    'emergencyContactName', 'emergencyContactPhone', 'emergencyContactRelation', 'religion',
     'facebookUrl', 'facebookName', 'linkedinUrl',
-    'payoneerAccount', 'personalEmail', 'workEmail',
+    'payoneerAccount', 'payoneerId', 'personalEmail', 'workEmail',
     'passportNumber', 'passportPhoto', 'philhealthNumber', 'philhealthPhoto',
     'signedContract',
   ]
@@ -1148,6 +1150,202 @@ export async function updateEmployment(vaProfileId: string, userId: string, form
   await requireRole(...VA_MUTATOR_ROLES)
   await updateVAProfile(vaProfileId, formData)
   await updateUserProfile(userId, formData)
+}
+
+const TERMINATION_TYPE_LABELS: Record<string, string> = {
+  EOC: 'Type A — End of Contract',
+  CLIENT_INITIATED: 'Type B — Client-Initiated',
+  VAA_INITIATED: 'Type C — VAA-Initiated',
+}
+
+async function nextTerminationTicketNumber(): Promise<string> {
+  const count = await prisma.ticket.count()
+  return `TCK-${String(count + 1).padStart(5, '0')}`
+}
+
+// Replaces the raw Engagement Status dropdown for terminal outcomes — instead
+// of silently flipping a status field, this generates a system Ticket
+// (category TERMINATION) HR/System Admin can track, classified Type A (EOC) /
+// B (client-initiated) / C (VAA-initiated) per the 2026-08-04 Workforce System
+// Feedback Review meeting. Scope is either one Assignment (that client
+// relationship ends, VA stays active elsewhere) or the whole VAProfile (all
+// assignments end) — whole-VA terminations also auto-create the exit survey
+// invite + clearance checklist.
+export async function terminateVA(formData: FormData) {
+  const actor = await requireRole(...VA_MUTATOR_ROLES)
+
+  const vaProfileId = (formData.get('vaProfileId') as string) || ''
+  const assignmentId = (formData.get('assignmentId') as string) || null
+  const type = (formData.get('type') as string) || ''
+  const resultingStatus = (formData.get('resultingStatus') as string) || ''
+  const affectsBothParties = formData.get('affectsBothParties') === 'true'
+  const reason = ((formData.get('reason') as string) || '').trim() || null
+  const effectiveDateInput = (formData.get('effectiveDate') as string) || ''
+
+  if (!vaProfileId || !type || !resultingStatus) throw new Error('Missing required termination fields')
+
+  const effective = effectiveDateInput ? new Date(effectiveDateInput) : new Date()
+  if (Number.isNaN(effective.getTime())) throw new Error('Invalid effective date')
+
+  const va = await prisma.vAProfile.findUnique({
+    where: { id: vaProfileId },
+    select: {
+      userId: true,
+      user: {
+        select: {
+          firstName: true,
+          lastName: true,
+          memberships: { where: { isPrimary: true, endedAt: null }, select: { departmentId: true } },
+        },
+      },
+    },
+  })
+  if (!va) throw new Error('VA profile not found')
+
+  if (assignmentId) {
+    const assignment = await prisma.assignment.findUnique({ where: { id: assignmentId }, select: { vaProfileId: true } })
+    if (!assignment || assignment.vaProfileId !== vaProfileId) throw new Error('Assignment does not belong to this VA')
+  }
+
+  const vaName = `${va.user.firstName} ${va.user.lastName}`.trim()
+  const departmentId = va.user.memberships[0]?.departmentId ?? null
+  const ticketNumber = await nextTerminationTicketNumber()
+
+  const { ticketId, terminationId } = await prisma.$transaction(async (tx) => {
+    const ticket = await tx.ticket.create({
+      data: {
+        ticketNumber,
+        title: `Termination — ${vaName} (${TERMINATION_TYPE_LABELS[type] ?? type})`,
+        description: reason ?? `System-generated termination ticket for ${vaName}, ending ${assignmentId ? 'one assignment' : 'all assignments'}.`,
+        category: 'TERMINATION',
+        priority: 'HIGH',
+        source: 'INTERNAL',
+        createdBy: actor.id,
+        departmentId,
+      },
+    })
+
+    const termination = await tx.termination.create({
+      data: {
+        vaProfileId,
+        assignmentId,
+        type: type as TerminationType,
+        affectsBothParties,
+        resultingStatus: resultingStatus as EmploymentStatus,
+        reason,
+        ticketId: ticket.id,
+        initiatedById: actor.id,
+        effectiveDate: effective,
+        // Per-assignment terminations have no exit survey/clearance step —
+        // only whole-VA offboarding does, so those start further back in the workflow.
+        workflowStatus: assignmentId ? 'COMPLETED' : 'EXIT_SURVEY_PENDING',
+        completedAt: assignmentId ? new Date() : null,
+      },
+    })
+
+    if (assignmentId) {
+      await tx.assignment.update({ where: { id: assignmentId }, data: { status: 'COMPLETED', endDate: effective } })
+    } else {
+      await tx.vAProfile.update({
+        where: { id: vaProfileId },
+        data: { engagementStatus: resultingStatus as EmploymentStatus, currentEndDate: effective },
+      })
+      await tx.vAHistory.create({
+        data: {
+          userId: va.userId,
+          eventType: 'ENGAGEMENT_CHANGE',
+          newValue: resultingStatus,
+          effectiveDate: effective,
+          reason: reason ?? undefined,
+          changedById: actor.id,
+        },
+      })
+      const currentRecord = await tx.employmentRecord.findFirst({ where: { userId: va.userId, isCurrent: true } })
+      if (currentRecord) {
+        await tx.employmentRecord.update({
+          where: { id: currentRecord.id },
+          data: { isCurrent: false, endDate: effective, employmentStatus: resultingStatus as EmploymentStatus },
+        })
+      }
+    }
+
+    return { ticketId: ticket.id, terminationId: termination.id }
+  })
+
+  if (!assignmentId) {
+    const token = randomBytes(32).toString('base64url')
+    await prisma.exitSurveyInvite.create({
+      data: {
+        terminationId,
+        token,
+        expiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+      },
+    })
+    await prisma.exitClearance.create({ data: { terminationId } })
+  }
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'CREATE',
+    entityType: 'Termination',
+    entityId: terminationId,
+    after: { vaProfileId, assignmentId, type, resultingStatus, affectsBothParties, reason },
+    metadata: { ticketId },
+    departmentId,
+  })
+
+  revalidatePath(`/vas/${vaProfileId}`)
+  revalidateTag(CACHE_TAGS.vas, 'default')
+  revalidatePath('/vas')
+  revalidatePath('/tickets')
+  revalidateTag(CACHE_TAGS.tickets, 'default')
+
+  return { ticketId, terminationId }
+}
+
+const CLEARANCE_CHECKLIST_FIELDS = ['equipmentReturned', 'accountsRevoked', 'documentsSubmitted', 'finalPayCleared'] as const
+
+export async function updateExitClearance(clearanceId: string, formData: FormData) {
+  const actor = await requireRole(...VA_MUTATOR_ROLES)
+
+  const data: Record<string, boolean> = {}
+  for (const field of CLEARANCE_CHECKLIST_FIELDS) data[field] = formData.get(field) === 'true'
+  const outstandingBalanceNote = ((formData.get('outstandingBalanceNote') as string) || '').trim() || null
+  const allCleared = CLEARANCE_CHECKLIST_FIELDS.every((field) => data[field])
+
+  const clearance = await prisma.exitClearance.update({
+    where: { id: clearanceId },
+    data: {
+      ...data,
+      outstandingBalanceNote,
+      clearedById: allCleared ? actor.id : null,
+      clearedAt: allCleared ? new Date() : null,
+    },
+    include: { termination: { select: { id: true, ticketId: true, workflowStatus: true } } },
+  })
+
+  if (allCleared && clearance.termination.workflowStatus !== 'COMPLETED') {
+    await prisma.termination.update({
+      where: { id: clearance.termination.id },
+      data: { workflowStatus: 'COMPLETED', completedAt: new Date() },
+    })
+  } else if (!allCleared && clearance.termination.workflowStatus === 'COMPLETED') {
+    await prisma.termination.update({
+      where: { id: clearance.termination.id },
+      data: { workflowStatus: 'CLEARANCE_PENDING', completedAt: null },
+    })
+  }
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'UPDATE',
+    entityType: 'ExitClearance',
+    entityId: clearanceId,
+    after: data,
+  })
+
+  if (clearance.termination.ticketId) revalidatePath(`/tickets/${clearance.termination.ticketId}`)
+  revalidateTag(CACHE_TAGS.tickets, 'default')
 }
 
 export async function updateUserProfileFiles(

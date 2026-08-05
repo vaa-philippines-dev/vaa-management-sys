@@ -11,7 +11,8 @@ import { TicketStatusButtons } from '@/components/tickets/TicketStatusButtons'
 import { DeleteTicketButton } from '@/components/tickets/DeleteTicketButton'
 import { TicketAssigneeSelect } from '@/components/tickets/TicketAssigneeSelect'
 import { TicketConversation } from '@/components/tickets/TicketConversation'
-import { TICKET_VIEW_ALL_ROLES, TICKET_MUTATOR_ROLES } from '@/lib/auth'
+import { TerminationPanel } from '@/components/tickets/TerminationPanel'
+import { TICKET_VIEW_ALL_ROLES, TICKET_MUTATOR_ROLES, VA_MUTATOR_ROLES } from '@/lib/auth'
 
 export default async function TicketDetailPage({
   params,
@@ -32,6 +33,14 @@ export default async function TicketDetailPage({
       conversations: {
         orderBy: { createdAt: 'asc' },
         include: { user: { select: { firstName: true, lastName: true, email: true } } },
+      },
+      termination: {
+        include: {
+          vaProfile: { select: { id: true, user: { select: { firstName: true, lastName: true } } } },
+          assignment: { select: { client: { select: { name: true } } } },
+          exitSurveyInvite: { select: { completedAt: true, expiresAt: true } },
+          clearance: true,
+        },
       },
     },
   })
@@ -112,6 +121,36 @@ export default async function TicketDetailPage({
         </div>
 
         <div className="space-y-4">
+          {ticket.termination && (
+            <TerminationPanel
+              termination={{
+                id: ticket.termination.id,
+                type: ticket.termination.type,
+                affectsBothParties: ticket.termination.affectsBothParties,
+                resultingStatus: ticket.termination.resultingStatus,
+                workflowStatus: ticket.termination.workflowStatus,
+                effectiveDate: ticket.termination.effectiveDate.toISOString(),
+                vaProfileId: ticket.termination.vaProfile.id,
+                vaName: `${ticket.termination.vaProfile.user.firstName} ${ticket.termination.vaProfile.user.lastName}`.trim(),
+                clientName: ticket.termination.assignment?.client.name ?? null,
+                exitSurvey: ticket.termination.exitSurveyInvite
+                  ? { completed: !!ticket.termination.exitSurveyInvite.completedAt, expiresAt: ticket.termination.exitSurveyInvite.expiresAt.toISOString() }
+                  : null,
+                clearance: ticket.termination.clearance
+                  ? {
+                      id: ticket.termination.clearance.id,
+                      equipmentReturned: ticket.termination.clearance.equipmentReturned,
+                      accountsRevoked: ticket.termination.clearance.accountsRevoked,
+                      documentsSubmitted: ticket.termination.clearance.documentsSubmitted,
+                      finalPayCleared: ticket.termination.clearance.finalPayCleared,
+                      outstandingBalanceNote: ticket.termination.clearance.outstandingBalanceNote,
+                    }
+                  : null,
+              }}
+              canEdit={VA_MUTATOR_ROLES.includes(user.systemRole)}
+            />
+          )}
+
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-base">Details</CardTitle>

@@ -78,6 +78,13 @@ export default async function OnboardingPage({ params }: { params: Promise<{ tok
               linkedinUrl: user.profile?.linkedinUrl ?? null,
               passportNumber: user.profile?.passportNumber ?? null,
               philhealthNumber: user.profile?.philhealthNumber ?? null,
+              birthDate: user.profile?.birthDate ? user.profile.birthDate.toISOString().slice(0, 10) : null,
+              emergencyContactName: user.profile?.emergencyContactName ?? null,
+              emergencyContactPhone: user.profile?.emergencyContactPhone ?? null,
+              emergencyContactRelation: user.profile?.emergencyContactRelation ?? null,
+              religion: user.profile?.religion ?? null,
+              payoneerAccount: user.profile?.payoneerAccount ?? null,
+              payoneerId: user.profile?.payoneerId ?? null,
             }}
           />
         </CardContent>
