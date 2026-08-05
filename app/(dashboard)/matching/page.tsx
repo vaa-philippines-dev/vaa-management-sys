@@ -162,10 +162,7 @@ export default async function MatchingPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="flex items-center gap-2 text-2xl font-bold tracking-tight">
-            <Handshake className="h-6 w-6" />
-            Matching
-          </h2>
+          <h2 className="text-2xl font-bold tracking-tight">Matching</h2>
           <p className="text-sm text-muted-foreground mt-1">
             VA match suggestions and onboarding pipeline flags awaiting review.
             {!canDecide && ' You have view-only access to this page.'}

@@ -6,7 +6,6 @@ import { Badge } from '@/components/ui/badge'
 import { FilterBar } from '@/components/filters/FilterBar'
 import { Suspense } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
-import { History } from 'lucide-react'
 
 const EVENT_LABELS: Record<string, string> = {
   STATUS_CHANGE: 'Active Status',
@@ -71,16 +70,11 @@ export default async function HistoryPage({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <History className="h-5 w-5 text-muted-foreground" />
-          <div>
-            <h2 className="text-lg font-bold tracking-tight">History</h2>
-            <p className="text-xs text-muted-foreground">
-              {totalCount} event{totalCount !== 1 ? 's' : ''} recorded · showing latest {Math.min(events.length, 100)}
-            </p>
-          </div>
-        </div>
+      <div>
+        <h2 className="text-lg font-bold tracking-tight">History</h2>
+        <p className="text-xs text-muted-foreground">
+          {totalCount} event{totalCount !== 1 ? 's' : ''} recorded · showing latest {Math.min(events.length, 100)}
+        </p>
       </div>
 
       <div className="rounded-lg border bg-card p-3">

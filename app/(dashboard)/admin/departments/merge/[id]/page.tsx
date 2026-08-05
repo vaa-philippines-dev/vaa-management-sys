@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { redirect, notFound } from 'next/navigation'
-import { GitMerge, ArrowLeft, AlertCircle } from 'lucide-react'
+import { ArrowLeft, AlertCircle } from 'lucide-react'
 import { MergeWizard } from '@/components/admin/MergeWizard'
 import { LEVEL_RECORD_NAMES } from '@/lib/departments'
 
@@ -63,14 +63,11 @@ export default async function MergePage({ params }: { params: Promise<{ id: stri
         <ArrowLeft className="h-3 w-3" /> Back to departments
       </Link>
 
-      <div className="flex items-center gap-3">
-        <GitMerge className="h-5 w-5 text-muted-foreground" />
-        <div>
-          <h2 className="text-lg font-bold tracking-tight">Merge Department</h2>
-          <p className="text-xs text-muted-foreground">
-            Combine <span className="font-semibold text-foreground">{source.name}</span> into another {source.level} department. All memberships, clients, and sub-departments will be moved automatically.
-          </p>
-        </div>
+      <div>
+        <h2 className="text-lg font-bold tracking-tight">Merge Department</h2>
+        <p className="text-xs text-muted-foreground">
+          Combine <span className="font-semibold text-foreground">{source.name}</span> into another {source.level} department. All memberships, clients, and sub-departments will be moved automatically.
+        </p>
       </div>
 
       <MergeWizard

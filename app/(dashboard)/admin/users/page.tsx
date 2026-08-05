@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser, canMutate } from '@/lib/auth'
-import { Users, LayoutList } from 'lucide-react'
+import { LayoutList } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import { UserCard } from '@/components/admin/UserCard'
 import { AddUserPanel } from '@/components/admin/AddUserPanel'
@@ -114,16 +114,13 @@ export default async function AdminUsersPage({
   })()
 
   const headerActions = (
-    <div className="flex items-center gap-3">
-      <Users className="h-5 w-5 text-muted-foreground" />
-      <div>
-        <h2 className="text-lg font-bold tracking-tight">Users</h2>
-        <p className="text-xs text-muted-foreground">
-          {hasFilters
-            ? `${filteredCount} of ${totalUsers} user${totalUsers !== 1 ? 's' : ''}`
-            : `${totalUsers} user${totalUsers !== 1 ? 's' : ''} registered`}
-        </p>
-      </div>
+    <div>
+      <h2 className="text-lg font-bold tracking-tight">Users</h2>
+      <p className="text-xs text-muted-foreground">
+        {hasFilters
+          ? `${filteredCount} of ${totalUsers} user${totalUsers !== 1 ? 's' : ''}`
+          : `${totalUsers} user${totalUsers !== 1 ? 's' : ''} registered`}
+      </p>
     </div>
   )
 

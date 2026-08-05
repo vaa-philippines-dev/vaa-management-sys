@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { redirect, notFound } from 'next/navigation'
-import { GitBranch, ArrowLeft, AlertCircle } from 'lucide-react'
+import { ArrowLeft, AlertCircle } from 'lucide-react'
 import { SplitWizard } from '@/components/admin/SplitWizard'
 import { getSplitDetails } from '@/app/(dashboard)/admin/users/actions'
 import { LEVEL_RECORD_NAMES } from '@/lib/departments'
@@ -54,14 +54,11 @@ export default async function SplitPage({ params }: { params: Promise<{ id: stri
         <ArrowLeft className="h-3 w-3" /> Back to departments
       </Link>
 
-      <div className="flex items-center gap-3">
-        <GitBranch className="h-5 w-5 text-muted-foreground" />
-        <div>
-          <h2 className="text-lg font-bold tracking-tight">Split Department</h2>
-          <p className="text-xs text-muted-foreground">
-            Split <span className="font-semibold text-foreground">{source.name}</span> into 2 or more new departments. Distribute members, clients, and sub-departments among the new ones.
-          </p>
-        </div>
+      <div>
+        <h2 className="text-lg font-bold tracking-tight">Split Department</h2>
+        <p className="text-xs text-muted-foreground">
+          Split <span className="font-semibold text-foreground">{source.name}</span> into 2 or more new departments. Distribute members, clients, and sub-departments among the new ones.
+        </p>
       </div>
 
       <SplitWizard source={details.source} memberships={details.memberships} clients={details.clients} subDepartments={details.children} services={details.services} parentOptions={parentOptions} />

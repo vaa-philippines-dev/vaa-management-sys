@@ -8,9 +8,11 @@ import {
   X,
   LayoutDashboard,
   Building2,
+  Landmark,
   Users,
   UsersRound,
   Briefcase,
+  BriefcaseBusiness,
   ListTodo,
   UserCog,
   BarChart3,
@@ -21,6 +23,13 @@ import {
   ClipboardList,
   History,
   PieChart,
+  MessageSquare,
+  Calendar,
+  Ticket,
+  Handshake,
+  Bot,
+  Database,
+  IdCard,
 } from 'lucide-react'
 
 type Shortcut = {
@@ -34,27 +43,38 @@ type Shortcut = {
 
 const SHORTCUTS: Shortcut[] = [
   { label: 'Dashboard', description: 'Overview of activity and stats', href: '/dashboard', icon: LayoutDashboard },
+  { label: 'Inbox', description: 'Messages and department channels', href: '/inbox', icon: MessageSquare },
   { label: 'VA Masterlist', description: 'Browse and manage virtual assistants', href: '/vas', icon: Users, keywords: 'va roster masterlist team' },
-  { label: 'Client Request', description: 'View and manage clients', href: '/clients', icon: Building2 },
+  { label: 'Client Request', description: 'View and manage clients', href: '/clients', icon: BriefcaseBusiness },
   { label: 'Assignments', description: 'VA-to-client staffing assignments', href: '/assignments', icon: Briefcase },
+  { label: 'Teams', description: 'Department team rosters', href: '/teams', icon: UsersRound },
+  { label: 'Celebrants', description: 'Birthdays and work anniversaries calendar', href: '/celebrants', icon: Calendar, keywords: 'birthdays anniversary anniversaries' },
+  { label: 'Matching', description: 'VA match suggestions and onboarding flags', href: '/matching', icon: Handshake },
   { label: 'Work Logs', description: 'Hours logged against assignments', href: '/work-logs', icon: ListTodo, keywords: 'hours timesheet' },
   { label: 'Services', description: 'Manage department services and skills', href: '/skills', icon: UserCog, keywords: 'skills services' },
+  { label: 'Tickets', description: 'Support tickets and conversations', href: '/tickets', icon: Ticket },
   { label: 'Monthly Report', description: 'Monthly utilization and hours report', href: '/reports', icon: BarChart3, keywords: 'report monthly utilization' },
   { label: 'Headcount Report', description: 'Time-sensitive headcount breakdown', href: '/reports/headcount', icon: PieChart, keywords: 'time sensitive reports headcount' },
-  { label: 'Departments', description: 'Department structure', href: '/departments', icon: Building2 },
+  { label: 'Departments', description: 'Department structure', href: '/departments', icon: Landmark },
   { label: 'Admin Panel', description: 'Administrative overview', href: '/admin', icon: Shield, adminOnly: true },
   { label: 'Users (Admin)', description: 'Add, edit, or deactivate users', href: '/admin/users', icon: UserPlus, adminOnly: true, keywords: 'manage users' },
   { label: 'Departments (Admin)', description: 'Merge, split, and edit departments', href: '/admin/departments', icon: Network, adminOnly: true, keywords: 'manage departments' },
   { label: 'Teams (Admin)', description: 'Org-wide overview of all teams', href: '/admin/teams', icon: UsersRound, adminOnly: true, keywords: 'manage teams' },
-  { label: 'Client Request (Admin)', description: 'Admin-level client management', href: '/admin/clients', icon: Building2, adminOnly: true, keywords: 'manage clients' },
+  { label: 'Client Request (Admin)', description: 'Admin-level client management', href: '/admin/clients', icon: BriefcaseBusiness, adminOnly: true, keywords: 'manage clients' },
+  { label: 'Customers', description: 'Company identities mirrored from the CMS', href: '/customers', icon: Building2, adminOnly: true },
+  { label: 'Accounts', description: 'CMS client accounts mirrored from the CMS', href: '/accounts', icon: IdCard, adminOnly: true },
   { label: 'Audit Log', description: 'System-wide change history', href: '/admin/audit', icon: ClipboardList, adminOnly: true },
   { label: 'History', description: 'VA history events', href: '/admin/history', icon: History, adminOnly: true },
+  { label: 'VA Connections', description: 'Mirrored VAConnections sheet records', href: '/va-connections', icon: Database, adminOnly: true },
+  { label: 'Vee', description: 'Email intake pipeline monitor', href: '/vee', icon: Bot, adminOnly: true },
 ]
 
 const VA_SHORTCUTS: Shortcut[] = [
   { label: 'Dashboard', description: 'Overview of activity and stats', href: '/dashboard', icon: LayoutDashboard },
+  { label: 'Inbox', description: 'Messages and department channels', href: '/inbox', icon: MessageSquare },
   { label: 'My Work Logs', description: 'Hours you have logged', href: '/work-logs', icon: Clock, keywords: 'hours timesheet' },
   { label: 'My Assignments', description: 'Clients you are assigned to', href: '/assignments', icon: Briefcase },
+  { label: 'Tickets', description: 'Support tickets and conversations', href: '/tickets', icon: Ticket },
 ]
 
 export function CommandPalette({ isAdmin, isVA }: { isAdmin: boolean; isVA: boolean }) {

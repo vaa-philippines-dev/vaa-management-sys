@@ -10,7 +10,6 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
-import { Database } from 'lucide-react'
 
 // Matches the `isAdmin` check in app/(dashboard)/layout.tsx — this page lives
 // in the sidebar's Admin section, so access should line up with that, not the
@@ -97,17 +96,12 @@ export default async function VAConnectionsPage({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Database className="h-5 w-5 text-muted-foreground" />
-          <div>
-            <h2 className="text-lg font-bold tracking-tight">VA Connections</h2>
-            <p className="text-xs text-muted-foreground">
-              Mirrored from the manager&apos;s VAConnections sheet · {totalCount} record{totalCount !== 1 ? 's' : ''}
-              {lastSynced && ` · last loaded ${new Date(lastSynced.lastSyncedAt).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}`}
-            </p>
-          </div>
-        </div>
+      <div>
+        <h2 className="text-lg font-bold tracking-tight">VA Connections</h2>
+        <p className="text-xs text-muted-foreground">
+          Mirrored from the manager&apos;s VAConnections sheet · {totalCount} record{totalCount !== 1 ? 's' : ''}
+          {lastSynced && ` · last loaded ${new Date(lastSynced.lastSyncedAt).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}`}
+        </p>
       </div>
 
       <p className="text-xs text-muted-foreground bg-muted/50 border rounded-md px-3 py-2">

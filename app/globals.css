@@ -95,8 +95,8 @@
   --sidebar-accent-foreground: #23252A;
   --sidebar-border: rgba(20, 20, 25, 0.07);
   --sidebar-ring: #1C87B8;
-  --sidebar-active: #FDF6D8;
-  --sidebar-active-foreground: #7A5D00;
+  --sidebar-active: #E2E3E6;
+  --sidebar-active-foreground: #101114;
 
   --success: #1A8F5A;
   --success-foreground: #FFFFFF;
@@ -140,8 +140,8 @@
   --sidebar-accent-foreground: #E4E4E6;
   --sidebar-border: rgba(255, 255, 255, 0.06);
   --sidebar-ring: #6FC6EE;
-  --sidebar-active: rgba(253, 187, 48, 0.16);
-  --sidebar-active-foreground: #F5D061;
+  --sidebar-active: #2C2D32;
+  --sidebar-active-foreground: #F5F5F6;
 
   --success: #3FBE86;
   --success-foreground: #0B0C0E;

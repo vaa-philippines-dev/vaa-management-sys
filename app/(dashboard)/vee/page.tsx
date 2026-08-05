@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { redirect } from 'next/navigation'
-import { Bot, Mail, CircleCheck, CircleX, Clock } from 'lucide-react'
+import { Mail, CircleCheck, CircleX, Clock } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -80,10 +80,7 @@ export default async function VeePage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="flex items-center gap-2 text-2xl font-bold tracking-tight">
-            <Bot className="h-6 w-6" />
-            Vee
-          </h2>
+          <h2 className="text-2xl font-bold tracking-tight">Vee</h2>
           <p className="text-sm text-muted-foreground mt-1">
             Email intake pipeline — runs as a separate process, monitored here.
           </p>

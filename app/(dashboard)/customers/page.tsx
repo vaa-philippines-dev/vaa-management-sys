@@ -7,7 +7,6 @@ import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { FilterBar } from '@/components/filters/FilterBar'
 import { Pagination } from '@/components/ui/pagination'
-import { Building2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { CUSTOMER_ACCOUNT_STATUS_COLORS } from '@/lib/cms/display'
 import { CmsSyncPanel } from '@/components/admin/CmsSyncPanel'
@@ -59,12 +58,9 @@ export default async function CustomersPage({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-3">
-        <Building2 className="h-5 w-5 text-muted-foreground" />
-        <div>
-          <h2 className="text-lg font-bold tracking-tight">Customers</h2>
-          <p className="text-xs text-muted-foreground">Mirrored from the CMS · {totalCount} shown</p>
-        </div>
+      <div>
+        <h2 className="text-lg font-bold tracking-tight">Customers</h2>
+        <p className="text-xs text-muted-foreground">Mirrored from the CMS · {totalCount} shown</p>
       </div>
 
       <CmsSyncPanel />
