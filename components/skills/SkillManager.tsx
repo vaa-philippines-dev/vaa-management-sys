@@ -149,13 +149,13 @@ export function SkillManager({
                 <Table className="text-xs table-fixed" containerClassName="overflow-visible">
                   <TableHeader>
                     <TableRow className="bg-muted/10">
-                      <TableHead className="px-3 py-2.5 w-[30%]">Name</TableHead>
-                      <TableHead className="px-3 py-2.5 w-[18%] hidden sm:table-cell">Short</TableHead>
-                      <TableHead className="px-3 py-2.5 w-[14%] hidden md:table-cell">Acronym</TableHead>
-                      <TableHead className="px-3 py-2.5 w-[14%]">Category</TableHead>
+                      <TableHead className="px-3 py-2.5 w-[28%]">Name</TableHead>
+                      <TableHead className="px-3 py-2.5 w-[17%] hidden sm:table-cell">Short</TableHead>
+                      <TableHead className="px-3 py-2.5 w-[13%] hidden md:table-cell">Acronym</TableHead>
+                      <TableHead className="px-3 py-2.5 w-[13%]">Category</TableHead>
                       <TableHead className="px-3 py-2.5 w-[8%]">VAs</TableHead>
-                      <TableHead className="px-3 py-2.5 w-[12%]">Status</TableHead>
-                      {canEdit && <TableHead className="px-3 py-2.5 w-[4%]"> </TableHead>}
+                      <TableHead className="px-3 py-2.5 w-[11%]">Status</TableHead>
+                      {canEdit && <TableHead className="px-3 py-2.5 w-[64px]"> </TableHead>}
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -201,13 +201,13 @@ export function SkillManager({
               <Table className="text-xs table-fixed" containerClassName="overflow-visible">
                 <TableHeader>
                   <TableRow className="bg-muted/10">
-                    <TableHead className="px-3 py-2.5 w-[30%]">Name</TableHead>
-                    <TableHead className="px-3 py-2.5 w-[18%] hidden sm:table-cell">Short</TableHead>
-                    <TableHead className="px-3 py-2.5 w-[14%] hidden md:table-cell">Acronym</TableHead>
-                    <TableHead className="px-3 py-2.5 w-[14%]">Category</TableHead>
+                    <TableHead className="px-3 py-2.5 w-[28%]">Name</TableHead>
+                    <TableHead className="px-3 py-2.5 w-[17%] hidden sm:table-cell">Short</TableHead>
+                    <TableHead className="px-3 py-2.5 w-[13%] hidden md:table-cell">Acronym</TableHead>
+                    <TableHead className="px-3 py-2.5 w-[13%]">Category</TableHead>
                     <TableHead className="px-3 py-2.5 w-[8%]">VAs</TableHead>
-                    <TableHead className="px-3 py-2.5 w-[12%]">Status</TableHead>
-                    {canEdit && <TableHead className="px-3 py-2.5 w-[4%]"> </TableHead>}
+                    <TableHead className="px-3 py-2.5 w-[11%]">Status</TableHead>
+                    {canEdit && <TableHead className="px-3 py-2.5 w-[64px]"> </TableHead>}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -310,7 +310,7 @@ function SkillRow({
       </TableCell>
       {canEdit && (
         <TableCell className="px-3 py-2.5">
-          <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="flex items-center gap-0.5 opacity-60 group-hover:opacity-100 transition-opacity">
             <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={onStartEdit} title="Edit">
               <Pencil className="h-3 w-3" />
             </Button>
