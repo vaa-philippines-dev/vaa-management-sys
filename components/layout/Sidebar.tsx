@@ -32,6 +32,9 @@ import {
   Bot,
   Handshake,
   Shield,
+  Megaphone,
+  LifeBuoy,
+  Settings,
 } from 'lucide-react'
 import Image from 'next/image'
 import {
@@ -281,6 +284,13 @@ const departmentRoutes = [
   { label: 'Celebrants', href: '/celebrants', icon: Calendar },
 ]
 
+// Rendered in the "Support" section at the very bottom of every sidebar.
+const supportRoutes = [
+  { label: 'Feedback', href: '/feedback', icon: Megaphone },
+  { label: 'Help Center', href: '/help-center', icon: LifeBuoy },
+  { label: 'Settings', href: '/settings', icon: Settings },
+]
+
 const vaRoutes = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { label: 'Inbox', href: '/inbox', icon: MessageSquare },
@@ -366,6 +376,7 @@ export function Sidebar({
     ...(showDepartmentSection ? departmentRoutes : []),
     ...(isAdmin ? adminRoutes : []),
     ...(role === 'MANAGER' ? onGoingRoutes : []),
+    ...supportRoutes,
   ]
   const isRouteActive = (href: string) =>
     href === '/dashboard' ? pathname === '/dashboard' : pathname === href || pathname.startsWith(href + '/')
@@ -685,6 +696,21 @@ export function Sidebar({
               ))}
             </>
           )}
+
+          <p className="px-2 pt-3.5 pb-1 text-[10.5px] tracking-wide text-sidebar-foreground/60">Support</p>
+          {supportRoutes.map((route) => (
+            <FavoritableRow
+              key={route.href}
+              href={route.href}
+              label={route.label}
+              icon={route.icon}
+              isActive={isMainRowActive(route.href, isRouteActive(route.href))}
+              canFavorite={canFavorite}
+              favorite={favorites.find((f) => f.href === route.href)}
+              atMax={atMax}
+              onChanged={setFavorites}
+            />
+          ))}
         </nav>
       </ScrollArea>
     </div>
