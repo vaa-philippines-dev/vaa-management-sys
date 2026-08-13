@@ -9,6 +9,13 @@ import { quickAddVA, createVAOnboardingInvite } from '@/app/(dashboard)/vas/acti
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
+function todayInputValue() {
+  const d = new Date()
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${d.getFullYear()}-${month}-${day}`
+}
+
 export function AddVAModal({
   open,
   onClose,
@@ -51,6 +58,7 @@ export function AddVAModal({
       fd.set('email', email)
       if (data.departmentId) fd.set('departmentId', data.departmentId as string)
       if (data.positionSkillId) fd.set('positionSkillId', data.positionSkillId as string)
+      if (data.hireDate) fd.set('hireDate', data.hireDate as string)
       userId = (await quickAddVA(fd)).userId
     } catch (e: any) {
       toast.error(e.message ?? 'Failed to add VA')
@@ -147,6 +155,10 @@ export function AddVAModal({
                   ))}
                 </select>
               </div>
+            </div>
+            <div>
+              <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Hire Date</Label>
+              <Input name="hireDate" type="date" defaultValue={todayInputValue()} className="h-9 text-sm" />
             </div>
             <div className="flex justify-end gap-2 pt-2">
               <Button type="button" variant="outline" size="sm" className="h-8" onClick={handleClose}>Cancel</Button>

@@ -482,17 +482,20 @@ export async function editDepartment(id: string, formData: FormData) {
   const admin = await getAdmin()
   const name = (formData.get('name') as string)?.trim()
   const description = (formData.get('description') as string)?.trim()
+  const baseRateInput = (formData.get('baseRate') as string)?.trim()
+  const baseRate = baseRateInput ? Number(baseRateInput) : null
 
   if (!id || !name) return
+  if (baseRateInput && (isNaN(baseRate!) || baseRate! < 0)) throw new Error('Base rate must be a valid non-negative number')
 
-  const before = await prisma.department.findUnique({ where: { id }, select: { name: true, description: true, level: true } })
+  const before = await prisma.department.findUnique({ where: { id }, select: { name: true, description: true, level: true, baseRate: true } })
   if (!before) return
 
   const clean = await validateUpdate(id, { name })
 
   await prisma.department.update({
     where: { id },
-    data: { name: clean.name, description: description || null },
+    data: { name: clean.name, description: description || null, baseRate },
   })
 
   await logAudit({
@@ -500,8 +503,8 @@ export async function editDepartment(id: string, formData: FormData) {
     action: 'UPDATE',
     entityType: ENTITY_DEPARTMENT,
     entityId: id,
-    before: { name: before.name, description: before.description, level: before.level },
-    after: { name: clean.name, description },
+    before: { name: before.name, description: before.description, level: before.level, baseRate: before.baseRate },
+    after: { name: clean.name, description, baseRate },
     departmentId: id,
   })
 

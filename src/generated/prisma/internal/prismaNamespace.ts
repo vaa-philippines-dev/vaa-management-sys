@@ -3617,6 +3617,7 @@ export const DepartmentScalarFieldEnum = {
   splitFromId: 'splitFromId',
   isParent: 'isParent',
   description: 'description',
+  baseRate: 'baseRate',
   headId: 'headId',
   sortOrder: 'sortOrder',
   createdAt: 'createdAt',
@@ -4498,6 +4499,20 @@ export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
+ * Reference to a field of type 'Decimal'
+ */
+export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+/**
+ * Reference to a field of type 'Decimal[]'
+ */
+export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
+    
+
+
+/**
  * Reference to a field of type 'Int'
  */
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -4536,20 +4551,6 @@ export type EnumGeneralStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
  * Reference to a field of type 'GeneralStatus[]'
  */
 export type ListEnumGeneralStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GeneralStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'Decimal'
- */
-export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
-    
-
-
-/**
- * Reference to a field of type 'Decimal[]'
- */
-export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
     
 
 

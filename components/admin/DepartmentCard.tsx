@@ -11,12 +11,20 @@ export function DepartmentCard({
   dept,
   icon,
 }: {
-  dept: { id: string; name: string; description: string | null; status: 'ACTIVE' | 'MERGED' | 'SPLIT' | 'INACTIVE'; _count: { memberships: number; clients: number } }
+  dept: {
+    id: string
+    name: string
+    description: string | null
+    status: 'ACTIVE' | 'MERGED' | 'SPLIT' | 'INACTIVE'
+    baseRate: number | string | null
+    _count: { memberships: number; clients: number }
+  }
   icon: React.ReactNode
 }) {
   const [editing, setEditing] = useState(false)
   const [name, setName] = useState(dept.name)
   const [description, setDescription] = useState(dept.description ?? '')
+  const [baseRate, setBaseRate] = useState(dept.baseRate != null ? String(dept.baseRate) : '')
 
   const editAction = editDepartment.bind(null, dept.id)
   const toggleAction = toggleDepartmentActive.bind(null, dept.id)
@@ -37,6 +45,16 @@ export function DepartmentCard({
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Description"
+            className="w-full px-2 py-1 text-sm border rounded-md bg-background"
+          />
+          <input
+            name="baseRate"
+            type="number"
+            step="0.01"
+            min="0"
+            value={baseRate}
+            onChange={(e) => setBaseRate(e.target.value)}
+            placeholder="Base rate (optional)"
             className="w-full px-2 py-1 text-sm border rounded-md bg-background"
           />
           <div className="flex gap-1 justify-end">
@@ -86,6 +104,7 @@ export function DepartmentCard({
           <div className="flex gap-3 text-xs text-muted-foreground">
             <span>{dept._count.memberships} members</span>
             <span>{dept._count.clients} clients</span>
+            {dept.baseRate != null && <span>Base rate: {dept.baseRate}</span>}
           </div>
           {dept.description && (
             <p className="text-xs text-muted-foreground mt-1">{dept.description}</p>

@@ -26,6 +26,7 @@ import { Modal } from '@/components/ui/modal'
 import { format } from 'date-fns'
 import type { DriveFile } from '@/lib/google/drive'
 import { AddressFields } from '@/components/vas/AddressFields'
+import { OFFBOARDING_TYPE_OPTIONS as TERMINATION_TYPE_OPTIONS } from '@/lib/offboarding'
 
 type VAData = {
   vaProfile: {
@@ -814,12 +815,6 @@ function StatusCard({
   )
 }
 
-const TERMINATION_TYPE_OPTIONS = [
-  { value: 'EOC', label: 'Type A — End of Contract' },
-  { value: 'CLIENT_INITIATED', label: 'Type B — Client-Initiated Removal' },
-  { value: 'VAA_INITIATED', label: 'Type C — VAA-Initiated' },
-]
-
 const OPEN_ASSIGNMENT_STATUSES = new Set(['ACTIVE', 'PAUSED', 'ON_HOLD'])
 
 // Replaces a raw status dropdown for terminal outcomes: generates a system
@@ -871,10 +866,10 @@ function TerminationCard({
       fd.set('effectiveDate', effectiveDate)
       fd.set('reason', reason)
       await terminateVA(fd)
-      toast.success('Termination ticket created')
+      toast.success('Offboarding ticket created')
       setOpen(false)
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to terminate')
+      toast.error(err instanceof Error ? err.message : 'Failed to offboard')
     } finally {
       setSaving(false)
     }
@@ -886,14 +881,14 @@ function TerminationCard({
     <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-4 shadow-sm">
       <p className="text-xs font-medium text-destructive mb-3 uppercase tracking-wider">Offboarding</p>
       <Button type="button" variant="destructive" size="sm" className="text-xs h-8 w-full" onClick={openModal}>
-        Terminate
+        Offboard
       </Button>
 
       <Modal
         open={open}
         onOpenChange={setOpen}
-        title={`Terminate ${vaName}`}
-        description="Generates a system termination ticket instead of a status change."
+        title={`Offboard ${vaName}`}
+        description="Generates a system offboarding ticket instead of a status change."
         size="sm"
         footer={
           <>
@@ -901,7 +896,7 @@ function TerminationCard({
               Cancel
             </button>
             <Button type="button" size="sm" variant="destructive" className="text-xs h-8" disabled={saving || !effectiveDate} onClick={handleSubmit}>
-              {saving ? <><Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> Submitting...</> : 'Create Termination Ticket'}
+              {saving ? <><Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> Submitting...</> : 'Create Offboarding Ticket'}
             </Button>
           </>
         }

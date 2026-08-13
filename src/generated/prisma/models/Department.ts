@@ -27,10 +27,12 @@ export type AggregateDepartment = {
 }
 
 export type DepartmentAvgAggregateOutputType = {
+  baseRate: runtime.Decimal | null
   sortOrder: number | null
 }
 
 export type DepartmentSumAggregateOutputType = {
+  baseRate: runtime.Decimal | null
   sortOrder: number | null
 }
 
@@ -46,6 +48,7 @@ export type DepartmentMinAggregateOutputType = {
   splitFromId: string | null
   isParent: boolean | null
   description: string | null
+  baseRate: runtime.Decimal | null
   headId: string | null
   sortOrder: number | null
   createdAt: Date | null
@@ -64,6 +67,7 @@ export type DepartmentMaxAggregateOutputType = {
   splitFromId: string | null
   isParent: boolean | null
   description: string | null
+  baseRate: runtime.Decimal | null
   headId: string | null
   sortOrder: number | null
   createdAt: Date | null
@@ -82,6 +86,7 @@ export type DepartmentCountAggregateOutputType = {
   splitFromId: number
   isParent: number
   description: number
+  baseRate: number
   headId: number
   sortOrder: number
   createdAt: number
@@ -91,10 +96,12 @@ export type DepartmentCountAggregateOutputType = {
 
 
 export type DepartmentAvgAggregateInputType = {
+  baseRate?: true
   sortOrder?: true
 }
 
 export type DepartmentSumAggregateInputType = {
+  baseRate?: true
   sortOrder?: true
 }
 
@@ -110,6 +117,7 @@ export type DepartmentMinAggregateInputType = {
   splitFromId?: true
   isParent?: true
   description?: true
+  baseRate?: true
   headId?: true
   sortOrder?: true
   createdAt?: true
@@ -128,6 +136,7 @@ export type DepartmentMaxAggregateInputType = {
   splitFromId?: true
   isParent?: true
   description?: true
+  baseRate?: true
   headId?: true
   sortOrder?: true
   createdAt?: true
@@ -146,6 +155,7 @@ export type DepartmentCountAggregateInputType = {
   splitFromId?: true
   isParent?: true
   description?: true
+  baseRate?: true
   headId?: true
   sortOrder?: true
   createdAt?: true
@@ -251,6 +261,7 @@ export type DepartmentGroupByOutputType = {
   splitFromId: string | null
   isParent: boolean
   description: string | null
+  baseRate: runtime.Decimal | null
   headId: string | null
   sortOrder: number
   createdAt: Date
@@ -292,6 +303,7 @@ export type DepartmentWhereInput = {
   splitFromId?: Prisma.StringNullableFilter<"Department"> | string | null
   isParent?: Prisma.BoolFilter<"Department"> | boolean
   description?: Prisma.StringNullableFilter<"Department"> | string | null
+  baseRate?: Prisma.DecimalNullableFilter<"Department"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.StringNullableFilter<"Department"> | string | null
   sortOrder?: Prisma.IntFilter<"Department"> | number
   createdAt?: Prisma.DateTimeFilter<"Department"> | Date | string
@@ -328,6 +340,7 @@ export type DepartmentOrderByWithRelationInput = {
   splitFromId?: Prisma.SortOrderInput | Prisma.SortOrder
   isParent?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  baseRate?: Prisma.SortOrderInput | Prisma.SortOrder
   headId?: Prisma.SortOrderInput | Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -369,6 +382,7 @@ export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
   splitFromId?: Prisma.StringNullableFilter<"Department"> | string | null
   isParent?: Prisma.BoolFilter<"Department"> | boolean
   description?: Prisma.StringNullableFilter<"Department"> | string | null
+  baseRate?: Prisma.DecimalNullableFilter<"Department"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.StringNullableFilter<"Department"> | string | null
   sortOrder?: Prisma.IntFilter<"Department"> | number
   createdAt?: Prisma.DateTimeFilter<"Department"> | Date | string
@@ -405,6 +419,7 @@ export type DepartmentOrderByWithAggregationInput = {
   splitFromId?: Prisma.SortOrderInput | Prisma.SortOrder
   isParent?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  baseRate?: Prisma.SortOrderInput | Prisma.SortOrder
   headId?: Prisma.SortOrderInput | Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -431,6 +446,7 @@ export type DepartmentScalarWhereWithAggregatesInput = {
   splitFromId?: Prisma.StringNullableWithAggregatesFilter<"Department"> | string | null
   isParent?: Prisma.BoolWithAggregatesFilter<"Department"> | boolean
   description?: Prisma.StringNullableWithAggregatesFilter<"Department"> | string | null
+  baseRate?: Prisma.DecimalNullableWithAggregatesFilter<"Department"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.StringNullableWithAggregatesFilter<"Department"> | string | null
   sortOrder?: Prisma.IntWithAggregatesFilter<"Department"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Department"> | Date | string
@@ -446,6 +462,7 @@ export type DepartmentCreateInput = {
   status?: $Enums.DepartmentStatus
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -481,6 +498,7 @@ export type DepartmentUncheckedCreateInput = {
   splitFromId?: string | null
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: string | null
   sortOrder?: number
   createdAt?: Date | string
@@ -510,6 +528,7 @@ export type DepartmentUpdateInput = {
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -545,6 +564,7 @@ export type DepartmentUncheckedUpdateInput = {
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -577,6 +597,7 @@ export type DepartmentCreateManyInput = {
   splitFromId?: string | null
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: string | null
   sortOrder?: number
   createdAt?: Date | string
@@ -592,6 +613,7 @@ export type DepartmentUpdateManyMutationInput = {
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -609,6 +631,7 @@ export type DepartmentUncheckedUpdateManyInput = {
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -652,6 +675,7 @@ export type DepartmentCountOrderByAggregateInput = {
   splitFromId?: Prisma.SortOrder
   isParent?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  baseRate?: Prisma.SortOrder
   headId?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -659,6 +683,7 @@ export type DepartmentCountOrderByAggregateInput = {
 }
 
 export type DepartmentAvgOrderByAggregateInput = {
+  baseRate?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
 }
 
@@ -674,6 +699,7 @@ export type DepartmentMaxOrderByAggregateInput = {
   splitFromId?: Prisma.SortOrder
   isParent?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  baseRate?: Prisma.SortOrder
   headId?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -692,6 +718,7 @@ export type DepartmentMinOrderByAggregateInput = {
   splitFromId?: Prisma.SortOrder
   isParent?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  baseRate?: Prisma.SortOrder
   headId?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -699,6 +726,7 @@ export type DepartmentMinOrderByAggregateInput = {
 }
 
 export type DepartmentSumOrderByAggregateInput = {
+  baseRate?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
 }
 
@@ -785,6 +813,14 @@ export type EnumDepartmentStatusFieldUpdateOperationsInput = {
 
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
+}
+
+export type NullableDecimalFieldUpdateOperationsInput = {
+  set?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type IntFieldUpdateOperationsInput = {
@@ -1134,6 +1170,7 @@ export type DepartmentCreateWithoutChildrenInput = {
   status?: $Enums.DepartmentStatus
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1168,6 +1205,7 @@ export type DepartmentUncheckedCreateWithoutChildrenInput = {
   splitFromId?: string | null
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: string | null
   sortOrder?: number
   createdAt?: Date | string
@@ -1201,6 +1239,7 @@ export type DepartmentCreateWithoutParentInput = {
   status?: $Enums.DepartmentStatus
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1234,6 +1273,7 @@ export type DepartmentUncheckedCreateWithoutParentInput = {
   splitFromId?: string | null
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: string | null
   sortOrder?: number
   createdAt?: Date | string
@@ -1273,6 +1313,7 @@ export type DepartmentCreateWithoutMergedFromInput = {
   status?: $Enums.DepartmentStatus
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1307,6 +1348,7 @@ export type DepartmentUncheckedCreateWithoutMergedFromInput = {
   splitFromId?: string | null
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: string | null
   sortOrder?: number
   createdAt?: Date | string
@@ -1340,6 +1382,7 @@ export type DepartmentCreateWithoutMergedIntoInput = {
   status?: $Enums.DepartmentStatus
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1373,6 +1416,7 @@ export type DepartmentUncheckedCreateWithoutMergedIntoInput = {
   splitFromId?: string | null
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: string | null
   sortOrder?: number
   createdAt?: Date | string
@@ -1412,6 +1456,7 @@ export type DepartmentCreateWithoutSplitIntoInput = {
   status?: $Enums.DepartmentStatus
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1446,6 +1491,7 @@ export type DepartmentUncheckedCreateWithoutSplitIntoInput = {
   splitFromId?: string | null
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: string | null
   sortOrder?: number
   createdAt?: Date | string
@@ -1479,6 +1525,7 @@ export type DepartmentCreateWithoutSplitFromInput = {
   status?: $Enums.DepartmentStatus
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1512,6 +1559,7 @@ export type DepartmentUncheckedCreateWithoutSplitFromInput = {
   mergedIntoId?: string | null
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: string | null
   sortOrder?: number
   createdAt?: Date | string
@@ -1562,6 +1610,7 @@ export type DepartmentUpdateWithoutChildrenInput = {
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1596,6 +1645,7 @@ export type DepartmentUncheckedUpdateWithoutChildrenInput = {
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1646,6 +1696,7 @@ export type DepartmentScalarWhereInput = {
   splitFromId?: Prisma.StringNullableFilter<"Department"> | string | null
   isParent?: Prisma.BoolFilter<"Department"> | boolean
   description?: Prisma.StringNullableFilter<"Department"> | string | null
+  baseRate?: Prisma.DecimalNullableFilter<"Department"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.StringNullableFilter<"Department"> | string | null
   sortOrder?: Prisma.IntFilter<"Department"> | number
   createdAt?: Prisma.DateTimeFilter<"Department"> | Date | string
@@ -1672,6 +1723,7 @@ export type DepartmentUpdateWithoutMergedFromInput = {
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1706,6 +1758,7 @@ export type DepartmentUncheckedUpdateWithoutMergedFromInput = {
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1761,6 +1814,7 @@ export type DepartmentUpdateWithoutSplitIntoInput = {
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1795,6 +1849,7 @@ export type DepartmentUncheckedUpdateWithoutSplitIntoInput = {
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1839,6 +1894,7 @@ export type DepartmentCreateWithoutPositionsInput = {
   status?: $Enums.DepartmentStatus
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1873,6 +1929,7 @@ export type DepartmentUncheckedCreateWithoutPositionsInput = {
   splitFromId?: string | null
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: string | null
   sortOrder?: number
   createdAt?: Date | string
@@ -1917,6 +1974,7 @@ export type DepartmentUpdateWithoutPositionsInput = {
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1951,6 +2009,7 @@ export type DepartmentUncheckedUpdateWithoutPositionsInput = {
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1979,6 +2038,7 @@ export type DepartmentCreateWithoutMembershipsInput = {
   status?: $Enums.DepartmentStatus
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2013,6 +2073,7 @@ export type DepartmentUncheckedCreateWithoutMembershipsInput = {
   splitFromId?: string | null
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: string | null
   sortOrder?: number
   createdAt?: Date | string
@@ -2057,6 +2118,7 @@ export type DepartmentUpdateWithoutMembershipsInput = {
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2091,6 +2153,7 @@ export type DepartmentUncheckedUpdateWithoutMembershipsInput = {
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2119,6 +2182,7 @@ export type DepartmentCreateWithoutHeadInput = {
   status?: $Enums.DepartmentStatus
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2153,6 +2217,7 @@ export type DepartmentUncheckedCreateWithoutHeadInput = {
   splitFromId?: string | null
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2207,6 +2272,7 @@ export type DepartmentCreateWithoutEmploymentRecordsInput = {
   status?: $Enums.DepartmentStatus
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2241,6 +2307,7 @@ export type DepartmentUncheckedCreateWithoutEmploymentRecordsInput = {
   splitFromId?: string | null
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: string | null
   sortOrder?: number
   createdAt?: Date | string
@@ -2285,6 +2352,7 @@ export type DepartmentUpdateWithoutEmploymentRecordsInput = {
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2319,6 +2387,7 @@ export type DepartmentUncheckedUpdateWithoutEmploymentRecordsInput = {
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2347,6 +2416,7 @@ export type DepartmentCreateWithoutRoleAssignmentsInput = {
   status?: $Enums.DepartmentStatus
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2381,6 +2451,7 @@ export type DepartmentUncheckedCreateWithoutRoleAssignmentsInput = {
   splitFromId?: string | null
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: string | null
   sortOrder?: number
   createdAt?: Date | string
@@ -2425,6 +2496,7 @@ export type DepartmentUpdateWithoutRoleAssignmentsInput = {
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2459,6 +2531,7 @@ export type DepartmentUncheckedUpdateWithoutRoleAssignmentsInput = {
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2487,6 +2560,7 @@ export type DepartmentCreateWithoutVaHistoryEventsInput = {
   status?: $Enums.DepartmentStatus
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2521,6 +2595,7 @@ export type DepartmentUncheckedCreateWithoutVaHistoryEventsInput = {
   splitFromId?: string | null
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: string | null
   sortOrder?: number
   createdAt?: Date | string
@@ -2565,6 +2640,7 @@ export type DepartmentUpdateWithoutVaHistoryEventsInput = {
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2599,6 +2675,7 @@ export type DepartmentUncheckedUpdateWithoutVaHistoryEventsInput = {
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2627,6 +2704,7 @@ export type DepartmentCreateWithoutServicesInput = {
   status?: $Enums.DepartmentStatus
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2661,6 +2739,7 @@ export type DepartmentUncheckedCreateWithoutServicesInput = {
   splitFromId?: string | null
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: string | null
   sortOrder?: number
   createdAt?: Date | string
@@ -2705,6 +2784,7 @@ export type DepartmentUpdateWithoutServicesInput = {
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2739,6 +2819,7 @@ export type DepartmentUncheckedUpdateWithoutServicesInput = {
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2767,6 +2848,7 @@ export type DepartmentCreateWithoutClientsInput = {
   status?: $Enums.DepartmentStatus
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2801,6 +2883,7 @@ export type DepartmentUncheckedCreateWithoutClientsInput = {
   splitFromId?: string | null
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: string | null
   sortOrder?: number
   createdAt?: Date | string
@@ -2845,6 +2928,7 @@ export type DepartmentUpdateWithoutClientsInput = {
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2879,6 +2963,7 @@ export type DepartmentUncheckedUpdateWithoutClientsInput = {
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2907,6 +2992,7 @@ export type DepartmentCreateWithoutTicketsInput = {
   status?: $Enums.DepartmentStatus
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2941,6 +3027,7 @@ export type DepartmentUncheckedCreateWithoutTicketsInput = {
   splitFromId?: string | null
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: string | null
   sortOrder?: number
   createdAt?: Date | string
@@ -2985,6 +3072,7 @@ export type DepartmentUpdateWithoutTicketsInput = {
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3019,6 +3107,7 @@ export type DepartmentUncheckedUpdateWithoutTicketsInput = {
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3047,6 +3136,7 @@ export type DepartmentCreateWithoutChannelInput = {
   status?: $Enums.DepartmentStatus
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3081,6 +3171,7 @@ export type DepartmentUncheckedCreateWithoutChannelInput = {
   splitFromId?: string | null
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: string | null
   sortOrder?: number
   createdAt?: Date | string
@@ -3125,6 +3216,7 @@ export type DepartmentUpdateWithoutChannelInput = {
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3159,6 +3251,7 @@ export type DepartmentUncheckedUpdateWithoutChannelInput = {
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3187,6 +3280,7 @@ export type DepartmentCreateWithoutAuditLogsInput = {
   status?: $Enums.DepartmentStatus
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3221,6 +3315,7 @@ export type DepartmentUncheckedCreateWithoutAuditLogsInput = {
   splitFromId?: string | null
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: string | null
   sortOrder?: number
   createdAt?: Date | string
@@ -3265,6 +3360,7 @@ export type DepartmentUpdateWithoutAuditLogsInput = {
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3299,6 +3395,7 @@ export type DepartmentUncheckedUpdateWithoutAuditLogsInput = {
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3327,6 +3424,7 @@ export type DepartmentCreateWithoutTeamsInput = {
   status?: $Enums.DepartmentStatus
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3361,6 +3459,7 @@ export type DepartmentUncheckedCreateWithoutTeamsInput = {
   splitFromId?: string | null
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: string | null
   sortOrder?: number
   createdAt?: Date | string
@@ -3405,6 +3504,7 @@ export type DepartmentUpdateWithoutTeamsInput = {
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3439,6 +3539,7 @@ export type DepartmentUncheckedUpdateWithoutTeamsInput = {
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3469,6 +3570,7 @@ export type DepartmentCreateManyParentInput = {
   splitFromId?: string | null
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: string | null
   sortOrder?: number
   createdAt?: Date | string
@@ -3486,6 +3588,7 @@ export type DepartmentCreateManyMergedIntoInput = {
   splitFromId?: string | null
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: string | null
   sortOrder?: number
   createdAt?: Date | string
@@ -3503,6 +3606,7 @@ export type DepartmentCreateManySplitFromInput = {
   mergedIntoId?: string | null
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: string | null
   sortOrder?: number
   createdAt?: Date | string
@@ -3518,6 +3622,7 @@ export type DepartmentUpdateWithoutParentInput = {
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3551,6 +3656,7 @@ export type DepartmentUncheckedUpdateWithoutParentInput = {
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3582,6 +3688,7 @@ export type DepartmentUncheckedUpdateManyWithoutParentInput = {
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3597,6 +3704,7 @@ export type DepartmentUpdateWithoutMergedIntoInput = {
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3630,6 +3738,7 @@ export type DepartmentUncheckedUpdateWithoutMergedIntoInput = {
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3661,6 +3770,7 @@ export type DepartmentUncheckedUpdateManyWithoutMergedIntoInput = {
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3676,6 +3786,7 @@ export type DepartmentUpdateWithoutSplitFromInput = {
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3709,6 +3820,7 @@ export type DepartmentUncheckedUpdateWithoutSplitFromInput = {
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3740,6 +3852,7 @@ export type DepartmentUncheckedUpdateManyWithoutSplitFromInput = {
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3758,6 +3871,7 @@ export type DepartmentCreateManyHeadInput = {
   splitFromId?: string | null
   isParent?: boolean
   description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3772,6 +3886,7 @@ export type DepartmentUpdateWithoutHeadInput = {
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3806,6 +3921,7 @@ export type DepartmentUncheckedUpdateWithoutHeadInput = {
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3837,6 +3953,7 @@ export type DepartmentUncheckedUpdateManyWithoutHeadInput = {
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3993,6 +4110,7 @@ export type DepartmentSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   splitFromId?: boolean
   isParent?: boolean
   description?: boolean
+  baseRate?: boolean
   headId?: boolean
   sortOrder?: boolean
   createdAt?: boolean
@@ -4030,6 +4148,7 @@ export type DepartmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   splitFromId?: boolean
   isParent?: boolean
   description?: boolean
+  baseRate?: boolean
   headId?: boolean
   sortOrder?: boolean
   createdAt?: boolean
@@ -4052,6 +4171,7 @@ export type DepartmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   splitFromId?: boolean
   isParent?: boolean
   description?: boolean
+  baseRate?: boolean
   headId?: boolean
   sortOrder?: boolean
   createdAt?: boolean
@@ -4074,13 +4194,14 @@ export type DepartmentSelectScalar = {
   splitFromId?: boolean
   isParent?: boolean
   description?: boolean
+  baseRate?: boolean
   headId?: boolean
   sortOrder?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type DepartmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "shortName" | "acronym" | "level" | "status" | "parentId" | "mergedIntoId" | "splitFromId" | "isParent" | "description" | "headId" | "sortOrder" | "createdAt" | "updatedAt", ExtArgs["result"]["department"]>
+export type DepartmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "shortName" | "acronym" | "level" | "status" | "parentId" | "mergedIntoId" | "splitFromId" | "isParent" | "description" | "baseRate" | "headId" | "sortOrder" | "createdAt" | "updatedAt", ExtArgs["result"]["department"]>
 export type DepartmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   parent?: boolean | Prisma.Department$parentArgs<ExtArgs>
   children?: boolean | Prisma.Department$childrenArgs<ExtArgs>
@@ -4149,6 +4270,7 @@ export type $DepartmentPayload<ExtArgs extends runtime.Types.Extensions.Internal
     splitFromId: string | null
     isParent: boolean
     description: string | null
+    baseRate: runtime.Decimal | null
     headId: string | null
     sortOrder: number
     createdAt: Date
@@ -4605,6 +4727,7 @@ export interface DepartmentFieldRefs {
   readonly splitFromId: Prisma.FieldRef<"Department", 'String'>
   readonly isParent: Prisma.FieldRef<"Department", 'Boolean'>
   readonly description: Prisma.FieldRef<"Department", 'String'>
+  readonly baseRate: Prisma.FieldRef<"Department", 'Decimal'>
   readonly headId: Prisma.FieldRef<"Department", 'String'>
   readonly sortOrder: Prisma.FieldRef<"Department", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Department", 'DateTime'>

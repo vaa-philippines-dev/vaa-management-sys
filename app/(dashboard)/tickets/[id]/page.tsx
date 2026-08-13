@@ -14,6 +14,10 @@ import { TicketConversation } from '@/components/tickets/TicketConversation'
 import { TerminationPanel } from '@/components/tickets/TerminationPanel'
 import { TICKET_VIEW_ALL_ROLES, TICKET_MUTATOR_ROLES, VA_MUTATOR_ROLES } from '@/lib/auth'
 
+const TICKET_CATEGORY_LABELS: Record<string, string> = {
+  TERMINATION: 'Offboarding',
+}
+
 export default async function TicketDetailPage({
   params,
 }: {
@@ -38,7 +42,7 @@ export default async function TicketDetailPage({
         include: {
           vaProfile: { select: { id: true, user: { select: { firstName: true, lastName: true } } } },
           assignment: { select: { client: { select: { name: true } } } },
-          exitSurveyInvite: { select: { completedAt: true, expiresAt: true } },
+          exitSurveyInvite: { select: { token: true, completedAt: true, expiresAt: true } },
           clearance: true,
         },
       },
@@ -134,7 +138,11 @@ export default async function TicketDetailPage({
                 vaName: `${ticket.termination.vaProfile.user.firstName} ${ticket.termination.vaProfile.user.lastName}`.trim(),
                 clientName: ticket.termination.assignment?.client.name ?? null,
                 exitSurvey: ticket.termination.exitSurveyInvite
-                  ? { completed: !!ticket.termination.exitSurveyInvite.completedAt, expiresAt: ticket.termination.exitSurveyInvite.expiresAt.toISOString() }
+                  ? {
+                      token: ticket.termination.exitSurveyInvite.token,
+                      completed: !!ticket.termination.exitSurveyInvite.completedAt,
+                      expiresAt: ticket.termination.exitSurveyInvite.expiresAt.toISOString(),
+                    }
                   : null,
                 clearance: ticket.termination.clearance
                   ? {
@@ -158,7 +166,7 @@ export default async function TicketDetailPage({
             <CardContent className="space-y-3 text-sm">
               <div>
                 <p className="text-xs text-muted-foreground mb-1">Category</p>
-                <p className="font-medium">{ticket.category.replace(/_/g, ' ')}</p>
+                <p className="font-medium">{TICKET_CATEGORY_LABELS[ticket.category] ?? ticket.category.replace(/_/g, ' ')}</p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground mb-1">Source</p>

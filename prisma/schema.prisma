@@ -273,6 +273,11 @@ model Department {
   splitInto    Department[]     @relation("DepartmentSplit")
   isParent     Boolean          @default(false) @map("is_parent")
   description  String?
+  // Standard rate for this department/service — pre-fills (but doesn't force)
+  // the per-membership rate override when transferring a VA in, per the
+  // 2026-08-12 Workforce Management System meeting's request to document
+  // base rates per department for upskilling transfers.
+  baseRate     Decimal?         @map("base_rate")
   headId       String?          @map("head_id")
   head         User?            @relation("DeptHead", fields: [headId], references: [id], onDelete: SetNull)
   sortOrder    Int              @default(0) @map("sort_order")

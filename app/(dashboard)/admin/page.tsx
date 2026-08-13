@@ -188,7 +188,11 @@ async function DepartmentsSection() {
                 {departments.map((dept) => {
                   const Icon = departmentIconMap[dept.name] ?? departmentIconMap.default
                   return (
-                    <DepartmentCard key={dept.id} dept={dept} icon={<Icon className="h-4 w-4 text-muted-foreground" />} />
+                    <DepartmentCard
+                      key={dept.id}
+                      dept={{ ...dept, baseRate: dept.baseRate != null ? Number(dept.baseRate) : null }}
+                      icon={<Icon className="h-4 w-4 text-muted-foreground" />}
+                    />
                   )
                 })}
               </div>

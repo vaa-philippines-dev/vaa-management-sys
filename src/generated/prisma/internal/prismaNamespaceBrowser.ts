@@ -123,6 +123,7 @@ export const DepartmentScalarFieldEnum = {
   splitFromId: 'splitFromId',
   isParent: 'isParent',
   description: 'description',
+  baseRate: 'baseRate',
   headId: 'headId',
   sortOrder: 'sortOrder',
   createdAt: 'createdAt',

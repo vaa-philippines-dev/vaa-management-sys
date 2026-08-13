@@ -124,7 +124,7 @@ export default async function VADetailPage({
     prisma.department.findMany({
       where: { status: 'ACTIVE', parentId: { not: null } },
       orderBy: { name: 'asc' },
-      select: { id: true, name: true, positions: { where: { isActive: true }, select: { id: true, title: true } } },
+      select: { id: true, name: true, baseRate: true, positions: { where: { isActive: true }, select: { id: true, title: true } } },
     })
   )
 
@@ -296,7 +296,7 @@ export default async function VADetailPage({
             <TransferVAModal
               vaProfileId={va.id}
               currentDepartmentName={primaryMem?.department.name ?? null}
-              departments={allDepartments}
+              departments={allDepartments.map((d) => ({ ...d, baseRate: d.baseRate != null ? Number(d.baseRate) : null }))}
               canEdit={canEdit}
             />
           </div>

@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
 import { transferVA } from '@/app/(dashboard)/vas/actions'
 
-type DepartmentOption = { id: string; name: string; positions: { id: string; title: string }[] }
+type DepartmentOption = { id: string; name: string; baseRate: number | null; positions: { id: string; title: string }[] }
 
 const TRANSFER_TYPE_OPTIONS = [
   { value: 'END_OF_CONTRACT', label: 'Transfer — end of contract', description: 'Closes out the current contract, then onboards to the new department.' },
@@ -134,7 +134,17 @@ export function TransferVAModal({
               <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Destination Department</Label>
               <select
                 value={departmentId}
-                onChange={(e) => { setDepartmentId(e.target.value); setPositionId('') }}
+                onChange={(e) => {
+                  const deptId = e.target.value
+                  setDepartmentId(deptId)
+                  setPositionId('')
+                  // Pre-fill (not force) the base rate from the destination department's
+                  // documented standard rate — only when the admin hasn't already typed one.
+                  if (!baseRate) {
+                    const dept = departments.find((d) => d.id === deptId)
+                    if (dept?.baseRate != null) setBaseRate(String(dept.baseRate))
+                  }
+                }}
                 className="w-full h-8 text-xs rounded-md border bg-background px-2"
               >
                 <option value="">Select department…</option>
@@ -166,7 +176,7 @@ export function TransferVAModal({
             </div>
             <div>
               <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Base Rate (optional)</Label>
-              <Input type="number" value={baseRate} onChange={(e) => setBaseRate(e.target.value)} placeholder="Use default" className="h-8 text-xs" />
+              <Input type="number" value={baseRate} onChange={(e) => setBaseRate(e.target.value)} placeholder={selectedDept?.baseRate != null ? `Dept. default: ${selectedDept.baseRate}` : 'Use default'} className="h-8 text-xs" />
             </div>
           </div>
 

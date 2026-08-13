@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { OnboardingForm } from '@/components/onboarding/OnboardingForm'
+import { format } from 'date-fns'
 
 export default async function OnboardingPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params
@@ -12,6 +13,7 @@ export default async function OnboardingPage({ params }: { params: Promise<{ tok
         include: {
           profile: true,
           memberships: { where: { isPrimary: true }, include: { department: true } },
+          vaProfile: { include: { positionSkill: true } },
         },
       },
     },
@@ -45,6 +47,8 @@ export default async function OnboardingPage({ params }: { params: Promise<{ tok
 
   const { user } = invite
   const department = user.memberships[0]?.department.name ?? null
+  const position = user.vaProfile?.positionSkill?.name ?? null
+  const hireDate = user.vaProfile?.currentHireDate ? format(user.vaProfile.currentHireDate, 'MMM dd, yyyy') : null
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 py-10">
@@ -52,10 +56,32 @@ export default async function OnboardingPage({ params }: { params: Promise<{ tok
         <CardHeader>
           <CardTitle>Welcome, {user.firstName}!</CardTitle>
           <CardDescription>
-            {department ? `${department} — ` : ''}Complete your profile below so HR and payroll have everything they need.
+            Complete your profile below so HR and payroll have everything they need.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
+          {(department || position || hireDate) && (
+            <div className="rounded-lg border bg-muted/30 p-3">
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-2">On file with HR</p>
+              <div className="grid grid-cols-3 gap-3 text-sm">
+                <div>
+                  <p className="text-[10px] text-muted-foreground">Department</p>
+                  <p className="font-medium">{department ?? '—'}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] text-muted-foreground">Position</p>
+                  <p className="font-medium">{position ?? '—'}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] text-muted-foreground">Hire Date</p>
+                  <p className="font-medium">{hireDate ?? '—'}</p>
+                </div>
+              </div>
+              <p className="text-[11px] text-muted-foreground mt-2">
+                See something wrong here? Let HR know — this is set up on their end, not something you can edit below.
+              </p>
+            </div>
+          )}
           <OnboardingForm
             token={token}
             firstName={user.firstName}

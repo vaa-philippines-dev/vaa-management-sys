@@ -8,6 +8,7 @@ import { requireRole, requireAdminMutator, VA_MUTATOR_ROLES } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
 import { generateEmployeeId } from '@/lib/employee-id'
 import { normalizeWhatsApp, normalizeGcash } from '@/lib/phone'
+import { OFFBOARDING_TYPE_LABELS as TERMINATION_TYPE_LABELS } from '@/lib/offboarding'
 import type { Proficiency, EmploymentStatus, GeneralStatus, TerminationType } from '@/src/generated/prisma/enums'
 
 const ONBOARDING_INVITE_TTL_MS = 7 * 24 * 60 * 60 * 1000 // 7 days
@@ -34,7 +35,9 @@ export async function quickAddVA(formData: FormData) {
   const existing = await prisma.user.findUnique({ where: { email } })
   if (existing) throw new Error('A user with this email already exists')
 
-  const hireDate = new Date()
+  const hireDateInput = ((formData.get('hireDate') as string) ?? '').trim()
+  const parsedHireDate = hireDateInput ? new Date(hireDateInput) : null
+  const hireDate = parsedHireDate && !isNaN(parsedHireDate.getTime()) ? parsedHireDate : new Date()
 
   const user = await prisma.$transaction(async (tx) => {
     const employeeId = await generateEmployeeId(tx, hireDate)
@@ -58,7 +61,7 @@ export async function quickAddVA(formData: FormData) {
     action: 'CREATE',
     entityType: 'User',
     entityId: user.id,
-    after: { email, employeeId: user.employeeId, firstName, lastName, departmentId, positionSkillId },
+    after: { email, employeeId: user.employeeId, firstName, lastName, departmentId, positionSkillId, hireDate },
     metadata: { viaForm: 'vas:quick-add' },
   })
 
@@ -1152,12 +1155,6 @@ export async function updateEmployment(vaProfileId: string, userId: string, form
   await updateUserProfile(userId, formData)
 }
 
-const TERMINATION_TYPE_LABELS: Record<string, string> = {
-  EOC: 'Type A — End of Contract',
-  CLIENT_INITIATED: 'Type B — Client-Initiated',
-  VAA_INITIATED: 'Type C — VAA-Initiated',
-}
-
 async function nextTerminationTicketNumber(): Promise<string> {
   const count = await prisma.ticket.count()
   return `TCK-${String(count + 1).padStart(5, '0')}`
@@ -1215,8 +1212,8 @@ export async function terminateVA(formData: FormData) {
     const ticket = await tx.ticket.create({
       data: {
         ticketNumber,
-        title: `Termination — ${vaName} (${TERMINATION_TYPE_LABELS[type] ?? type})`,
-        description: reason ?? `System-generated termination ticket for ${vaName}, ending ${assignmentId ? 'one assignment' : 'all assignments'}.`,
+        title: `Offboarding — ${vaName} (${TERMINATION_TYPE_LABELS[type] ?? type})`,
+        description: reason ?? `System-generated offboarding ticket for ${vaName}, ending ${assignmentId ? 'one assignment' : 'all assignments'}.`,
         category: 'TERMINATION',
         priority: 'HIGH',
         source: 'INTERNAL',
