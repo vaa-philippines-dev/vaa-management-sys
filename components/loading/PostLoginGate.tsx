@@ -6,7 +6,7 @@ import { BrandedLoader } from '@/components/loading/BrandedLoader'
 export function PostLoginGate({ children }: { children: React.ReactNode }) {
   const [phase, setPhase] = useState<'loading' | 'done'>(() => {
     if (typeof document === 'undefined' || typeof window === 'undefined') return 'done'
-    if (window.location.pathname === '/login') return 'done'
+    if (window.location.pathname === '/login' || window.location.pathname === '/') return 'done'
 
     if (document.cookie.includes('vaa_just_logged_in=1')) {
       document.cookie = 'vaa_just_logged_in=; path=/; max-age=0'

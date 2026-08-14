@@ -214,3 +214,19 @@ button:active:not(.no-animate):not([disabled]),
 .fade-in-stagger > *:nth-child(5) { animation-delay: 160ms; }
 .fade-in-stagger > *:nth-child(6) { animation-delay: 200ms; }
 .fade-in-stagger > *:nth-child(n+7) { animation-delay: 240ms; }
+
+/* Landing hero spotlight glow (Aceternity-style) */
+@keyframes spotlight {
+  0% {
+    opacity: 0;
+    transform: translate(-72%, -62%) scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -40%) scale(1);
+  }
+}
+
+.animate-spotlight {
+  animation: spotlight 2s ease 0.4s 1 forwards;
+}
