@@ -1383,6 +1383,10 @@ function parseFormDate(value: FormDataEntryValue | null): Date | null {
 // FR-001: starts the resignation case at intent, before any discussion has
 // happened. effectiveDate is a placeholder until the discussion sets the
 // real Last Working Day (submitResignationLetter refines it further).
+// Creates the tracking Ticket immediately (mirrors terminateVA()) — every
+// later stage's UI (TerminationPanel/ResignationSections) is rendered on
+// the ticket detail page, so without one here the case would be an
+// orphaned DB row with no page to continue it from.
 export async function initiateResignation(formData: FormData) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
 
@@ -1391,7 +1395,19 @@ export async function initiateResignation(formData: FormData) {
   const reason = ((formData.get('reason') as string) || '').trim() || null
   if (!vaProfileId) throw new Error('Missing VA profile')
 
-  const va = await prisma.vAProfile.findUnique({ where: { id: vaProfileId }, select: { id: true } })
+  const va = await prisma.vAProfile.findUnique({
+    where: { id: vaProfileId },
+    select: {
+      id: true,
+      user: {
+        select: {
+          firstName: true,
+          lastName: true,
+          memberships: { where: { isPrimary: true, endedAt: null }, select: { departmentId: true } },
+        },
+      },
+    },
+  })
   if (!va) throw new Error('VA profile not found')
 
   if (assignmentId) {
@@ -1404,32 +1420,55 @@ export async function initiateResignation(formData: FormData) {
   })
   if (openCase) throw new Error('This VA already has an open resignation case.')
 
-  const termination = await prisma.termination.create({
-    data: {
-      vaProfileId,
-      assignmentId,
-      type: 'VAA_INITIATED',
-      isVoluntaryResignation: true,
-      resultingStatus: 'RESIGNED',
-      reason,
-      workflowStatus: 'INITIATED',
-      initiatedById: actor.id,
-      effectiveDate: new Date(),
-    },
+  const vaName = `${va.user.firstName} ${va.user.lastName}`.trim()
+  const departmentId = va.user.memberships[0]?.departmentId ?? null
+  const ticketNumber = await nextTerminationTicketNumber()
+
+  const { terminationId, ticketId } = await prisma.$transaction(async (tx) => {
+    const ticket = await tx.ticket.create({
+      data: {
+        ticketNumber,
+        title: `Resignation — ${vaName}`,
+        description: reason ?? `Resignation case for ${vaName}.`,
+        category: 'TERMINATION',
+        priority: 'HIGH',
+        source: 'INTERNAL',
+        createdBy: actor.id,
+        departmentId,
+      },
+    })
+    const termination = await tx.termination.create({
+      data: {
+        vaProfileId,
+        assignmentId,
+        type: 'VAA_INITIATED',
+        isVoluntaryResignation: true,
+        resultingStatus: 'RESIGNED',
+        reason,
+        workflowStatus: 'INITIATED',
+        ticketId: ticket.id,
+        initiatedById: actor.id,
+        effectiveDate: new Date(),
+      },
+    })
+    return { terminationId: termination.id, ticketId: ticket.id }
   })
 
   await logAudit({
     actorId: actor.id,
     action: 'CREATE',
     entityType: 'Termination',
-    entityId: termination.id,
+    entityId: terminationId,
     after: { vaProfileId, assignmentId, isVoluntaryResignation: true },
+    metadata: { ticketId },
   })
 
   revalidatePath(`/vas/${vaProfileId}`)
   revalidateTag(CACHE_TAGS.vas, 'default')
+  revalidatePath('/tickets')
+  revalidateTag(CACHE_TAGS.tickets, 'default')
 
-  return { terminationId: termination.id }
+  return { terminationId, ticketId }
 }
 
 // FR-002/FR-003/BR-01/BR-02: logs the TL-VA discussion outcome. Retained
@@ -1524,29 +1563,16 @@ export async function logDiscussionOutcome(terminationId: string, formData: Form
   revalidatePath(`/vas/${termination.vaProfileId}`)
 }
 
-// FR-004/BR-03: validates the 3 mandatory letter fields, creates the
-// tracking Ticket (mirrors terminateVA's Ticket creation), and starts the
-// ReplacementRequest pipeline.
+// FR-004/BR-03: validates the 3 mandatory letter fields and starts the
+// ReplacementRequest pipeline. The tracking Ticket already exists (created
+// at initiateResignation) — this just updates it with the now-known
+// customer name.
 export async function submitResignationLetter(terminationId: string, formData: FormData) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
 
   const termination = await prisma.termination.findUnique({
     where: { id: terminationId },
-    include: {
-      discussion: true,
-      vaProfile: {
-        select: {
-          userId: true,
-          user: {
-            select: {
-              firstName: true,
-              lastName: true,
-              memberships: { where: { isPrimary: true, endedAt: null }, select: { departmentId: true } },
-            },
-          },
-        },
-      },
-    },
+    include: { discussion: true },
   })
   if (!termination || !termination.isVoluntaryResignation) throw new Error('Not a resignation case')
   if (termination.workflowStatus !== 'PENDING_LETTER') {
@@ -1559,33 +1585,25 @@ export async function submitResignationLetter(terminationId: string, formData: F
   const attachmentUrl = ((formData.get('attachmentUrl') as string) || '').trim() || null
   if (!customerName || !effectiveDate) throw new Error('Customer name and effective date are required (BR-03).')
 
-  const vaName = `${termination.vaProfile.user.firstName} ${termination.vaProfile.user.lastName}`.trim()
-  const departmentId = termination.vaProfile.user.memberships[0]?.departmentId ?? null
-  const ticketNumber = await nextTerminationTicketNumber()
-
-  await prisma.$transaction(async (tx) => {
-    const ticket = await tx.ticket.create({
-      data: {
-        ticketNumber,
-        title: `Resignation — ${vaName}`,
-        description: termination.reason ?? `Resignation case for ${vaName}.`,
-        category: 'TERMINATION',
-        priority: 'HIGH',
-        source: 'INTERNAL',
-        createdBy: actor.id,
-        departmentId,
-      },
-    })
-    await tx.termination.update({
+  await prisma.$transaction([
+    prisma.termination.update({
       where: { id: terminationId },
-      data: { ticketId: ticket.id, resignationDocUrl: attachmentUrl, effectiveDate, workflowStatus: 'UNDER_DOCUMENTATION' },
-    })
-    await tx.replacementRequest.upsert({
+      data: { resignationDocUrl: attachmentUrl, effectiveDate, workflowStatus: 'UNDER_DOCUMENTATION' },
+    }),
+    prisma.replacementRequest.upsert({
       where: { terminationId },
       update: {},
       create: { terminationId },
-    })
-  })
+    }),
+    ...(termination.ticketId
+      ? [
+          prisma.ticket.update({
+            where: { id: termination.ticketId },
+            data: { description: `Resignation case — Customer: ${customerName}.${termination.reason ? ` ${termination.reason}` : ''}` },
+          }),
+        ]
+      : []),
+  ])
 
   await logAudit({
     actorId: actor.id,
@@ -1597,7 +1615,7 @@ export async function submitResignationLetter(terminationId: string, formData: F
   })
 
   revalidatePath(`/vas/${termination.vaProfileId}`)
-  revalidatePath('/tickets')
+  if (termination.ticketId) revalidatePath(`/tickets/${termination.ticketId}`)
   revalidateTag(CACHE_TAGS.tickets, 'default')
 }
 

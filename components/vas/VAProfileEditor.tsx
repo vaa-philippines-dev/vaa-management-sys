@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -832,6 +833,7 @@ function TerminationCard({
   assignments: { id: string; clientName: string; status: string }[]
   canEdit: boolean
 }) {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
   const [scope, setScope] = useState('VA')
   const [type, setType] = useState('EOC')
@@ -870,8 +872,11 @@ function TerminationCard({
         fd.set('vaProfileId', vaProfileId)
         if (scope !== 'VA') fd.set('assignmentId', scope)
         fd.set('reason', reason)
-        await initiateResignation(fd)
-        toast.success('Resignation case started — continue from the linked ticket once the letter stage begins')
+        const { ticketId } = await initiateResignation(fd)
+        toast.success('Resignation case started — log the discussion outcome to continue')
+        setOpen(false)
+        router.push(`/tickets/${ticketId}`)
+        return
       } else {
         const fd = new FormData()
         fd.set('vaProfileId', vaProfileId)
