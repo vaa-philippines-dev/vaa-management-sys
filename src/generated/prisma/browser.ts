@@ -143,11 +143,6 @@ export type ReplacementRequest = Prisma.ReplacementRequestModel
  */
 export type ExitClearanceApproval = Prisma.ExitClearanceApprovalModel
 /**
- * Model ResignationIntake
- * 
- */
-export type ResignationIntake = Prisma.ResignationIntakeModel
-/**
  * Model ComplianceReview
  * 
  */

@@ -37,7 +37,6 @@ const GUARD_PATTERN = new RegExp(`\\b(${GUARD_CALLS.join('|')})\\s*\\(`)
 const PUBLIC_TOKEN_ACTIONS: Record<string, string[]> = {
   'app/onboard/[token]/actions.ts': ['completeOnboarding'],
   'app/exit-survey/[token]/actions.ts': ['submitExitSurvey'],
-  'app/resign/actions.ts': ['submitResignationIntake'],
   'app/exit-clearance/[token]/actions.ts': ['actOnClearanceApprovalPublic'],
 }
 

@@ -1,68 +1,46 @@
 'use server'
 
-// Server Actions in this file are intentionally public — reachable by a Team
-// Leader/Dept Manager who has no Supabase session and no account in this
-// system at all. See the PUBLIC_TOKEN_ACTIONS exception in
-// scripts/check-action-auth.ts. submitResignationIntake does not authenticate
-// the caller (there is nothing to authenticate against) — it only creates a
-// low-privilege intake record that HR must review and explicitly convert
-// before it becomes a real resignation case.
-
 import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { CACHE_TAGS } from '@/lib/cache'
+import { requireAuth } from '@/lib/auth'
+import { getLedTeamIds } from '@/lib/teams'
+import { createResignationCase } from '@/lib/resignation-case'
 import { logAudit } from '@/lib/audit'
 import { notifyMany } from '@/lib/notifications'
-import { nextTerminationTicketNumber } from '@/lib/tickets'
-import { getPublicFormActorId } from '@/lib/public-actor'
 
-export async function submitResignationIntake(formData: FormData) {
-  const teamLeaderName = ((formData.get('teamLeaderName') as string) || '').trim()
-  const teamLeaderEmail = ((formData.get('teamLeaderEmail') as string) || '').trim()
-  const vaIdentifier = ((formData.get('vaIdentifier') as string) || '').trim()
-  const departmentId = ((formData.get('departmentId') as string) || '').trim() || null
+export async function submitTeamLeaderResignation(formData: FormData) {
+  const actor = await requireAuth()
+
+  const ledTeamIds = await getLedTeamIds(actor.id)
+  if (ledTeamIds.length === 0) throw new Error('You are not registered as a leader of any active team.')
+
+  const vaProfileId = (formData.get('vaProfileId') as string) || ''
   const reason = ((formData.get('reason') as string) || '').trim() || null
+  if (!vaProfileId) throw new Error('Select which VA is resigning.')
 
-  if (!teamLeaderName || !teamLeaderEmail || !vaIdentifier) {
-    throw new Error('Your name, email, and the VA\'s name/employee ID are required.')
-  }
+  const va = await prisma.vAProfile.findUnique({ where: { id: vaProfileId }, select: { userId: true } })
+  if (!va) throw new Error('VA profile not found.')
 
-  const actorId = await getPublicFormActorId()
-  const ticketNumber = await nextTerminationTicketNumber()
+  const membership = await prisma.teamMembership.findFirst({
+    where: { teamId: { in: ledTeamIds }, userId: va.userId, endedAt: null },
+  })
+  if (!membership) throw new Error('That VA is not on a team you lead.')
 
-  const { intakeId } = await prisma.$transaction(async (tx) => {
-    const ticket = await tx.ticket.create({
-      data: {
-        ticketNumber,
-        title: `Resignation Request — ${vaIdentifier}`,
-        description: `Submitted by ${teamLeaderName} (${teamLeaderEmail}) via the public resignation request form.${reason ? ` Reason: ${reason}` : ''}`,
-        category: 'TERMINATION',
-        priority: 'HIGH',
-        source: 'INTERNAL',
-        createdBy: actorId,
-        departmentId,
-      },
-    })
-    const intake = await tx.resignationIntake.create({
-      data: {
-        ticketId: ticket.id,
-        teamLeaderName,
-        teamLeaderEmail,
-        vaIdentifier,
-        departmentId,
-        reason,
-      },
-    })
-    return { intakeId: intake.id, ticketId: ticket.id }
+  const { terminationId, ticketId } = await createResignationCase({
+    actorId: actor.id,
+    vaProfileId,
+    reason,
   })
 
   await logAudit({
-    actorId,
+    actorId: actor.id,
     action: 'CREATE',
-    entityType: 'ResignationIntake',
-    entityId: intakeId,
-    after: { teamLeaderName, teamLeaderEmail, vaIdentifier, departmentId, reason },
+    entityType: 'Termination',
+    entityId: terminationId,
+    after: { vaProfileId, isVoluntaryResignation: true },
+    metadata: { ticketId, viaForm: 'team-leader-resignation-report' },
   })
 
   const hrRecipients = await prisma.user.findMany({
@@ -73,14 +51,16 @@ export async function submitResignationIntake(formData: FormData) {
     hrRecipients.map((r) => ({
       recipientId: r.id,
       type: 'RESIGNATION_INTAKE',
-      title: 'New resignation request',
-      message: `${teamLeaderName} reported a resignation for ${vaIdentifier}.`,
-      entityType: 'ResignationIntake',
-      entityId: intakeId,
+      title: 'New resignation reported',
+      message: `${actor.firstName || actor.email} reported a resignation.`,
+      entityType: 'Termination',
+      entityId: terminationId,
     }))
   )
 
   revalidatePath('/offboarding')
+  revalidatePath(`/offboarding/${terminationId}`)
+  revalidatePath('/tickets')
   revalidateTag(CACHE_TAGS.tickets, 'default')
 
   redirect('/resign/done')

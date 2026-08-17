@@ -180,7 +180,7 @@ export function NotificationBell({
       if ((n.type === 'NEW_MESSAGE' || n.type === 'MESSAGE_REPLY') && n.entityType === 'Channel' && n.entityId) {
         router.push(`/inbox?channel=${n.entityId}`)
       } else if (n.type === 'RESIGNATION_INTAKE' && n.entityId) {
-        router.push(`/offboarding/intake/${n.entityId}`)
+        router.push(`/offboarding/${n.entityId}`)
       }
     },
     [router]

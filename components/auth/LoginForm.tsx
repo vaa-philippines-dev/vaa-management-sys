@@ -15,7 +15,7 @@ const errorMessages: Record<string, string> = {
   account_disabled: "Your account has been disabled. Please contact your administrator.",
 }
 
-export function LoginForm({ className }: { className?: string }) {
+export function LoginForm({ className, next }: { className?: string; next?: string }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [supportOpen, setSupportOpen] = useState(false)
@@ -43,10 +43,12 @@ export function LoginForm({ className }: { className?: string }) {
     try {
       const { createClient } = await import('@/lib/supabase/client')
       const supabase = createClient()
+      const callbackUrl = new URL('/callback', window.location.origin)
+      if (next) callbackUrl.searchParams.set('next', next)
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/callback`,
+          redirectTo: callbackUrl.toString(),
           queryParams: { prompt: 'select_account' },
         },
       })

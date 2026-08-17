@@ -13,6 +13,7 @@ import { canApproveClearanceDepartment } from '@/lib/offboarding-permissions'
 import { DEPARTMENT_CHECKLISTS } from '@/lib/offboarding'
 import { addWorkingDays } from '@/lib/working-days'
 import { nextTerminationTicketNumber } from '@/lib/tickets'
+import { createResignationCase } from '@/lib/resignation-case'
 import type { Prisma } from '@/src/generated/prisma/client'
 import type {
   Proficiency,
@@ -1396,63 +1397,11 @@ export async function initiateResignation(formData: FormData) {
   const reason = ((formData.get('reason') as string) || '').trim() || null
   if (!vaProfileId) throw new Error('Missing VA profile')
 
-  const va = await prisma.vAProfile.findUnique({
-    where: { id: vaProfileId },
-    select: {
-      id: true,
-      user: {
-        select: {
-          firstName: true,
-          lastName: true,
-          memberships: { where: { isPrimary: true, endedAt: null }, select: { departmentId: true } },
-        },
-      },
-    },
-  })
-  if (!va) throw new Error('VA profile not found')
-
-  if (assignmentId) {
-    const assignment = await prisma.assignment.findUnique({ where: { id: assignmentId }, select: { vaProfileId: true } })
-    if (!assignment || assignment.vaProfileId !== vaProfileId) throw new Error('Assignment does not belong to this VA')
-  }
-
-  const openCase = await prisma.termination.findFirst({
-    where: { vaProfileId, isVoluntaryResignation: true, workflowStatus: { notIn: ['COMPLETED', 'CANCELLED'] } },
-  })
-  if (openCase) throw new Error('This VA already has an open resignation case.')
-
-  const vaName = `${va.user.firstName} ${va.user.lastName}`.trim()
-  const departmentId = va.user.memberships[0]?.departmentId ?? null
-  const ticketNumber = await nextTerminationTicketNumber()
-
-  const { terminationId, ticketId } = await prisma.$transaction(async (tx) => {
-    const ticket = await tx.ticket.create({
-      data: {
-        ticketNumber,
-        title: `Resignation — ${vaName}`,
-        description: reason ?? `Resignation case for ${vaName}.`,
-        category: 'TERMINATION',
-        priority: 'HIGH',
-        source: 'INTERNAL',
-        createdBy: actor.id,
-        departmentId,
-      },
-    })
-    const termination = await tx.termination.create({
-      data: {
-        vaProfileId,
-        assignmentId,
-        type: 'VAA_INITIATED',
-        isVoluntaryResignation: true,
-        resultingStatus: 'RESIGNED',
-        reason,
-        workflowStatus: 'INITIATED',
-        ticketId: ticket.id,
-        initiatedById: actor.id,
-        effectiveDate: new Date(),
-      },
-    })
-    return { terminationId: termination.id, ticketId: ticket.id }
+  const { terminationId, ticketId } = await createResignationCase({
+    actorId: actor.id,
+    vaProfileId,
+    assignmentId,
+    reason,
   })
 
   await logAudit({
@@ -2163,116 +2112,3 @@ export async function bulkDeleteVAs(vaProfileIds: string[]): Promise<BulkDeleteV
   return result
 }
 
-// ──────────────────────────────────────────────────────────────────────
-// Resignation intake review (public form at app/resign submits a
-// ResignationIntake, not a Termination — see that model's schema comment).
-// HR confirms which real VA it refers to, then converts it into an actual
-// resignation case here, reusing the intake's existing Ticket rather than
-// creating a second one (same principle as initiateResignation's fix).
-// ──────────────────────────────────────────────────────────────────────
-
-export async function convertResignationIntake(intakeId: string, formData: FormData) {
-  const actor = await requireRole(...VA_MUTATOR_ROLES)
-
-  const vaProfileId = (formData.get('vaProfileId') as string) || ''
-  if (!vaProfileId) throw new Error('Select which VA this request is for.')
-
-  const intake = await prisma.resignationIntake.findUnique({ where: { id: intakeId } })
-  if (!intake) throw new Error('Resignation request not found.')
-  if (intake.status !== 'PENDING_REVIEW') throw new Error('This request has already been reviewed.')
-
-  const va = await prisma.vAProfile.findUnique({
-    where: { id: vaProfileId },
-    select: {
-      id: true,
-      user: {
-        select: {
-          firstName: true,
-          lastName: true,
-          memberships: { where: { isPrimary: true, endedAt: null }, select: { departmentId: true } },
-        },
-      },
-    },
-  })
-  if (!va) throw new Error('VA profile not found')
-
-  const openCase = await prisma.termination.findFirst({
-    where: { vaProfileId, isVoluntaryResignation: true, workflowStatus: { notIn: ['COMPLETED', 'CANCELLED'] } },
-  })
-  if (openCase) throw new Error('This VA already has an open resignation case.')
-
-  const vaName = `${va.user.firstName} ${va.user.lastName}`.trim()
-  const departmentId = va.user.memberships[0]?.departmentId ?? intake.departmentId
-
-  const terminationId = await prisma.$transaction(async (tx) => {
-    const termination = await tx.termination.create({
-      data: {
-        vaProfileId,
-        type: 'VAA_INITIATED',
-        isVoluntaryResignation: true,
-        resultingStatus: 'RESIGNED',
-        reason: intake.reason,
-        workflowStatus: 'INITIATED',
-        ticketId: intake.ticketId,
-        initiatedById: actor.id,
-        effectiveDate: new Date(),
-      },
-    })
-    await tx.ticket.update({
-      where: { id: intake.ticketId },
-      data: { title: `Resignation — ${vaName}`, departmentId },
-    })
-    await tx.resignationIntake.update({
-      where: { id: intakeId },
-      data: { status: 'CONVERTED', terminationId: termination.id, reviewedById: actor.id, reviewedAt: new Date() },
-    })
-    return termination.id
-  })
-
-  await logAudit({
-    actorId: actor.id,
-    action: 'CREATE',
-    entityType: 'Termination',
-    entityId: terminationId,
-    after: { vaProfileId, isVoluntaryResignation: true },
-    metadata: { fromIntakeId: intakeId },
-  })
-
-  revalidatePath('/offboarding')
-  revalidatePath(`/offboarding/${terminationId}`)
-  revalidatePath(`/tickets/${intake.ticketId}`)
-  revalidateTag(CACHE_TAGS.tickets, 'default')
-
-  return { terminationId }
-}
-
-export async function dismissResignationIntake(intakeId: string, formData: FormData) {
-  const actor = await requireRole(...VA_MUTATOR_ROLES)
-
-  const note = ((formData.get('note') as string) || '').trim() || null
-
-  const intake = await prisma.resignationIntake.findUnique({ where: { id: intakeId } })
-  if (!intake) throw new Error('Resignation request not found.')
-  if (intake.status !== 'PENDING_REVIEW') throw new Error('This request has already been reviewed.')
-
-  await prisma.$transaction([
-    prisma.resignationIntake.update({
-      where: { id: intakeId },
-      data: { status: 'DISMISSED', reviewedById: actor.id, reviewedAt: new Date() },
-    }),
-    prisma.ticket.update({ where: { id: intake.ticketId }, data: { status: 'CLOSED' } }),
-  ])
-
-  await logAudit({
-    actorId: actor.id,
-    action: 'UPDATE',
-    entityType: 'ResignationIntake',
-    entityId: intakeId,
-    after: { status: 'DISMISSED' },
-    metadata: note ? { note } : undefined,
-  })
-
-  revalidatePath('/offboarding')
-  revalidatePath(`/tickets/${intake.ticketId}`)
-  revalidateTag(CACHE_TAGS.tickets, 'default')
-}

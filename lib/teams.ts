@@ -34,3 +34,18 @@ export async function getOwnTeamIds(userId: string): Promise<string[]> {
   })
   return teams.map((t) => t.id)
 }
+
+// Ids of active teams a user actually LEADS (leader or either temp-leader
+// slot) — excludes plain membership. This is the authorization boundary for
+// actions only a team's leadership should take (e.g. reporting a
+// resignation via app/resign), not just anyone affiliated with the team.
+export async function getLedTeamIds(userId: string): Promise<string[]> {
+  const teams = await prisma.team.findMany({
+    where: {
+      status: 'ACTIVE',
+      OR: [{ leaderId: userId }, { tempLeader1Id: userId }, { tempLeader2Id: userId }],
+    },
+    select: { id: true },
+  })
+  return teams.map((t) => t.id)
+}

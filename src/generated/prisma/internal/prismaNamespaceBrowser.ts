@@ -76,7 +76,6 @@ export const ModelName = {
   ResignationDiscussion: 'ResignationDiscussion',
   ReplacementRequest: 'ReplacementRequest',
   ExitClearanceApproval: 'ExitClearanceApproval',
-  ResignationIntake: 'ResignationIntake',
   ComplianceReview: 'ComplianceReview',
   FinalPayout: 'FinalPayout',
   ExitSurveyInvite: 'ExitSurveyInvite',
@@ -607,24 +606,6 @@ export const ExitClearanceApprovalScalarFieldEnum = {
 } as const
 
 export type ExitClearanceApprovalScalarFieldEnum = (typeof ExitClearanceApprovalScalarFieldEnum)[keyof typeof ExitClearanceApprovalScalarFieldEnum]
-
-
-export const ResignationIntakeScalarFieldEnum = {
-  id: 'id',
-  ticketId: 'ticketId',
-  teamLeaderName: 'teamLeaderName',
-  teamLeaderEmail: 'teamLeaderEmail',
-  vaIdentifier: 'vaIdentifier',
-  departmentId: 'departmentId',
-  reason: 'reason',
-  status: 'status',
-  terminationId: 'terminationId',
-  reviewedById: 'reviewedById',
-  reviewedAt: 'reviewedAt',
-  createdAt: 'createdAt'
-} as const
-
-export type ResignationIntakeScalarFieldEnum = (typeof ResignationIntakeScalarFieldEnum)[keyof typeof ResignationIntakeScalarFieldEnum]
 
 
 export const ComplianceReviewScalarFieldEnum = {

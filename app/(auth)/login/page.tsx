@@ -1,7 +1,12 @@
 import { ThemeToggle } from '@/components/layout/ThemeToggle'
 import { LoginForm } from '@/components/auth/LoginForm'
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>
+}) {
+  const { next } = await searchParams
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-12">
       <div className="absolute right-4 top-4 z-20 sm:right-6 sm:top-6">
@@ -28,7 +33,7 @@ export default function LoginPage() {
         />
       </div>
 
-      <LoginForm className="animate-in fade-in-0 zoom-in-95 duration-300" />
+      <LoginForm className="animate-in fade-in-0 zoom-in-95 duration-300" next={next} />
     </div>
   )
 }

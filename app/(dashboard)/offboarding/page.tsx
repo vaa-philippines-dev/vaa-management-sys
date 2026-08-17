@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { format } from 'date-fns'
 import { Card, CardContent } from '@/components/ui/card'
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table'
-import { UserMinus, Ticket as TicketIcon, Inbox } from 'lucide-react'
+import { UserMinus, Ticket as TicketIcon } from 'lucide-react'
 import { OffboardingStatusBadge, OffboardingTypeBadge } from '@/components/offboarding/OffboardingStatusBadge'
 import { CopyLinkCard } from '@/components/offboarding/CopyLinkCard'
 import type { ExitClearanceDepartment } from '@/src/generated/prisma/enums'
@@ -47,14 +47,6 @@ export default async function OffboardingPage() {
     terminations = filtered
   }
 
-  const pendingIntakes = canViewAll
-    ? await prisma.resignationIntake.findMany({
-        where: { status: 'PENDING_REVIEW' },
-        include: { department: { select: { name: true } } },
-        orderBy: { createdAt: 'desc' },
-      })
-    : []
-
   return (
     <div className="space-y-6">
       <div>
@@ -68,33 +60,8 @@ export default async function OffboardingPage() {
         <CopyLinkCard
           path="/resign"
           title="Resignation Request Link"
-          description="Share with Team Leaders / Dept Managers — no account needed"
+          description="Share with team leaders — they sign in with their own Google account"
         />
-      )}
-
-      {pendingIntakes.length > 0 && (
-        <Card className="border-amber-500/30">
-          <CardContent className="py-4 space-y-2">
-            <div className="flex items-center gap-2">
-              <Inbox className="h-4 w-4 text-amber-600" />
-              <p className="text-sm font-semibold">{pendingIntakes.length} pending resignation {pendingIntakes.length === 1 ? 'request' : 'requests'} awaiting review</p>
-            </div>
-            <div className="space-y-1">
-              {pendingIntakes.map((intake) => (
-                <Link
-                  key={intake.id}
-                  href={`/offboarding/intake/${intake.id}`}
-                  className="flex items-center justify-between gap-3 rounded-md px-3 py-2 text-sm hover:bg-muted transition-colors"
-                >
-                  <span className="font-medium">{intake.vaIdentifier}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {intake.teamLeaderName}{intake.department ? ` · ${intake.department.name}` : ''} · {format(intake.createdAt, 'MMM dd, yyyy')}
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
       )}
 
       {terminations.length === 0 ? (

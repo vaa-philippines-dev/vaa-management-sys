@@ -208,12 +208,6 @@ enum ReplacementPipelineStatus {
   NOT_APPLICABLE
 }
 
-enum ResignationIntakeStatus {
-  PENDING_REVIEW
-  CONVERTED
-  DISMISSED
-}
-
 enum ComplianceReviewResult {
   PASS
   FLAGGED
@@ -344,7 +338,6 @@ model Department {
   employmentRecords  EmploymentRecord[]
   channel            Channel?
   teams              Team[]                 @relation("DepartmentTeams")
-  resignationIntakes ResignationIntake[]
 
   @@unique([name, parentId])
   @@unique([acronym, parentId])
@@ -464,7 +457,6 @@ model User {
   exitClearanceApprovals     ExitClearanceApproval[] @relation("ExitClearanceApprover")
   complianceReviewsPerformed ComplianceReview[]      @relation("ComplianceReviewedBy")
   finalPayoutsEndorsed       FinalPayout[]           @relation("FinalPayoutEndorsedBy")
-  resignationIntakesReviewed ResignationIntake[]     @relation("ResignationIntakeReviewer")
 
   @@index([email])
   @@index([systemRole])
@@ -878,9 +870,8 @@ model Ticket {
   createdAt    DateTime       @default(now()) @map("created_at")
   updatedAt    DateTime       @updatedAt @map("updated_at")
 
-  conversations     TicketConversation[]
-  termination       Termination?
-  resignationIntake ResignationIntake?
+  conversations TicketConversation[]
+  termination   Termination?
 
   @@index([assignedTo])
   @@index([departmentId])
@@ -951,8 +942,6 @@ model Termination {
   trainingPassedAt  DateTime? @map("training_passed_at")
   trainingNotedById String?   @map("training_noted_by_id")
   trainingNotedBy   User?     @relation("ResignationTrainingNotedBy", fields: [trainingNotedById], references: [id], onDelete: SetNull)
-
-  intake ResignationIntake?
 
   @@index([vaProfileId])
   @@index([assignmentId])
@@ -1031,36 +1020,6 @@ model ExitClearanceApproval {
 
   @@unique([terminationId, department])
   @@map("exit_clearance_approvals")
-}
-
-// A Team Leader's public, no-login submission (app/resign) reporting a VA
-// resignation — deliberately NOT a Termination yet, since Termination.vaProfileId
-// is a required FK and the submitter only typed a free-text VA identifier.
-// HR reviews it from the Offboarding tab, matches it to a real VAProfile, and
-// converts it into a real resignation case (see convertResignationIntake()).
-// The Ticket is created immediately on submission (visible to HR right away,
-// same as the rest of the offboarding system) and reused — not duplicated —
-// once converted.
-model ResignationIntake {
-  id              String                  @id @default(cuid())
-  ticketId        String                  @unique @map("ticket_id")
-  ticket          Ticket                  @relation(fields: [ticketId], references: [id], onDelete: Cascade)
-  teamLeaderName  String                  @map("team_leader_name")
-  teamLeaderEmail String                  @map("team_leader_email")
-  vaIdentifier    String                  @map("va_identifier")
-  departmentId    String?                 @map("department_id")
-  department      Department?             @relation(fields: [departmentId], references: [id], onDelete: SetNull)
-  reason          String?
-  status          ResignationIntakeStatus @default(PENDING_REVIEW)
-  terminationId   String?                 @unique @map("termination_id")
-  termination     Termination?            @relation(fields: [terminationId], references: [id], onDelete: SetNull)
-  reviewedById    String?                 @map("reviewed_by_id")
-  reviewedBy      User?                   @relation("ResignationIntakeReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
-  reviewedAt      DateTime?               @map("reviewed_at")
-  createdAt       DateTime                @default(now()) @map("created_at")
-
-  @@index([status])
-  @@map("resignation_intakes")
 }
 
 // The 5 fixed SOP policy-checklist items gating HR Manager endorsement
