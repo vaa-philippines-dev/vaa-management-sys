@@ -35,6 +35,7 @@ import {
   Megaphone,
   LifeBuoy,
   Settings,
+  UserMinus,
 } from 'lucide-react'
 import Image from 'next/image'
 import {
@@ -278,6 +279,7 @@ const onGoingRoutes = [
 // shown, so Clients/Assignments appear once, not duplicated in both places.
 const departmentRoutes = [
   { label: 'VA Masterlist', href: '/vas', icon: Users },
+  { label: 'Offboarding', href: '/offboarding', icon: UserMinus },
   { label: 'Client Request', href: '/clients', icon: BriefcaseBusiness },
   { label: 'Assignments', href: '/assignments', icon: Briefcase },
   { label: 'Teams', href: '/teams', icon: UsersRound },
@@ -460,6 +462,16 @@ export function Sidebar({
                 isActive={isMainRowActive('/vas', isRouteActive('/vas'))}
                 canFavorite={canFavorite}
                 favorite={favorites.find((f) => f.href === '/vas')}
+                atMax={atMax}
+                onChanged={setFavorites}
+              />
+              <FavoritableRow
+                href="/offboarding"
+                label="Offboarding"
+                icon={UserMinus}
+                isActive={isMainRowActive('/offboarding', isRouteActive('/offboarding'))}
+                canFavorite={canFavorite}
+                favorite={favorites.find((f) => f.href === '/offboarding')}
                 atMax={atMax}
                 onChanged={setFavorites}
               />

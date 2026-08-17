@@ -208,6 +208,12 @@ enum ReplacementPipelineStatus {
   NOT_APPLICABLE
 }
 
+enum ResignationIntakeStatus {
+  PENDING_REVIEW
+  CONVERTED
+  DISMISSED
+}
+
 enum ComplianceReviewResult {
   PASS
   FLAGGED
@@ -247,6 +253,7 @@ enum NotificationType {
   HOURS_SHORTFALL
   NEW_MESSAGE
   MESSAGE_REPLY
+  RESIGNATION_INTAKE
 }
 
 enum AuditAction {
@@ -326,17 +333,18 @@ model Department {
   createdAt    DateTime         @default(now()) @map("created_at")
   updatedAt    DateTime         @updatedAt @map("updated_at")
 
-  memberships       DepartmentMembership[]
-  positions         Position[]
-  clients           Client[]
-  tickets           Ticket[]
-  auditLogs         AuditLog[]
-  roleAssignments   RoleAssignment[]
-  services          DepartmentSkill[]
-  vaHistoryEvents   VAHistory[]
-  employmentRecords EmploymentRecord[]
-  channel           Channel?
-  teams             Team[]                 @relation("DepartmentTeams")
+  memberships        DepartmentMembership[]
+  positions          Position[]
+  clients            Client[]
+  tickets            Ticket[]
+  auditLogs          AuditLog[]
+  roleAssignments    RoleAssignment[]
+  services           DepartmentSkill[]
+  vaHistoryEvents    VAHistory[]
+  employmentRecords  EmploymentRecord[]
+  channel            Channel?
+  teams              Team[]                 @relation("DepartmentTeams")
+  resignationIntakes ResignationIntake[]
 
   @@unique([name, parentId])
   @@unique([acronym, parentId])
@@ -456,6 +464,7 @@ model User {
   exitClearanceApprovals     ExitClearanceApproval[] @relation("ExitClearanceApprover")
   complianceReviewsPerformed ComplianceReview[]      @relation("ComplianceReviewedBy")
   finalPayoutsEndorsed       FinalPayout[]           @relation("FinalPayoutEndorsedBy")
+  resignationIntakesReviewed ResignationIntake[]     @relation("ResignationIntakeReviewer")
 
   @@index([email])
   @@index([systemRole])
@@ -869,8 +878,9 @@ model Ticket {
   createdAt    DateTime       @default(now()) @map("created_at")
   updatedAt    DateTime       @updatedAt @map("updated_at")
 
-  conversations TicketConversation[]
-  termination   Termination?
+  conversations     TicketConversation[]
+  termination       Termination?
+  resignationIntake ResignationIntake?
 
   @@index([assignedTo])
   @@index([departmentId])
@@ -942,6 +952,8 @@ model Termination {
   trainingNotedById String?   @map("training_noted_by_id")
   trainingNotedBy   User?     @relation("ResignationTrainingNotedBy", fields: [trainingNotedById], references: [id], onDelete: SetNull)
 
+  intake ResignationIntake?
+
   @@index([vaProfileId])
   @@index([assignmentId])
   @@index([workflowStatus])
@@ -1005,13 +1017,50 @@ model ExitClearanceApproval {
   department     ExitClearanceDepartment
   approverId     String?                 @map("approver_id")
   approver       User?                   @relation("ExitClearanceApprover", fields: [approverId], references: [id], onDelete: SetNull)
+  // Set instead of approverId when acted on via the public token link
+  // (app/exit-clearance/[token]) rather than an authenticated session.
+  approverName   String?                 @map("approver_name")
   status         ClearanceApprovalStatus @default(PENDING)
   comments       String?
   checklistItems Json?                   @map("checklist_items")
   actionDate     DateTime?               @map("action_date")
+  // Public no-login approval link, generated per department when
+  // initiateExitClearance() fans out the 5 rows. Nullable only because rows
+  // created before this field existed have none.
+  token          String?                 @unique
 
   @@unique([terminationId, department])
   @@map("exit_clearance_approvals")
+}
+
+// A Team Leader's public, no-login submission (app/resign) reporting a VA
+// resignation — deliberately NOT a Termination yet, since Termination.vaProfileId
+// is a required FK and the submitter only typed a free-text VA identifier.
+// HR reviews it from the Offboarding tab, matches it to a real VAProfile, and
+// converts it into a real resignation case (see convertResignationIntake()).
+// The Ticket is created immediately on submission (visible to HR right away,
+// same as the rest of the offboarding system) and reused — not duplicated —
+// once converted.
+model ResignationIntake {
+  id              String                  @id @default(cuid())
+  ticketId        String                  @unique @map("ticket_id")
+  ticket          Ticket                  @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  teamLeaderName  String                  @map("team_leader_name")
+  teamLeaderEmail String                  @map("team_leader_email")
+  vaIdentifier    String                  @map("va_identifier")
+  departmentId    String?                 @map("department_id")
+  department      Department?             @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  reason          String?
+  status          ResignationIntakeStatus @default(PENDING_REVIEW)
+  terminationId   String?                 @unique @map("termination_id")
+  termination     Termination?            @relation(fields: [terminationId], references: [id], onDelete: SetNull)
+  reviewedById    String?                 @map("reviewed_by_id")
+  reviewedBy      User?                   @relation("ResignationIntakeReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  reviewedAt      DateTime?               @map("reviewed_at")
+  createdAt       DateTime                @default(now()) @map("created_at")
+
+  @@index([status])
+  @@map("resignation_intakes")
 }
 
 // The 5 fixed SOP policy-checklist items gating HR Manager endorsement

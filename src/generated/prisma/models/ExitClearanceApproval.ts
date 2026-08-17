@@ -29,9 +29,11 @@ export type ExitClearanceApprovalMinAggregateOutputType = {
   terminationId: string | null
   department: $Enums.ExitClearanceDepartment | null
   approverId: string | null
+  approverName: string | null
   status: $Enums.ClearanceApprovalStatus | null
   comments: string | null
   actionDate: Date | null
+  token: string | null
 }
 
 export type ExitClearanceApprovalMaxAggregateOutputType = {
@@ -39,9 +41,11 @@ export type ExitClearanceApprovalMaxAggregateOutputType = {
   terminationId: string | null
   department: $Enums.ExitClearanceDepartment | null
   approverId: string | null
+  approverName: string | null
   status: $Enums.ClearanceApprovalStatus | null
   comments: string | null
   actionDate: Date | null
+  token: string | null
 }
 
 export type ExitClearanceApprovalCountAggregateOutputType = {
@@ -49,10 +53,12 @@ export type ExitClearanceApprovalCountAggregateOutputType = {
   terminationId: number
   department: number
   approverId: number
+  approverName: number
   status: number
   comments: number
   checklistItems: number
   actionDate: number
+  token: number
   _all: number
 }
 
@@ -62,9 +68,11 @@ export type ExitClearanceApprovalMinAggregateInputType = {
   terminationId?: true
   department?: true
   approverId?: true
+  approverName?: true
   status?: true
   comments?: true
   actionDate?: true
+  token?: true
 }
 
 export type ExitClearanceApprovalMaxAggregateInputType = {
@@ -72,9 +80,11 @@ export type ExitClearanceApprovalMaxAggregateInputType = {
   terminationId?: true
   department?: true
   approverId?: true
+  approverName?: true
   status?: true
   comments?: true
   actionDate?: true
+  token?: true
 }
 
 export type ExitClearanceApprovalCountAggregateInputType = {
@@ -82,10 +92,12 @@ export type ExitClearanceApprovalCountAggregateInputType = {
   terminationId?: true
   department?: true
   approverId?: true
+  approverName?: true
   status?: true
   comments?: true
   checklistItems?: true
   actionDate?: true
+  token?: true
   _all?: true
 }
 
@@ -166,10 +178,12 @@ export type ExitClearanceApprovalGroupByOutputType = {
   terminationId: string
   department: $Enums.ExitClearanceDepartment
   approverId: string | null
+  approverName: string | null
   status: $Enums.ClearanceApprovalStatus
   comments: string | null
   checklistItems: runtime.JsonValue | null
   actionDate: Date | null
+  token: string | null
   _count: ExitClearanceApprovalCountAggregateOutputType | null
   _min: ExitClearanceApprovalMinAggregateOutputType | null
   _max: ExitClearanceApprovalMaxAggregateOutputType | null
@@ -198,10 +212,12 @@ export type ExitClearanceApprovalWhereInput = {
   terminationId?: Prisma.StringFilter<"ExitClearanceApproval"> | string
   department?: Prisma.EnumExitClearanceDepartmentFilter<"ExitClearanceApproval"> | $Enums.ExitClearanceDepartment
   approverId?: Prisma.StringNullableFilter<"ExitClearanceApproval"> | string | null
+  approverName?: Prisma.StringNullableFilter<"ExitClearanceApproval"> | string | null
   status?: Prisma.EnumClearanceApprovalStatusFilter<"ExitClearanceApproval"> | $Enums.ClearanceApprovalStatus
   comments?: Prisma.StringNullableFilter<"ExitClearanceApproval"> | string | null
   checklistItems?: Prisma.JsonNullableFilter<"ExitClearanceApproval">
   actionDate?: Prisma.DateTimeNullableFilter<"ExitClearanceApproval"> | Date | string | null
+  token?: Prisma.StringNullableFilter<"ExitClearanceApproval"> | string | null
   termination?: Prisma.XOR<Prisma.TerminationScalarRelationFilter, Prisma.TerminationWhereInput>
   approver?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
@@ -211,16 +227,19 @@ export type ExitClearanceApprovalOrderByWithRelationInput = {
   terminationId?: Prisma.SortOrder
   department?: Prisma.SortOrder
   approverId?: Prisma.SortOrderInput | Prisma.SortOrder
+  approverName?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   comments?: Prisma.SortOrderInput | Prisma.SortOrder
   checklistItems?: Prisma.SortOrderInput | Prisma.SortOrder
   actionDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  token?: Prisma.SortOrderInput | Prisma.SortOrder
   termination?: Prisma.TerminationOrderByWithRelationInput
   approver?: Prisma.UserOrderByWithRelationInput
 }
 
 export type ExitClearanceApprovalWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  token?: string
   terminationId_department?: Prisma.ExitClearanceApprovalTerminationIdDepartmentCompoundUniqueInput
   AND?: Prisma.ExitClearanceApprovalWhereInput | Prisma.ExitClearanceApprovalWhereInput[]
   OR?: Prisma.ExitClearanceApprovalWhereInput[]
@@ -228,23 +247,26 @@ export type ExitClearanceApprovalWhereUniqueInput = Prisma.AtLeast<{
   terminationId?: Prisma.StringFilter<"ExitClearanceApproval"> | string
   department?: Prisma.EnumExitClearanceDepartmentFilter<"ExitClearanceApproval"> | $Enums.ExitClearanceDepartment
   approverId?: Prisma.StringNullableFilter<"ExitClearanceApproval"> | string | null
+  approverName?: Prisma.StringNullableFilter<"ExitClearanceApproval"> | string | null
   status?: Prisma.EnumClearanceApprovalStatusFilter<"ExitClearanceApproval"> | $Enums.ClearanceApprovalStatus
   comments?: Prisma.StringNullableFilter<"ExitClearanceApproval"> | string | null
   checklistItems?: Prisma.JsonNullableFilter<"ExitClearanceApproval">
   actionDate?: Prisma.DateTimeNullableFilter<"ExitClearanceApproval"> | Date | string | null
   termination?: Prisma.XOR<Prisma.TerminationScalarRelationFilter, Prisma.TerminationWhereInput>
   approver?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
-}, "id" | "terminationId_department">
+}, "id" | "token" | "terminationId_department">
 
 export type ExitClearanceApprovalOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   terminationId?: Prisma.SortOrder
   department?: Prisma.SortOrder
   approverId?: Prisma.SortOrderInput | Prisma.SortOrder
+  approverName?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   comments?: Prisma.SortOrderInput | Prisma.SortOrder
   checklistItems?: Prisma.SortOrderInput | Prisma.SortOrder
   actionDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  token?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ExitClearanceApprovalCountOrderByAggregateInput
   _max?: Prisma.ExitClearanceApprovalMaxOrderByAggregateInput
   _min?: Prisma.ExitClearanceApprovalMinOrderByAggregateInput
@@ -258,19 +280,23 @@ export type ExitClearanceApprovalScalarWhereWithAggregatesInput = {
   terminationId?: Prisma.StringWithAggregatesFilter<"ExitClearanceApproval"> | string
   department?: Prisma.EnumExitClearanceDepartmentWithAggregatesFilter<"ExitClearanceApproval"> | $Enums.ExitClearanceDepartment
   approverId?: Prisma.StringNullableWithAggregatesFilter<"ExitClearanceApproval"> | string | null
+  approverName?: Prisma.StringNullableWithAggregatesFilter<"ExitClearanceApproval"> | string | null
   status?: Prisma.EnumClearanceApprovalStatusWithAggregatesFilter<"ExitClearanceApproval"> | $Enums.ClearanceApprovalStatus
   comments?: Prisma.StringNullableWithAggregatesFilter<"ExitClearanceApproval"> | string | null
   checklistItems?: Prisma.JsonNullableWithAggregatesFilter<"ExitClearanceApproval">
   actionDate?: Prisma.DateTimeNullableWithAggregatesFilter<"ExitClearanceApproval"> | Date | string | null
+  token?: Prisma.StringNullableWithAggregatesFilter<"ExitClearanceApproval"> | string | null
 }
 
 export type ExitClearanceApprovalCreateInput = {
   id?: string
   department: $Enums.ExitClearanceDepartment
+  approverName?: string | null
   status?: $Enums.ClearanceApprovalStatus
   comments?: string | null
   checklistItems?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   actionDate?: Date | string | null
+  token?: string | null
   termination: Prisma.TerminationCreateNestedOneWithoutClearanceApprovalsInput
   approver?: Prisma.UserCreateNestedOneWithoutExitClearanceApprovalsInput
 }
@@ -280,19 +306,23 @@ export type ExitClearanceApprovalUncheckedCreateInput = {
   terminationId: string
   department: $Enums.ExitClearanceDepartment
   approverId?: string | null
+  approverName?: string | null
   status?: $Enums.ClearanceApprovalStatus
   comments?: string | null
   checklistItems?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   actionDate?: Date | string | null
+  token?: string | null
 }
 
 export type ExitClearanceApprovalUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   department?: Prisma.EnumExitClearanceDepartmentFieldUpdateOperationsInput | $Enums.ExitClearanceDepartment
+  approverName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumClearanceApprovalStatusFieldUpdateOperationsInput | $Enums.ClearanceApprovalStatus
   comments?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checklistItems?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   actionDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   termination?: Prisma.TerminationUpdateOneRequiredWithoutClearanceApprovalsNestedInput
   approver?: Prisma.UserUpdateOneWithoutExitClearanceApprovalsNestedInput
 }
@@ -302,10 +332,12 @@ export type ExitClearanceApprovalUncheckedUpdateInput = {
   terminationId?: Prisma.StringFieldUpdateOperationsInput | string
   department?: Prisma.EnumExitClearanceDepartmentFieldUpdateOperationsInput | $Enums.ExitClearanceDepartment
   approverId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approverName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumClearanceApprovalStatusFieldUpdateOperationsInput | $Enums.ClearanceApprovalStatus
   comments?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checklistItems?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   actionDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ExitClearanceApprovalCreateManyInput = {
@@ -313,19 +345,23 @@ export type ExitClearanceApprovalCreateManyInput = {
   terminationId: string
   department: $Enums.ExitClearanceDepartment
   approverId?: string | null
+  approverName?: string | null
   status?: $Enums.ClearanceApprovalStatus
   comments?: string | null
   checklistItems?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   actionDate?: Date | string | null
+  token?: string | null
 }
 
 export type ExitClearanceApprovalUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   department?: Prisma.EnumExitClearanceDepartmentFieldUpdateOperationsInput | $Enums.ExitClearanceDepartment
+  approverName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumClearanceApprovalStatusFieldUpdateOperationsInput | $Enums.ClearanceApprovalStatus
   comments?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checklistItems?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   actionDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ExitClearanceApprovalUncheckedUpdateManyInput = {
@@ -333,10 +369,12 @@ export type ExitClearanceApprovalUncheckedUpdateManyInput = {
   terminationId?: Prisma.StringFieldUpdateOperationsInput | string
   department?: Prisma.EnumExitClearanceDepartmentFieldUpdateOperationsInput | $Enums.ExitClearanceDepartment
   approverId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approverName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumClearanceApprovalStatusFieldUpdateOperationsInput | $Enums.ClearanceApprovalStatus
   comments?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checklistItems?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   actionDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ExitClearanceApprovalListRelationFilter = {
@@ -359,10 +397,12 @@ export type ExitClearanceApprovalCountOrderByAggregateInput = {
   terminationId?: Prisma.SortOrder
   department?: Prisma.SortOrder
   approverId?: Prisma.SortOrder
+  approverName?: Prisma.SortOrder
   status?: Prisma.SortOrder
   comments?: Prisma.SortOrder
   checklistItems?: Prisma.SortOrder
   actionDate?: Prisma.SortOrder
+  token?: Prisma.SortOrder
 }
 
 export type ExitClearanceApprovalMaxOrderByAggregateInput = {
@@ -370,9 +410,11 @@ export type ExitClearanceApprovalMaxOrderByAggregateInput = {
   terminationId?: Prisma.SortOrder
   department?: Prisma.SortOrder
   approverId?: Prisma.SortOrder
+  approverName?: Prisma.SortOrder
   status?: Prisma.SortOrder
   comments?: Prisma.SortOrder
   actionDate?: Prisma.SortOrder
+  token?: Prisma.SortOrder
 }
 
 export type ExitClearanceApprovalMinOrderByAggregateInput = {
@@ -380,9 +422,11 @@ export type ExitClearanceApprovalMinOrderByAggregateInput = {
   terminationId?: Prisma.SortOrder
   department?: Prisma.SortOrder
   approverId?: Prisma.SortOrder
+  approverName?: Prisma.SortOrder
   status?: Prisma.SortOrder
   comments?: Prisma.SortOrder
   actionDate?: Prisma.SortOrder
+  token?: Prisma.SortOrder
 }
 
 export type ExitClearanceApprovalCreateNestedManyWithoutApproverInput = {
@@ -480,10 +524,12 @@ export type EnumClearanceApprovalStatusFieldUpdateOperationsInput = {
 export type ExitClearanceApprovalCreateWithoutApproverInput = {
   id?: string
   department: $Enums.ExitClearanceDepartment
+  approverName?: string | null
   status?: $Enums.ClearanceApprovalStatus
   comments?: string | null
   checklistItems?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   actionDate?: Date | string | null
+  token?: string | null
   termination: Prisma.TerminationCreateNestedOneWithoutClearanceApprovalsInput
 }
 
@@ -491,10 +537,12 @@ export type ExitClearanceApprovalUncheckedCreateWithoutApproverInput = {
   id?: string
   terminationId: string
   department: $Enums.ExitClearanceDepartment
+  approverName?: string | null
   status?: $Enums.ClearanceApprovalStatus
   comments?: string | null
   checklistItems?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   actionDate?: Date | string | null
+  token?: string | null
 }
 
 export type ExitClearanceApprovalCreateOrConnectWithoutApproverInput = {
@@ -531,19 +579,23 @@ export type ExitClearanceApprovalScalarWhereInput = {
   terminationId?: Prisma.StringFilter<"ExitClearanceApproval"> | string
   department?: Prisma.EnumExitClearanceDepartmentFilter<"ExitClearanceApproval"> | $Enums.ExitClearanceDepartment
   approverId?: Prisma.StringNullableFilter<"ExitClearanceApproval"> | string | null
+  approverName?: Prisma.StringNullableFilter<"ExitClearanceApproval"> | string | null
   status?: Prisma.EnumClearanceApprovalStatusFilter<"ExitClearanceApproval"> | $Enums.ClearanceApprovalStatus
   comments?: Prisma.StringNullableFilter<"ExitClearanceApproval"> | string | null
   checklistItems?: Prisma.JsonNullableFilter<"ExitClearanceApproval">
   actionDate?: Prisma.DateTimeNullableFilter<"ExitClearanceApproval"> | Date | string | null
+  token?: Prisma.StringNullableFilter<"ExitClearanceApproval"> | string | null
 }
 
 export type ExitClearanceApprovalCreateWithoutTerminationInput = {
   id?: string
   department: $Enums.ExitClearanceDepartment
+  approverName?: string | null
   status?: $Enums.ClearanceApprovalStatus
   comments?: string | null
   checklistItems?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   actionDate?: Date | string | null
+  token?: string | null
   approver?: Prisma.UserCreateNestedOneWithoutExitClearanceApprovalsInput
 }
 
@@ -551,10 +603,12 @@ export type ExitClearanceApprovalUncheckedCreateWithoutTerminationInput = {
   id?: string
   department: $Enums.ExitClearanceDepartment
   approverId?: string | null
+  approverName?: string | null
   status?: $Enums.ClearanceApprovalStatus
   comments?: string | null
   checklistItems?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   actionDate?: Date | string | null
+  token?: string | null
 }
 
 export type ExitClearanceApprovalCreateOrConnectWithoutTerminationInput = {
@@ -587,19 +641,23 @@ export type ExitClearanceApprovalCreateManyApproverInput = {
   id?: string
   terminationId: string
   department: $Enums.ExitClearanceDepartment
+  approverName?: string | null
   status?: $Enums.ClearanceApprovalStatus
   comments?: string | null
   checklistItems?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   actionDate?: Date | string | null
+  token?: string | null
 }
 
 export type ExitClearanceApprovalUpdateWithoutApproverInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   department?: Prisma.EnumExitClearanceDepartmentFieldUpdateOperationsInput | $Enums.ExitClearanceDepartment
+  approverName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumClearanceApprovalStatusFieldUpdateOperationsInput | $Enums.ClearanceApprovalStatus
   comments?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checklistItems?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   actionDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   termination?: Prisma.TerminationUpdateOneRequiredWithoutClearanceApprovalsNestedInput
 }
 
@@ -607,39 +665,47 @@ export type ExitClearanceApprovalUncheckedUpdateWithoutApproverInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   terminationId?: Prisma.StringFieldUpdateOperationsInput | string
   department?: Prisma.EnumExitClearanceDepartmentFieldUpdateOperationsInput | $Enums.ExitClearanceDepartment
+  approverName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumClearanceApprovalStatusFieldUpdateOperationsInput | $Enums.ClearanceApprovalStatus
   comments?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checklistItems?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   actionDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ExitClearanceApprovalUncheckedUpdateManyWithoutApproverInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   terminationId?: Prisma.StringFieldUpdateOperationsInput | string
   department?: Prisma.EnumExitClearanceDepartmentFieldUpdateOperationsInput | $Enums.ExitClearanceDepartment
+  approverName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumClearanceApprovalStatusFieldUpdateOperationsInput | $Enums.ClearanceApprovalStatus
   comments?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checklistItems?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   actionDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ExitClearanceApprovalCreateManyTerminationInput = {
   id?: string
   department: $Enums.ExitClearanceDepartment
   approverId?: string | null
+  approverName?: string | null
   status?: $Enums.ClearanceApprovalStatus
   comments?: string | null
   checklistItems?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   actionDate?: Date | string | null
+  token?: string | null
 }
 
 export type ExitClearanceApprovalUpdateWithoutTerminationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   department?: Prisma.EnumExitClearanceDepartmentFieldUpdateOperationsInput | $Enums.ExitClearanceDepartment
+  approverName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumClearanceApprovalStatusFieldUpdateOperationsInput | $Enums.ClearanceApprovalStatus
   comments?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checklistItems?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   actionDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approver?: Prisma.UserUpdateOneWithoutExitClearanceApprovalsNestedInput
 }
 
@@ -647,20 +713,24 @@ export type ExitClearanceApprovalUncheckedUpdateWithoutTerminationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   department?: Prisma.EnumExitClearanceDepartmentFieldUpdateOperationsInput | $Enums.ExitClearanceDepartment
   approverId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approverName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumClearanceApprovalStatusFieldUpdateOperationsInput | $Enums.ClearanceApprovalStatus
   comments?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checklistItems?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   actionDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   department?: Prisma.EnumExitClearanceDepartmentFieldUpdateOperationsInput | $Enums.ExitClearanceDepartment
   approverId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approverName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumClearanceApprovalStatusFieldUpdateOperationsInput | $Enums.ClearanceApprovalStatus
   comments?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checklistItems?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   actionDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  token?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -670,10 +740,12 @@ export type ExitClearanceApprovalSelect<ExtArgs extends runtime.Types.Extensions
   terminationId?: boolean
   department?: boolean
   approverId?: boolean
+  approverName?: boolean
   status?: boolean
   comments?: boolean
   checklistItems?: boolean
   actionDate?: boolean
+  token?: boolean
   termination?: boolean | Prisma.TerminationDefaultArgs<ExtArgs>
   approver?: boolean | Prisma.ExitClearanceApproval$approverArgs<ExtArgs>
 }, ExtArgs["result"]["exitClearanceApproval"]>
@@ -683,10 +755,12 @@ export type ExitClearanceApprovalSelectCreateManyAndReturn<ExtArgs extends runti
   terminationId?: boolean
   department?: boolean
   approverId?: boolean
+  approverName?: boolean
   status?: boolean
   comments?: boolean
   checklistItems?: boolean
   actionDate?: boolean
+  token?: boolean
   termination?: boolean | Prisma.TerminationDefaultArgs<ExtArgs>
   approver?: boolean | Prisma.ExitClearanceApproval$approverArgs<ExtArgs>
 }, ExtArgs["result"]["exitClearanceApproval"]>
@@ -696,10 +770,12 @@ export type ExitClearanceApprovalSelectUpdateManyAndReturn<ExtArgs extends runti
   terminationId?: boolean
   department?: boolean
   approverId?: boolean
+  approverName?: boolean
   status?: boolean
   comments?: boolean
   checklistItems?: boolean
   actionDate?: boolean
+  token?: boolean
   termination?: boolean | Prisma.TerminationDefaultArgs<ExtArgs>
   approver?: boolean | Prisma.ExitClearanceApproval$approverArgs<ExtArgs>
 }, ExtArgs["result"]["exitClearanceApproval"]>
@@ -709,13 +785,15 @@ export type ExitClearanceApprovalSelectScalar = {
   terminationId?: boolean
   department?: boolean
   approverId?: boolean
+  approverName?: boolean
   status?: boolean
   comments?: boolean
   checklistItems?: boolean
   actionDate?: boolean
+  token?: boolean
 }
 
-export type ExitClearanceApprovalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "terminationId" | "department" | "approverId" | "status" | "comments" | "checklistItems" | "actionDate", ExtArgs["result"]["exitClearanceApproval"]>
+export type ExitClearanceApprovalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "terminationId" | "department" | "approverId" | "approverName" | "status" | "comments" | "checklistItems" | "actionDate" | "token", ExtArgs["result"]["exitClearanceApproval"]>
 export type ExitClearanceApprovalInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   termination?: boolean | Prisma.TerminationDefaultArgs<ExtArgs>
   approver?: boolean | Prisma.ExitClearanceApproval$approverArgs<ExtArgs>
@@ -740,10 +818,12 @@ export type $ExitClearanceApprovalPayload<ExtArgs extends runtime.Types.Extensio
     terminationId: string
     department: $Enums.ExitClearanceDepartment
     approverId: string | null
+    approverName: string | null
     status: $Enums.ClearanceApprovalStatus
     comments: string | null
     checklistItems: runtime.JsonValue | null
     actionDate: Date | null
+    token: string | null
   }, ExtArgs["result"]["exitClearanceApproval"]>
   composites: {}
 }
@@ -1173,10 +1253,12 @@ export interface ExitClearanceApprovalFieldRefs {
   readonly terminationId: Prisma.FieldRef<"ExitClearanceApproval", 'String'>
   readonly department: Prisma.FieldRef<"ExitClearanceApproval", 'ExitClearanceDepartment'>
   readonly approverId: Prisma.FieldRef<"ExitClearanceApproval", 'String'>
+  readonly approverName: Prisma.FieldRef<"ExitClearanceApproval", 'String'>
   readonly status: Prisma.FieldRef<"ExitClearanceApproval", 'ClearanceApprovalStatus'>
   readonly comments: Prisma.FieldRef<"ExitClearanceApproval", 'String'>
   readonly checklistItems: Prisma.FieldRef<"ExitClearanceApproval", 'Json'>
   readonly actionDate: Prisma.FieldRef<"ExitClearanceApproval", 'DateTime'>
+  readonly token: Prisma.FieldRef<"ExitClearanceApproval", 'String'>
 }
     
 

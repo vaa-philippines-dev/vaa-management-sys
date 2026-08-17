@@ -4,25 +4,15 @@ import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, ArrowUpRight } from 'lucide-react'
 import { format } from 'date-fns'
 import { TicketStatusBadge, TicketPriorityBadge } from '@/components/tickets/TicketBadges'
 import { TicketStatusButtons } from '@/components/tickets/TicketStatusButtons'
 import { DeleteTicketButton } from '@/components/tickets/DeleteTicketButton'
 import { TicketAssigneeSelect } from '@/components/tickets/TicketAssigneeSelect'
 import { TicketConversation } from '@/components/tickets/TicketConversation'
-import { TerminationPanel } from '@/components/tickets/TerminationPanel'
-import { TICKET_VIEW_ALL_ROLES, TICKET_MUTATOR_ROLES, VA_MUTATOR_ROLES } from '@/lib/auth'
-import { canApproveClearanceDepartment } from '@/lib/offboarding-permissions'
-import type { ExitClearanceDepartment } from '@/src/generated/prisma/enums'
-
-const ALL_CLEARANCE_DEPARTMENTS: ExitClearanceDepartment[] = [
-  'SERVICE_DEPARTMENT',
-  'CUSTOMER_SUCCESS',
-  'TRAINING',
-  'ACCOUNTING',
-  'HR',
-]
+import { OffboardingStatusBadge } from '@/components/offboarding/OffboardingStatusBadge'
+import { TICKET_VIEW_ALL_ROLES, TICKET_MUTATOR_ROLES } from '@/lib/auth'
 
 const TICKET_CATEGORY_LABELS: Record<string, string> = {
   TERMINATION: 'Offboarding',
@@ -49,19 +39,11 @@ export default async function TicketDetailPage({
         include: { user: { select: { firstName: true, lastName: true, email: true } } },
       },
       termination: {
-        include: {
-          vaProfile: { select: { id: true, userId: true, user: { select: { firstName: true, lastName: true } } } },
-          assignment: { select: { client: { select: { name: true } } } },
-          exitSurveyInvite: { select: { token: true, completedAt: true, expiresAt: true } },
-          clearance: true,
-          discussion: true,
-          replacementRequest: true,
-          clearanceApprovals: {
-            include: { approver: { select: { firstName: true, lastName: true, email: true } } },
-            orderBy: { department: 'asc' },
-          },
-          complianceReview: true,
-          finalPayout: true,
+        select: {
+          id: true,
+          workflowStatus: true,
+          isVoluntaryResignation: true,
+          vaProfile: { select: { id: true, user: { select: { firstName: true, lastName: true } } } },
         },
       },
     },
@@ -73,17 +55,6 @@ export default async function TicketDetailPage({
   const canMutate = TICKET_MUTATOR_ROLES.includes(user.systemRole)
   const isOwner = ticket.createdBy === user.id || ticket.assignedTo === user.id
   if (!canViewAll && !isOwner) notFound()
-
-  const approvableDepartments: string[] = []
-  if (ticket.termination?.isVoluntaryResignation) {
-    const vaUserId = ticket.termination.vaProfile.userId
-    const checks = await Promise.all(
-      ALL_CLEARANCE_DEPARTMENTS.map((d) => canApproveClearanceDepartment(user, d, vaUserId))
-    )
-    ALL_CLEARANCE_DEPARTMENTS.forEach((d, i) => {
-      if (checks[i]) approvableDepartments.push(d)
-    })
-  }
 
   const visibleMessages = canViewAll
     ? ticket.conversations
@@ -155,84 +126,29 @@ export default async function TicketDetailPage({
 
         <div className="space-y-4">
           {ticket.termination && (
-            <TerminationPanel
-              termination={{
-                id: ticket.termination.id,
-                type: ticket.termination.type,
-                affectsBothParties: ticket.termination.affectsBothParties,
-                resultingStatus: ticket.termination.resultingStatus,
-                workflowStatus: ticket.termination.workflowStatus,
-                effectiveDate: ticket.termination.effectiveDate.toISOString(),
-                vaProfileId: ticket.termination.vaProfile.id,
-                vaName: `${ticket.termination.vaProfile.user.firstName} ${ticket.termination.vaProfile.user.lastName}`.trim(),
-                clientName: ticket.termination.assignment?.client.name ?? null,
-                exitSurvey: ticket.termination.exitSurveyInvite
-                  ? {
-                      token: ticket.termination.exitSurveyInvite.token,
-                      completed: !!ticket.termination.exitSurveyInvite.completedAt,
-                      expiresAt: ticket.termination.exitSurveyInvite.expiresAt.toISOString(),
-                    }
-                  : null,
-                clearance: ticket.termination.clearance
-                  ? {
-                      id: ticket.termination.clearance.id,
-                      equipmentReturned: ticket.termination.clearance.equipmentReturned,
-                      accountsRevoked: ticket.termination.clearance.accountsRevoked,
-                      documentsSubmitted: ticket.termination.clearance.documentsSubmitted,
-                      finalPayCleared: ticket.termination.clearance.finalPayCleared,
-                      outstandingBalanceNote: ticket.termination.clearance.outstandingBalanceNote,
-                    }
-                  : null,
-                isVoluntaryResignation: ticket.termination.isVoluntaryResignation,
-                assignmentId: ticket.termination.assignmentId,
-                resignationDocUrl: ticket.termination.resignationDocUrl,
-                trainingPassedAt: ticket.termination.trainingPassedAt?.toISOString() ?? null,
-                discussion: ticket.termination.discussion
-                  ? {
-                      retained: ticket.termination.discussion.retained,
-                      conductedAt: ticket.termination.discussion.conductedAt?.toISOString() ?? null,
-                      lastWorkingDay: ticket.termination.discussion.lastWorkingDay?.toISOString() ?? null,
-                      recordingLink: ticket.termination.discussion.recordingLink,
-                      turnoverDiscussed: ticket.termination.discussion.turnoverDiscussed,
-                    }
-                  : null,
-                replacementRequest: ticket.termination.replacementRequest
-                  ? { pipelineStatus: ticket.termination.replacementRequest.pipelineStatus }
-                  : null,
-                clearanceApprovals: ticket.termination.clearanceApprovals.map((a) => ({
-                  id: a.id,
-                  department: a.department,
-                  status: a.status,
-                  comments: a.comments,
-                  approverName: a.approver ? a.approver.firstName || a.approver.email : null,
-                  actionDate: a.actionDate?.toISOString() ?? null,
-                  checklistItems: Array.isArray(a.checklistItems)
-                    ? (a.checklistItems as { label: string; checked: boolean }[])
-                    : [],
-                })),
-                complianceReview: ticket.termination.complianceReview
-                  ? {
-                      properlyConducted: ticket.termination.complianceReview.properlyConducted,
-                      voluntaryConfirmation: ticket.termination.complianceReview.voluntaryConfirmation,
-                      noticePeriodCommunicated: ticket.termination.complianceReview.noticePeriodCommunicated,
-                      noUnresolvedIssues: ticket.termination.complianceReview.noUnresolvedIssues,
-                      turnoverAcknowledged: ticket.termination.complianceReview.turnoverAcknowledged,
-                      overallResult: ticket.termination.complianceReview.overallResult,
-                    }
-                  : null,
-                finalPayout: ticket.termination.finalPayout
-                  ? {
-                      amount: ticket.termination.finalPayout.amount ? Number(ticket.termination.finalPayout.amount) : null,
-                      endorsedAt: ticket.termination.finalPayout.endorsedAt?.toISOString() ?? null,
-                      slaDueDate: ticket.termination.finalPayout.slaDueDate?.toISOString() ?? null,
-                      processedAt: ticket.termination.finalPayout.processedAt?.toISOString() ?? null,
-                      status: ticket.termination.finalPayout.status,
-                    }
-                  : null,
-              }}
-              canEdit={VA_MUTATOR_ROLES.includes(user.systemRole)}
-              approvableDepartments={approvableDepartments}
-            />
+            <Card className="border-destructive/30">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Linked Offboarding Case</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm">
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">VA</p>
+                  <p className="font-medium">
+                    {`${ticket.termination.vaProfile.user.firstName} ${ticket.termination.vaProfile.user.lastName}`.trim()}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Status</p>
+                  <OffboardingStatusBadge status={ticket.termination.workflowStatus} />
+                </div>
+                <Link href={`/offboarding/${ticket.termination.id}`}>
+                  <Button variant="outline" size="sm" className="w-full gap-1.5">
+                    Manage Offboarding Case
+                    <ArrowUpRight className="h-3.5 w-3.5" />
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
           )}
 
           <Card>

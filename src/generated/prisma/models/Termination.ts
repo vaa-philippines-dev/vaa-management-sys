@@ -298,6 +298,7 @@ export type TerminationWhereInput = {
   complianceReview?: Prisma.XOR<Prisma.ComplianceReviewNullableScalarRelationFilter, Prisma.ComplianceReviewWhereInput> | null
   finalPayout?: Prisma.XOR<Prisma.FinalPayoutNullableScalarRelationFilter, Prisma.FinalPayoutWhereInput> | null
   trainingNotedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  intake?: Prisma.XOR<Prisma.ResignationIntakeNullableScalarRelationFilter, Prisma.ResignationIntakeWhereInput> | null
 }
 
 export type TerminationOrderByWithRelationInput = {
@@ -331,6 +332,7 @@ export type TerminationOrderByWithRelationInput = {
   complianceReview?: Prisma.ComplianceReviewOrderByWithRelationInput
   finalPayout?: Prisma.FinalPayoutOrderByWithRelationInput
   trainingNotedBy?: Prisma.UserOrderByWithRelationInput
+  intake?: Prisma.ResignationIntakeOrderByWithRelationInput
 }
 
 export type TerminationWhereUniqueInput = Prisma.AtLeast<{
@@ -367,6 +369,7 @@ export type TerminationWhereUniqueInput = Prisma.AtLeast<{
   complianceReview?: Prisma.XOR<Prisma.ComplianceReviewNullableScalarRelationFilter, Prisma.ComplianceReviewWhereInput> | null
   finalPayout?: Prisma.XOR<Prisma.FinalPayoutNullableScalarRelationFilter, Prisma.FinalPayoutWhereInput> | null
   trainingNotedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  intake?: Prisma.XOR<Prisma.ResignationIntakeNullableScalarRelationFilter, Prisma.ResignationIntakeWhereInput> | null
 }, "id" | "ticketId">
 
 export type TerminationOrderByWithAggregationInput = {
@@ -443,6 +446,7 @@ export type TerminationCreateInput = {
   complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
   trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+  intake?: Prisma.ResignationIntakeCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateInput = {
@@ -471,6 +475,7 @@ export type TerminationUncheckedCreateInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+  intake?: Prisma.ResignationIntakeUncheckedCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationUpdateInput = {
@@ -499,6 +504,7 @@ export type TerminationUpdateInput = {
   complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
   trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+  intake?: Prisma.ResignationIntakeUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateInput = {
@@ -527,6 +533,7 @@ export type TerminationUncheckedUpdateInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
+  intake?: Prisma.ResignationIntakeUncheckedUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationCreateManyInput = {
@@ -920,6 +927,22 @@ export type TerminationUpdateOneRequiredWithoutClearanceApprovalsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TerminationUpdateToOneWithWhereWithoutClearanceApprovalsInput, Prisma.TerminationUpdateWithoutClearanceApprovalsInput>, Prisma.TerminationUncheckedUpdateWithoutClearanceApprovalsInput>
 }
 
+export type TerminationCreateNestedOneWithoutIntakeInput = {
+  create?: Prisma.XOR<Prisma.TerminationCreateWithoutIntakeInput, Prisma.TerminationUncheckedCreateWithoutIntakeInput>
+  connectOrCreate?: Prisma.TerminationCreateOrConnectWithoutIntakeInput
+  connect?: Prisma.TerminationWhereUniqueInput
+}
+
+export type TerminationUpdateOneWithoutIntakeNestedInput = {
+  create?: Prisma.XOR<Prisma.TerminationCreateWithoutIntakeInput, Prisma.TerminationUncheckedCreateWithoutIntakeInput>
+  connectOrCreate?: Prisma.TerminationCreateOrConnectWithoutIntakeInput
+  upsert?: Prisma.TerminationUpsertWithoutIntakeInput
+  disconnect?: Prisma.TerminationWhereInput | boolean
+  delete?: Prisma.TerminationWhereInput | boolean
+  connect?: Prisma.TerminationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TerminationUpdateToOneWithWhereWithoutIntakeInput, Prisma.TerminationUpdateWithoutIntakeInput>, Prisma.TerminationUncheckedUpdateWithoutIntakeInput>
+}
+
 export type TerminationCreateNestedOneWithoutComplianceReviewInput = {
   create?: Prisma.XOR<Prisma.TerminationCreateWithoutComplianceReviewInput, Prisma.TerminationUncheckedCreateWithoutComplianceReviewInput>
   connectOrCreate?: Prisma.TerminationCreateOrConnectWithoutComplianceReviewInput
@@ -1001,6 +1024,7 @@ export type TerminationCreateWithoutInitiatedByInput = {
   complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
   trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+  intake?: Prisma.ResignationIntakeCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateWithoutInitiatedByInput = {
@@ -1028,6 +1052,7 @@ export type TerminationUncheckedCreateWithoutInitiatedByInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+  intake?: Prisma.ResignationIntakeUncheckedCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationCreateOrConnectWithoutInitiatedByInput = {
@@ -1065,6 +1090,7 @@ export type TerminationCreateWithoutTrainingNotedByInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
+  intake?: Prisma.ResignationIntakeCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateWithoutTrainingNotedByInput = {
@@ -1092,6 +1118,7 @@ export type TerminationUncheckedCreateWithoutTrainingNotedByInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+  intake?: Prisma.ResignationIntakeUncheckedCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationCreateOrConnectWithoutTrainingNotedByInput = {
@@ -1185,6 +1212,7 @@ export type TerminationCreateWithoutVaProfileInput = {
   complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
   trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+  intake?: Prisma.ResignationIntakeCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateWithoutVaProfileInput = {
@@ -1212,6 +1240,7 @@ export type TerminationUncheckedCreateWithoutVaProfileInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+  intake?: Prisma.ResignationIntakeUncheckedCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationCreateOrConnectWithoutVaProfileInput = {
@@ -1265,6 +1294,7 @@ export type TerminationCreateWithoutAssignmentInput = {
   complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
   trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+  intake?: Prisma.ResignationIntakeCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateWithoutAssignmentInput = {
@@ -1292,6 +1322,7 @@ export type TerminationUncheckedCreateWithoutAssignmentInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+  intake?: Prisma.ResignationIntakeUncheckedCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationCreateOrConnectWithoutAssignmentInput = {
@@ -1345,6 +1376,7 @@ export type TerminationCreateWithoutTicketInput = {
   complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
   trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+  intake?: Prisma.ResignationIntakeCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateWithoutTicketInput = {
@@ -1372,6 +1404,7 @@ export type TerminationUncheckedCreateWithoutTicketInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+  intake?: Prisma.ResignationIntakeUncheckedCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationCreateOrConnectWithoutTicketInput = {
@@ -1415,6 +1448,7 @@ export type TerminationUpdateWithoutTicketInput = {
   complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
   trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+  intake?: Prisma.ResignationIntakeUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateWithoutTicketInput = {
@@ -1442,6 +1476,7 @@ export type TerminationUncheckedUpdateWithoutTicketInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
+  intake?: Prisma.ResignationIntakeUncheckedUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationCreateWithoutDiscussionInput = {
@@ -1469,6 +1504,7 @@ export type TerminationCreateWithoutDiscussionInput = {
   complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
   trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+  intake?: Prisma.ResignationIntakeCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateWithoutDiscussionInput = {
@@ -1496,6 +1532,7 @@ export type TerminationUncheckedCreateWithoutDiscussionInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+  intake?: Prisma.ResignationIntakeUncheckedCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationCreateOrConnectWithoutDiscussionInput = {
@@ -1539,6 +1576,7 @@ export type TerminationUpdateWithoutDiscussionInput = {
   complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
   trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+  intake?: Prisma.ResignationIntakeUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateWithoutDiscussionInput = {
@@ -1566,6 +1604,7 @@ export type TerminationUncheckedUpdateWithoutDiscussionInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
+  intake?: Prisma.ResignationIntakeUncheckedUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationCreateWithoutReplacementRequestInput = {
@@ -1593,6 +1632,7 @@ export type TerminationCreateWithoutReplacementRequestInput = {
   complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
   trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+  intake?: Prisma.ResignationIntakeCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateWithoutReplacementRequestInput = {
@@ -1620,6 +1660,7 @@ export type TerminationUncheckedCreateWithoutReplacementRequestInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+  intake?: Prisma.ResignationIntakeUncheckedCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationCreateOrConnectWithoutReplacementRequestInput = {
@@ -1663,6 +1704,7 @@ export type TerminationUpdateWithoutReplacementRequestInput = {
   complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
   trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+  intake?: Prisma.ResignationIntakeUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateWithoutReplacementRequestInput = {
@@ -1690,6 +1732,7 @@ export type TerminationUncheckedUpdateWithoutReplacementRequestInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
+  intake?: Prisma.ResignationIntakeUncheckedUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationCreateWithoutClearanceApprovalsInput = {
@@ -1717,6 +1760,7 @@ export type TerminationCreateWithoutClearanceApprovalsInput = {
   complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
   trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+  intake?: Prisma.ResignationIntakeCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateWithoutClearanceApprovalsInput = {
@@ -1744,6 +1788,7 @@ export type TerminationUncheckedCreateWithoutClearanceApprovalsInput = {
   replacementRequest?: Prisma.ReplacementRequestUncheckedCreateNestedOneWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+  intake?: Prisma.ResignationIntakeUncheckedCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationCreateOrConnectWithoutClearanceApprovalsInput = {
@@ -1787,6 +1832,7 @@ export type TerminationUpdateWithoutClearanceApprovalsInput = {
   complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
   trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+  intake?: Prisma.ResignationIntakeUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateWithoutClearanceApprovalsInput = {
@@ -1812,6 +1858,135 @@ export type TerminationUncheckedUpdateWithoutClearanceApprovalsInput = {
   clearance?: Prisma.ExitClearanceUncheckedUpdateOneWithoutTerminationNestedInput
   discussion?: Prisma.ResignationDiscussionUncheckedUpdateOneWithoutTerminationNestedInput
   replacementRequest?: Prisma.ReplacementRequestUncheckedUpdateOneWithoutTerminationNestedInput
+  complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
+  finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
+  intake?: Prisma.ResignationIntakeUncheckedUpdateOneWithoutTerminationNestedInput
+}
+
+export type TerminationCreateWithoutIntakeInput = {
+  id?: string
+  type: $Enums.TerminationType
+  isVoluntaryResignation?: boolean
+  affectsBothParties?: boolean
+  resultingStatus: $Enums.EmploymentStatus
+  reason?: string | null
+  workflowStatus?: $Enums.TerminationWorkflowStatus
+  resignationDocUrl?: string | null
+  effectiveDate: Date | string
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  trainingPassedAt?: Date | string | null
+  vaProfile: Prisma.VAProfileCreateNestedOneWithoutTerminationsInput
+  assignment?: Prisma.AssignmentCreateNestedOneWithoutTerminationsInput
+  ticket?: Prisma.TicketCreateNestedOneWithoutTerminationInput
+  initiatedBy: Prisma.UserCreateNestedOneWithoutTerminationsInitiatedInput
+  exitSurveyInvite?: Prisma.ExitSurveyInviteCreateNestedOneWithoutTerminationInput
+  clearance?: Prisma.ExitClearanceCreateNestedOneWithoutTerminationInput
+  discussion?: Prisma.ResignationDiscussionCreateNestedOneWithoutTerminationInput
+  replacementRequest?: Prisma.ReplacementRequestCreateNestedOneWithoutTerminationInput
+  clearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutTerminationInput
+  complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
+  finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
+  trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+}
+
+export type TerminationUncheckedCreateWithoutIntakeInput = {
+  id?: string
+  vaProfileId: string
+  assignmentId?: string | null
+  type: $Enums.TerminationType
+  isVoluntaryResignation?: boolean
+  affectsBothParties?: boolean
+  resultingStatus: $Enums.EmploymentStatus
+  reason?: string | null
+  workflowStatus?: $Enums.TerminationWorkflowStatus
+  ticketId?: string | null
+  resignationDocUrl?: string | null
+  initiatedById: string
+  effectiveDate: Date | string
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  trainingPassedAt?: Date | string | null
+  trainingNotedById?: string | null
+  exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedCreateNestedOneWithoutTerminationInput
+  clearance?: Prisma.ExitClearanceUncheckedCreateNestedOneWithoutTerminationInput
+  discussion?: Prisma.ResignationDiscussionUncheckedCreateNestedOneWithoutTerminationInput
+  replacementRequest?: Prisma.ReplacementRequestUncheckedCreateNestedOneWithoutTerminationInput
+  clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
+  complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
+  finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+}
+
+export type TerminationCreateOrConnectWithoutIntakeInput = {
+  where: Prisma.TerminationWhereUniqueInput
+  create: Prisma.XOR<Prisma.TerminationCreateWithoutIntakeInput, Prisma.TerminationUncheckedCreateWithoutIntakeInput>
+}
+
+export type TerminationUpsertWithoutIntakeInput = {
+  update: Prisma.XOR<Prisma.TerminationUpdateWithoutIntakeInput, Prisma.TerminationUncheckedUpdateWithoutIntakeInput>
+  create: Prisma.XOR<Prisma.TerminationCreateWithoutIntakeInput, Prisma.TerminationUncheckedCreateWithoutIntakeInput>
+  where?: Prisma.TerminationWhereInput
+}
+
+export type TerminationUpdateToOneWithWhereWithoutIntakeInput = {
+  where?: Prisma.TerminationWhereInput
+  data: Prisma.XOR<Prisma.TerminationUpdateWithoutIntakeInput, Prisma.TerminationUncheckedUpdateWithoutIntakeInput>
+}
+
+export type TerminationUpdateWithoutIntakeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumTerminationTypeFieldUpdateOperationsInput | $Enums.TerminationType
+  isVoluntaryResignation?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  affectsBothParties?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  resultingStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowStatus?: Prisma.EnumTerminationWorkflowStatusFieldUpdateOperationsInput | $Enums.TerminationWorkflowStatus
+  resignationDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  trainingPassedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutTerminationsNestedInput
+  assignment?: Prisma.AssignmentUpdateOneWithoutTerminationsNestedInput
+  ticket?: Prisma.TicketUpdateOneWithoutTerminationNestedInput
+  initiatedBy?: Prisma.UserUpdateOneRequiredWithoutTerminationsInitiatedNestedInput
+  exitSurveyInvite?: Prisma.ExitSurveyInviteUpdateOneWithoutTerminationNestedInput
+  clearance?: Prisma.ExitClearanceUpdateOneWithoutTerminationNestedInput
+  discussion?: Prisma.ResignationDiscussionUpdateOneWithoutTerminationNestedInput
+  replacementRequest?: Prisma.ReplacementRequestUpdateOneWithoutTerminationNestedInput
+  clearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutTerminationNestedInput
+  complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
+  finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
+  trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+}
+
+export type TerminationUncheckedUpdateWithoutIntakeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  vaProfileId?: Prisma.StringFieldUpdateOperationsInput | string
+  assignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumTerminationTypeFieldUpdateOperationsInput | $Enums.TerminationType
+  isVoluntaryResignation?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  affectsBothParties?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  resultingStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowStatus?: Prisma.EnumTerminationWorkflowStatusFieldUpdateOperationsInput | $Enums.TerminationWorkflowStatus
+  ticketId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resignationDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedById?: Prisma.StringFieldUpdateOperationsInput | string
+  effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  trainingPassedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trainingNotedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedUpdateOneWithoutTerminationNestedInput
+  clearance?: Prisma.ExitClearanceUncheckedUpdateOneWithoutTerminationNestedInput
+  discussion?: Prisma.ResignationDiscussionUncheckedUpdateOneWithoutTerminationNestedInput
+  replacementRequest?: Prisma.ReplacementRequestUncheckedUpdateOneWithoutTerminationNestedInput
+  clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
 }
@@ -1841,6 +2016,7 @@ export type TerminationCreateWithoutComplianceReviewInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
   trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+  intake?: Prisma.ResignationIntakeCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateWithoutComplianceReviewInput = {
@@ -1868,6 +2044,7 @@ export type TerminationUncheckedCreateWithoutComplianceReviewInput = {
   replacementRequest?: Prisma.ReplacementRequestUncheckedCreateNestedOneWithoutTerminationInput
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+  intake?: Prisma.ResignationIntakeUncheckedCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationCreateOrConnectWithoutComplianceReviewInput = {
@@ -1911,6 +2088,7 @@ export type TerminationUpdateWithoutComplianceReviewInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
   trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+  intake?: Prisma.ResignationIntakeUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateWithoutComplianceReviewInput = {
@@ -1938,6 +2116,7 @@ export type TerminationUncheckedUpdateWithoutComplianceReviewInput = {
   replacementRequest?: Prisma.ReplacementRequestUncheckedUpdateOneWithoutTerminationNestedInput
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
+  intake?: Prisma.ResignationIntakeUncheckedUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationCreateWithoutFinalPayoutInput = {
@@ -1965,6 +2144,7 @@ export type TerminationCreateWithoutFinalPayoutInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
   trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+  intake?: Prisma.ResignationIntakeCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateWithoutFinalPayoutInput = {
@@ -1992,6 +2172,7 @@ export type TerminationUncheckedCreateWithoutFinalPayoutInput = {
   replacementRequest?: Prisma.ReplacementRequestUncheckedCreateNestedOneWithoutTerminationInput
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
+  intake?: Prisma.ResignationIntakeUncheckedCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationCreateOrConnectWithoutFinalPayoutInput = {
@@ -2035,6 +2216,7 @@ export type TerminationUpdateWithoutFinalPayoutInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
   trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+  intake?: Prisma.ResignationIntakeUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateWithoutFinalPayoutInput = {
@@ -2062,6 +2244,7 @@ export type TerminationUncheckedUpdateWithoutFinalPayoutInput = {
   replacementRequest?: Prisma.ReplacementRequestUncheckedUpdateOneWithoutTerminationNestedInput
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
+  intake?: Prisma.ResignationIntakeUncheckedUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationCreateWithoutExitSurveyInviteInput = {
@@ -2089,6 +2272,7 @@ export type TerminationCreateWithoutExitSurveyInviteInput = {
   complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
   trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+  intake?: Prisma.ResignationIntakeCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateWithoutExitSurveyInviteInput = {
@@ -2116,6 +2300,7 @@ export type TerminationUncheckedCreateWithoutExitSurveyInviteInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+  intake?: Prisma.ResignationIntakeUncheckedCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationCreateOrConnectWithoutExitSurveyInviteInput = {
@@ -2159,6 +2344,7 @@ export type TerminationUpdateWithoutExitSurveyInviteInput = {
   complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
   trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+  intake?: Prisma.ResignationIntakeUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateWithoutExitSurveyInviteInput = {
@@ -2186,6 +2372,7 @@ export type TerminationUncheckedUpdateWithoutExitSurveyInviteInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
+  intake?: Prisma.ResignationIntakeUncheckedUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationCreateWithoutClearanceInput = {
@@ -2213,6 +2400,7 @@ export type TerminationCreateWithoutClearanceInput = {
   complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
   trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+  intake?: Prisma.ResignationIntakeCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateWithoutClearanceInput = {
@@ -2240,6 +2428,7 @@ export type TerminationUncheckedCreateWithoutClearanceInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+  intake?: Prisma.ResignationIntakeUncheckedCreateNestedOneWithoutTerminationInput
 }
 
 export type TerminationCreateOrConnectWithoutClearanceInput = {
@@ -2283,6 +2472,7 @@ export type TerminationUpdateWithoutClearanceInput = {
   complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
   trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+  intake?: Prisma.ResignationIntakeUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateWithoutClearanceInput = {
@@ -2310,6 +2500,7 @@ export type TerminationUncheckedUpdateWithoutClearanceInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
+  intake?: Prisma.ResignationIntakeUncheckedUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationCreateManyInitiatedByInput = {
@@ -2377,6 +2568,7 @@ export type TerminationUpdateWithoutInitiatedByInput = {
   complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
   trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+  intake?: Prisma.ResignationIntakeUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateWithoutInitiatedByInput = {
@@ -2404,6 +2596,7 @@ export type TerminationUncheckedUpdateWithoutInitiatedByInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
+  intake?: Prisma.ResignationIntakeUncheckedUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateManyWithoutInitiatedByInput = {
@@ -2451,6 +2644,7 @@ export type TerminationUpdateWithoutTrainingNotedByInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
+  intake?: Prisma.ResignationIntakeUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateWithoutTrainingNotedByInput = {
@@ -2478,6 +2672,7 @@ export type TerminationUncheckedUpdateWithoutTrainingNotedByInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
+  intake?: Prisma.ResignationIntakeUncheckedUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateManyWithoutTrainingNotedByInput = {
@@ -2545,6 +2740,7 @@ export type TerminationUpdateWithoutVaProfileInput = {
   complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
   trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+  intake?: Prisma.ResignationIntakeUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateWithoutVaProfileInput = {
@@ -2572,6 +2768,7 @@ export type TerminationUncheckedUpdateWithoutVaProfileInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
+  intake?: Prisma.ResignationIntakeUncheckedUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateManyWithoutVaProfileInput = {
@@ -2639,6 +2836,7 @@ export type TerminationUpdateWithoutAssignmentInput = {
   complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
   trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+  intake?: Prisma.ResignationIntakeUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateWithoutAssignmentInput = {
@@ -2666,6 +2864,7 @@ export type TerminationUncheckedUpdateWithoutAssignmentInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
+  intake?: Prisma.ResignationIntakeUncheckedUpdateOneWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateManyWithoutAssignmentInput = {
@@ -2750,6 +2949,7 @@ export type TerminationSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   complianceReview?: boolean | Prisma.Termination$complianceReviewArgs<ExtArgs>
   finalPayout?: boolean | Prisma.Termination$finalPayoutArgs<ExtArgs>
   trainingNotedBy?: boolean | Prisma.Termination$trainingNotedByArgs<ExtArgs>
+  intake?: boolean | Prisma.Termination$intakeArgs<ExtArgs>
   _count?: boolean | Prisma.TerminationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["termination"]>
 
@@ -2840,6 +3040,7 @@ export type TerminationInclude<ExtArgs extends runtime.Types.Extensions.Internal
   complianceReview?: boolean | Prisma.Termination$complianceReviewArgs<ExtArgs>
   finalPayout?: boolean | Prisma.Termination$finalPayoutArgs<ExtArgs>
   trainingNotedBy?: boolean | Prisma.Termination$trainingNotedByArgs<ExtArgs>
+  intake?: boolean | Prisma.Termination$intakeArgs<ExtArgs>
   _count?: boolean | Prisma.TerminationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TerminationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2872,6 +3073,7 @@ export type $TerminationPayload<ExtArgs extends runtime.Types.Extensions.Interna
     complianceReview: Prisma.$ComplianceReviewPayload<ExtArgs> | null
     finalPayout: Prisma.$FinalPayoutPayload<ExtArgs> | null
     trainingNotedBy: Prisma.$UserPayload<ExtArgs> | null
+    intake: Prisma.$ResignationIntakePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3298,6 +3500,7 @@ export interface Prisma__TerminationClient<T, Null = never, ExtArgs extends runt
   complianceReview<T extends Prisma.Termination$complianceReviewArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Termination$complianceReviewArgs<ExtArgs>>): Prisma.Prisma__ComplianceReviewClient<runtime.Types.Result.GetResult<Prisma.$ComplianceReviewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   finalPayout<T extends Prisma.Termination$finalPayoutArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Termination$finalPayoutArgs<ExtArgs>>): Prisma.Prisma__FinalPayoutClient<runtime.Types.Result.GetResult<Prisma.$FinalPayoutPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   trainingNotedBy<T extends Prisma.Termination$trainingNotedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Termination$trainingNotedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  intake<T extends Prisma.Termination$intakeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Termination$intakeArgs<ExtArgs>>): Prisma.Prisma__ResignationIntakeClient<runtime.Types.Result.GetResult<Prisma.$ResignationIntakePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3938,6 +4141,25 @@ export type Termination$trainingNotedByArgs<ExtArgs extends runtime.Types.Extens
    */
   include?: Prisma.UserInclude<ExtArgs> | null
   where?: Prisma.UserWhereInput
+}
+
+/**
+ * Termination.intake
+ */
+export type Termination$intakeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ResignationIntake
+   */
+  select?: Prisma.ResignationIntakeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ResignationIntake
+   */
+  omit?: Prisma.ResignationIntakeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ResignationIntakeInclude<ExtArgs> | null
+  where?: Prisma.ResignationIntakeWhereInput
 }
 
 /**

@@ -872,10 +872,10 @@ function TerminationCard({
         fd.set('vaProfileId', vaProfileId)
         if (scope !== 'VA') fd.set('assignmentId', scope)
         fd.set('reason', reason)
-        const { ticketId } = await initiateResignation(fd)
+        const { terminationId } = await initiateResignation(fd)
         toast.success('Resignation case started — log the discussion outcome to continue')
         setOpen(false)
-        router.push(`/tickets/${ticketId}`)
+        router.push(`/offboarding/${terminationId}`)
         return
       } else {
         const fd = new FormData()
@@ -886,10 +886,12 @@ function TerminationCard({
         fd.set('affectsBothParties', String(affectsBothParties))
         fd.set('effectiveDate', effectiveDate)
         fd.set('reason', reason)
-        await terminateVA(fd)
-        toast.success('Offboarding ticket created')
+        const { terminationId } = await terminateVA(fd)
+        toast.success('Offboarding case created')
+        setOpen(false)
+        router.push(`/offboarding/${terminationId}`)
+        return
       }
-      setOpen(false)
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to offboard')
     } finally {

@@ -45,6 +45,7 @@ export type ResignationData = {
     comments: string | null
     approverName: string | null
     actionDate: string | null
+    token: string | null
     checklistItems: { label: string; checked: boolean }[]
   }[]
   complianceReview: {

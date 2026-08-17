@@ -12,6 +12,7 @@ import { OFFBOARDING_TYPE_LABELS as TERMINATION_TYPE_LABELS } from '@/lib/offboa
 import { canApproveClearanceDepartment } from '@/lib/offboarding-permissions'
 import { DEPARTMENT_CHECKLISTS } from '@/lib/offboarding'
 import { addWorkingDays } from '@/lib/working-days'
+import { nextTerminationTicketNumber } from '@/lib/tickets'
 import type { Prisma } from '@/src/generated/prisma/client'
 import type {
   Proficiency,
@@ -1174,10 +1175,6 @@ export async function updateEmployment(vaProfileId: string, userId: string, form
   await updateUserProfile(userId, formData)
 }
 
-async function nextTerminationTicketNumber(): Promise<string> {
-  const count = await prisma.ticket.count()
-  return `TCK-${String(count + 1).padStart(5, '0')}`
-}
 
 // Replaces the raw Engagement Status dropdown for terminal outcomes — instead
 // of silently flipping a status field, this generates a system Ticket
@@ -1315,6 +1312,8 @@ export async function terminateVA(formData: FormData) {
   revalidatePath('/vas')
   revalidatePath('/tickets')
   revalidateTag(CACHE_TAGS.tickets, 'default')
+  revalidatePath('/offboarding')
+  revalidatePath(`/offboarding/${terminationId}`)
 
   return { ticketId, terminationId }
 }
@@ -1362,6 +1361,8 @@ export async function updateExitClearance(clearanceId: string, formData: FormDat
 
   if (clearance.termination.ticketId) revalidatePath(`/tickets/${clearance.termination.ticketId}`)
   revalidateTag(CACHE_TAGS.tickets, 'default')
+  revalidatePath('/offboarding')
+  revalidatePath(`/offboarding/${clearance.termination.id}`)
 }
 
 // ──────────────────────────────────────────────────────────────────────
@@ -1467,6 +1468,8 @@ export async function initiateResignation(formData: FormData) {
   revalidateTag(CACHE_TAGS.vas, 'default')
   revalidatePath('/tickets')
   revalidateTag(CACHE_TAGS.tickets, 'default')
+  revalidatePath('/offboarding')
+  revalidatePath(`/offboarding/${terminationId}`)
 
   return { terminationId, ticketId }
 }
@@ -1509,6 +1512,8 @@ export async function logDiscussionOutcome(terminationId: string, formData: Form
       after: { workflowStatus: 'CANCELLED', retained: true },
     })
     revalidatePath(`/vas/${termination.vaProfileId}`)
+    revalidatePath('/offboarding')
+    revalidatePath(`/offboarding/${terminationId}`)
     return
   }
 
@@ -1561,6 +1566,8 @@ export async function logDiscussionOutcome(terminationId: string, formData: Form
     metadata: overrideReason ? { lwdOverrideReason: overrideReason } : undefined,
   })
   revalidatePath(`/vas/${termination.vaProfileId}`)
+  revalidatePath('/offboarding')
+  revalidatePath(`/offboarding/${terminationId}`)
 }
 
 // FR-004/BR-03: validates the 3 mandatory letter fields and starts the
@@ -1617,6 +1624,8 @@ export async function submitResignationLetter(terminationId: string, formData: F
   revalidatePath(`/vas/${termination.vaProfileId}`)
   if (termination.ticketId) revalidatePath(`/tickets/${termination.ticketId}`)
   revalidateTag(CACHE_TAGS.tickets, 'default')
+  revalidatePath('/offboarding')
+  revalidatePath(`/offboarding/${terminationId}`)
 }
 
 // FR-008: Replacement Request pipeline, sourced by the Service Department.
@@ -1662,6 +1671,8 @@ export async function updateReplacementRequest(terminationId: string, formData: 
     after: { pipelineStatus },
   })
   revalidatePath(`/vas/${termination.vaProfileId}`)
+  revalidatePath('/offboarding')
+  revalidatePath(`/offboarding/${terminationId}`)
 }
 
 // FR-009/FR-010: logs customer notification once the replacement gate
@@ -1700,6 +1711,8 @@ export async function logCustomerNotification(terminationId: string) {
   })
   revalidatePath(`/vas/${termination.vaProfileId}`)
   if (termination.ticketId) revalidatePath(`/tickets/${termination.ticketId}`)
+  revalidatePath('/offboarding')
+  revalidatePath(`/offboarding/${terminationId}`)
 }
 
 const CLEARANCE_DEPARTMENTS: ExitClearanceDepartment[] = [
@@ -1737,6 +1750,9 @@ export async function initiateExitClearance(terminationId: string) {
         terminationId,
         department,
         checklistItems: DEPARTMENT_CHECKLISTS[department].map((label) => ({ label, checked: false })),
+        // No-login public approval link (app/exit-clearance/[token]) — lets
+        // each department act without an account in this system.
+        token: randomBytes(32).toString('base64url'),
       })),
     }),
   ])
@@ -1750,6 +1766,8 @@ export async function initiateExitClearance(terminationId: string) {
   })
   revalidatePath(`/vas/${termination.vaProfileId}`)
   if (termination.ticketId) revalidatePath(`/tickets/${termination.ticketId}`)
+  revalidatePath('/offboarding')
+  revalidatePath(`/offboarding/${terminationId}`)
 }
 
 // FR-011/FR-012/BR-06: one department approving or rejecting its own
@@ -1814,6 +1832,8 @@ export async function actOnClearanceApproval(approvalId: string, formData: FormD
 
   revalidatePath(`/vas/${approval.termination.vaProfileId}`)
   if (approval.termination.ticketId) revalidatePath(`/tickets/${approval.termination.ticketId}`)
+  revalidatePath('/offboarding')
+  revalidatePath(`/offboarding/${approval.terminationId}`)
 }
 
 // FR-013/BR-10: the fixed 5-item policy checklist gating the endorsement to
@@ -1894,6 +1914,8 @@ export async function submitComplianceReview(terminationId: string, formData: Fo
 
   revalidatePath(`/vas/${termination.vaProfileId}`)
   if (termination.ticketId) revalidatePath(`/tickets/${termination.ticketId}`)
+  revalidatePath('/offboarding')
+  revalidatePath(`/offboarding/${terminationId}`)
 }
 
 // FR-016/FR-017/FR-018/BR-11/BR-12: records the payout and — the moment
@@ -1974,6 +1996,8 @@ export async function recordFinalPayout(terminationId: string, formData: FormDat
   revalidatePath(`/vas/${termination.vaProfileId}`)
   revalidateTag(CACHE_TAGS.vas, 'default')
   if (termination.ticketId) revalidatePath(`/tickets/${termination.ticketId}`)
+  revalidatePath('/offboarding')
+  revalidatePath(`/offboarding/${terminationId}`)
 }
 
 // FR-017, Customer-Only path only: confirms the VA cleared the
@@ -2004,6 +2028,8 @@ export async function markTrainingPassed(terminationId: string) {
     after: { trainingPassedAt: true },
   })
   revalidatePath(`/vas/${termination.vaProfileId}`)
+  revalidatePath('/offboarding')
+  revalidatePath(`/offboarding/${terminationId}`)
 }
 
 const WITHDRAWABLE_STATUSES = ['INITIATED', 'PENDING_LETTER', 'UNDER_DOCUMENTATION', 'EXIT_SURVEY_PENDING']
@@ -2037,6 +2063,8 @@ export async function withdrawResignation(terminationId: string, formData: FormD
     metadata: { reason, withdrawn: true },
   })
   revalidatePath(`/vas/${termination.vaProfileId}`)
+  revalidatePath('/offboarding')
+  revalidatePath(`/offboarding/${terminationId}`)
 }
 
 export async function updateUserProfileFiles(
@@ -2133,4 +2161,118 @@ export async function bulkDeleteVAs(vaProfileIds: string[]): Promise<BulkDeleteV
   }
 
   return result
+}
+
+// ──────────────────────────────────────────────────────────────────────
+// Resignation intake review (public form at app/resign submits a
+// ResignationIntake, not a Termination — see that model's schema comment).
+// HR confirms which real VA it refers to, then converts it into an actual
+// resignation case here, reusing the intake's existing Ticket rather than
+// creating a second one (same principle as initiateResignation's fix).
+// ──────────────────────────────────────────────────────────────────────
+
+export async function convertResignationIntake(intakeId: string, formData: FormData) {
+  const actor = await requireRole(...VA_MUTATOR_ROLES)
+
+  const vaProfileId = (formData.get('vaProfileId') as string) || ''
+  if (!vaProfileId) throw new Error('Select which VA this request is for.')
+
+  const intake = await prisma.resignationIntake.findUnique({ where: { id: intakeId } })
+  if (!intake) throw new Error('Resignation request not found.')
+  if (intake.status !== 'PENDING_REVIEW') throw new Error('This request has already been reviewed.')
+
+  const va = await prisma.vAProfile.findUnique({
+    where: { id: vaProfileId },
+    select: {
+      id: true,
+      user: {
+        select: {
+          firstName: true,
+          lastName: true,
+          memberships: { where: { isPrimary: true, endedAt: null }, select: { departmentId: true } },
+        },
+      },
+    },
+  })
+  if (!va) throw new Error('VA profile not found')
+
+  const openCase = await prisma.termination.findFirst({
+    where: { vaProfileId, isVoluntaryResignation: true, workflowStatus: { notIn: ['COMPLETED', 'CANCELLED'] } },
+  })
+  if (openCase) throw new Error('This VA already has an open resignation case.')
+
+  const vaName = `${va.user.firstName} ${va.user.lastName}`.trim()
+  const departmentId = va.user.memberships[0]?.departmentId ?? intake.departmentId
+
+  const terminationId = await prisma.$transaction(async (tx) => {
+    const termination = await tx.termination.create({
+      data: {
+        vaProfileId,
+        type: 'VAA_INITIATED',
+        isVoluntaryResignation: true,
+        resultingStatus: 'RESIGNED',
+        reason: intake.reason,
+        workflowStatus: 'INITIATED',
+        ticketId: intake.ticketId,
+        initiatedById: actor.id,
+        effectiveDate: new Date(),
+      },
+    })
+    await tx.ticket.update({
+      where: { id: intake.ticketId },
+      data: { title: `Resignation — ${vaName}`, departmentId },
+    })
+    await tx.resignationIntake.update({
+      where: { id: intakeId },
+      data: { status: 'CONVERTED', terminationId: termination.id, reviewedById: actor.id, reviewedAt: new Date() },
+    })
+    return termination.id
+  })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'CREATE',
+    entityType: 'Termination',
+    entityId: terminationId,
+    after: { vaProfileId, isVoluntaryResignation: true },
+    metadata: { fromIntakeId: intakeId },
+  })
+
+  revalidatePath('/offboarding')
+  revalidatePath(`/offboarding/${terminationId}`)
+  revalidatePath(`/tickets/${intake.ticketId}`)
+  revalidateTag(CACHE_TAGS.tickets, 'default')
+
+  return { terminationId }
+}
+
+export async function dismissResignationIntake(intakeId: string, formData: FormData) {
+  const actor = await requireRole(...VA_MUTATOR_ROLES)
+
+  const note = ((formData.get('note') as string) || '').trim() || null
+
+  const intake = await prisma.resignationIntake.findUnique({ where: { id: intakeId } })
+  if (!intake) throw new Error('Resignation request not found.')
+  if (intake.status !== 'PENDING_REVIEW') throw new Error('This request has already been reviewed.')
+
+  await prisma.$transaction([
+    prisma.resignationIntake.update({
+      where: { id: intakeId },
+      data: { status: 'DISMISSED', reviewedById: actor.id, reviewedAt: new Date() },
+    }),
+    prisma.ticket.update({ where: { id: intake.ticketId }, data: { status: 'CLOSED' } }),
+  ])
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'UPDATE',
+    entityType: 'ResignationIntake',
+    entityId: intakeId,
+    after: { status: 'DISMISSED' },
+    metadata: note ? { note } : undefined,
+  })
+
+  revalidatePath('/offboarding')
+  revalidatePath(`/tickets/${intake.ticketId}`)
+  revalidateTag(CACHE_TAGS.tickets, 'default')
 }

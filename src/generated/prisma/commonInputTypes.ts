@@ -847,6 +847,23 @@ export type EnumClearanceApprovalStatusWithAggregatesFilter<$PrismaModel = never
   _max?: Prisma.NestedEnumClearanceApprovalStatusFilter<$PrismaModel>
 }
 
+export type EnumResignationIntakeStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.ResignationIntakeStatus | Prisma.EnumResignationIntakeStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ResignationIntakeStatus[] | Prisma.ListEnumResignationIntakeStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ResignationIntakeStatus[] | Prisma.ListEnumResignationIntakeStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumResignationIntakeStatusFilter<$PrismaModel> | $Enums.ResignationIntakeStatus
+}
+
+export type EnumResignationIntakeStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ResignationIntakeStatus | Prisma.EnumResignationIntakeStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ResignationIntakeStatus[] | Prisma.ListEnumResignationIntakeStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ResignationIntakeStatus[] | Prisma.ListEnumResignationIntakeStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumResignationIntakeStatusWithAggregatesFilter<$PrismaModel> | $Enums.ResignationIntakeStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumResignationIntakeStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumResignationIntakeStatusFilter<$PrismaModel>
+}
+
 export type EnumComplianceReviewResultNullableFilter<$PrismaModel = never> = {
   equals?: $Enums.ComplianceReviewResult | Prisma.EnumComplianceReviewResultFieldRefInput<$PrismaModel> | null
   in?: $Enums.ComplianceReviewResult[] | Prisma.ListEnumComplianceReviewResultFieldRefInput<$PrismaModel> | null
@@ -1902,6 +1919,23 @@ export type NestedEnumClearanceApprovalStatusWithAggregatesFilter<$PrismaModel =
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumClearanceApprovalStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumClearanceApprovalStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumResignationIntakeStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.ResignationIntakeStatus | Prisma.EnumResignationIntakeStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ResignationIntakeStatus[] | Prisma.ListEnumResignationIntakeStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ResignationIntakeStatus[] | Prisma.ListEnumResignationIntakeStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumResignationIntakeStatusFilter<$PrismaModel> | $Enums.ResignationIntakeStatus
+}
+
+export type NestedEnumResignationIntakeStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ResignationIntakeStatus | Prisma.EnumResignationIntakeStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ResignationIntakeStatus[] | Prisma.ListEnumResignationIntakeStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ResignationIntakeStatus[] | Prisma.ListEnumResignationIntakeStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumResignationIntakeStatusWithAggregatesFilter<$PrismaModel> | $Enums.ResignationIntakeStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumResignationIntakeStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumResignationIntakeStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumComplianceReviewResultNullableFilter<$PrismaModel = never> = {

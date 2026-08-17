@@ -409,6 +409,7 @@ export const ModelName = {
   ResignationDiscussion: 'ResignationDiscussion',
   ReplacementRequest: 'ReplacementRequest',
   ExitClearanceApproval: 'ExitClearanceApproval',
+  ResignationIntake: 'ResignationIntake',
   ComplianceReview: 'ComplianceReview',
   FinalPayout: 'FinalPayout',
   ExitSurveyInvite: 'ExitSurveyInvite',
@@ -446,7 +447,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveRequest" | "employeeIdCounter" | "vAOnboardingInvite" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "termination" | "resignationDiscussion" | "replacementRequest" | "exitClearanceApproval" | "complianceReview" | "finalPayout" | "exitSurveyInvite" | "exitSurveyResponse" | "exitClearance" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "customer" | "account" | "notification" | "sidebarFavorite" | "team" | "teamMembership" | "clientPipeline" | "agentSuggestion" | "agentRun"
+    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveRequest" | "employeeIdCounter" | "vAOnboardingInvite" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "termination" | "resignationDiscussion" | "replacementRequest" | "exitClearanceApproval" | "resignationIntake" | "complianceReview" | "finalPayout" | "exitSurveyInvite" | "exitSurveyResponse" | "exitClearance" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "customer" | "account" | "notification" | "sidebarFavorite" | "team" | "teamMembership" | "clientPipeline" | "agentSuggestion" | "agentRun"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2297,6 +2298,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ExitClearanceApprovalCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ExitClearanceApprovalCountAggregateOutputType> | number
+        }
+      }
+    }
+    ResignationIntake: {
+      payload: Prisma.$ResignationIntakePayload<ExtArgs>
+      fields: Prisma.ResignationIntakeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ResignationIntakeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResignationIntakePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ResignationIntakeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResignationIntakePayload>
+        }
+        findFirst: {
+          args: Prisma.ResignationIntakeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResignationIntakePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ResignationIntakeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResignationIntakePayload>
+        }
+        findMany: {
+          args: Prisma.ResignationIntakeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResignationIntakePayload>[]
+        }
+        create: {
+          args: Prisma.ResignationIntakeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResignationIntakePayload>
+        }
+        createMany: {
+          args: Prisma.ResignationIntakeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ResignationIntakeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResignationIntakePayload>[]
+        }
+        delete: {
+          args: Prisma.ResignationIntakeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResignationIntakePayload>
+        }
+        update: {
+          args: Prisma.ResignationIntakeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResignationIntakePayload>
+        }
+        deleteMany: {
+          args: Prisma.ResignationIntakeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ResignationIntakeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ResignationIntakeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResignationIntakePayload>[]
+        }
+        upsert: {
+          args: Prisma.ResignationIntakeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResignationIntakePayload>
+        }
+        aggregate: {
+          args: Prisma.ResignationIntakeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateResignationIntake>
+        }
+        groupBy: {
+          args: Prisma.ResignationIntakeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ResignationIntakeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ResignationIntakeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ResignationIntakeCountAggregateOutputType> | number
         }
       }
     }
@@ -4448,13 +4523,33 @@ export const ExitClearanceApprovalScalarFieldEnum = {
   terminationId: 'terminationId',
   department: 'department',
   approverId: 'approverId',
+  approverName: 'approverName',
   status: 'status',
   comments: 'comments',
   checklistItems: 'checklistItems',
-  actionDate: 'actionDate'
+  actionDate: 'actionDate',
+  token: 'token'
 } as const
 
 export type ExitClearanceApprovalScalarFieldEnum = (typeof ExitClearanceApprovalScalarFieldEnum)[keyof typeof ExitClearanceApprovalScalarFieldEnum]
+
+
+export const ResignationIntakeScalarFieldEnum = {
+  id: 'id',
+  ticketId: 'ticketId',
+  teamLeaderName: 'teamLeaderName',
+  teamLeaderEmail: 'teamLeaderEmail',
+  vaIdentifier: 'vaIdentifier',
+  departmentId: 'departmentId',
+  reason: 'reason',
+  status: 'status',
+  terminationId: 'terminationId',
+  reviewedById: 'reviewedById',
+  reviewedAt: 'reviewedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ResignationIntakeScalarFieldEnum = (typeof ResignationIntakeScalarFieldEnum)[keyof typeof ResignationIntakeScalarFieldEnum]
 
 
 export const ComplianceReviewScalarFieldEnum = {
@@ -5388,6 +5483,20 @@ export type ListEnumClearanceApprovalStatusFieldRefInput<$PrismaModel> = FieldRe
 
 
 /**
+ * Reference to a field of type 'ResignationIntakeStatus'
+ */
+export type EnumResignationIntakeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ResignationIntakeStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ResignationIntakeStatus[]'
+ */
+export type ListEnumResignationIntakeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ResignationIntakeStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'ComplianceReviewResult'
  */
 export type EnumComplianceReviewResultFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComplianceReviewResult'>
@@ -5689,6 +5798,7 @@ export type GlobalOmitConfig = {
   resignationDiscussion?: Prisma.ResignationDiscussionOmit
   replacementRequest?: Prisma.ReplacementRequestOmit
   exitClearanceApproval?: Prisma.ExitClearanceApprovalOmit
+  resignationIntake?: Prisma.ResignationIntakeOmit
   complianceReview?: Prisma.ComplianceReviewOmit
   finalPayout?: Prisma.FinalPayoutOmit
   exitSurveyInvite?: Prisma.ExitSurveyInviteOmit

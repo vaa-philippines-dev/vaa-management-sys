@@ -14,7 +14,9 @@ import { logAudit } from '@/lib/audit'
 export async function submitExitSurvey(token: string, formData: FormData) {
   const invite = await prisma.exitSurveyInvite.findUnique({
     where: { token },
-    include: { termination: { select: { id: true, vaProfileId: true, vaProfile: { select: { userId: true } } } } },
+    include: {
+      termination: { select: { id: true, vaProfileId: true, isVoluntaryResignation: true, vaProfile: { select: { userId: true } } } },
+    },
   })
   if (!invite) throw new Error('This exit survey link is invalid.')
   if (invite.completedAt) throw new Error('This exit survey has already been submitted.')
@@ -31,10 +33,20 @@ export async function submitExitSurvey(token: string, formData: FormData) {
       data: { inviteId: invite.id, reasonForLeaving, feedback, wouldRecommend, additionalComments },
     }),
     prisma.exitSurveyInvite.update({ where: { id: invite.id }, data: { completedAt: new Date() } }),
-    prisma.termination.update({
-      where: { id: invite.termination.id },
-      data: { workflowStatus: 'CLEARANCE_PENDING' },
-    }),
+    // The Resignation SOP's 5-department clearance is only started when HR
+    // explicitly clicks "Initiate Exit Clearance" (initiateExitClearance()
+    // checks exitSurveyInvite.completedAt itself) — completing the survey
+    // must NOT move workflowStatus off EXIT_SURVEY_PENDING for that path, or
+    // initiateExitClearance's guard can never be satisfied again. Only the
+    // legacy single-checklist flow (non-resignation) advances here.
+    ...(invite.termination.isVoluntaryResignation
+      ? []
+      : [
+          prisma.termination.update({
+            where: { id: invite.termination.id },
+            data: { workflowStatus: 'CLEARANCE_PENDING' as const },
+          }),
+        ]),
   ])
 
   await logAudit({

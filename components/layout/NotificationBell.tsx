@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Bell, Briefcase, Clock, MessageSquare, Reply, MoreHorizontal, Circle, CircleDot } from 'lucide-react'
+import { Bell, Briefcase, Clock, MessageSquare, Reply, MoreHorizontal, Circle, CircleDot, UserMinus } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { createClient, waitForRealtimeAuth } from '@/lib/supabase/client'
@@ -34,7 +34,7 @@ function toUtcIso(value: string | null): string | null {
 
 type Notification = {
   id: string
-  type: 'NEW_ASSIGNMENT' | 'HOURS_SHORTFALL' | 'NEW_MESSAGE' | 'MESSAGE_REPLY'
+  type: 'NEW_ASSIGNMENT' | 'HOURS_SHORTFALL' | 'NEW_MESSAGE' | 'MESSAGE_REPLY' | 'RESIGNATION_INTAKE'
   title: string
   message: string
   read: boolean
@@ -52,6 +52,7 @@ const TYPE_ICON: Record<Notification['type'], React.ComponentType<{ className?: 
   HOURS_SHORTFALL: Clock,
   NEW_MESSAGE: MessageSquare,
   MESSAGE_REPLY: Reply,
+  RESIGNATION_INTAKE: UserMinus,
 }
 
 export function NotificationBell({
@@ -178,6 +179,8 @@ export function NotificationBell({
       await markNotificationRead(n.id)
       if ((n.type === 'NEW_MESSAGE' || n.type === 'MESSAGE_REPLY') && n.entityType === 'Channel' && n.entityId) {
         router.push(`/inbox?channel=${n.entityId}`)
+      } else if (n.type === 'RESIGNATION_INTAKE' && n.entityId) {
+        router.push(`/offboarding/intake/${n.entityId}`)
       }
     },
     [router]

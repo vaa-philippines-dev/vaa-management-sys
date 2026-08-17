@@ -267,6 +267,15 @@ export const ReplacementPipelineStatus = {
 export type ReplacementPipelineStatus = (typeof ReplacementPipelineStatus)[keyof typeof ReplacementPipelineStatus]
 
 
+export const ResignationIntakeStatus = {
+  PENDING_REVIEW: 'PENDING_REVIEW',
+  CONVERTED: 'CONVERTED',
+  DISMISSED: 'DISMISSED'
+} as const
+
+export type ResignationIntakeStatus = (typeof ResignationIntakeStatus)[keyof typeof ResignationIntakeStatus]
+
+
 export const ComplianceReviewResult = {
   PASS: 'PASS',
   FLAGGED: 'FLAGGED'
@@ -318,7 +327,8 @@ export const NotificationType = {
   NEW_ASSIGNMENT: 'NEW_ASSIGNMENT',
   HOURS_SHORTFALL: 'HOURS_SHORTFALL',
   NEW_MESSAGE: 'NEW_MESSAGE',
-  MESSAGE_REPLY: 'MESSAGE_REPLY'
+  MESSAGE_REPLY: 'MESSAGE_REPLY',
+  RESIGNATION_INTAKE: 'RESIGNATION_INTAKE'
 } as const
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]

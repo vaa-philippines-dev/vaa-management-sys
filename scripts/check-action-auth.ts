@@ -26,13 +26,19 @@ const GUARD_PATTERN = new RegExp(`\\b(${GUARD_CALLS.join('|')})\\s*\\(`)
 
 // Server Actions that are intentionally callable without a Supabase session
 // because they authenticate via a single-use token instead (e.g. an
-// onboarding invite link opened by someone who hasn't logged in yet). Each
-// listed function must validate that token itself as its first step before
-// touching the database. Keep this list short and named explicitly — it's
-// meant to be an auditable exception, not a general opt-out.
+// onboarding invite link opened by someone who hasn't logged in yet), or are
+// a deliberately open public intake form with no session to authenticate at
+// all (e.g. a Team Leader with no account in this system reporting a
+// resignation). Each listed function must validate its token itself (where
+// applicable) as its first step before touching the database, and must only
+// ever create low-privilege records reviewed by a real guarded action before
+// anything sensitive happens. Keep this list short and named explicitly —
+// it's meant to be an auditable exception, not a general opt-out.
 const PUBLIC_TOKEN_ACTIONS: Record<string, string[]> = {
   'app/onboard/[token]/actions.ts': ['completeOnboarding'],
   'app/exit-survey/[token]/actions.ts': ['submitExitSurvey'],
+  'app/resign/actions.ts': ['submitResignationIntake'],
+  'app/exit-clearance/[token]/actions.ts': ['actOnClearanceApprovalPublic'],
 }
 
 function findActionFiles(dir: string, results: string[] = []): string[] {

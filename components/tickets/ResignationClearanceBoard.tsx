@@ -4,7 +4,9 @@ import { useState, useTransition } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
+import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { Copy, Check } from 'lucide-react'
 import { actOnClearanceApproval } from '@/app/(dashboard)/vas/actions'
 import { EXIT_CLEARANCE_DEPARTMENT_LABELS, CLEARANCE_APPROVAL_STATUS_LABELS } from '@/lib/offboarding'
 
@@ -15,6 +17,7 @@ type ApprovalRow = {
   comments: string | null
   approverName: string | null
   actionDate: string | null
+  token: string | null
   checklistItems: { label: string; checked: boolean }[]
 }
 
@@ -56,6 +59,7 @@ export function ResignationClearanceBoard({
 function ApprovalCard({ approval, canApprove }: { approval: ApprovalRow; canApprove: boolean }) {
   const [comments, setComments] = useState('')
   const [isPending, startTransition] = useTransition()
+  const [copied, setCopied] = useState(false)
 
   const submit = (status: 'APPROVED' | 'REJECTED') => {
     startTransition(async () => {
@@ -64,6 +68,17 @@ function ApprovalCard({ approval, canApprove }: { approval: ApprovalRow; canAppr
       fd.set('comments', comments)
       await actOnClearanceApproval(approval.id, fd)
     })
+  }
+
+  const linkUrl = approval.token && typeof window !== 'undefined'
+    ? `${window.location.origin}/exit-clearance/${approval.token}`
+    : ''
+
+  const copyLink = async () => {
+    if (!linkUrl) return
+    await navigator.clipboard.writeText(linkUrl)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
   }
 
   return (
@@ -87,6 +102,14 @@ function ApprovalCard({ approval, canApprove }: { approval: ApprovalRow; canAppr
           <p className="text-muted-foreground">
             {approval.approverName} · {new Date(approval.actionDate).toLocaleString()}
           </p>
+        )}
+        {approval.status === 'PENDING' && linkUrl && (
+          <div className="flex items-center gap-1.5 pt-1">
+            <Input readOnly value={linkUrl} className="h-7 text-[10px] font-mono" onFocus={(e) => e.currentTarget.select()} />
+            <Button type="button" size="sm" variant="outline" className="h-7 shrink-0 px-2" onClick={copyLink}>
+              {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+            </Button>
+          </div>
         )}
         {approval.status === 'PENDING' && canApprove && (
           <div className="space-y-2 pt-1">

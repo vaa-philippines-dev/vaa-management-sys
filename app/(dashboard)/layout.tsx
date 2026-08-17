@@ -23,7 +23,7 @@ export default async function DashboardLayout({
   const isAdmin = user ? ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE'].includes(user.systemRole) : false
   const favorites = user && role === 'MANAGER' ? await getSidebarFavorites(user.id) : []
 
-  const isManagerDeptRole = user ? ['DEPT_MANAGER', 'OPERATIONS_MANAGER'].includes(user.systemRole) : false
+  const isManagerDeptRole = user ? ['DEPT_MANAGER', 'OPERATIONS_MANAGER', 'TEAM_LEADER'].includes(user.systemRole) : false
   const isHR = user?.systemRole === 'HR'
   const showDepartmentSection =
     isAdmin ||
