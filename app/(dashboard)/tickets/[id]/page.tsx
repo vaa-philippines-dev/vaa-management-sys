@@ -13,6 +13,16 @@ import { TicketAssigneeSelect } from '@/components/tickets/TicketAssigneeSelect'
 import { TicketConversation } from '@/components/tickets/TicketConversation'
 import { TerminationPanel } from '@/components/tickets/TerminationPanel'
 import { TICKET_VIEW_ALL_ROLES, TICKET_MUTATOR_ROLES, VA_MUTATOR_ROLES } from '@/lib/auth'
+import { canApproveClearanceDepartment } from '@/lib/offboarding-permissions'
+import type { ExitClearanceDepartment } from '@/src/generated/prisma/enums'
+
+const ALL_CLEARANCE_DEPARTMENTS: ExitClearanceDepartment[] = [
+  'SERVICE_DEPARTMENT',
+  'CUSTOMER_SUCCESS',
+  'TRAINING',
+  'ACCOUNTING',
+  'HR',
+]
 
 const TICKET_CATEGORY_LABELS: Record<string, string> = {
   TERMINATION: 'Offboarding',
@@ -40,10 +50,18 @@ export default async function TicketDetailPage({
       },
       termination: {
         include: {
-          vaProfile: { select: { id: true, user: { select: { firstName: true, lastName: true } } } },
+          vaProfile: { select: { id: true, userId: true, user: { select: { firstName: true, lastName: true } } } },
           assignment: { select: { client: { select: { name: true } } } },
           exitSurveyInvite: { select: { token: true, completedAt: true, expiresAt: true } },
           clearance: true,
+          discussion: true,
+          replacementRequest: true,
+          clearanceApprovals: {
+            include: { approver: { select: { firstName: true, lastName: true, email: true } } },
+            orderBy: { department: 'asc' },
+          },
+          complianceReview: true,
+          finalPayout: true,
         },
       },
     },
@@ -55,6 +73,17 @@ export default async function TicketDetailPage({
   const canMutate = TICKET_MUTATOR_ROLES.includes(user.systemRole)
   const isOwner = ticket.createdBy === user.id || ticket.assignedTo === user.id
   if (!canViewAll && !isOwner) notFound()
+
+  const approvableDepartments: string[] = []
+  if (ticket.termination?.isVoluntaryResignation) {
+    const vaUserId = ticket.termination.vaProfile.userId
+    const checks = await Promise.all(
+      ALL_CLEARANCE_DEPARTMENTS.map((d) => canApproveClearanceDepartment(user, d, vaUserId))
+    )
+    ALL_CLEARANCE_DEPARTMENTS.forEach((d, i) => {
+      if (checks[i]) approvableDepartments.push(d)
+    })
+  }
 
   const visibleMessages = canViewAll
     ? ticket.conversations
@@ -154,8 +183,55 @@ export default async function TicketDetailPage({
                       outstandingBalanceNote: ticket.termination.clearance.outstandingBalanceNote,
                     }
                   : null,
+                isVoluntaryResignation: ticket.termination.isVoluntaryResignation,
+                assignmentId: ticket.termination.assignmentId,
+                resignationDocUrl: ticket.termination.resignationDocUrl,
+                trainingPassedAt: ticket.termination.trainingPassedAt?.toISOString() ?? null,
+                discussion: ticket.termination.discussion
+                  ? {
+                      retained: ticket.termination.discussion.retained,
+                      conductedAt: ticket.termination.discussion.conductedAt?.toISOString() ?? null,
+                      lastWorkingDay: ticket.termination.discussion.lastWorkingDay?.toISOString() ?? null,
+                      recordingLink: ticket.termination.discussion.recordingLink,
+                      turnoverDiscussed: ticket.termination.discussion.turnoverDiscussed,
+                    }
+                  : null,
+                replacementRequest: ticket.termination.replacementRequest
+                  ? { pipelineStatus: ticket.termination.replacementRequest.pipelineStatus }
+                  : null,
+                clearanceApprovals: ticket.termination.clearanceApprovals.map((a) => ({
+                  id: a.id,
+                  department: a.department,
+                  status: a.status,
+                  comments: a.comments,
+                  approverName: a.approver ? a.approver.firstName || a.approver.email : null,
+                  actionDate: a.actionDate?.toISOString() ?? null,
+                  checklistItems: Array.isArray(a.checklistItems)
+                    ? (a.checklistItems as { label: string; checked: boolean }[])
+                    : [],
+                })),
+                complianceReview: ticket.termination.complianceReview
+                  ? {
+                      properlyConducted: ticket.termination.complianceReview.properlyConducted,
+                      voluntaryConfirmation: ticket.termination.complianceReview.voluntaryConfirmation,
+                      noticePeriodCommunicated: ticket.termination.complianceReview.noticePeriodCommunicated,
+                      noUnresolvedIssues: ticket.termination.complianceReview.noUnresolvedIssues,
+                      turnoverAcknowledged: ticket.termination.complianceReview.turnoverAcknowledged,
+                      overallResult: ticket.termination.complianceReview.overallResult,
+                    }
+                  : null,
+                finalPayout: ticket.termination.finalPayout
+                  ? {
+                      amount: ticket.termination.finalPayout.amount ? Number(ticket.termination.finalPayout.amount) : null,
+                      endorsedAt: ticket.termination.finalPayout.endorsedAt?.toISOString() ?? null,
+                      slaDueDate: ticket.termination.finalPayout.slaDueDate?.toISOString() ?? null,
+                      processedAt: ticket.termination.finalPayout.processedAt?.toISOString() ?? null,
+                      status: ticket.termination.finalPayout.status,
+                    }
+                  : null,
               }}
               canEdit={VA_MUTATOR_ROLES.includes(user.systemRole)}
+              approvableDepartments={approvableDepartments}
             />
           )}
 

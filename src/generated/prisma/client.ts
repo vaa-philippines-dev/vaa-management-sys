@@ -152,6 +152,31 @@ export type TicketConversation = Prisma.TicketConversationModel
  */
 export type Termination = Prisma.TerminationModel
 /**
+ * Model ResignationDiscussion
+ * 
+ */
+export type ResignationDiscussion = Prisma.ResignationDiscussionModel
+/**
+ * Model ReplacementRequest
+ * 
+ */
+export type ReplacementRequest = Prisma.ReplacementRequestModel
+/**
+ * Model ExitClearanceApproval
+ * 
+ */
+export type ExitClearanceApproval = Prisma.ExitClearanceApprovalModel
+/**
+ * Model ComplianceReview
+ * 
+ */
+export type ComplianceReview = Prisma.ComplianceReviewModel
+/**
+ * Model FinalPayout
+ * 
+ */
+export type FinalPayout = Prisma.FinalPayoutModel
+/**
  * Model ExitSurveyInvite
  * 
  */

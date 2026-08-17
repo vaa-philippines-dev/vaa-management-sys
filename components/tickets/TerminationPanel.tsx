@@ -11,6 +11,7 @@ import { Copy, Check } from 'lucide-react'
 import { format } from 'date-fns'
 import { updateExitClearance } from '@/app/(dashboard)/vas/actions'
 import { OFFBOARDING_TYPE_LABELS as TYPE_LABEL, OFFBOARDING_WORKFLOW_LABELS as WORKFLOW_LABEL } from '@/lib/offboarding'
+import { ResignationSections, type ResignationData } from '@/components/tickets/ResignationSections'
 
 const CHECKLIST_ITEMS: { key: 'equipmentReturned' | 'accountsRevoked' | 'documentsSubmitted' | 'finalPayCleared'; label: string }[] = [
   { key: 'equipmentReturned', label: 'Equipment returned' },
@@ -31,6 +32,7 @@ type Clearance = {
 export function TerminationPanel({
   termination,
   canEdit,
+  approvableDepartments,
 }: {
   termination: {
     id: string
@@ -44,8 +46,9 @@ export function TerminationPanel({
     clientName: string | null
     exitSurvey: { token: string; completed: boolean; expiresAt: string } | null
     clearance: Clearance | null
-  }
+  } & ResignationData
   canEdit: boolean
+  approvableDepartments: string[]
 }) {
   const [clearance, setClearance] = useState(termination.clearance)
   const [note, setNote] = useState(termination.clearance?.outstandingBalanceNote ?? '')
@@ -173,6 +176,10 @@ export function TerminationPanel({
               />
             </div>
           </div>
+        )}
+
+        {termination.isVoluntaryResignation && (
+          <ResignationSections termination={termination} canEdit={canEdit} approvableDepartments={approvableDepartments} />
         )}
       </CardContent>
     </Card>

@@ -388,10 +388,6 @@ export type ExitSurveyResponseUncheckedUpdateOneWithoutInviteNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ExitSurveyResponseUpdateToOneWithWhereWithoutInviteInput, Prisma.ExitSurveyResponseUpdateWithoutInviteInput>, Prisma.ExitSurveyResponseUncheckedUpdateWithoutInviteInput>
 }
 
-export type NullableBoolFieldUpdateOperationsInput = {
-  set?: boolean | null
-}
-
 export type ExitSurveyResponseCreateWithoutInviteInput = {
   id?: string
   reasonForLeaving?: string | null

@@ -21,7 +21,7 @@ import {
   Wallet,
   User,
 } from 'lucide-react'
-import { updateUserProfileAction, updateEmployment, updateUserProfileFiles, changeVAStatus, terminateVA } from '@/app/(dashboard)/vas/actions'
+import { updateUserProfileAction, updateEmployment, updateUserProfileFiles, changeVAStatus, terminateVA, initiateResignation } from '@/app/(dashboard)/vas/actions'
 import { Modal } from '@/components/ui/modal'
 import { format } from 'date-fns'
 import type { DriveFile } from '@/lib/google/drive'
@@ -840,6 +840,13 @@ function TerminationCard({
   const [effectiveDate, setEffectiveDate] = useState('')
   const [reason, setReason] = useState('')
   const [saving, setSaving] = useState(false)
+  // 2026-08-14 Workforce Management System meeting: a resignation isn't a
+  // one-shot ticket like the other offboarding types — it's a tracked
+  // sequence (discussion → letter → replacement → exit survey → 5-dept
+  // clearance → compliance review → payout SLA). Only offered for the
+  // voluntary VAA_INITIATED case.
+  const [fullResignationFlow, setFullResignationFlow] = useState(false)
+  const isResignation = type === 'VAA_INITIATED' && voluntary === 'RESIGNED'
 
   const openAssignments = assignments.filter((a) => OPEN_ASSIGNMENT_STATUSES.has(a.status))
   const resultingStatus = type === 'EOC' ? 'END_OF_CONTRACT' : type === 'CLIENT_INITIATED' ? 'TERMINATED' : voluntary
@@ -851,22 +858,32 @@ function TerminationCard({
     setAffectsBothParties(false)
     setEffectiveDate(format(new Date(), 'yyyy-MM-dd'))
     setReason('')
+    setFullResignationFlow(false)
     setOpen(true)
   }
 
   const handleSubmit = async () => {
     setSaving(true)
     try {
-      const fd = new FormData()
-      fd.set('vaProfileId', vaProfileId)
-      if (scope !== 'VA') fd.set('assignmentId', scope)
-      fd.set('type', type)
-      fd.set('resultingStatus', resultingStatus)
-      fd.set('affectsBothParties', String(affectsBothParties))
-      fd.set('effectiveDate', effectiveDate)
-      fd.set('reason', reason)
-      await terminateVA(fd)
-      toast.success('Offboarding ticket created')
+      if (isResignation && fullResignationFlow) {
+        const fd = new FormData()
+        fd.set('vaProfileId', vaProfileId)
+        if (scope !== 'VA') fd.set('assignmentId', scope)
+        fd.set('reason', reason)
+        await initiateResignation(fd)
+        toast.success('Resignation case started — continue from the linked ticket once the letter stage begins')
+      } else {
+        const fd = new FormData()
+        fd.set('vaProfileId', vaProfileId)
+        if (scope !== 'VA') fd.set('assignmentId', scope)
+        fd.set('type', type)
+        fd.set('resultingStatus', resultingStatus)
+        fd.set('affectsBothParties', String(affectsBothParties))
+        fd.set('effectiveDate', effectiveDate)
+        fd.set('reason', reason)
+        await terminateVA(fd)
+        toast.success('Offboarding ticket created')
+      }
       setOpen(false)
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to offboard')
@@ -888,15 +905,32 @@ function TerminationCard({
         open={open}
         onOpenChange={setOpen}
         title={`Offboard ${vaName}`}
-        description="Generates a system offboarding ticket instead of a status change."
+        description={
+          isResignation && fullResignationFlow
+            ? 'Starts a tracked resignation case — no ticket is created until the letter stage.'
+            : 'Generates a system offboarding ticket instead of a status change.'
+        }
         size="sm"
         footer={
           <>
             <button type="button" onClick={() => setOpen(false)} className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors">
               Cancel
             </button>
-            <Button type="button" size="sm" variant="destructive" className="text-xs h-8" disabled={saving || !effectiveDate} onClick={handleSubmit}>
-              {saving ? <><Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> Submitting...</> : 'Create Offboarding Ticket'}
+            <Button
+              type="button"
+              size="sm"
+              variant="destructive"
+              className="text-xs h-8"
+              disabled={saving || (!(isResignation && fullResignationFlow) && !effectiveDate)}
+              onClick={handleSubmit}
+            >
+              {saving ? (
+                <><Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> Submitting...</>
+              ) : isResignation && fullResignationFlow ? (
+                'Start Resignation Case'
+              ) : (
+                'Create Offboarding Ticket'
+              )}
             </Button>
           </>
         }
@@ -928,14 +962,35 @@ function TerminationCard({
               </select>
             </div>
           )}
-          <div className="flex items-center gap-2">
-            <input type="checkbox" id="affectsBothParties" checked={affectsBothParties} onChange={(e) => setAffectsBothParties(e.target.checked)} className="rounded" />
-            <Label htmlFor="affectsBothParties" className="text-xs cursor-pointer">Affects both client and VAA</Label>
-          </div>
-          <div>
-            <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Effective Date</Label>
-            <Input type="date" value={effectiveDate} onChange={(e) => setEffectiveDate(e.target.value)} className="h-8 text-xs" />
-          </div>
+          {isResignation && (
+            <div className="rounded-lg border border-primary/30 bg-primary/5 p-2.5">
+              <div className="flex items-start gap-2">
+                <input
+                  type="checkbox"
+                  id="fullResignationFlow"
+                  checked={fullResignationFlow}
+                  onChange={(e) => setFullResignationFlow(e.target.checked)}
+                  className="rounded mt-0.5"
+                />
+                <Label htmlFor="fullResignationFlow" className="text-xs cursor-pointer leading-snug">
+                  Run the full Resignation SOP (discussion → letter → replacement → exit survey → 5-department clearance →
+                  compliance review → payout SLA) instead of a one-shot ticket.
+                </Label>
+              </div>
+            </div>
+          )}
+          {!(isResignation && fullResignationFlow) && (
+            <>
+              <div className="flex items-center gap-2">
+                <input type="checkbox" id="affectsBothParties" checked={affectsBothParties} onChange={(e) => setAffectsBothParties(e.target.checked)} className="rounded" />
+                <Label htmlFor="affectsBothParties" className="text-xs cursor-pointer">Affects both client and VAA</Label>
+              </div>
+              <div>
+                <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Effective Date</Label>
+                <Input type="date" value={effectiveDate} onChange={(e) => setEffectiveDate(e.target.value)} className="h-8 text-xs" />
+              </div>
+            </>
+          )}
           <div>
             <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Reason</Label>
             <Input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="e.g. Client ended contract" className="h-8 text-xs" />

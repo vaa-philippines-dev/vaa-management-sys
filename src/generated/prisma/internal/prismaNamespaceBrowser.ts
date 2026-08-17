@@ -73,6 +73,11 @@ export const ModelName = {
   Ticket: 'Ticket',
   TicketConversation: 'TicketConversation',
   Termination: 'Termination',
+  ResignationDiscussion: 'ResignationDiscussion',
+  ReplacementRequest: 'ReplacementRequest',
+  ExitClearanceApproval: 'ExitClearanceApproval',
+  ComplianceReview: 'ComplianceReview',
+  FinalPayout: 'FinalPayout',
   ExitSurveyInvite: 'ExitSurveyInvite',
   ExitSurveyResponse: 'ExitSurveyResponse',
   ExitClearance: 'ExitClearance',
@@ -536,6 +541,7 @@ export const TerminationScalarFieldEnum = {
   vaProfileId: 'vaProfileId',
   assignmentId: 'assignmentId',
   type: 'type',
+  isVoluntaryResignation: 'isVoluntaryResignation',
   affectsBothParties: 'affectsBothParties',
   resultingStatus: 'resultingStatus',
   reason: 'reason',
@@ -546,10 +552,88 @@ export const TerminationScalarFieldEnum = {
   effectiveDate: 'effectiveDate',
   completedAt: 'completedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  trainingPassedAt: 'trainingPassedAt',
+  trainingNotedById: 'trainingNotedById'
 } as const
 
 export type TerminationScalarFieldEnum = (typeof TerminationScalarFieldEnum)[keyof typeof TerminationScalarFieldEnum]
+
+
+export const ResignationDiscussionScalarFieldEnum = {
+  id: 'id',
+  terminationId: 'terminationId',
+  scheduledAt: 'scheduledAt',
+  conductedAt: 'conductedAt',
+  retained: 'retained',
+  recordingLink: 'recordingLink',
+  turnoverDiscussed: 'turnoverDiscussed',
+  lastWorkingDay: 'lastWorkingDay',
+  lwdOverrideReason: 'lwdOverrideReason',
+  lwdOverrideById: 'lwdOverrideById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ResignationDiscussionScalarFieldEnum = (typeof ResignationDiscussionScalarFieldEnum)[keyof typeof ResignationDiscussionScalarFieldEnum]
+
+
+export const ReplacementRequestScalarFieldEnum = {
+  id: 'id',
+  terminationId: 'terminationId',
+  pipelineStatus: 'pipelineStatus',
+  candidateUserId: 'candidateUserId',
+  approvedById: 'approvedById',
+  approvedAt: 'approvedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReplacementRequestScalarFieldEnum = (typeof ReplacementRequestScalarFieldEnum)[keyof typeof ReplacementRequestScalarFieldEnum]
+
+
+export const ExitClearanceApprovalScalarFieldEnum = {
+  id: 'id',
+  terminationId: 'terminationId',
+  department: 'department',
+  approverId: 'approverId',
+  status: 'status',
+  comments: 'comments',
+  checklistItems: 'checklistItems',
+  actionDate: 'actionDate'
+} as const
+
+export type ExitClearanceApprovalScalarFieldEnum = (typeof ExitClearanceApprovalScalarFieldEnum)[keyof typeof ExitClearanceApprovalScalarFieldEnum]
+
+
+export const ComplianceReviewScalarFieldEnum = {
+  id: 'id',
+  terminationId: 'terminationId',
+  properlyConducted: 'properlyConducted',
+  voluntaryConfirmation: 'voluntaryConfirmation',
+  noticePeriodCommunicated: 'noticePeriodCommunicated',
+  noUnresolvedIssues: 'noUnresolvedIssues',
+  turnoverAcknowledged: 'turnoverAcknowledged',
+  overallResult: 'overallResult',
+  reviewedById: 'reviewedById',
+  reviewedAt: 'reviewedAt'
+} as const
+
+export type ComplianceReviewScalarFieldEnum = (typeof ComplianceReviewScalarFieldEnum)[keyof typeof ComplianceReviewScalarFieldEnum]
+
+
+export const FinalPayoutScalarFieldEnum = {
+  id: 'id',
+  terminationId: 'terminationId',
+  amount: 'amount',
+  endorsedById: 'endorsedById',
+  endorsedAt: 'endorsedAt',
+  slaDueDate: 'slaDueDate',
+  processedAt: 'processedAt',
+  status: 'status'
+} as const
+
+export type FinalPayoutScalarFieldEnum = (typeof FinalPayoutScalarFieldEnum)[keyof typeof FinalPayoutScalarFieldEnum]
 
 
 export const ExitSurveyInviteScalarFieldEnum = {

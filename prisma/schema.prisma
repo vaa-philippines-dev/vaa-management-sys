@@ -163,17 +163,59 @@ enum TicketCategory {
 }
 
 enum TerminationType {
-  EOC               // Type A — End of Contract, natural completion
-  CLIENT_INITIATED  // Type B — client requested the VA be removed
-  VAA_INITIATED     // Type C — VAA-initiated (resignation or removal)
+  EOC // Type A — End of Contract, natural completion
+  CLIENT_INITIATED // Type B — client requested the VA be removed
+  VAA_INITIATED // Type C — VAA-initiated (resignation or removal)
 }
 
 enum TerminationWorkflowStatus {
   INITIATED
+  // Voluntary-resignation-only stages (see Termination.isVoluntaryResignation)
+  // — inserted between INITIATED and EXIT_SURVEY_PENDING for that sub-flow;
+  // the existing simple flow (EOC/CLIENT_INITIATED/plain removal) never
+  // produces these.
+  PENDING_LETTER
+  UNDER_DOCUMENTATION
   EXIT_SURVEY_PENDING
   CLEARANCE_PENDING
+  CLEARANCE_PROCESSING
+  COMPLIANCE_REVIEW_PENDING
+  PAYOUT_PENDING
   COMPLETED
   CANCELLED
+}
+
+enum ExitClearanceDepartment {
+  SERVICE_DEPARTMENT
+  CUSTOMER_SUCCESS
+  TRAINING
+  ACCOUNTING
+  HR
+}
+
+enum ClearanceApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ReplacementPipelineStatus {
+  SOURCED
+  ENDORSED
+  INTERVIEWED
+  APPROVED
+  REJECTED
+  NOT_APPLICABLE
+}
+
+enum ComplianceReviewResult {
+  PASS
+  FLAGGED
+}
+
+enum FinalPayoutStatus {
+  PENDING
+  PROCESSED
 }
 
 enum TicketStatus {
@@ -405,6 +447,15 @@ model User {
   terminationsInitiated      Termination[]          @relation("TerminationInitiator")
   clearancesCleared          ExitClearance[]        @relation("ClearanceClearedBy")
   agentDecisions             AgentSuggestion[]      @relation("AgentSuggestionDecidedBy")
+
+  // Resignation SOP extension
+  resignationLwdOverrides    ResignationDiscussion[] @relation("ResignationLwdOverrideBy")
+  resignationTrainingNotes   Termination[]           @relation("ResignationTrainingNotedBy")
+  replacementCandidacies     ReplacementRequest[]    @relation("ReplacementCandidate")
+  replacementApprovals       ReplacementRequest[]    @relation("ReplacementApprovedBy")
+  exitClearanceApprovals     ExitClearanceApproval[] @relation("ExitClearanceApprover")
+  complianceReviewsPerformed ComplianceReview[]      @relation("ComplianceReviewedBy")
+  finalPayoutsEndorsed       FinalPayout[]           @relation("FinalPayoutEndorsedBy")
 
   @@index([email])
   @@index([systemRole])
@@ -847,33 +898,160 @@ model TicketConversation {
 // ──────────────────────────────────────────────────────────────────
 
 model Termination {
-  id                 String                    @id @default(cuid())
-  vaProfileId        String                    @map("va_profile_id")
-  vaProfile          VAProfile                 @relation(fields: [vaProfileId], references: [id], onDelete: Cascade)
-  assignmentId       String?                   @map("assignment_id")
-  assignment         Assignment?               @relation(fields: [assignmentId], references: [id], onDelete: SetNull)
-  type               TerminationType
-  affectsBothParties Boolean                   @default(false) @map("affects_both_parties")
-  resultingStatus    EmploymentStatus          @map("resulting_status")
-  reason             String?
-  workflowStatus     TerminationWorkflowStatus @default(INITIATED) @map("workflow_status")
-  ticketId           String?                   @unique @map("ticket_id")
-  ticket             Ticket?                   @relation(fields: [ticketId], references: [id], onDelete: SetNull)
-  resignationDocUrl  String?                   @map("resignation_doc_url")
-  initiatedById      String                    @map("initiated_by_id")
-  initiatedBy        User                      @relation("TerminationInitiator", fields: [initiatedById], references: [id], onDelete: Cascade)
-  effectiveDate      DateTime                  @map("effective_date")
-  completedAt        DateTime?                 @map("completed_at")
-  createdAt          DateTime                  @default(now()) @map("created_at")
-  updatedAt          DateTime                  @updatedAt @map("updated_at")
+  id                     String                    @id @default(cuid())
+  vaProfileId            String                    @map("va_profile_id")
+  vaProfile              VAProfile                 @relation(fields: [vaProfileId], references: [id], onDelete: Cascade)
+  assignmentId           String?                   @map("assignment_id")
+  assignment             Assignment?               @relation(fields: [assignmentId], references: [id], onDelete: SetNull)
+  type                   TerminationType
+  // Distinguishes the SOP's voluntary-resignation sub-flow (discussion,
+  // replacement, 5-department clearance, compliance review, payout SLA)
+  // from a plain VAA_INITIATED involuntary removal, which today's
+  // TerminationType conflates per its own comment. All satellite models
+  // below only ever exist when this is true.
+  isVoluntaryResignation Boolean                   @default(false) @map("is_voluntary_resignation")
+  affectsBothParties     Boolean                   @default(false) @map("affects_both_parties")
+  resultingStatus        EmploymentStatus          @map("resulting_status")
+  reason                 String?
+  workflowStatus         TerminationWorkflowStatus @default(INITIATED) @map("workflow_status")
+  ticketId               String?                   @unique @map("ticket_id")
+  ticket                 Ticket?                   @relation(fields: [ticketId], references: [id], onDelete: SetNull)
+  resignationDocUrl      String?                   @map("resignation_doc_url")
+  initiatedById          String                    @map("initiated_by_id")
+  initiatedBy            User                      @relation("TerminationInitiator", fields: [initiatedById], references: [id], onDelete: Cascade)
+  effectiveDate          DateTime                  @map("effective_date")
+  completedAt            DateTime?                 @map("completed_at")
+  createdAt              DateTime                  @default(now()) @map("created_at")
+  updatedAt              DateTime                  @updatedAt @map("updated_at")
 
   exitSurveyInvite ExitSurveyInvite?
   clearance        ExitClearance?
+
+  // Voluntary-resignation-only satellites
+  discussion         ResignationDiscussion?
+  replacementRequest ReplacementRequest?
+  clearanceApprovals ExitClearanceApproval[]
+  complianceReview   ComplianceReview?
+  finalPayout        FinalPayout?
+
+  // FR-017, Customer-Only path: a manual toggle (not a full training
+  // sub-module) confirming the VA has cleared the reassignment training
+  // gate before being handed a new client. Left null for the
+  // Customer+Company path, which has no reassignment.
+  trainingPassedAt  DateTime? @map("training_passed_at")
+  trainingNotedById String?   @map("training_noted_by_id")
+  trainingNotedBy   User?     @relation("ResignationTrainingNotedBy", fields: [trainingNotedById], references: [id], onDelete: SetNull)
 
   @@index([vaProfileId])
   @@index([assignmentId])
   @@index([workflowStatus])
   @@map("terminations")
+}
+
+// ── Voluntary resignation satellites (Termination.isVoluntaryResignation) ──
+
+model ResignationDiscussion {
+  id            String      @id @default(cuid())
+  terminationId String      @unique @map("termination_id")
+  termination   Termination @relation(fields: [terminationId], references: [id], onDelete: Cascade)
+
+  scheduledAt       DateTime? @map("scheduled_at")
+  conductedAt       DateTime? @map("conducted_at")
+  retained          Boolean?
+  recordingLink     String?   @map("recording_link")
+  turnoverDiscussed Boolean   @default(false) @map("turnover_discussed")
+
+  // BR-02: 30-working-day standard notice, 10-working-day (2-week) minimum.
+  lastWorkingDay    DateTime? @map("last_working_day")
+  lwdOverrideReason String?   @map("lwd_override_reason")
+  lwdOverrideById   String?   @map("lwd_override_by_id")
+  lwdOverrideBy     User?     @relation("ResignationLwdOverrideBy", fields: [lwdOverrideById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("resignation_discussions")
+}
+
+model ReplacementRequest {
+  id            String      @id @default(cuid())
+  terminationId String      @unique @map("termination_id")
+  termination   Termination @relation(fields: [terminationId], references: [id], onDelete: Cascade)
+
+  pipelineStatus  ReplacementPipelineStatus @default(SOURCED) @map("pipeline_status")
+  candidateUserId String?                   @map("candidate_user_id")
+  candidateUser   User?                     @relation("ReplacementCandidate", fields: [candidateUserId], references: [id], onDelete: SetNull)
+  approvedById    String?                   @map("approved_by_id")
+  approvedBy      User?                     @relation("ReplacementApprovedBy", fields: [approvedById], references: [id], onDelete: SetNull)
+  approvedAt      DateTime?                 @map("approved_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("replacement_requests")
+}
+
+// One current-state row per department per termination; a rejection reopens
+// only that row — the other 4 stay untouched (Miro exit-clearance diagram).
+// checklistItems holds the paper Exit Clearance Form's per-department items
+// as JSON since they differ per department and may change wording without a
+// migration. Sibling to (not nested under) the existing single-approver
+// ExitClearance model, which stays untouched for non-resignation terminations.
+model ExitClearanceApproval {
+  id            String      @id @default(cuid())
+  terminationId String      @map("termination_id")
+  termination   Termination @relation(fields: [terminationId], references: [id], onDelete: Cascade)
+
+  department     ExitClearanceDepartment
+  approverId     String?                 @map("approver_id")
+  approver       User?                   @relation("ExitClearanceApprover", fields: [approverId], references: [id], onDelete: SetNull)
+  status         ClearanceApprovalStatus @default(PENDING)
+  comments       String?
+  checklistItems Json?                   @map("checklist_items")
+  actionDate     DateTime?               @map("action_date")
+
+  @@unique([terminationId, department])
+  @@map("exit_clearance_approvals")
+}
+
+// The 5 fixed SOP policy-checklist items gating HR Manager endorsement
+// (BR-10) — explicit columns since these are fixed legal/policy items,
+// unlike the per-department checklist above.
+model ComplianceReview {
+  id            String      @id @default(cuid())
+  terminationId String      @unique @map("termination_id")
+  termination   Termination @relation(fields: [terminationId], references: [id], onDelete: Cascade)
+
+  properlyConducted        Boolean @default(false) @map("properly_conducted")
+  voluntaryConfirmation    Boolean @default(false) @map("voluntary_confirmation")
+  noticePeriodCommunicated Boolean @default(false) @map("notice_period_communicated")
+  noUnresolvedIssues       Boolean @default(false) @map("no_unresolved_issues")
+  turnoverAcknowledged     Boolean @default(false) @map("turnover_acknowledged")
+
+  overallResult ComplianceReviewResult? @map("overall_result")
+  reviewedById  String?                 @map("reviewed_by_id")
+  reviewedBy    User?                   @relation("ComplianceReviewedBy", fields: [reviewedById], references: [id], onDelete: SetNull)
+  reviewedAt    DateTime?               @map("reviewed_at")
+
+  @@map("compliance_reviews")
+}
+
+// Separate from the existing ExitClearance.finalPayCleared boolean, which
+// stays as the simple non-SLA-tracked path for other termination types.
+model FinalPayout {
+  id            String      @id @default(cuid())
+  terminationId String      @unique @map("termination_id")
+  termination   Termination @relation(fields: [terminationId], references: [id], onDelete: Cascade)
+
+  amount       Decimal?
+  endorsedById String?           @map("endorsed_by_id")
+  endorsedBy   User?             @relation("FinalPayoutEndorsedBy", fields: [endorsedById], references: [id], onDelete: SetNull)
+  endorsedAt   DateTime?         @map("endorsed_at")
+  slaDueDate   DateTime?         @map("sla_due_date")
+  processedAt  DateTime?         @map("processed_at")
+  status       FinalPayoutStatus @default(PENDING)
+
+  @@map("final_payouts")
 }
 
 model ExitSurveyInvite {
@@ -904,19 +1082,19 @@ model ExitSurveyResponse {
 }
 
 model ExitClearance {
-  id                     String       @id @default(cuid())
-  terminationId          String       @unique @map("termination_id")
-  termination            Termination  @relation(fields: [terminationId], references: [id], onDelete: Cascade)
-  equipmentReturned      Boolean      @default(false) @map("equipment_returned")
-  accountsRevoked        Boolean      @default(false) @map("accounts_revoked")
-  documentsSubmitted     Boolean      @default(false) @map("documents_submitted")
-  finalPayCleared        Boolean      @default(false) @map("final_pay_cleared")
-  outstandingBalanceNote String?      @map("outstanding_balance_note")
-  clearedById            String?      @map("cleared_by_id")
-  clearedBy              User?        @relation("ClearanceClearedBy", fields: [clearedById], references: [id], onDelete: SetNull)
-  clearedAt              DateTime?    @map("cleared_at")
-  createdAt              DateTime     @default(now()) @map("created_at")
-  updatedAt              DateTime     @updatedAt @map("updated_at")
+  id                     String      @id @default(cuid())
+  terminationId          String      @unique @map("termination_id")
+  termination            Termination @relation(fields: [terminationId], references: [id], onDelete: Cascade)
+  equipmentReturned      Boolean     @default(false) @map("equipment_returned")
+  accountsRevoked        Boolean     @default(false) @map("accounts_revoked")
+  documentsSubmitted     Boolean     @default(false) @map("documents_submitted")
+  finalPayCleared        Boolean     @default(false) @map("final_pay_cleared")
+  outstandingBalanceNote String?     @map("outstanding_balance_note")
+  clearedById            String?     @map("cleared_by_id")
+  clearedBy              User?       @relation("ClearanceClearedBy", fields: [clearedById], references: [id], onDelete: SetNull)
+  clearedAt              DateTime?   @map("cleared_at")
+  createdAt              DateTime    @default(now()) @map("created_at")
+  updatedAt              DateTime    @updatedAt @map("updated_at")
 
   @@map("exit_clearances")
 }
@@ -1366,22 +1544,22 @@ model AgentSuggestion {
   vaProfile   VAProfile? @relation(fields: [vaProfileId], references: [id], onDelete: Cascade)
 
   // 1-based position within a VA_MATCH shortlist; null for every other kind.
-  rank Int?
+  rank      Int?
   // Deterministic pre-score (0–100) from the matching criteria, recorded before
   // the LLM reorders anything — so a bad ranking can be told apart from a bad filter.
-  score Decimal? @db.Decimal(5, 2)
+  score     Decimal? @db.Decimal(5, 2)
   // Plain-language justification shown to staff. Adoption depends on this being
   // readable and overridable, so it is required for every suggestion.
   rationale String
   payload   Json
 
-  decidedById String?   @map("decided_by_id")
-  decidedBy   User?     @relation("AgentSuggestionDecidedBy", fields: [decidedById], references: [id], onDelete: SetNull)
-  decidedAt   DateTime? @map("decided_at")
+  decidedById   String?   @map("decided_by_id")
+  decidedBy     User?     @relation("AgentSuggestionDecidedBy", fields: [decidedById], references: [id], onDelete: SetNull)
+  decidedAt     DateTime? @map("decided_at")
   // What staff changed the suggestion to when they edit instead of approving
   // as-is. This is the feedback signal the written instructions get tuned against.
-  editedPayload Json?   @map("edited_payload")
-  decisionNote  String? @map("decision_note")
+  editedPayload Json?     @map("edited_payload")
+  decisionNote  String?   @map("decision_note")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

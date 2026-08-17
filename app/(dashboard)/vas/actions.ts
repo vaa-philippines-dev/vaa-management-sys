@@ -4,12 +4,31 @@ import { prisma } from '@/lib/prisma'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { CACHE_TAGS } from '@/lib/cache'
 import { randomBytes } from 'node:crypto'
-import { requireRole, requireAdminMutator, VA_MUTATOR_ROLES } from '@/lib/auth'
+import { requireRole, requireAdminMutator, requireAuth, VA_MUTATOR_ROLES } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
 import { generateEmployeeId } from '@/lib/employee-id'
 import { normalizeWhatsApp, normalizeGcash } from '@/lib/phone'
 import { OFFBOARDING_TYPE_LABELS as TERMINATION_TYPE_LABELS } from '@/lib/offboarding'
-import type { Proficiency, EmploymentStatus, GeneralStatus, TerminationType } from '@/src/generated/prisma/enums'
+import { canApproveClearanceDepartment } from '@/lib/offboarding-permissions'
+import { DEPARTMENT_CHECKLISTS } from '@/lib/offboarding'
+import { addWorkingDays } from '@/lib/working-days'
+import type { Prisma } from '@/src/generated/prisma/client'
+import type {
+  Proficiency,
+  EmploymentStatus,
+  GeneralStatus,
+  TerminationType,
+  ReplacementPipelineStatus,
+  ExitClearanceDepartment,
+  ClearanceApprovalStatus,
+} from '@/src/generated/prisma/enums'
+
+// BR-02: standard notice period is 30 working days, minimum 2 weeks (10
+// working days). BR-09: final payout target is 7 working days from full
+// clearance + compliance-review pass.
+const DEFAULT_NOTICE_WORKING_DAYS = 30
+const MIN_NOTICE_WORKING_DAYS = 10
+const PAYOUT_SLA_WORKING_DAYS = 7
 
 const ONBOARDING_INVITE_TTL_MS = 7 * 24 * 60 * 60 * 1000 // 7 days
 
@@ -1343,6 +1362,663 @@ export async function updateExitClearance(clearanceId: string, formData: FormDat
 
   if (clearance.termination.ticketId) revalidatePath(`/tickets/${clearance.termination.ticketId}`)
   revalidateTag(CACHE_TAGS.tickets, 'default')
+}
+
+// ──────────────────────────────────────────────────────────────────────
+// Resignation SOP extension (2026-08-14 Workforce Management System
+// meeting) — the voluntary-resignation sub-flow layered on top of the
+// Termination model above (discussion/retention → letter → replacement →
+// exit survey → 5-department clearance → compliance review → payout SLA).
+// terminateVA()/updateExitClearance() above are untouched and keep serving
+// the simple EOC/CLIENT_INITIATED/plain-removal paths.
+// ──────────────────────────────────────────────────────────────────────
+
+function parseFormDate(value: FormDataEntryValue | null): Date | null {
+  const str = (value as string | null)?.trim()
+  if (!str) return null
+  const d = new Date(str)
+  return Number.isNaN(d.getTime()) ? null : d
+}
+
+// FR-001: starts the resignation case at intent, before any discussion has
+// happened. effectiveDate is a placeholder until the discussion sets the
+// real Last Working Day (submitResignationLetter refines it further).
+export async function initiateResignation(formData: FormData) {
+  const actor = await requireRole(...VA_MUTATOR_ROLES)
+
+  const vaProfileId = (formData.get('vaProfileId') as string) || ''
+  const assignmentId = (formData.get('assignmentId') as string) || null
+  const reason = ((formData.get('reason') as string) || '').trim() || null
+  if (!vaProfileId) throw new Error('Missing VA profile')
+
+  const va = await prisma.vAProfile.findUnique({ where: { id: vaProfileId }, select: { id: true } })
+  if (!va) throw new Error('VA profile not found')
+
+  if (assignmentId) {
+    const assignment = await prisma.assignment.findUnique({ where: { id: assignmentId }, select: { vaProfileId: true } })
+    if (!assignment || assignment.vaProfileId !== vaProfileId) throw new Error('Assignment does not belong to this VA')
+  }
+
+  const openCase = await prisma.termination.findFirst({
+    where: { vaProfileId, isVoluntaryResignation: true, workflowStatus: { notIn: ['COMPLETED', 'CANCELLED'] } },
+  })
+  if (openCase) throw new Error('This VA already has an open resignation case.')
+
+  const termination = await prisma.termination.create({
+    data: {
+      vaProfileId,
+      assignmentId,
+      type: 'VAA_INITIATED',
+      isVoluntaryResignation: true,
+      resultingStatus: 'RESIGNED',
+      reason,
+      workflowStatus: 'INITIATED',
+      initiatedById: actor.id,
+      effectiveDate: new Date(),
+    },
+  })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'CREATE',
+    entityType: 'Termination',
+    entityId: termination.id,
+    after: { vaProfileId, assignmentId, isVoluntaryResignation: true },
+  })
+
+  revalidatePath(`/vas/${vaProfileId}`)
+  revalidateTag(CACHE_TAGS.vas, 'default')
+
+  return { terminationId: termination.id }
+}
+
+// FR-002/FR-003/BR-01/BR-02: logs the TL-VA discussion outcome. Retained
+// closes the case (matching CANCELLED's existing semantics); not retained
+// requires a Last Working Day, defaulting to a 30-working-day notice period
+// (min. 2 weeks unless an override reason is captured).
+export async function logDiscussionOutcome(terminationId: string, formData: FormData) {
+  const actor = await requireRole(...VA_MUTATOR_ROLES)
+
+  const termination = await prisma.termination.findUnique({ where: { id: terminationId } })
+  if (!termination || !termination.isVoluntaryResignation) throw new Error('Not a resignation case')
+  if (termination.workflowStatus !== 'INITIATED') {
+    throw new Error('The discussion outcome can only be logged once, before the letter stage.')
+  }
+
+  const retained = formData.get('retained') === 'true'
+  const recordingLink = ((formData.get('recordingLink') as string) || '').trim() || null
+  const turnoverDiscussed = formData.get('turnoverDiscussed') === 'true'
+  const conductedAt = new Date()
+
+  if (retained) {
+    await prisma.$transaction([
+      prisma.resignationDiscussion.upsert({
+        where: { terminationId },
+        create: { terminationId, conductedAt, retained: true, recordingLink, turnoverDiscussed },
+        update: { conductedAt, retained: true, recordingLink, turnoverDiscussed },
+      }),
+      prisma.termination.update({
+        where: { id: terminationId },
+        data: { workflowStatus: 'CANCELLED', reason: 'VA retained during discussion', completedAt: new Date() },
+      }),
+    ])
+    await logAudit({
+      actorId: actor.id,
+      action: 'STATUS_CHANGE',
+      entityType: 'Termination',
+      entityId: terminationId,
+      after: { workflowStatus: 'CANCELLED', retained: true },
+    })
+    revalidatePath(`/vas/${termination.vaProfileId}`)
+    return
+  }
+
+  const overrideReason = ((formData.get('lwdOverrideReason') as string) || '').trim() || null
+  let lastWorkingDay = parseFormDate(formData.get('lastWorkingDay'))
+  if (!lastWorkingDay) {
+    lastWorkingDay = addWorkingDays(conductedAt, DEFAULT_NOTICE_WORKING_DAYS)
+  } else {
+    const minDate = addWorkingDays(new Date(), MIN_NOTICE_WORKING_DAYS)
+    if (lastWorkingDay.getTime() < minDate.getTime() && !overrideReason) {
+      throw new Error('Last Working Day is under the 2-week minimum notice — provide an override reason to proceed.')
+    }
+  }
+
+  await prisma.$transaction([
+    prisma.resignationDiscussion.upsert({
+      where: { terminationId },
+      create: {
+        terminationId,
+        conductedAt,
+        retained: false,
+        recordingLink,
+        turnoverDiscussed,
+        lastWorkingDay,
+        lwdOverrideReason: overrideReason,
+        lwdOverrideById: overrideReason ? actor.id : null,
+      },
+      update: {
+        conductedAt,
+        retained: false,
+        recordingLink,
+        turnoverDiscussed,
+        lastWorkingDay,
+        lwdOverrideReason: overrideReason,
+        lwdOverrideById: overrideReason ? actor.id : null,
+      },
+    }),
+    prisma.termination.update({
+      where: { id: terminationId },
+      data: { workflowStatus: 'PENDING_LETTER', effectiveDate: lastWorkingDay },
+    }),
+  ])
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'STATUS_CHANGE',
+    entityType: 'Termination',
+    entityId: terminationId,
+    after: { workflowStatus: 'PENDING_LETTER' },
+    metadata: overrideReason ? { lwdOverrideReason: overrideReason } : undefined,
+  })
+  revalidatePath(`/vas/${termination.vaProfileId}`)
+}
+
+// FR-004/BR-03: validates the 3 mandatory letter fields, creates the
+// tracking Ticket (mirrors terminateVA's Ticket creation), and starts the
+// ReplacementRequest pipeline.
+export async function submitResignationLetter(terminationId: string, formData: FormData) {
+  const actor = await requireRole(...VA_MUTATOR_ROLES)
+
+  const termination = await prisma.termination.findUnique({
+    where: { id: terminationId },
+    include: {
+      discussion: true,
+      vaProfile: {
+        select: {
+          userId: true,
+          user: {
+            select: {
+              firstName: true,
+              lastName: true,
+              memberships: { where: { isPrimary: true, endedAt: null }, select: { departmentId: true } },
+            },
+          },
+        },
+      },
+    },
+  })
+  if (!termination || !termination.isVoluntaryResignation) throw new Error('Not a resignation case')
+  if (termination.workflowStatus !== 'PENDING_LETTER') {
+    throw new Error('The resignation letter can only be submitted after the discussion outcome (not retained).')
+  }
+  if (!termination.discussion?.lastWorkingDay) throw new Error('Last Working Day must be set first.')
+
+  const customerName = ((formData.get('customerName') as string) || '').trim()
+  const effectiveDate = parseFormDate(formData.get('effectiveDate'))
+  const attachmentUrl = ((formData.get('attachmentUrl') as string) || '').trim() || null
+  if (!customerName || !effectiveDate) throw new Error('Customer name and effective date are required (BR-03).')
+
+  const vaName = `${termination.vaProfile.user.firstName} ${termination.vaProfile.user.lastName}`.trim()
+  const departmentId = termination.vaProfile.user.memberships[0]?.departmentId ?? null
+  const ticketNumber = await nextTerminationTicketNumber()
+
+  await prisma.$transaction(async (tx) => {
+    const ticket = await tx.ticket.create({
+      data: {
+        ticketNumber,
+        title: `Resignation — ${vaName}`,
+        description: termination.reason ?? `Resignation case for ${vaName}.`,
+        category: 'TERMINATION',
+        priority: 'HIGH',
+        source: 'INTERNAL',
+        createdBy: actor.id,
+        departmentId,
+      },
+    })
+    await tx.termination.update({
+      where: { id: terminationId },
+      data: { ticketId: ticket.id, resignationDocUrl: attachmentUrl, effectiveDate, workflowStatus: 'UNDER_DOCUMENTATION' },
+    })
+    await tx.replacementRequest.upsert({
+      where: { terminationId },
+      update: {},
+      create: { terminationId },
+    })
+  })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'STATUS_CHANGE',
+    entityType: 'Termination',
+    entityId: terminationId,
+    after: { workflowStatus: 'UNDER_DOCUMENTATION' },
+    metadata: { customerName },
+  })
+
+  revalidatePath(`/vas/${termination.vaProfileId}`)
+  revalidatePath('/tickets')
+  revalidateTag(CACHE_TAGS.tickets, 'default')
+}
+
+// FR-008: Replacement Request pipeline, sourced by the Service Department.
+export async function updateReplacementRequest(terminationId: string, formData: FormData) {
+  const actor = await requireRole(...VA_MUTATOR_ROLES)
+
+  const pipelineStatus = (formData.get('pipelineStatus') as string) || ''
+  const validStatuses: ReplacementPipelineStatus[] = ['SOURCED', 'ENDORSED', 'INTERVIEWED', 'APPROVED', 'REJECTED', 'NOT_APPLICABLE']
+  if (!validStatuses.includes(pipelineStatus as ReplacementPipelineStatus)) {
+    throw new Error('Missing or invalid pipeline status')
+  }
+  const candidateUserId = (formData.get('candidateUserId') as string) || null
+
+  const termination = await prisma.termination.findUnique({ where: { id: terminationId } })
+  if (!termination || !termination.isVoluntaryResignation) throw new Error('Not a resignation case')
+  if (termination.workflowStatus !== 'UNDER_DOCUMENTATION') {
+    throw new Error('The replacement request can only be updated while under documentation.')
+  }
+
+  const isApproved = pipelineStatus === 'APPROVED'
+  await prisma.replacementRequest.upsert({
+    where: { terminationId },
+    update: {
+      pipelineStatus: pipelineStatus as ReplacementPipelineStatus,
+      candidateUserId,
+      approvedById: isApproved ? actor.id : null,
+      approvedAt: isApproved ? new Date() : null,
+    },
+    create: {
+      terminationId,
+      pipelineStatus: pipelineStatus as ReplacementPipelineStatus,
+      candidateUserId,
+      approvedById: isApproved ? actor.id : null,
+      approvedAt: isApproved ? new Date() : null,
+    },
+  })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'UPDATE',
+    entityType: 'ReplacementRequest',
+    entityId: terminationId,
+    after: { pipelineStatus },
+  })
+  revalidatePath(`/vas/${termination.vaProfileId}`)
+}
+
+// FR-009/FR-010: logs customer notification once the replacement gate
+// clears (Approved or Not Applicable), then auto-generates the Exit Survey
+// invite — reusing terminateVA's exact token/expiry pattern.
+export async function logCustomerNotification(terminationId: string) {
+  const actor = await requireRole(...VA_MUTATOR_ROLES)
+
+  const termination = await prisma.termination.findUnique({
+    where: { id: terminationId },
+    include: { replacementRequest: true },
+  })
+  if (!termination || !termination.isVoluntaryResignation) throw new Error('Not a resignation case')
+  if (termination.workflowStatus !== 'UNDER_DOCUMENTATION') {
+    throw new Error('Customer notification can only be logged while under documentation.')
+  }
+  const replacementOk =
+    termination.replacementRequest &&
+    ['APPROVED', 'NOT_APPLICABLE'].includes(termination.replacementRequest.pipelineStatus)
+  if (!replacementOk) throw new Error('The Replacement Request must be Approved or marked Not Applicable first.')
+
+  const token = randomBytes(32).toString('base64url')
+  await prisma.$transaction([
+    prisma.exitSurveyInvite.create({
+      data: { terminationId, token, expiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000) },
+    }),
+    prisma.termination.update({ where: { id: terminationId }, data: { workflowStatus: 'EXIT_SURVEY_PENDING' } }),
+  ])
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'STATUS_CHANGE',
+    entityType: 'Termination',
+    entityId: terminationId,
+    after: { workflowStatus: 'EXIT_SURVEY_PENDING' },
+  })
+  revalidatePath(`/vas/${termination.vaProfileId}`)
+  if (termination.ticketId) revalidatePath(`/tickets/${termination.ticketId}`)
+}
+
+const CLEARANCE_DEPARTMENTS: ExitClearanceDepartment[] = [
+  'SERVICE_DEPARTMENT',
+  'CUSTOMER_SUCCESS',
+  'TRAINING',
+  'ACCOUNTING',
+  'HR',
+]
+
+// FR-011/BR-06: fans out the 5 independent, parallel department clearance
+// sub-tasks. Only callable once the Exit Survey invite is completed.
+export async function initiateExitClearance(terminationId: string) {
+  const actor = await requireRole(...VA_MUTATOR_ROLES)
+
+  const termination = await prisma.termination.findUnique({
+    where: { id: terminationId },
+    include: { exitSurveyInvite: true, clearanceApprovals: true },
+  })
+  if (!termination || !termination.isVoluntaryResignation) throw new Error('Not a resignation case')
+  if (termination.workflowStatus !== 'EXIT_SURVEY_PENDING') {
+    throw new Error('Exit Clearance can only be initiated from Exit Survey Pending.')
+  }
+  if (!termination.exitSurveyInvite?.completedAt) {
+    throw new Error('The Exit Survey must be completed first (BR-05).')
+  }
+  if (termination.clearanceApprovals.length > 0) {
+    throw new Error('Exit Clearance has already been initiated for this case.')
+  }
+
+  await prisma.$transaction([
+    prisma.termination.update({ where: { id: terminationId }, data: { workflowStatus: 'CLEARANCE_PROCESSING' } }),
+    prisma.exitClearanceApproval.createMany({
+      data: CLEARANCE_DEPARTMENTS.map((department) => ({
+        terminationId,
+        department,
+        checklistItems: DEPARTMENT_CHECKLISTS[department].map((label) => ({ label, checked: false })),
+      })),
+    }),
+  ])
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'STATUS_CHANGE',
+    entityType: 'Termination',
+    entityId: terminationId,
+    after: { workflowStatus: 'CLEARANCE_PROCESSING' },
+  })
+  revalidatePath(`/vas/${termination.vaProfileId}`)
+  if (termination.ticketId) revalidatePath(`/tickets/${termination.ticketId}`)
+}
+
+// FR-011/FR-012/BR-06: one department approving or rejecting its own
+// sub-task, gated per-department via canApproveClearanceDepartment() — not
+// the flat VA_MUTATOR_ROLES gate the legacy single checklist uses, since no
+// single department should be able to unilaterally clear all 5. A
+// rejection only reopens that department — the other 4 stay untouched. All
+// 5 Approved advances the case to Compliance Review Pending.
+export async function actOnClearanceApproval(approvalId: string, formData: FormData) {
+  const actor = await requireAuth()
+
+  const statusRaw = (formData.get('status') as string) || ''
+  const comments = ((formData.get('comments') as string) || '').trim() || null
+  if (!['APPROVED', 'REJECTED'].includes(statusRaw)) throw new Error('Missing or invalid decision.')
+  if (statusRaw === 'REJECTED' && !comments) {
+    throw new Error('A comment describing the outstanding requirement is required when rejecting (FR-012).')
+  }
+
+  const approval = await prisma.exitClearanceApproval.findUnique({
+    where: { id: approvalId },
+    include: { termination: { include: { vaProfile: { select: { userId: true } } } } },
+  })
+  if (!approval) throw new Error('Approval not found.')
+  if (approval.termination.workflowStatus !== 'CLEARANCE_PROCESSING') {
+    throw new Error('This clearance is no longer open for department action.')
+  }
+
+  const canApprove = await canApproveClearanceDepartment(actor, approval.department, approval.termination.vaProfile.userId)
+  if (!canApprove) throw new Error(`You are not authorized to act on the ${approval.department} clearance.`)
+
+  await prisma.exitClearanceApproval.update({
+    where: { id: approvalId },
+    data: { status: statusRaw as ClearanceApprovalStatus, approverId: actor.id, comments, actionDate: new Date() },
+  })
+
+  const allApprovals = await prisma.exitClearanceApproval.findMany({ where: { terminationId: approval.terminationId } })
+  const allApproved = allApprovals.every((a) => (a.id === approvalId ? statusRaw === 'APPROVED' : a.status === 'APPROVED'))
+
+  if (allApproved) {
+    await prisma.termination.update({
+      where: { id: approval.terminationId },
+      data: { workflowStatus: 'COMPLIANCE_REVIEW_PENDING' },
+    })
+    await logAudit({
+      actorId: actor.id,
+      action: 'STATUS_CHANGE',
+      entityType: 'Termination',
+      entityId: approval.terminationId,
+      after: { workflowStatus: 'COMPLIANCE_REVIEW_PENDING' },
+      metadata: { reason: 'All 5 departments approved' },
+    })
+  }
+
+  await logAudit({
+    actorId: actor.id,
+    action: statusRaw === 'APPROVED' ? 'APPROVE' : 'REJECT',
+    entityType: 'ExitClearanceApproval',
+    entityId: approvalId,
+    after: { status: statusRaw, comments },
+    metadata: { department: approval.department },
+  })
+
+  revalidatePath(`/vas/${approval.termination.vaProfileId}`)
+  if (approval.termination.ticketId) revalidatePath(`/tickets/${approval.termination.ticketId}`)
+}
+
+// FR-013/BR-10: the fixed 5-item policy checklist gating the endorsement to
+// Accounting. A Flagged result routes the specific implicated department
+// back to Pending rather than resetting all 5 (edge case in the design
+// doc). A Pass immediately endorses to Accounting and starts the
+// 7-working-day payout SLA (BR-08/BR-09) — folded into this one action per
+// the SOP, where the same reviewer typically does both in sequence.
+export async function submitComplianceReview(terminationId: string, formData: FormData) {
+  const actor = await requireRole(...VA_MUTATOR_ROLES)
+
+  const termination = await prisma.termination.findUnique({ where: { id: terminationId } })
+  if (!termination || !termination.isVoluntaryResignation) throw new Error('Not a resignation case')
+  if (termination.workflowStatus !== 'COMPLIANCE_REVIEW_PENDING') {
+    throw new Error('Compliance review can only be submitted once all 5 departments have approved.')
+  }
+
+  const checklist = {
+    properlyConducted: formData.get('properlyConducted') === 'true',
+    voluntaryConfirmation: formData.get('voluntaryConfirmation') === 'true',
+    noticePeriodCommunicated: formData.get('noticePeriodCommunicated') === 'true',
+    noUnresolvedIssues: formData.get('noUnresolvedIssues') === 'true',
+    turnoverAcknowledged: formData.get('turnoverAcknowledged') === 'true',
+  }
+  const overallResult = Object.values(checklist).every(Boolean) ? 'PASS' : 'FLAGGED'
+  const flaggedDepartmentRaw = (formData.get('flaggedDepartment') as string) || ''
+  const flaggedDepartment = CLEARANCE_DEPARTMENTS.includes(flaggedDepartmentRaw as ExitClearanceDepartment)
+    ? (flaggedDepartmentRaw as ExitClearanceDepartment)
+    : null
+
+  await prisma.complianceReview.upsert({
+    where: { terminationId },
+    update: { ...checklist, overallResult, reviewedById: actor.id, reviewedAt: new Date() },
+    create: { terminationId, ...checklist, overallResult, reviewedById: actor.id, reviewedAt: new Date() },
+  })
+
+  if (overallResult === 'PASS') {
+    const endorsedAt = new Date()
+    const slaDueDate = addWorkingDays(endorsedAt, PAYOUT_SLA_WORKING_DAYS)
+    await prisma.$transaction([
+      prisma.termination.update({ where: { id: terminationId }, data: { workflowStatus: 'PAYOUT_PENDING' } }),
+      prisma.finalPayout.upsert({
+        where: { terminationId },
+        update: {},
+        create: { terminationId, endorsedById: actor.id, endorsedAt, slaDueDate },
+      }),
+    ])
+    await logAudit({
+      actorId: actor.id,
+      action: 'STATUS_CHANGE',
+      entityType: 'Termination',
+      entityId: terminationId,
+      after: { workflowStatus: 'PAYOUT_PENDING' },
+      metadata: { slaDueDate: slaDueDate.toISOString() },
+    })
+  } else {
+    const updates: Prisma.PrismaPromise<unknown>[] = [
+      prisma.termination.update({ where: { id: terminationId }, data: { workflowStatus: 'CLEARANCE_PROCESSING' } }),
+    ]
+    if (flaggedDepartment) {
+      updates.push(
+        prisma.exitClearanceApproval.updateMany({
+          where: { terminationId, department: flaggedDepartment },
+          data: { status: 'PENDING', comments: null },
+        })
+      )
+    }
+    await prisma.$transaction(updates)
+    await logAudit({
+      actorId: actor.id,
+      action: 'STATUS_CHANGE',
+      entityType: 'Termination',
+      entityId: terminationId,
+      after: { workflowStatus: 'CLEARANCE_PROCESSING' },
+      metadata: { flagged: true, flaggedDepartment },
+    })
+  }
+
+  revalidatePath(`/vas/${termination.vaProfileId}`)
+  if (termination.ticketId) revalidatePath(`/tickets/${termination.ticketId}`)
+}
+
+// FR-016/FR-017/FR-018/BR-11/BR-12: records the payout and — the moment
+// it's processed — auto-transitions workforce status per the case's scope,
+// reusing terminateVA()'s exact update block for the whole-VA path: ends
+// the Assignment only (Customer-Only, VA stays engaged elsewhere), or sets
+// VAProfile.engagementStatus/currentEndDate + VAHistory + EmploymentRecord
+// (Customer+Company, the whole engagement ends) — deferred until now rather
+// than at intake, since the SOP conditions it on full clearance + payout.
+export async function recordFinalPayout(terminationId: string, formData: FormData) {
+  const actor = await requireRole(...VA_MUTATOR_ROLES)
+
+  const amountRaw = (formData.get('amount') as string) || ''
+  const amount = Number(amountRaw)
+  if (!amountRaw || !Number.isFinite(amount) || amount <= 0) throw new Error('A valid payout amount is required.')
+
+  const termination = await prisma.termination.findUnique({
+    where: { id: terminationId },
+    include: { finalPayout: true, vaProfile: { select: { userId: true } } },
+  })
+  if (!termination || !termination.isVoluntaryResignation) throw new Error('Not a resignation case')
+  if (termination.workflowStatus !== 'PAYOUT_PENDING' || !termination.finalPayout) {
+    throw new Error('There is no pending payout to record for this case.')
+  }
+
+  const processedAt = new Date()
+  const vaUserId = termination.vaProfile.userId
+
+  await prisma.$transaction(async (tx) => {
+    await tx.finalPayout.update({
+      where: { terminationId },
+      data: { amount, processedAt, status: 'PROCESSED' },
+    })
+    await tx.termination.update({
+      where: { id: terminationId },
+      data: { workflowStatus: 'COMPLETED', completedAt: processedAt },
+    })
+
+    if (termination.assignmentId) {
+      await tx.assignment.update({
+        where: { id: termination.assignmentId },
+        data: { status: 'COMPLETED', endDate: processedAt },
+      })
+    } else {
+      await tx.vAProfile.update({
+        where: { id: termination.vaProfileId },
+        data: { engagementStatus: 'RESIGNED', currentEndDate: processedAt },
+      })
+      await tx.vAHistory.create({
+        data: {
+          userId: vaUserId,
+          eventType: 'ENGAGEMENT_CHANGE',
+          newValue: 'RESIGNED',
+          effectiveDate: processedAt,
+          reason: termination.reason ?? undefined,
+          changedById: actor.id,
+        },
+      })
+      const currentRecord = await tx.employmentRecord.findFirst({ where: { userId: vaUserId, isCurrent: true } })
+      if (currentRecord) {
+        await tx.employmentRecord.update({
+          where: { id: currentRecord.id },
+          data: { isCurrent: false, endDate: processedAt, employmentStatus: 'RESIGNED' },
+        })
+      }
+    }
+  })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'STATUS_CHANGE',
+    entityType: 'Termination',
+    entityId: terminationId,
+    after: { workflowStatus: 'COMPLETED' },
+    metadata: { amount },
+  })
+
+  revalidatePath(`/vas/${termination.vaProfileId}`)
+  revalidateTag(CACHE_TAGS.vas, 'default')
+  if (termination.ticketId) revalidatePath(`/tickets/${termination.ticketId}`)
+}
+
+// FR-017, Customer-Only path only: confirms the VA cleared the
+// reassignment training gate. A manual toggle, not a full training
+// sub-module — retrying on failure is just calling this again later.
+export async function markTrainingPassed(terminationId: string) {
+  const actor = await requireRole(...VA_MUTATOR_ROLES)
+
+  const termination = await prisma.termination.findUnique({ where: { id: terminationId } })
+  if (!termination || !termination.isVoluntaryResignation) throw new Error('Not a resignation case')
+  if (!termination.assignmentId) {
+    throw new Error('Training/assessment only applies to the Customer-Only path.')
+  }
+  if (termination.workflowStatus !== 'COMPLETED') {
+    throw new Error('Training can only be marked passed after the case is completed.')
+  }
+
+  await prisma.termination.update({
+    where: { id: terminationId },
+    data: { trainingPassedAt: new Date(), trainingNotedById: actor.id },
+  })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'UPDATE',
+    entityType: 'Termination',
+    entityId: terminationId,
+    after: { trainingPassedAt: true },
+  })
+  revalidatePath(`/vas/${termination.vaProfileId}`)
+}
+
+const WITHDRAWABLE_STATUSES = ['INITIATED', 'PENDING_LETTER', 'UNDER_DOCUMENTATION', 'EXIT_SURVEY_PENDING']
+
+// FR-021: withdrawal is only self-service before Exit Clearance starts —
+// past that point the SOP treats it as an exception requiring manual
+// escalation rather than a standard path, which this simply blocks.
+export async function withdrawResignation(terminationId: string, formData: FormData) {
+  const actor = await requireRole(...VA_MUTATOR_ROLES)
+
+  const reason = ((formData.get('reason') as string) || '').trim()
+  if (!reason) throw new Error('A reason is required to withdraw a resignation (FR-021).')
+
+  const termination = await prisma.termination.findUnique({ where: { id: terminationId } })
+  if (!termination || !termination.isVoluntaryResignation) throw new Error('Not a resignation case')
+  if (!WITHDRAWABLE_STATUSES.includes(termination.workflowStatus)) {
+    throw new Error('This case can no longer be withdrawn — Exit Clearance has already started. Escalate to HR instead.')
+  }
+
+  await prisma.termination.update({
+    where: { id: terminationId },
+    data: { workflowStatus: 'CANCELLED', reason, completedAt: new Date() },
+  })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'STATUS_CHANGE',
+    entityType: 'Termination',
+    entityId: terminationId,
+    after: { workflowStatus: 'CANCELLED' },
+    metadata: { reason, withdrawn: true },
+  })
+  revalidatePath(`/vas/${termination.vaProfileId}`)
 }
 
 export async function updateUserProfileFiles(

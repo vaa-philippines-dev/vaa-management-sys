@@ -221,13 +221,66 @@ export type TerminationType = (typeof TerminationType)[keyof typeof TerminationT
 
 export const TerminationWorkflowStatus = {
   INITIATED: 'INITIATED',
+  PENDING_LETTER: 'PENDING_LETTER',
+  UNDER_DOCUMENTATION: 'UNDER_DOCUMENTATION',
   EXIT_SURVEY_PENDING: 'EXIT_SURVEY_PENDING',
   CLEARANCE_PENDING: 'CLEARANCE_PENDING',
+  CLEARANCE_PROCESSING: 'CLEARANCE_PROCESSING',
+  COMPLIANCE_REVIEW_PENDING: 'COMPLIANCE_REVIEW_PENDING',
+  PAYOUT_PENDING: 'PAYOUT_PENDING',
   COMPLETED: 'COMPLETED',
   CANCELLED: 'CANCELLED'
 } as const
 
 export type TerminationWorkflowStatus = (typeof TerminationWorkflowStatus)[keyof typeof TerminationWorkflowStatus]
+
+
+export const ExitClearanceDepartment = {
+  SERVICE_DEPARTMENT: 'SERVICE_DEPARTMENT',
+  CUSTOMER_SUCCESS: 'CUSTOMER_SUCCESS',
+  TRAINING: 'TRAINING',
+  ACCOUNTING: 'ACCOUNTING',
+  HR: 'HR'
+} as const
+
+export type ExitClearanceDepartment = (typeof ExitClearanceDepartment)[keyof typeof ExitClearanceDepartment]
+
+
+export const ClearanceApprovalStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type ClearanceApprovalStatus = (typeof ClearanceApprovalStatus)[keyof typeof ClearanceApprovalStatus]
+
+
+export const ReplacementPipelineStatus = {
+  SOURCED: 'SOURCED',
+  ENDORSED: 'ENDORSED',
+  INTERVIEWED: 'INTERVIEWED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  NOT_APPLICABLE: 'NOT_APPLICABLE'
+} as const
+
+export type ReplacementPipelineStatus = (typeof ReplacementPipelineStatus)[keyof typeof ReplacementPipelineStatus]
+
+
+export const ComplianceReviewResult = {
+  PASS: 'PASS',
+  FLAGGED: 'FLAGGED'
+} as const
+
+export type ComplianceReviewResult = (typeof ComplianceReviewResult)[keyof typeof ComplianceReviewResult]
+
+
+export const FinalPayoutStatus = {
+  PENDING: 'PENDING',
+  PROCESSED: 'PROCESSED'
+} as const
+
+export type FinalPayoutStatus = (typeof FinalPayoutStatus)[keyof typeof FinalPayoutStatus]
 
 
 export const TicketStatus = {

@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.9.0
- * Query Engine version: e922089b7d7502aff4249d5da3420f6fa55fc6ad
+ * Prisma Client JS version: 7.8.0
+ * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.9.0",
-  engine: "e922089b7d7502aff4249d5da3420f6fa55fc6ad"
+  client: "7.8.0",
+  engine: "3c6e192761c0362d496ed980de936e2f3cebcd3a"
 }
 
 /**
@@ -156,19 +156,6 @@ export type Subset<T, U> = {
 };
 
 /**
- * Resolved type of the argument passed to the `PrismaClient` constructor.
- *
- * When called without a narrower options type (the common case), this resolves
- * to `PrismaClientOptions` directly, which produces a clear TypeScript error
- * message (`not assignable to parameter of type 'PrismaClientOptions'`) when
- * the argument is missing or incomplete. When the user supplies a narrower
- * options type (e.g. via a literal), it falls back to `Subset` to keep
- * filtering out unknown properties.
- */
-export type PrismaClientConstructorArgs<Options extends PrismaClientOptions> =
-  [PrismaClientOptions] extends [Options] ? PrismaClientOptions : Subset<Options, PrismaClientOptions>;
-
-/**
  * SelectSubset
  * @desc From `T` pick properties that exist in `U`. Simple version of Intersection.
  * Additionally, it validates, if both select and include are present. If the case, it errors.
@@ -200,7 +187,7 @@ type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
 export type XOR<T, U> =
   T extends object ?
   U extends object ?
-    ((Without<T, U> & U) | (Without<U, T> & T)) & object
+    (Without<T, U> & U) | (Without<U, T> & T)
   : U : T
 
 
@@ -419,6 +406,11 @@ export const ModelName = {
   Ticket: 'Ticket',
   TicketConversation: 'TicketConversation',
   Termination: 'Termination',
+  ResignationDiscussion: 'ResignationDiscussion',
+  ReplacementRequest: 'ReplacementRequest',
+  ExitClearanceApproval: 'ExitClearanceApproval',
+  ComplianceReview: 'ComplianceReview',
+  FinalPayout: 'FinalPayout',
   ExitSurveyInvite: 'ExitSurveyInvite',
   ExitSurveyResponse: 'ExitSurveyResponse',
   ExitClearance: 'ExitClearance',
@@ -454,7 +446,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveRequest" | "employeeIdCounter" | "vAOnboardingInvite" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "termination" | "exitSurveyInvite" | "exitSurveyResponse" | "exitClearance" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "customer" | "account" | "notification" | "sidebarFavorite" | "team" | "teamMembership" | "clientPipeline" | "agentSuggestion" | "agentRun"
+    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveRequest" | "employeeIdCounter" | "vAOnboardingInvite" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "termination" | "resignationDiscussion" | "replacementRequest" | "exitClearanceApproval" | "complianceReview" | "finalPayout" | "exitSurveyInvite" | "exitSurveyResponse" | "exitClearance" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "customer" | "account" | "notification" | "sidebarFavorite" | "team" | "teamMembership" | "clientPipeline" | "agentSuggestion" | "agentRun"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2083,6 +2075,376 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.TerminationCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.TerminationCountAggregateOutputType> | number
+        }
+      }
+    }
+    ResignationDiscussion: {
+      payload: Prisma.$ResignationDiscussionPayload<ExtArgs>
+      fields: Prisma.ResignationDiscussionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ResignationDiscussionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResignationDiscussionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ResignationDiscussionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResignationDiscussionPayload>
+        }
+        findFirst: {
+          args: Prisma.ResignationDiscussionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResignationDiscussionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ResignationDiscussionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResignationDiscussionPayload>
+        }
+        findMany: {
+          args: Prisma.ResignationDiscussionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResignationDiscussionPayload>[]
+        }
+        create: {
+          args: Prisma.ResignationDiscussionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResignationDiscussionPayload>
+        }
+        createMany: {
+          args: Prisma.ResignationDiscussionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ResignationDiscussionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResignationDiscussionPayload>[]
+        }
+        delete: {
+          args: Prisma.ResignationDiscussionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResignationDiscussionPayload>
+        }
+        update: {
+          args: Prisma.ResignationDiscussionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResignationDiscussionPayload>
+        }
+        deleteMany: {
+          args: Prisma.ResignationDiscussionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ResignationDiscussionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ResignationDiscussionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResignationDiscussionPayload>[]
+        }
+        upsert: {
+          args: Prisma.ResignationDiscussionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResignationDiscussionPayload>
+        }
+        aggregate: {
+          args: Prisma.ResignationDiscussionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateResignationDiscussion>
+        }
+        groupBy: {
+          args: Prisma.ResignationDiscussionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ResignationDiscussionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ResignationDiscussionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ResignationDiscussionCountAggregateOutputType> | number
+        }
+      }
+    }
+    ReplacementRequest: {
+      payload: Prisma.$ReplacementRequestPayload<ExtArgs>
+      fields: Prisma.ReplacementRequestFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ReplacementRequestFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReplacementRequestPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ReplacementRequestFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReplacementRequestPayload>
+        }
+        findFirst: {
+          args: Prisma.ReplacementRequestFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReplacementRequestPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ReplacementRequestFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReplacementRequestPayload>
+        }
+        findMany: {
+          args: Prisma.ReplacementRequestFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReplacementRequestPayload>[]
+        }
+        create: {
+          args: Prisma.ReplacementRequestCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReplacementRequestPayload>
+        }
+        createMany: {
+          args: Prisma.ReplacementRequestCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ReplacementRequestCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReplacementRequestPayload>[]
+        }
+        delete: {
+          args: Prisma.ReplacementRequestDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReplacementRequestPayload>
+        }
+        update: {
+          args: Prisma.ReplacementRequestUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReplacementRequestPayload>
+        }
+        deleteMany: {
+          args: Prisma.ReplacementRequestDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ReplacementRequestUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ReplacementRequestUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReplacementRequestPayload>[]
+        }
+        upsert: {
+          args: Prisma.ReplacementRequestUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReplacementRequestPayload>
+        }
+        aggregate: {
+          args: Prisma.ReplacementRequestAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateReplacementRequest>
+        }
+        groupBy: {
+          args: Prisma.ReplacementRequestGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReplacementRequestGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ReplacementRequestCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReplacementRequestCountAggregateOutputType> | number
+        }
+      }
+    }
+    ExitClearanceApproval: {
+      payload: Prisma.$ExitClearanceApprovalPayload<ExtArgs>
+      fields: Prisma.ExitClearanceApprovalFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ExitClearanceApprovalFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitClearanceApprovalPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ExitClearanceApprovalFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitClearanceApprovalPayload>
+        }
+        findFirst: {
+          args: Prisma.ExitClearanceApprovalFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitClearanceApprovalPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ExitClearanceApprovalFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitClearanceApprovalPayload>
+        }
+        findMany: {
+          args: Prisma.ExitClearanceApprovalFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitClearanceApprovalPayload>[]
+        }
+        create: {
+          args: Prisma.ExitClearanceApprovalCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitClearanceApprovalPayload>
+        }
+        createMany: {
+          args: Prisma.ExitClearanceApprovalCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ExitClearanceApprovalCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitClearanceApprovalPayload>[]
+        }
+        delete: {
+          args: Prisma.ExitClearanceApprovalDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitClearanceApprovalPayload>
+        }
+        update: {
+          args: Prisma.ExitClearanceApprovalUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitClearanceApprovalPayload>
+        }
+        deleteMany: {
+          args: Prisma.ExitClearanceApprovalDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ExitClearanceApprovalUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ExitClearanceApprovalUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitClearanceApprovalPayload>[]
+        }
+        upsert: {
+          args: Prisma.ExitClearanceApprovalUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExitClearanceApprovalPayload>
+        }
+        aggregate: {
+          args: Prisma.ExitClearanceApprovalAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExitClearanceApproval>
+        }
+        groupBy: {
+          args: Prisma.ExitClearanceApprovalGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExitClearanceApprovalGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ExitClearanceApprovalCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExitClearanceApprovalCountAggregateOutputType> | number
+        }
+      }
+    }
+    ComplianceReview: {
+      payload: Prisma.$ComplianceReviewPayload<ExtArgs>
+      fields: Prisma.ComplianceReviewFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ComplianceReviewFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComplianceReviewPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ComplianceReviewFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComplianceReviewPayload>
+        }
+        findFirst: {
+          args: Prisma.ComplianceReviewFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComplianceReviewPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ComplianceReviewFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComplianceReviewPayload>
+        }
+        findMany: {
+          args: Prisma.ComplianceReviewFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComplianceReviewPayload>[]
+        }
+        create: {
+          args: Prisma.ComplianceReviewCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComplianceReviewPayload>
+        }
+        createMany: {
+          args: Prisma.ComplianceReviewCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ComplianceReviewCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComplianceReviewPayload>[]
+        }
+        delete: {
+          args: Prisma.ComplianceReviewDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComplianceReviewPayload>
+        }
+        update: {
+          args: Prisma.ComplianceReviewUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComplianceReviewPayload>
+        }
+        deleteMany: {
+          args: Prisma.ComplianceReviewDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ComplianceReviewUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ComplianceReviewUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComplianceReviewPayload>[]
+        }
+        upsert: {
+          args: Prisma.ComplianceReviewUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ComplianceReviewPayload>
+        }
+        aggregate: {
+          args: Prisma.ComplianceReviewAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateComplianceReview>
+        }
+        groupBy: {
+          args: Prisma.ComplianceReviewGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ComplianceReviewGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ComplianceReviewCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ComplianceReviewCountAggregateOutputType> | number
+        }
+      }
+    }
+    FinalPayout: {
+      payload: Prisma.$FinalPayoutPayload<ExtArgs>
+      fields: Prisma.FinalPayoutFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FinalPayoutFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FinalPayoutPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FinalPayoutFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FinalPayoutPayload>
+        }
+        findFirst: {
+          args: Prisma.FinalPayoutFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FinalPayoutPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FinalPayoutFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FinalPayoutPayload>
+        }
+        findMany: {
+          args: Prisma.FinalPayoutFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FinalPayoutPayload>[]
+        }
+        create: {
+          args: Prisma.FinalPayoutCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FinalPayoutPayload>
+        }
+        createMany: {
+          args: Prisma.FinalPayoutCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FinalPayoutCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FinalPayoutPayload>[]
+        }
+        delete: {
+          args: Prisma.FinalPayoutDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FinalPayoutPayload>
+        }
+        update: {
+          args: Prisma.FinalPayoutUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FinalPayoutPayload>
+        }
+        deleteMany: {
+          args: Prisma.FinalPayoutDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FinalPayoutUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FinalPayoutUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FinalPayoutPayload>[]
+        }
+        upsert: {
+          args: Prisma.FinalPayoutUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FinalPayoutPayload>
+        }
+        aggregate: {
+          args: Prisma.FinalPayoutAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFinalPayout>
+        }
+        groupBy: {
+          args: Prisma.FinalPayoutGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FinalPayoutGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FinalPayoutCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FinalPayoutCountAggregateOutputType> | number
         }
       }
     }
@@ -4030,6 +4392,7 @@ export const TerminationScalarFieldEnum = {
   vaProfileId: 'vaProfileId',
   assignmentId: 'assignmentId',
   type: 'type',
+  isVoluntaryResignation: 'isVoluntaryResignation',
   affectsBothParties: 'affectsBothParties',
   resultingStatus: 'resultingStatus',
   reason: 'reason',
@@ -4040,10 +4403,88 @@ export const TerminationScalarFieldEnum = {
   effectiveDate: 'effectiveDate',
   completedAt: 'completedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  trainingPassedAt: 'trainingPassedAt',
+  trainingNotedById: 'trainingNotedById'
 } as const
 
 export type TerminationScalarFieldEnum = (typeof TerminationScalarFieldEnum)[keyof typeof TerminationScalarFieldEnum]
+
+
+export const ResignationDiscussionScalarFieldEnum = {
+  id: 'id',
+  terminationId: 'terminationId',
+  scheduledAt: 'scheduledAt',
+  conductedAt: 'conductedAt',
+  retained: 'retained',
+  recordingLink: 'recordingLink',
+  turnoverDiscussed: 'turnoverDiscussed',
+  lastWorkingDay: 'lastWorkingDay',
+  lwdOverrideReason: 'lwdOverrideReason',
+  lwdOverrideById: 'lwdOverrideById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ResignationDiscussionScalarFieldEnum = (typeof ResignationDiscussionScalarFieldEnum)[keyof typeof ResignationDiscussionScalarFieldEnum]
+
+
+export const ReplacementRequestScalarFieldEnum = {
+  id: 'id',
+  terminationId: 'terminationId',
+  pipelineStatus: 'pipelineStatus',
+  candidateUserId: 'candidateUserId',
+  approvedById: 'approvedById',
+  approvedAt: 'approvedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReplacementRequestScalarFieldEnum = (typeof ReplacementRequestScalarFieldEnum)[keyof typeof ReplacementRequestScalarFieldEnum]
+
+
+export const ExitClearanceApprovalScalarFieldEnum = {
+  id: 'id',
+  terminationId: 'terminationId',
+  department: 'department',
+  approverId: 'approverId',
+  status: 'status',
+  comments: 'comments',
+  checklistItems: 'checklistItems',
+  actionDate: 'actionDate'
+} as const
+
+export type ExitClearanceApprovalScalarFieldEnum = (typeof ExitClearanceApprovalScalarFieldEnum)[keyof typeof ExitClearanceApprovalScalarFieldEnum]
+
+
+export const ComplianceReviewScalarFieldEnum = {
+  id: 'id',
+  terminationId: 'terminationId',
+  properlyConducted: 'properlyConducted',
+  voluntaryConfirmation: 'voluntaryConfirmation',
+  noticePeriodCommunicated: 'noticePeriodCommunicated',
+  noUnresolvedIssues: 'noUnresolvedIssues',
+  turnoverAcknowledged: 'turnoverAcknowledged',
+  overallResult: 'overallResult',
+  reviewedById: 'reviewedById',
+  reviewedAt: 'reviewedAt'
+} as const
+
+export type ComplianceReviewScalarFieldEnum = (typeof ComplianceReviewScalarFieldEnum)[keyof typeof ComplianceReviewScalarFieldEnum]
+
+
+export const FinalPayoutScalarFieldEnum = {
+  id: 'id',
+  terminationId: 'terminationId',
+  amount: 'amount',
+  endorsedById: 'endorsedById',
+  endorsedAt: 'endorsedAt',
+  slaDueDate: 'slaDueDate',
+  processedAt: 'processedAt',
+  status: 'status'
+} as const
+
+export type FinalPayoutScalarFieldEnum = (typeof FinalPayoutScalarFieldEnum)[keyof typeof FinalPayoutScalarFieldEnum]
 
 
 export const ExitSurveyInviteScalarFieldEnum = {
@@ -4905,6 +5346,76 @@ export type ListEnumTerminationWorkflowStatusFieldRefInput<$PrismaModel> = Field
 
 
 /**
+ * Reference to a field of type 'ReplacementPipelineStatus'
+ */
+export type EnumReplacementPipelineStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReplacementPipelineStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ReplacementPipelineStatus[]'
+ */
+export type ListEnumReplacementPipelineStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReplacementPipelineStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ExitClearanceDepartment'
+ */
+export type EnumExitClearanceDepartmentFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExitClearanceDepartment'>
+    
+
+
+/**
+ * Reference to a field of type 'ExitClearanceDepartment[]'
+ */
+export type ListEnumExitClearanceDepartmentFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExitClearanceDepartment[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ClearanceApprovalStatus'
+ */
+export type EnumClearanceApprovalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClearanceApprovalStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ClearanceApprovalStatus[]'
+ */
+export type ListEnumClearanceApprovalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClearanceApprovalStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ComplianceReviewResult'
+ */
+export type EnumComplianceReviewResultFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComplianceReviewResult'>
+    
+
+
+/**
+ * Reference to a field of type 'ComplianceReviewResult[]'
+ */
+export type ListEnumComplianceReviewResultFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ComplianceReviewResult[]'>
+    
+
+
+/**
+ * Reference to a field of type 'FinalPayoutStatus'
+ */
+export type EnumFinalPayoutStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FinalPayoutStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'FinalPayoutStatus[]'
+ */
+export type ListEnumFinalPayoutStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FinalPayoutStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'ChannelKind'
  */
 export type EnumChannelKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChannelKind'>
@@ -5053,10 +5564,19 @@ export type BatchPayload = {
 export const defineExtension = runtime.Extensions.defineExtension as unknown as runtime.Types.Extensions.ExtendsHook<"define", TypeMapCb, runtime.Types.Extensions.DefaultArgs>
 export type DefaultPrismaClient = PrismaClient
 export type ErrorFormat = 'pretty' | 'colorless' | 'minimal'
-/**
- * Options common to all variants of `PrismaClientOptions`, regardless of whether you connect to your database through a driver adapter or through Prisma Accelerate.
- */
-export interface PrismaClientBaseOptions {
+export type PrismaClientOptions = ({
+  /**
+   * Instance of a Driver Adapter, e.g., like one provided by `@prisma/adapter-pg`.
+   */
+  adapter: runtime.SqlDriverAdapterFactory
+  accelerateUrl?: never
+} | {
+  /**
+   * Prisma Accelerate URL allowing the client to connect through Accelerate instead of a direct database.
+   */
+  accelerateUrl: string
+  adapter?: never
+}) & {
   /**
    * @default "colorless"
    */
@@ -5143,56 +5663,6 @@ export interface PrismaClientBaseOptions {
    */
   queryPlanCacheMaxSize?: number
 }
-
-/**
- * `PrismaClient` options for connecting to your database through Prisma Accelerate instead of a driver adapter.
- * 
- * Learn more: https://pris.ly/d/accelerate
- */
-export interface PrismaClientOptionsWithAccelerateUrl extends PrismaClientBaseOptions {
-  /**
-   * The Prisma Accelerate connection URL. Use this option to connect to your database through Prisma Accelerate instead of using a driver adapter to connect directly.
-   * 
-   * Learn more: https://pris.ly/d/accelerate
-   */
-  accelerateUrl: string
-  adapter?: never
-}
-
-/**
- * `PrismaClient` options for connecting to your database through a driver adapter. This is the common case in Prisma 7.
- * 
- * Learn more: https://pris.ly/d/driver-adapters
- */
-export interface PrismaClientOptionsWithAdapter extends PrismaClientBaseOptions {
-  /**
-   * A driver adapter that PrismaClient uses to connect to your database, such as the ones provided by `@prisma/adapter-pg`, `@prisma/adapter-libsql`, `@prisma/adapter-planetscale`, etc.
-   * 
-   * A driver adapter is **required** unless you connect to your database through Prisma Accelerate (in which case use `accelerateUrl` instead).
-   * 
-   * Learn more: https://pris.ly/d/driver-adapters
-   * 
-   * @example
-   * ```ts
-   * import { PrismaPg } from '@prisma/adapter-pg'
-   * import { PrismaClient } from './generated/prisma/client'
-   * 
-   * const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
-   * const prisma = new PrismaClient({ adapter })
-   * ```
-   */
-  adapter: runtime.SqlDriverAdapterFactory
-  accelerateUrl?: never
-}
-
-/**
- * Options passed to the `PrismaClient` constructor.
- * 
- * A driver adapter (or, alternatively, a Prisma Accelerate URL) is **required**. See {@link PrismaClientOptionsWithAdapter} and {@link PrismaClientOptionsWithAccelerateUrl} for the two variants. All other properties live in {@link PrismaClientBaseOptions} and are optional.
- * 
- * Learn more about driver adapters: https://pris.ly/d/driver-adapters
- */
-export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaClientOptionsWithAdapter
 export type GlobalOmitConfig = {
   department?: Prisma.DepartmentOmit
   position?: Prisma.PositionOmit
@@ -5216,6 +5686,11 @@ export type GlobalOmitConfig = {
   ticket?: Prisma.TicketOmit
   ticketConversation?: Prisma.TicketConversationOmit
   termination?: Prisma.TerminationOmit
+  resignationDiscussion?: Prisma.ResignationDiscussionOmit
+  replacementRequest?: Prisma.ReplacementRequestOmit
+  exitClearanceApproval?: Prisma.ExitClearanceApprovalOmit
+  complianceReview?: Prisma.ComplianceReviewOmit
+  finalPayout?: Prisma.FinalPayoutOmit
   exitSurveyInvite?: Prisma.ExitSurveyInviteOmit
   exitSurveyResponse?: Prisma.ExitSurveyResponseOmit
   exitClearance?: Prisma.ExitClearanceOmit
