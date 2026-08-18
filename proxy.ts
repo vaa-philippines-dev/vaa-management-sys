@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 
-const protectedPaths = ['/clients', '/vas', '/assignments', '/work-logs', '/skills', '/reports', '/dashboard', '/departments', '/admin', '/tickets', '/teams', '/inbox', '/celebrants', '/va-connections', '/settings']
+const protectedPaths = ['/clients', '/vas', '/assignments', '/work-logs', '/skills', '/reports', '/dashboard', '/departments', '/admin', '/tickets', '/teams', '/inbox', '/celebrants', '/va-connections', '/settings', '/accounts', '/customers', '/feedback', '/help-center', '/matching', '/offboarding', '/vee']
 const authPaths = ['/login']
 
 export async function proxy(request: NextRequest) {
@@ -20,7 +20,7 @@ export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl
     const isProtected = protectedPaths.some((p) => pathname.startsWith(p))
     if (isProtected) {
-      return NextResponse.redirect(new URL('/login', request.url))
+      return NextResponse.redirect(new URL('/', request.url))
     }
     return NextResponse.next()
   }
@@ -51,7 +51,7 @@ export async function proxy(request: NextRequest) {
   const justLoggedIn = request.cookies.get('vaa_just_logged_in')
 
   if (isProtected && !session) {
-    return NextResponse.redirect(new URL('/login', request.url))
+    return NextResponse.redirect(new URL('/', request.url))
   }
 
   if (isAuth && session) {

@@ -80,7 +80,7 @@ export function ProfileCard({
     } catch {
       // Supabase not configured — just redirect
     }
-    router.push('/login')
+    router.push('/')
   }
 
   const handleViewAs = (role: string, departmentId?: string) => {
