@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.8.0
- * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
+ * Prisma Client JS version: 7.9.0
+ * Query Engine version: e922089b7d7502aff4249d5da3420f6fa55fc6ad
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.8.0",
-  engine: "3c6e192761c0362d496ed980de936e2f3cebcd3a"
+  client: "7.9.0",
+  engine: "e922089b7d7502aff4249d5da3420f6fa55fc6ad"
 }
 
 /**
@@ -156,6 +156,19 @@ export type Subset<T, U> = {
 };
 
 /**
+ * Resolved type of the argument passed to the `PrismaClient` constructor.
+ *
+ * When called without a narrower options type (the common case), this resolves
+ * to `PrismaClientOptions` directly, which produces a clear TypeScript error
+ * message (`not assignable to parameter of type 'PrismaClientOptions'`) when
+ * the argument is missing or incomplete. When the user supplies a narrower
+ * options type (e.g. via a literal), it falls back to `Subset` to keep
+ * filtering out unknown properties.
+ */
+export type PrismaClientConstructorArgs<Options extends PrismaClientOptions> =
+  [PrismaClientOptions] extends [Options] ? PrismaClientOptions : Subset<Options, PrismaClientOptions>;
+
+/**
  * SelectSubset
  * @desc From `T` pick properties that exist in `U`. Simple version of Intersection.
  * Additionally, it validates, if both select and include are present. If the case, it errors.
@@ -187,7 +200,7 @@ type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
 export type XOR<T, U> =
   T extends object ?
   U extends object ?
-    (Without<T, U> & U) | (Without<U, T> & T)
+    ((Without<T, U> & U) | (Without<U, T> & T)) & object
   : U : T
 
 
@@ -397,7 +410,10 @@ export const ModelName = {
   DepartmentSkill: 'DepartmentSkill',
   VASkill: 'VASkill',
   VADocument: 'VADocument',
+  LeaveApprovalRule: 'LeaveApprovalRule',
+  LeaveApprovalStep: 'LeaveApprovalStep',
   LeaveRequest: 'LeaveRequest',
+  LeaveApprovalAction: 'LeaveApprovalAction',
   EmployeeIdCounter: 'EmployeeIdCounter',
   VAOnboardingInvite: 'VAOnboardingInvite',
   Client: 'Client',
@@ -446,7 +462,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveRequest" | "employeeIdCounter" | "vAOnboardingInvite" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "termination" | "resignationDiscussion" | "replacementRequest" | "exitClearanceApproval" | "complianceReview" | "finalPayout" | "exitSurveyInvite" | "exitSurveyResponse" | "exitClearance" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "customer" | "account" | "notification" | "sidebarFavorite" | "team" | "teamMembership" | "clientPipeline" | "agentSuggestion" | "agentRun"
+    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveApprovalRule" | "leaveApprovalStep" | "leaveRequest" | "leaveApprovalAction" | "employeeIdCounter" | "vAOnboardingInvite" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "termination" | "resignationDiscussion" | "replacementRequest" | "exitClearanceApproval" | "complianceReview" | "finalPayout" | "exitSurveyInvite" | "exitSurveyResponse" | "exitClearance" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "customer" | "account" | "notification" | "sidebarFavorite" | "team" | "teamMembership" | "clientPipeline" | "agentSuggestion" | "agentRun"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1412,6 +1428,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    LeaveApprovalRule: {
+      payload: Prisma.$LeaveApprovalRulePayload<ExtArgs>
+      fields: Prisma.LeaveApprovalRuleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LeaveApprovalRuleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalRulePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LeaveApprovalRuleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalRulePayload>
+        }
+        findFirst: {
+          args: Prisma.LeaveApprovalRuleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalRulePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LeaveApprovalRuleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalRulePayload>
+        }
+        findMany: {
+          args: Prisma.LeaveApprovalRuleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalRulePayload>[]
+        }
+        create: {
+          args: Prisma.LeaveApprovalRuleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalRulePayload>
+        }
+        createMany: {
+          args: Prisma.LeaveApprovalRuleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LeaveApprovalRuleCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalRulePayload>[]
+        }
+        delete: {
+          args: Prisma.LeaveApprovalRuleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalRulePayload>
+        }
+        update: {
+          args: Prisma.LeaveApprovalRuleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalRulePayload>
+        }
+        deleteMany: {
+          args: Prisma.LeaveApprovalRuleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LeaveApprovalRuleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LeaveApprovalRuleUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalRulePayload>[]
+        }
+        upsert: {
+          args: Prisma.LeaveApprovalRuleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalRulePayload>
+        }
+        aggregate: {
+          args: Prisma.LeaveApprovalRuleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLeaveApprovalRule>
+        }
+        groupBy: {
+          args: Prisma.LeaveApprovalRuleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LeaveApprovalRuleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LeaveApprovalRuleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LeaveApprovalRuleCountAggregateOutputType> | number
+        }
+      }
+    }
+    LeaveApprovalStep: {
+      payload: Prisma.$LeaveApprovalStepPayload<ExtArgs>
+      fields: Prisma.LeaveApprovalStepFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LeaveApprovalStepFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalStepPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LeaveApprovalStepFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalStepPayload>
+        }
+        findFirst: {
+          args: Prisma.LeaveApprovalStepFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalStepPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LeaveApprovalStepFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalStepPayload>
+        }
+        findMany: {
+          args: Prisma.LeaveApprovalStepFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalStepPayload>[]
+        }
+        create: {
+          args: Prisma.LeaveApprovalStepCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalStepPayload>
+        }
+        createMany: {
+          args: Prisma.LeaveApprovalStepCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LeaveApprovalStepCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalStepPayload>[]
+        }
+        delete: {
+          args: Prisma.LeaveApprovalStepDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalStepPayload>
+        }
+        update: {
+          args: Prisma.LeaveApprovalStepUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalStepPayload>
+        }
+        deleteMany: {
+          args: Prisma.LeaveApprovalStepDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LeaveApprovalStepUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LeaveApprovalStepUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalStepPayload>[]
+        }
+        upsert: {
+          args: Prisma.LeaveApprovalStepUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalStepPayload>
+        }
+        aggregate: {
+          args: Prisma.LeaveApprovalStepAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLeaveApprovalStep>
+        }
+        groupBy: {
+          args: Prisma.LeaveApprovalStepGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LeaveApprovalStepGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LeaveApprovalStepCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LeaveApprovalStepCountAggregateOutputType> | number
+        }
+      }
+    }
     LeaveRequest: {
       payload: Prisma.$LeaveRequestPayload<ExtArgs>
       fields: Prisma.LeaveRequestFieldRefs
@@ -1483,6 +1647,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.LeaveRequestCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.LeaveRequestCountAggregateOutputType> | number
+        }
+      }
+    }
+    LeaveApprovalAction: {
+      payload: Prisma.$LeaveApprovalActionPayload<ExtArgs>
+      fields: Prisma.LeaveApprovalActionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LeaveApprovalActionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalActionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LeaveApprovalActionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalActionPayload>
+        }
+        findFirst: {
+          args: Prisma.LeaveApprovalActionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalActionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LeaveApprovalActionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalActionPayload>
+        }
+        findMany: {
+          args: Prisma.LeaveApprovalActionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalActionPayload>[]
+        }
+        create: {
+          args: Prisma.LeaveApprovalActionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalActionPayload>
+        }
+        createMany: {
+          args: Prisma.LeaveApprovalActionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LeaveApprovalActionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalActionPayload>[]
+        }
+        delete: {
+          args: Prisma.LeaveApprovalActionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalActionPayload>
+        }
+        update: {
+          args: Prisma.LeaveApprovalActionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalActionPayload>
+        }
+        deleteMany: {
+          args: Prisma.LeaveApprovalActionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LeaveApprovalActionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LeaveApprovalActionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalActionPayload>[]
+        }
+        upsert: {
+          args: Prisma.LeaveApprovalActionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LeaveApprovalActionPayload>
+        }
+        aggregate: {
+          args: Prisma.LeaveApprovalActionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLeaveApprovalAction>
+        }
+        groupBy: {
+          args: Prisma.LeaveApprovalActionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LeaveApprovalActionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LeaveApprovalActionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LeaveApprovalActionCountAggregateOutputType> | number
         }
       }
     }
@@ -4242,6 +4480,32 @@ export const VADocumentScalarFieldEnum = {
 export type VADocumentScalarFieldEnum = (typeof VADocumentScalarFieldEnum)[keyof typeof VADocumentScalarFieldEnum]
 
 
+export const LeaveApprovalRuleScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  submitterRole: 'submitterRole',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LeaveApprovalRuleScalarFieldEnum = (typeof LeaveApprovalRuleScalarFieldEnum)[keyof typeof LeaveApprovalRuleScalarFieldEnum]
+
+
+export const LeaveApprovalStepScalarFieldEnum = {
+  id: 'id',
+  ruleId: 'ruleId',
+  order: 'order',
+  resolution: 'resolution',
+  approverRole: 'approverRole',
+  approverUserId: 'approverUserId',
+  requireAll: 'requireAll',
+  createdAt: 'createdAt'
+} as const
+
+export type LeaveApprovalStepScalarFieldEnum = (typeof LeaveApprovalStepScalarFieldEnum)[keyof typeof LeaveApprovalStepScalarFieldEnum]
+
+
 export const LeaveRequestScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -4251,15 +4515,28 @@ export const LeaveRequestScalarFieldEnum = {
   totalDays: 'totalDays',
   reason: 'reason',
   status: 'status',
-  approverId: 'approverId',
-  approvedAt: 'approvedAt',
-  approverNote: 'approverNote',
-  notificationSent: 'notificationSent',
+  currentStep: 'currentStep',
+  ruleId: 'ruleId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type LeaveRequestScalarFieldEnum = (typeof LeaveRequestScalarFieldEnum)[keyof typeof LeaveRequestScalarFieldEnum]
+
+
+export const LeaveApprovalActionScalarFieldEnum = {
+  id: 'id',
+  leaveRequestId: 'leaveRequestId',
+  stepOrder: 'stepOrder',
+  approverId: 'approverId',
+  status: 'status',
+  note: 'note',
+  emailSent: 'emailSent',
+  decidedAt: 'decidedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type LeaveApprovalActionScalarFieldEnum = (typeof LeaveApprovalActionScalarFieldEnum)[keyof typeof LeaveApprovalActionScalarFieldEnum]
 
 
 export const EmployeeIdCounterScalarFieldEnum = {
@@ -5166,6 +5443,20 @@ export type ListEnumDocumentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
 
 
 /**
+ * Reference to a field of type 'ApproverResolution'
+ */
+export type EnumApproverResolutionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApproverResolution'>
+    
+
+
+/**
+ * Reference to a field of type 'ApproverResolution[]'
+ */
+export type ListEnumApproverResolutionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApproverResolution[]'>
+    
+
+
+/**
  * Reference to a field of type 'LeaveType'
  */
 export type EnumLeaveTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LeaveType'>
@@ -5566,19 +5857,10 @@ export type BatchPayload = {
 export const defineExtension = runtime.Extensions.defineExtension as unknown as runtime.Types.Extensions.ExtendsHook<"define", TypeMapCb, runtime.Types.Extensions.DefaultArgs>
 export type DefaultPrismaClient = PrismaClient
 export type ErrorFormat = 'pretty' | 'colorless' | 'minimal'
-export type PrismaClientOptions = ({
-  /**
-   * Instance of a Driver Adapter, e.g., like one provided by `@prisma/adapter-pg`.
-   */
-  adapter: runtime.SqlDriverAdapterFactory
-  accelerateUrl?: never
-} | {
-  /**
-   * Prisma Accelerate URL allowing the client to connect through Accelerate instead of a direct database.
-   */
-  accelerateUrl: string
-  adapter?: never
-}) & {
+/**
+ * Options common to all variants of `PrismaClientOptions`, regardless of whether you connect to your database through a driver adapter or through Prisma Accelerate.
+ */
+export interface PrismaClientBaseOptions {
   /**
    * @default "colorless"
    */
@@ -5665,6 +5947,56 @@ export type PrismaClientOptions = ({
    */
   queryPlanCacheMaxSize?: number
 }
+
+/**
+ * `PrismaClient` options for connecting to your database through Prisma Accelerate instead of a driver adapter.
+ * 
+ * Learn more: https://pris.ly/d/accelerate
+ */
+export interface PrismaClientOptionsWithAccelerateUrl extends PrismaClientBaseOptions {
+  /**
+   * The Prisma Accelerate connection URL. Use this option to connect to your database through Prisma Accelerate instead of using a driver adapter to connect directly.
+   * 
+   * Learn more: https://pris.ly/d/accelerate
+   */
+  accelerateUrl: string
+  adapter?: never
+}
+
+/**
+ * `PrismaClient` options for connecting to your database through a driver adapter. This is the common case in Prisma 7.
+ * 
+ * Learn more: https://pris.ly/d/driver-adapters
+ */
+export interface PrismaClientOptionsWithAdapter extends PrismaClientBaseOptions {
+  /**
+   * A driver adapter that PrismaClient uses to connect to your database, such as the ones provided by `@prisma/adapter-pg`, `@prisma/adapter-libsql`, `@prisma/adapter-planetscale`, etc.
+   * 
+   * A driver adapter is **required** unless you connect to your database through Prisma Accelerate (in which case use `accelerateUrl` instead).
+   * 
+   * Learn more: https://pris.ly/d/driver-adapters
+   * 
+   * @example
+   * ```ts
+   * import { PrismaPg } from '@prisma/adapter-pg'
+   * import { PrismaClient } from './generated/prisma/client'
+   * 
+   * const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
+   * const prisma = new PrismaClient({ adapter })
+   * ```
+   */
+  adapter: runtime.SqlDriverAdapterFactory
+  accelerateUrl?: never
+}
+
+/**
+ * Options passed to the `PrismaClient` constructor.
+ * 
+ * A driver adapter (or, alternatively, a Prisma Accelerate URL) is **required**. See {@link PrismaClientOptionsWithAdapter} and {@link PrismaClientOptionsWithAccelerateUrl} for the two variants. All other properties live in {@link PrismaClientBaseOptions} and are optional.
+ * 
+ * Learn more about driver adapters: https://pris.ly/d/driver-adapters
+ */
+export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaClientOptionsWithAdapter
 export type GlobalOmitConfig = {
   department?: Prisma.DepartmentOmit
   position?: Prisma.PositionOmit
@@ -5679,7 +6011,10 @@ export type GlobalOmitConfig = {
   departmentSkill?: Prisma.DepartmentSkillOmit
   vASkill?: Prisma.VASkillOmit
   vADocument?: Prisma.VADocumentOmit
+  leaveApprovalRule?: Prisma.LeaveApprovalRuleOmit
+  leaveApprovalStep?: Prisma.LeaveApprovalStepOmit
   leaveRequest?: Prisma.LeaveRequestOmit
+  leaveApprovalAction?: Prisma.LeaveApprovalActionOmit
   employeeIdCounter?: Prisma.EmployeeIdCounterOmit
   vAOnboardingInvite?: Prisma.VAOnboardingInviteOmit
   client?: Prisma.ClientOmit

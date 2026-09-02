@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Bell, Briefcase, Clock, MessageSquare, Reply, MoreHorizontal, Circle, CircleDot, UserMinus } from 'lucide-react'
+import { Bell, Briefcase, Clock, MessageSquare, Reply, MoreHorizontal, Circle, CircleDot, UserMinus, CalendarCheck, CalendarX } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { createClient, waitForRealtimeAuth } from '@/lib/supabase/client'
@@ -34,7 +34,14 @@ function toUtcIso(value: string | null): string | null {
 
 type Notification = {
   id: string
-  type: 'NEW_ASSIGNMENT' | 'HOURS_SHORTFALL' | 'NEW_MESSAGE' | 'MESSAGE_REPLY' | 'RESIGNATION_INTAKE'
+  type:
+    | 'NEW_ASSIGNMENT'
+    | 'HOURS_SHORTFALL'
+    | 'NEW_MESSAGE'
+    | 'MESSAGE_REPLY'
+    | 'RESIGNATION_INTAKE'
+    | 'LEAVE_APPROVAL_NEEDED'
+    | 'LEAVE_REQUEST_DECIDED'
   title: string
   message: string
   read: boolean
@@ -53,6 +60,8 @@ const TYPE_ICON: Record<Notification['type'], React.ComponentType<{ className?: 
   NEW_MESSAGE: MessageSquare,
   MESSAGE_REPLY: Reply,
   RESIGNATION_INTAKE: UserMinus,
+  LEAVE_APPROVAL_NEEDED: CalendarCheck,
+  LEAVE_REQUEST_DECIDED: CalendarX,
 }
 
 export function NotificationBell({
@@ -181,6 +190,10 @@ export function NotificationBell({
         router.push(`/inbox?channel=${n.entityId}`)
       } else if (n.type === 'RESIGNATION_INTAKE' && n.entityId) {
         router.push(`/offboarding/${n.entityId}`)
+      } else if (n.type === 'LEAVE_APPROVAL_NEEDED') {
+        router.push('/leave/approvals')
+      } else if (n.type === 'LEAVE_REQUEST_DECIDED') {
+        router.push('/leave')
       }
     },
     [router]

@@ -36,6 +36,9 @@ import {
   LifeBuoy,
   Settings,
   UserMinus,
+  CalendarClock,
+  CalendarCheck,
+  Workflow,
 } from 'lucide-react'
 import Image from 'next/image'
 import {
@@ -271,6 +274,8 @@ const onGoingRoutes = [
   { label: 'Work Logs', href: '/work-logs', icon: ListTodo },
   { label: 'Services', href: '/skills', icon: UserCog },
   { label: 'Tickets', href: '/tickets', icon: Ticket },
+  { label: 'Leave', href: '/leave', icon: CalendarClock },
+  { label: 'Leave Approvals', href: '/leave/approvals', icon: CalendarCheck },
   { label: 'Monthly Report', href: '/reports', icon: BarChart3 },
 ]
 
@@ -310,6 +315,7 @@ const adminRoutes = [
   { label: 'Customers', href: '/customers', icon: Building2 },
   { label: 'Accounts', href: '/accounts', icon: IdCard },
   { label: 'Departments (org view)', href: '/departments', icon: Landmark },
+  { label: 'Leave Hierarchy', href: '/admin/leave-hierarchy', icon: Workflow },
   { label: 'Audit Log', href: '/admin/audit', icon: ClipboardList },
   { label: 'History', href: '/admin/history', icon: History },
   { label: 'VA Connections', href: '/va-connections', icon: Database },
@@ -321,11 +327,13 @@ export function Sidebar({
   isAdmin = false,
   initialFavorites = [],
   showDepartmentSection = false,
+  canManageLeave = false,
 }: {
   role?: 'MANAGER' | 'VA'
   isAdmin?: boolean
   initialFavorites?: FavoriteRecord[]
   showDepartmentSection?: boolean
+  canManageLeave?: boolean
 }) {
   const pathname = usePathname()
   const routes = role === 'VA' ? vaRoutes : managerRoutes
@@ -623,6 +631,18 @@ export function Sidebar({
                 atMax={atMax}
                 onChanged={setFavorites}
               />
+              {canManageLeave && (
+                <FavoritableRow
+                  href="/admin/leave-hierarchy"
+                  label="Leave Hierarchy"
+                  icon={Workflow}
+                  isActive={isMainRowActive('/admin/leave-hierarchy', isRouteActive('/admin/leave-hierarchy'))}
+                  canFavorite={canFavorite}
+                  favorite={favorites.find((f) => f.href === '/admin/leave-hierarchy')}
+                  atMax={atMax}
+                  onChanged={setFavorites}
+                />
+              )}
               <FavoritableRow
                 href="/admin/audit"
                 label="Audit Log"
@@ -706,6 +726,20 @@ export function Sidebar({
                   onChanged={setFavorites}
                 />
               ))}
+              {/* HR can manage the leave hierarchy but isn't a full admin, so it
+                  doesn't get the Admin section above where this link normally lives. */}
+              {!isAdmin && canManageLeave && (
+                <FavoritableRow
+                  href="/admin/leave-hierarchy"
+                  label="Leave Hierarchy"
+                  icon={Workflow}
+                  isActive={isMainRowActive('/admin/leave-hierarchy', isRouteActive('/admin/leave-hierarchy'))}
+                  canFavorite={canFavorite}
+                  favorite={favorites.find((f) => f.href === '/admin/leave-hierarchy')}
+                  atMax={atMax}
+                  onChanged={setFavorites}
+                />
+              )}
             </>
           )}
 

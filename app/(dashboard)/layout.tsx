@@ -8,7 +8,7 @@ import { ImportVACsvModal } from '@/components/vas/ImportVACsvModal'
 import { ClientCsvImportProvider } from '@/components/clients/ClientCsvImportContext'
 import { ClientCsvImportFloatingWidget } from '@/components/clients/ClientCsvImportFloatingWidget'
 import { ImportClientCsvModal } from '@/components/clients/ImportClientCsvModal'
-import { getCurrentUser, CLIENT_MUTATOR_ROLES } from '@/lib/auth'
+import { getCurrentUser, CLIENT_MUTATOR_ROLES, LEAVE_ADMIN_ROLES } from '@/lib/auth'
 import { getSidebarFavorites } from '@/lib/favorites'
 import { isTeamAffiliated } from '@/lib/teams'
 import { prisma } from '@/lib/prisma'
@@ -25,6 +25,7 @@ export default async function DashboardLayout({
 
   const isManagerDeptRole = user ? ['DEPT_MANAGER', 'OPERATIONS_MANAGER', 'TEAM_LEADER'].includes(user.systemRole) : false
   const isHR = user?.systemRole === 'HR'
+  const canManageLeave = user ? LEAVE_ADMIN_ROLES.includes(user.systemRole) : false
   const showDepartmentSection =
     isAdmin ||
     isHR ||
@@ -46,7 +47,13 @@ export default async function DashboardLayout({
         <VACsvImportProvider>
           <ClientCsvImportProvider>
             <div className="flex h-screen bg-background">
-              <Sidebar role={role} isAdmin={isAdmin} initialFavorites={favorites} showDepartmentSection={showDepartmentSection} />
+              <Sidebar
+                role={role}
+                isAdmin={isAdmin}
+                initialFavorites={favorites}
+                showDepartmentSection={showDepartmentSection}
+                canManageLeave={canManageLeave}
+              />
               <div className="flex flex-1 flex-col overflow-hidden">
                 <Navbar />
                 <main className="flex-1 overflow-auto p-6 has-[[data-inbox-page]]:overflow-hidden has-[[data-inbox-page]]:p-0">

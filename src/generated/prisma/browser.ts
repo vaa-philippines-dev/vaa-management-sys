@@ -83,10 +83,25 @@ export type VASkill = Prisma.VASkillModel
  */
 export type VADocument = Prisma.VADocumentModel
 /**
+ * Model LeaveApprovalRule
+ * 
+ */
+export type LeaveApprovalRule = Prisma.LeaveApprovalRuleModel
+/**
+ * Model LeaveApprovalStep
+ * 
+ */
+export type LeaveApprovalStep = Prisma.LeaveApprovalStepModel
+/**
  * Model LeaveRequest
  * 
  */
 export type LeaveRequest = Prisma.LeaveRequestModel
+/**
+ * Model LeaveApprovalAction
+ * 
+ */
+export type LeaveApprovalAction = Prisma.LeaveApprovalActionModel
 /**
  * Model EmployeeIdCounter
  * 

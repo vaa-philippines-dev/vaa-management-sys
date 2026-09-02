@@ -287,7 +287,8 @@ export type UserWhereInput = {
   roleAssignments?: Prisma.RoleAssignmentListRelationFilter
   grantedRoleAssignments?: Prisma.RoleAssignmentListRelationFilter
   leaveRequests?: Prisma.LeaveRequestListRelationFilter
-  approvedLeaves?: Prisma.LeaveRequestListRelationFilter
+  leaveApprovalActions?: Prisma.LeaveApprovalActionListRelationFilter
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepListRelationFilter
   managedClients?: Prisma.ClientListRelationFilter
   uploadedDocuments?: Prisma.VADocumentListRelationFilter
   createdTickets?: Prisma.TicketListRelationFilter
@@ -348,7 +349,8 @@ export type UserOrderByWithRelationInput = {
   roleAssignments?: Prisma.RoleAssignmentOrderByRelationAggregateInput
   grantedRoleAssignments?: Prisma.RoleAssignmentOrderByRelationAggregateInput
   leaveRequests?: Prisma.LeaveRequestOrderByRelationAggregateInput
-  approvedLeaves?: Prisma.LeaveRequestOrderByRelationAggregateInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionOrderByRelationAggregateInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepOrderByRelationAggregateInput
   managedClients?: Prisma.ClientOrderByRelationAggregateInput
   uploadedDocuments?: Prisma.VADocumentOrderByRelationAggregateInput
   createdTickets?: Prisma.TicketOrderByRelationAggregateInput
@@ -412,7 +414,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   roleAssignments?: Prisma.RoleAssignmentListRelationFilter
   grantedRoleAssignments?: Prisma.RoleAssignmentListRelationFilter
   leaveRequests?: Prisma.LeaveRequestListRelationFilter
-  approvedLeaves?: Prisma.LeaveRequestListRelationFilter
+  leaveApprovalActions?: Prisma.LeaveApprovalActionListRelationFilter
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepListRelationFilter
   managedClients?: Prisma.ClientListRelationFilter
   uploadedDocuments?: Prisma.VADocumentListRelationFilter
   createdTickets?: Prisma.TicketListRelationFilter
@@ -519,7 +522,8 @@ export type UserCreateInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -580,7 +584,8 @@ export type UserUncheckedCreateInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -641,7 +646,8 @@ export type UserUpdateInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -702,7 +708,8 @@ export type UserUncheckedUpdateInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -1036,15 +1043,25 @@ export type UserUpdateOneRequiredWithoutUploadedDocumentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUploadedDocumentsInput, Prisma.UserUpdateWithoutUploadedDocumentsInput>, Prisma.UserUncheckedUpdateWithoutUploadedDocumentsInput>
 }
 
-export type UserCreateNestedOneWithoutLeaveRequestsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutLeaveRequestsInput, Prisma.UserUncheckedCreateWithoutLeaveRequestsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLeaveRequestsInput
+export type UserCreateNestedOneWithoutLeaveApprovalStepAssignmentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLeaveApprovalStepAssignmentsInput, Prisma.UserUncheckedCreateWithoutLeaveApprovalStepAssignmentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLeaveApprovalStepAssignmentsInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserCreateNestedOneWithoutApprovedLeavesInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutApprovedLeavesInput, Prisma.UserUncheckedCreateWithoutApprovedLeavesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutApprovedLeavesInput
+export type UserUpdateOneWithoutLeaveApprovalStepAssignmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLeaveApprovalStepAssignmentsInput, Prisma.UserUncheckedCreateWithoutLeaveApprovalStepAssignmentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLeaveApprovalStepAssignmentsInput
+  upsert?: Prisma.UserUpsertWithoutLeaveApprovalStepAssignmentsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLeaveApprovalStepAssignmentsInput, Prisma.UserUpdateWithoutLeaveApprovalStepAssignmentsInput>, Prisma.UserUncheckedUpdateWithoutLeaveApprovalStepAssignmentsInput>
+}
+
+export type UserCreateNestedOneWithoutLeaveRequestsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLeaveRequestsInput, Prisma.UserUncheckedCreateWithoutLeaveRequestsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLeaveRequestsInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
@@ -1056,14 +1073,18 @@ export type UserUpdateOneRequiredWithoutLeaveRequestsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLeaveRequestsInput, Prisma.UserUpdateWithoutLeaveRequestsInput>, Prisma.UserUncheckedUpdateWithoutLeaveRequestsInput>
 }
 
-export type UserUpdateOneWithoutApprovedLeavesNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutApprovedLeavesInput, Prisma.UserUncheckedCreateWithoutApprovedLeavesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutApprovedLeavesInput
-  upsert?: Prisma.UserUpsertWithoutApprovedLeavesInput
-  disconnect?: Prisma.UserWhereInput | boolean
-  delete?: Prisma.UserWhereInput | boolean
+export type UserCreateNestedOneWithoutLeaveApprovalActionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLeaveApprovalActionsInput, Prisma.UserUncheckedCreateWithoutLeaveApprovalActionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLeaveApprovalActionsInput
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutApprovedLeavesInput, Prisma.UserUpdateWithoutApprovedLeavesInput>, Prisma.UserUncheckedUpdateWithoutApprovedLeavesInput>
+}
+
+export type UserUpdateOneRequiredWithoutLeaveApprovalActionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLeaveApprovalActionsInput, Prisma.UserUncheckedCreateWithoutLeaveApprovalActionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLeaveApprovalActionsInput
+  upsert?: Prisma.UserUpsertWithoutLeaveApprovalActionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLeaveApprovalActionsInput, Prisma.UserUpdateWithoutLeaveApprovalActionsInput>, Prisma.UserUncheckedUpdateWithoutLeaveApprovalActionsInput>
 }
 
 export type UserCreateNestedOneWithoutOnboardingInviteInput = {
@@ -1514,7 +1535,8 @@ export type UserCreateWithoutDepartmentHeadInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -1574,7 +1596,8 @@ export type UserUncheckedCreateWithoutDepartmentHeadInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -1650,7 +1673,8 @@ export type UserUpdateWithoutDepartmentHeadInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -1710,7 +1734,8 @@ export type UserUncheckedUpdateWithoutDepartmentHeadInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -1770,7 +1795,8 @@ export type UserCreateWithoutMembershipsInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -1830,7 +1856,8 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -1906,7 +1933,8 @@ export type UserUpdateWithoutMembershipsInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -1966,7 +1994,8 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -2026,7 +2055,8 @@ export type UserCreateWithoutProfileInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -2086,7 +2116,8 @@ export type UserUncheckedCreateWithoutProfileInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -2162,7 +2193,8 @@ export type UserUpdateWithoutProfileInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -2222,7 +2254,8 @@ export type UserUncheckedUpdateWithoutProfileInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -2282,7 +2315,8 @@ export type UserCreateWithoutEmploymentRecordsInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -2342,7 +2376,8 @@ export type UserUncheckedCreateWithoutEmploymentRecordsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -2407,7 +2442,8 @@ export type UserCreateWithoutEmploymentRecordsInitiatedInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -2467,7 +2503,8 @@ export type UserUncheckedCreateWithoutEmploymentRecordsInitiatedInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -2543,7 +2580,8 @@ export type UserUpdateWithoutEmploymentRecordsInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -2603,7 +2641,8 @@ export type UserUncheckedUpdateWithoutEmploymentRecordsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -2674,7 +2713,8 @@ export type UserUpdateWithoutEmploymentRecordsInitiatedInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -2734,7 +2774,8 @@ export type UserUncheckedUpdateWithoutEmploymentRecordsInitiatedInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -2794,7 +2835,8 @@ export type UserCreateWithoutRoleAssignmentsInput = {
   employmentRecordsInitiated?: Prisma.EmploymentRecordCreateNestedManyWithoutInitiatorInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -2854,7 +2896,8 @@ export type UserUncheckedCreateWithoutRoleAssignmentsInput = {
   employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutInitiatorInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -2919,7 +2962,8 @@ export type UserCreateWithoutGrantedRoleAssignmentsInput = {
   employmentRecordsInitiated?: Prisma.EmploymentRecordCreateNestedManyWithoutInitiatorInput
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -2979,7 +3023,8 @@ export type UserUncheckedCreateWithoutGrantedRoleAssignmentsInput = {
   employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutInitiatorInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -3055,7 +3100,8 @@ export type UserUpdateWithoutRoleAssignmentsInput = {
   employmentRecordsInitiated?: Prisma.EmploymentRecordUpdateManyWithoutInitiatorNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -3115,7 +3161,8 @@ export type UserUncheckedUpdateWithoutRoleAssignmentsInput = {
   employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutInitiatorNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -3186,7 +3233,8 @@ export type UserUpdateWithoutGrantedRoleAssignmentsInput = {
   employmentRecordsInitiated?: Prisma.EmploymentRecordUpdateManyWithoutInitiatorNestedInput
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -3246,7 +3294,8 @@ export type UserUncheckedUpdateWithoutGrantedRoleAssignmentsInput = {
   employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutInitiatorNestedInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -3306,7 +3355,8 @@ export type UserCreateWithoutVaProfileInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -3366,7 +3416,8 @@ export type UserUncheckedCreateWithoutVaProfileInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -3442,7 +3493,8 @@ export type UserUpdateWithoutVaProfileInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -3502,7 +3554,8 @@ export type UserUncheckedUpdateWithoutVaProfileInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -3563,7 +3616,8 @@ export type UserCreateWithoutVaHistoryEventsInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -3623,7 +3677,8 @@ export type UserUncheckedCreateWithoutVaHistoryEventsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -3688,7 +3743,8 @@ export type UserCreateWithoutVaHistoryChangesInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -3748,7 +3804,8 @@ export type UserUncheckedCreateWithoutVaHistoryChangesInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -3824,7 +3881,8 @@ export type UserUpdateWithoutVaHistoryEventsInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -3884,7 +3942,8 @@ export type UserUncheckedUpdateWithoutVaHistoryEventsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -3955,7 +4014,8 @@ export type UserUpdateWithoutVaHistoryChangesInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -4015,7 +4075,8 @@ export type UserUncheckedUpdateWithoutVaHistoryChangesInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -4075,7 +4136,8 @@ export type UserCreateWithoutUploadedDocumentsInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
   assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
@@ -4135,7 +4197,8 @@ export type UserUncheckedCreateWithoutUploadedDocumentsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
   assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
@@ -4211,7 +4274,8 @@ export type UserUpdateWithoutUploadedDocumentsInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
   assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
@@ -4271,8 +4335,269 @@ export type UserUncheckedUpdateWithoutUploadedDocumentsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
+  createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
+  assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
+  ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
+  vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
+  pinnedMessages?: Prisma.MessageUncheckedUpdateManyWithoutPinnedByUserNestedInput
+  channelParticipants?: Prisma.ChannelParticipantUncheckedUpdateManyWithoutUserNestedInput
+  ledTeams?: Prisma.TeamUncheckedUpdateManyWithoutLeaderNestedInput
+  tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
+  tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
+  clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
+  resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
+  resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
+  replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
+  replacementApprovals?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
+  finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+}
+
+export type UserCreateWithoutLeaveApprovalStepAssignmentsInput = {
+  id?: string
+  email: string
+  employeeId?: string | null
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  extName?: string | null
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  messageColor?: $Enums.MessageColor
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  isBot?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
+  vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
+  pinnedMessages?: Prisma.MessageCreateNestedManyWithoutPinnedByUserInput
+  channelParticipants?: Prisma.ChannelParticipantCreateNestedManyWithoutUserInput
+  ledTeams?: Prisma.TeamCreateNestedManyWithoutLeaderInput
+  tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
+  tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
+  clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
+  resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
+  resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
+  replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
+  replacementApprovals?: Prisma.ReplacementRequestCreateNestedManyWithoutApprovedByInput
+  exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
+  complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
+  finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+}
+
+export type UserUncheckedCreateWithoutLeaveApprovalStepAssignmentsInput = {
+  id?: string
+  email: string
+  employeeId?: string | null
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  extName?: string | null
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  messageColor?: $Enums.MessageColor
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  isBot?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileUncheckedCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipUncheckedCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
+  vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
+  pinnedMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPinnedByUserInput
+  channelParticipants?: Prisma.ChannelParticipantUncheckedCreateNestedManyWithoutUserInput
+  ledTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutLeaderInput
+  tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
+  tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
+  clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
+  resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
+  resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
+  replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
+  replacementApprovals?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
+  complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
+  finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+}
+
+export type UserCreateOrConnectWithoutLeaveApprovalStepAssignmentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutLeaveApprovalStepAssignmentsInput, Prisma.UserUncheckedCreateWithoutLeaveApprovalStepAssignmentsInput>
+}
+
+export type UserUpsertWithoutLeaveApprovalStepAssignmentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutLeaveApprovalStepAssignmentsInput, Prisma.UserUncheckedUpdateWithoutLeaveApprovalStepAssignmentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutLeaveApprovalStepAssignmentsInput, Prisma.UserUncheckedCreateWithoutLeaveApprovalStepAssignmentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutLeaveApprovalStepAssignmentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutLeaveApprovalStepAssignmentsInput, Prisma.UserUncheckedUpdateWithoutLeaveApprovalStepAssignmentsInput>
+}
+
+export type UserUpdateWithoutLeaveApprovalStepAssignmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  extName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumMessageColorFieldUpdateOperationsInput | $Enums.MessageColor
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  vaProfile?: Prisma.VAProfileUpdateOneWithoutUserNestedInput
+  departmentHead?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUpdateManyWithoutUserNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutUserNestedInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUpdateManyWithoutInitiatorNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
+  uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
+  createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
+  assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
+  ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
+  vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
+  pinnedMessages?: Prisma.MessageUpdateManyWithoutPinnedByUserNestedInput
+  channelParticipants?: Prisma.ChannelParticipantUpdateManyWithoutUserNestedInput
+  ledTeams?: Prisma.TeamUpdateManyWithoutLeaderNestedInput
+  tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
+  tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
+  clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
+  resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
+  resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
+  replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
+  replacementApprovals?: Prisma.ReplacementRequestUpdateManyWithoutApprovedByNestedInput
+  exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
+  complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
+  finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutLeaveApprovalStepAssignmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  extName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumMessageColorFieldUpdateOperationsInput | $Enums.MessageColor
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  vaProfile?: Prisma.VAProfileUncheckedUpdateOneWithoutUserNestedInput
+  departmentHead?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUncheckedUpdateManyWithoutUserNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutUserNestedInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutInitiatorNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
   assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
   ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
@@ -4330,7 +4655,8 @@ export type UserCreateWithoutLeaveRequestsInput = {
   employmentRecordsInitiated?: Prisma.EmploymentRecordCreateNestedManyWithoutInitiatorInput
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -4390,7 +4716,8 @@ export type UserUncheckedCreateWithoutLeaveRequestsInput = {
   employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutInitiatorInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -4427,131 +4754,6 @@ export type UserUncheckedCreateWithoutLeaveRequestsInput = {
 export type UserCreateOrConnectWithoutLeaveRequestsInput = {
   where: Prisma.UserWhereUniqueInput
   create: Prisma.XOR<Prisma.UserCreateWithoutLeaveRequestsInput, Prisma.UserUncheckedCreateWithoutLeaveRequestsInput>
-}
-
-export type UserCreateWithoutApprovedLeavesInput = {
-  id?: string
-  email: string
-  employeeId?: string | null
-  firstName: string
-  middleName?: string | null
-  lastName: string
-  extName?: string | null
-  systemRole: $Enums.SystemRole
-  userType: $Enums.UserType
-  avatarUrl?: string | null
-  messageColor?: $Enums.MessageColor
-  status?: $Enums.GeneralStatus
-  onHold?: boolean
-  isActive?: boolean
-  isBot?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
-  vaProfile?: Prisma.VAProfileCreateNestedOneWithoutUserInput
-  departmentHead?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
-  memberships?: Prisma.DepartmentMembershipCreateNestedManyWithoutUserInput
-  employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutUserInput
-  employmentRecordsInitiated?: Prisma.EmploymentRecordCreateNestedManyWithoutInitiatorInput
-  roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
-  grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
-  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
-  uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
-  createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
-  assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
-  ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
-  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
-  vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
-  vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
-  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
-  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
-  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
-  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
-  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
-  pinnedMessages?: Prisma.MessageCreateNestedManyWithoutPinnedByUserInput
-  channelParticipants?: Prisma.ChannelParticipantCreateNestedManyWithoutUserInput
-  ledTeams?: Prisma.TeamCreateNestedManyWithoutLeaderInput
-  tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
-  tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
-  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
-  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
-  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
-  terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
-  clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
-  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
-  resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
-  resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
-  replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
-  replacementApprovals?: Prisma.ReplacementRequestCreateNestedManyWithoutApprovedByInput
-  exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
-  complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
-  finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
-}
-
-export type UserUncheckedCreateWithoutApprovedLeavesInput = {
-  id?: string
-  email: string
-  employeeId?: string | null
-  firstName: string
-  middleName?: string | null
-  lastName: string
-  extName?: string | null
-  systemRole: $Enums.SystemRole
-  userType: $Enums.UserType
-  avatarUrl?: string | null
-  messageColor?: $Enums.MessageColor
-  status?: $Enums.GeneralStatus
-  onHold?: boolean
-  isActive?: boolean
-  isBot?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
-  vaProfile?: Prisma.VAProfileUncheckedCreateNestedOneWithoutUserInput
-  departmentHead?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
-  memberships?: Prisma.DepartmentMembershipUncheckedCreateNestedManyWithoutUserInput
-  employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutUserInput
-  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutInitiatorInput
-  roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
-  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
-  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
-  uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
-  createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
-  assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
-  ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
-  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
-  vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
-  vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
-  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
-  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
-  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
-  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
-  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
-  pinnedMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPinnedByUserInput
-  channelParticipants?: Prisma.ChannelParticipantUncheckedCreateNestedManyWithoutUserInput
-  ledTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutLeaderInput
-  tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
-  tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
-  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
-  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
-  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
-  terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
-  clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
-  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
-  resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
-  resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
-  replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
-  replacementApprovals?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutApprovedByInput
-  exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
-  complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
-  finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
-}
-
-export type UserCreateOrConnectWithoutApprovedLeavesInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutApprovedLeavesInput, Prisma.UserUncheckedCreateWithoutApprovedLeavesInput>
 }
 
 export type UserUpsertWithoutLeaveRequestsInput = {
@@ -4591,7 +4793,8 @@ export type UserUpdateWithoutLeaveRequestsInput = {
   employmentRecordsInitiated?: Prisma.EmploymentRecordUpdateManyWithoutInitiatorNestedInput
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -4651,7 +4854,8 @@ export type UserUncheckedUpdateWithoutLeaveRequestsInput = {
   employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutInitiatorNestedInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -4685,18 +4889,145 @@ export type UserUncheckedUpdateWithoutLeaveRequestsInput = {
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
 }
 
-export type UserUpsertWithoutApprovedLeavesInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutApprovedLeavesInput, Prisma.UserUncheckedUpdateWithoutApprovedLeavesInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutApprovedLeavesInput, Prisma.UserUncheckedCreateWithoutApprovedLeavesInput>
+export type UserCreateWithoutLeaveApprovalActionsInput = {
+  id?: string
+  email: string
+  employeeId?: string | null
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  extName?: string | null
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  messageColor?: $Enums.MessageColor
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  isBot?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
+  vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
+  pinnedMessages?: Prisma.MessageCreateNestedManyWithoutPinnedByUserInput
+  channelParticipants?: Prisma.ChannelParticipantCreateNestedManyWithoutUserInput
+  ledTeams?: Prisma.TeamCreateNestedManyWithoutLeaderInput
+  tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
+  tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
+  clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
+  resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
+  resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
+  replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
+  replacementApprovals?: Prisma.ReplacementRequestCreateNestedManyWithoutApprovedByInput
+  exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
+  complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
+  finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+}
+
+export type UserUncheckedCreateWithoutLeaveApprovalActionsInput = {
+  id?: string
+  email: string
+  employeeId?: string | null
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  extName?: string | null
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  messageColor?: $Enums.MessageColor
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  isBot?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileUncheckedCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipUncheckedCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
+  vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
+  pinnedMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPinnedByUserInput
+  channelParticipants?: Prisma.ChannelParticipantUncheckedCreateNestedManyWithoutUserInput
+  ledTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutLeaderInput
+  tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
+  tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
+  clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
+  resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
+  resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
+  replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
+  replacementApprovals?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
+  complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
+  finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+}
+
+export type UserCreateOrConnectWithoutLeaveApprovalActionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutLeaveApprovalActionsInput, Prisma.UserUncheckedCreateWithoutLeaveApprovalActionsInput>
+}
+
+export type UserUpsertWithoutLeaveApprovalActionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutLeaveApprovalActionsInput, Prisma.UserUncheckedUpdateWithoutLeaveApprovalActionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutLeaveApprovalActionsInput, Prisma.UserUncheckedCreateWithoutLeaveApprovalActionsInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutApprovedLeavesInput = {
+export type UserUpdateToOneWithWhereWithoutLeaveApprovalActionsInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutApprovedLeavesInput, Prisma.UserUncheckedUpdateWithoutApprovedLeavesInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutLeaveApprovalActionsInput, Prisma.UserUncheckedUpdateWithoutLeaveApprovalActionsInput>
 }
 
-export type UserUpdateWithoutApprovedLeavesInput = {
+export type UserUpdateWithoutLeaveApprovalActionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4723,6 +5054,7 @@ export type UserUpdateWithoutApprovedLeavesInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -4756,7 +5088,7 @@ export type UserUpdateWithoutApprovedLeavesInput = {
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
 }
 
-export type UserUncheckedUpdateWithoutApprovedLeavesInput = {
+export type UserUncheckedUpdateWithoutLeaveApprovalActionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4783,6 +5115,7 @@ export type UserUncheckedUpdateWithoutApprovedLeavesInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -4843,7 +5176,8 @@ export type UserCreateWithoutOnboardingInviteInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -4903,7 +5237,8 @@ export type UserUncheckedCreateWithoutOnboardingInviteInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -4968,7 +5303,8 @@ export type UserCreateWithoutOnboardingInvitesCreatedInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -5028,7 +5364,8 @@ export type UserUncheckedCreateWithoutOnboardingInvitesCreatedInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -5104,7 +5441,8 @@ export type UserUpdateWithoutOnboardingInviteInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -5164,7 +5502,8 @@ export type UserUncheckedUpdateWithoutOnboardingInviteInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -5235,7 +5574,8 @@ export type UserUpdateWithoutOnboardingInvitesCreatedInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -5295,7 +5635,8 @@ export type UserUncheckedUpdateWithoutOnboardingInvitesCreatedInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -5355,7 +5696,8 @@ export type UserCreateWithoutManagedClientsInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
   assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
@@ -5415,7 +5757,8 @@ export type UserUncheckedCreateWithoutManagedClientsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
   assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
@@ -5491,7 +5834,8 @@ export type UserUpdateWithoutManagedClientsInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
   assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
@@ -5551,7 +5895,8 @@ export type UserUncheckedUpdateWithoutManagedClientsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
   assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
@@ -5611,7 +5956,8 @@ export type UserCreateWithoutCreatedTicketsInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
@@ -5671,7 +6017,8 @@ export type UserUncheckedCreateWithoutCreatedTicketsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
@@ -5736,7 +6083,8 @@ export type UserCreateWithoutAssignedTicketsInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -5796,7 +6144,8 @@ export type UserUncheckedCreateWithoutAssignedTicketsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -5872,7 +6221,8 @@ export type UserUpdateWithoutCreatedTicketsInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
@@ -5932,7 +6282,8 @@ export type UserUncheckedUpdateWithoutCreatedTicketsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
@@ -6003,7 +6354,8 @@ export type UserUpdateWithoutAssignedTicketsInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -6063,7 +6415,8 @@ export type UserUncheckedUpdateWithoutAssignedTicketsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -6123,7 +6476,8 @@ export type UserCreateWithoutTicketConversationsInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -6183,7 +6537,8 @@ export type UserUncheckedCreateWithoutTicketConversationsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -6259,7 +6614,8 @@ export type UserUpdateWithoutTicketConversationsInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -6319,7 +6675,8 @@ export type UserUncheckedUpdateWithoutTicketConversationsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -6379,7 +6736,8 @@ export type UserCreateWithoutTerminationsInitiatedInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -6439,7 +6797,8 @@ export type UserUncheckedCreateWithoutTerminationsInitiatedInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -6504,7 +6863,8 @@ export type UserCreateWithoutResignationTrainingNotesInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -6564,7 +6924,8 @@ export type UserUncheckedCreateWithoutResignationTrainingNotesInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -6640,7 +7001,8 @@ export type UserUpdateWithoutTerminationsInitiatedInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -6700,7 +7062,8 @@ export type UserUncheckedUpdateWithoutTerminationsInitiatedInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -6771,7 +7134,8 @@ export type UserUpdateWithoutResignationTrainingNotesInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -6831,7 +7195,8 @@ export type UserUncheckedUpdateWithoutResignationTrainingNotesInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -6891,7 +7256,8 @@ export type UserCreateWithoutResignationLwdOverridesInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -6951,7 +7317,8 @@ export type UserUncheckedCreateWithoutResignationLwdOverridesInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -7027,7 +7394,8 @@ export type UserUpdateWithoutResignationLwdOverridesInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -7087,7 +7455,8 @@ export type UserUncheckedUpdateWithoutResignationLwdOverridesInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -7147,7 +7516,8 @@ export type UserCreateWithoutReplacementCandidaciesInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -7207,7 +7577,8 @@ export type UserUncheckedCreateWithoutReplacementCandidaciesInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -7272,7 +7643,8 @@ export type UserCreateWithoutReplacementApprovalsInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -7332,7 +7704,8 @@ export type UserUncheckedCreateWithoutReplacementApprovalsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -7408,7 +7781,8 @@ export type UserUpdateWithoutReplacementCandidaciesInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -7468,7 +7842,8 @@ export type UserUncheckedUpdateWithoutReplacementCandidaciesInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -7539,7 +7914,8 @@ export type UserUpdateWithoutReplacementApprovalsInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -7599,7 +7975,8 @@ export type UserUncheckedUpdateWithoutReplacementApprovalsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -7659,7 +8036,8 @@ export type UserCreateWithoutExitClearanceApprovalsInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -7719,7 +8097,8 @@ export type UserUncheckedCreateWithoutExitClearanceApprovalsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -7795,7 +8174,8 @@ export type UserUpdateWithoutExitClearanceApprovalsInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -7855,7 +8235,8 @@ export type UserUncheckedUpdateWithoutExitClearanceApprovalsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -7915,7 +8296,8 @@ export type UserCreateWithoutComplianceReviewsPerformedInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -7975,7 +8357,8 @@ export type UserUncheckedCreateWithoutComplianceReviewsPerformedInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -8051,7 +8434,8 @@ export type UserUpdateWithoutComplianceReviewsPerformedInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -8111,7 +8495,8 @@ export type UserUncheckedUpdateWithoutComplianceReviewsPerformedInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -8171,7 +8556,8 @@ export type UserCreateWithoutFinalPayoutsEndorsedInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -8231,7 +8617,8 @@ export type UserUncheckedCreateWithoutFinalPayoutsEndorsedInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -8307,7 +8694,8 @@ export type UserUpdateWithoutFinalPayoutsEndorsedInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -8367,7 +8755,8 @@ export type UserUncheckedUpdateWithoutFinalPayoutsEndorsedInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -8427,7 +8816,8 @@ export type UserCreateWithoutClearancesClearedInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -8487,7 +8877,8 @@ export type UserUncheckedCreateWithoutClearancesClearedInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -8563,7 +8954,8 @@ export type UserUpdateWithoutClearancesClearedInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -8623,7 +9015,8 @@ export type UserUncheckedUpdateWithoutClearancesClearedInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -8683,7 +9076,8 @@ export type UserCreateWithoutChannelParticipantsInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -8743,7 +9137,8 @@ export type UserUncheckedCreateWithoutChannelParticipantsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -8819,7 +9214,8 @@ export type UserUpdateWithoutChannelParticipantsInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -8879,7 +9275,8 @@ export type UserUncheckedUpdateWithoutChannelParticipantsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -8939,7 +9336,8 @@ export type UserCreateWithoutMessagesInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -8999,7 +9397,8 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -9064,7 +9463,8 @@ export type UserCreateWithoutPinnedMessagesInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -9124,7 +9524,8 @@ export type UserUncheckedCreateWithoutPinnedMessagesInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -9200,7 +9601,8 @@ export type UserUpdateWithoutMessagesInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -9260,7 +9662,8 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -9331,7 +9734,8 @@ export type UserUpdateWithoutPinnedMessagesInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -9391,7 +9795,8 @@ export type UserUncheckedUpdateWithoutPinnedMessagesInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -9451,7 +9856,8 @@ export type UserCreateWithoutMessageMentionsInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -9511,7 +9917,8 @@ export type UserUncheckedCreateWithoutMessageMentionsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -9587,7 +9994,8 @@ export type UserUpdateWithoutMessageMentionsInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -9647,7 +10055,8 @@ export type UserUncheckedUpdateWithoutMessageMentionsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -9707,7 +10116,8 @@ export type UserCreateWithoutChannelReadsInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -9767,7 +10177,8 @@ export type UserUncheckedCreateWithoutChannelReadsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -9843,7 +10254,8 @@ export type UserUpdateWithoutChannelReadsInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -9903,7 +10315,8 @@ export type UserUncheckedUpdateWithoutChannelReadsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -9963,7 +10376,8 @@ export type UserCreateWithoutAuditLogsInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -10023,7 +10437,8 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -10099,7 +10514,8 @@ export type UserUpdateWithoutAuditLogsInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -10159,7 +10575,8 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -10219,7 +10636,8 @@ export type UserCreateWithoutNotificationsInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -10279,7 +10697,8 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -10355,7 +10774,8 @@ export type UserUpdateWithoutNotificationsInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -10415,7 +10835,8 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -10475,7 +10896,8 @@ export type UserCreateWithoutSidebarFavoritesInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -10535,7 +10957,8 @@ export type UserUncheckedCreateWithoutSidebarFavoritesInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -10611,7 +11034,8 @@ export type UserUpdateWithoutSidebarFavoritesInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -10671,7 +11095,8 @@ export type UserUncheckedUpdateWithoutSidebarFavoritesInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -10731,7 +11156,8 @@ export type UserCreateWithoutLedTeamsInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -10791,7 +11217,8 @@ export type UserUncheckedCreateWithoutLedTeamsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -10856,7 +11283,8 @@ export type UserCreateWithoutTempLedTeams1Input = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -10916,7 +11344,8 @@ export type UserUncheckedCreateWithoutTempLedTeams1Input = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -10981,7 +11410,8 @@ export type UserCreateWithoutTempLedTeams2Input = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -11041,7 +11471,8 @@ export type UserUncheckedCreateWithoutTempLedTeams2Input = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -11117,7 +11548,8 @@ export type UserUpdateWithoutLedTeamsInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -11177,7 +11609,8 @@ export type UserUncheckedUpdateWithoutLedTeamsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -11248,7 +11681,8 @@ export type UserUpdateWithoutTempLedTeams1Input = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -11308,7 +11742,8 @@ export type UserUncheckedUpdateWithoutTempLedTeams1Input = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -11379,7 +11814,8 @@ export type UserUpdateWithoutTempLedTeams2Input = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -11439,7 +11875,8 @@ export type UserUncheckedUpdateWithoutTempLedTeams2Input = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -11499,7 +11936,8 @@ export type UserCreateWithoutTeamMembershipsInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -11559,7 +11997,8 @@ export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -11635,7 +12074,8 @@ export type UserUpdateWithoutTeamMembershipsInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -11695,7 +12135,8 @@ export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -11755,7 +12196,8 @@ export type UserCreateWithoutAgentDecisionsInput = {
   roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
@@ -11815,7 +12257,8 @@ export type UserUncheckedCreateWithoutAgentDecisionsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
   uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
   createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
@@ -11891,7 +12334,8 @@ export type UserUpdateWithoutAgentDecisionsInput = {
   roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
@@ -11951,7 +12395,8 @@ export type UserUncheckedUpdateWithoutAgentDecisionsInput = {
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  approvedLeaves?: Prisma.LeaveRequestUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
   uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
   createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
@@ -11997,7 +12442,8 @@ export type UserCountOutputType = {
   roleAssignments: number
   grantedRoleAssignments: number
   leaveRequests: number
-  approvedLeaves: number
+  leaveApprovalActions: number
+  leaveApprovalStepAssignments: number
   managedClients: number
   uploadedDocuments: number
   createdTickets: number
@@ -12038,7 +12484,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   roleAssignments?: boolean | UserCountOutputTypeCountRoleAssignmentsArgs
   grantedRoleAssignments?: boolean | UserCountOutputTypeCountGrantedRoleAssignmentsArgs
   leaveRequests?: boolean | UserCountOutputTypeCountLeaveRequestsArgs
-  approvedLeaves?: boolean | UserCountOutputTypeCountApprovedLeavesArgs
+  leaveApprovalActions?: boolean | UserCountOutputTypeCountLeaveApprovalActionsArgs
+  leaveApprovalStepAssignments?: boolean | UserCountOutputTypeCountLeaveApprovalStepAssignmentsArgs
   managedClients?: boolean | UserCountOutputTypeCountManagedClientsArgs
   uploadedDocuments?: boolean | UserCountOutputTypeCountUploadedDocumentsArgs
   createdTickets?: boolean | UserCountOutputTypeCountCreatedTicketsArgs
@@ -12133,8 +12580,15 @@ export type UserCountOutputTypeCountLeaveRequestsArgs<ExtArgs extends runtime.Ty
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountApprovedLeavesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.LeaveRequestWhereInput
+export type UserCountOutputTypeCountLeaveApprovalActionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LeaveApprovalActionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountLeaveApprovalStepAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LeaveApprovalStepWhereInput
 }
 
 /**
@@ -12375,7 +12829,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   roleAssignments?: boolean | Prisma.User$roleAssignmentsArgs<ExtArgs>
   grantedRoleAssignments?: boolean | Prisma.User$grantedRoleAssignmentsArgs<ExtArgs>
   leaveRequests?: boolean | Prisma.User$leaveRequestsArgs<ExtArgs>
-  approvedLeaves?: boolean | Prisma.User$approvedLeavesArgs<ExtArgs>
+  leaveApprovalActions?: boolean | Prisma.User$leaveApprovalActionsArgs<ExtArgs>
+  leaveApprovalStepAssignments?: boolean | Prisma.User$leaveApprovalStepAssignmentsArgs<ExtArgs>
   managedClients?: boolean | Prisma.User$managedClientsArgs<ExtArgs>
   uploadedDocuments?: boolean | Prisma.User$uploadedDocumentsArgs<ExtArgs>
   createdTickets?: boolean | Prisma.User$createdTicketsArgs<ExtArgs>
@@ -12481,7 +12936,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   roleAssignments?: boolean | Prisma.User$roleAssignmentsArgs<ExtArgs>
   grantedRoleAssignments?: boolean | Prisma.User$grantedRoleAssignmentsArgs<ExtArgs>
   leaveRequests?: boolean | Prisma.User$leaveRequestsArgs<ExtArgs>
-  approvedLeaves?: boolean | Prisma.User$approvedLeavesArgs<ExtArgs>
+  leaveApprovalActions?: boolean | Prisma.User$leaveApprovalActionsArgs<ExtArgs>
+  leaveApprovalStepAssignments?: boolean | Prisma.User$leaveApprovalStepAssignmentsArgs<ExtArgs>
   managedClients?: boolean | Prisma.User$managedClientsArgs<ExtArgs>
   uploadedDocuments?: boolean | Prisma.User$uploadedDocumentsArgs<ExtArgs>
   createdTickets?: boolean | Prisma.User$createdTicketsArgs<ExtArgs>
@@ -12530,7 +12986,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     roleAssignments: Prisma.$RoleAssignmentPayload<ExtArgs>[]
     grantedRoleAssignments: Prisma.$RoleAssignmentPayload<ExtArgs>[]
     leaveRequests: Prisma.$LeaveRequestPayload<ExtArgs>[]
-    approvedLeaves: Prisma.$LeaveRequestPayload<ExtArgs>[]
+    leaveApprovalActions: Prisma.$LeaveApprovalActionPayload<ExtArgs>[]
+    leaveApprovalStepAssignments: Prisma.$LeaveApprovalStepPayload<ExtArgs>[]
     managedClients: Prisma.$ClientPayload<ExtArgs>[]
     uploadedDocuments: Prisma.$VADocumentPayload<ExtArgs>[]
     createdTickets: Prisma.$TicketPayload<ExtArgs>[]
@@ -12984,7 +13441,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   roleAssignments<T extends Prisma.User$roleAssignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$roleAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoleAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   grantedRoleAssignments<T extends Prisma.User$grantedRoleAssignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$grantedRoleAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoleAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   leaveRequests<T extends Prisma.User$leaveRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$leaveRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  approvedLeaves<T extends Prisma.User$approvedLeavesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$approvedLeavesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  leaveApprovalActions<T extends Prisma.User$leaveApprovalActionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$leaveApprovalActionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveApprovalActionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  leaveApprovalStepAssignments<T extends Prisma.User$leaveApprovalStepAssignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$leaveApprovalStepAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveApprovalStepPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   managedClients<T extends Prisma.User$managedClientsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$managedClientsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   uploadedDocuments<T extends Prisma.User$uploadedDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadedDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VADocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdTickets<T extends Prisma.User$createdTicketsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdTicketsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TicketPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -13661,27 +14119,51 @@ export type User$leaveRequestsArgs<ExtArgs extends runtime.Types.Extensions.Inte
 }
 
 /**
- * User.approvedLeaves
+ * User.leaveApprovalActions
  */
-export type User$approvedLeavesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$leaveApprovalActionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the LeaveRequest
+   * Select specific fields to fetch from the LeaveApprovalAction
    */
-  select?: Prisma.LeaveRequestSelect<ExtArgs> | null
+  select?: Prisma.LeaveApprovalActionSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the LeaveRequest
+   * Omit specific fields from the LeaveApprovalAction
    */
-  omit?: Prisma.LeaveRequestOmit<ExtArgs> | null
+  omit?: Prisma.LeaveApprovalActionOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.LeaveRequestInclude<ExtArgs> | null
-  where?: Prisma.LeaveRequestWhereInput
-  orderBy?: Prisma.LeaveRequestOrderByWithRelationInput | Prisma.LeaveRequestOrderByWithRelationInput[]
-  cursor?: Prisma.LeaveRequestWhereUniqueInput
+  include?: Prisma.LeaveApprovalActionInclude<ExtArgs> | null
+  where?: Prisma.LeaveApprovalActionWhereInput
+  orderBy?: Prisma.LeaveApprovalActionOrderByWithRelationInput | Prisma.LeaveApprovalActionOrderByWithRelationInput[]
+  cursor?: Prisma.LeaveApprovalActionWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.LeaveRequestScalarFieldEnum | Prisma.LeaveRequestScalarFieldEnum[]
+  distinct?: Prisma.LeaveApprovalActionScalarFieldEnum | Prisma.LeaveApprovalActionScalarFieldEnum[]
+}
+
+/**
+ * User.leaveApprovalStepAssignments
+ */
+export type User$leaveApprovalStepAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LeaveApprovalStep
+   */
+  select?: Prisma.LeaveApprovalStepSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LeaveApprovalStep
+   */
+  omit?: Prisma.LeaveApprovalStepOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LeaveApprovalStepInclude<ExtArgs> | null
+  where?: Prisma.LeaveApprovalStepWhereInput
+  orderBy?: Prisma.LeaveApprovalStepOrderByWithRelationInput | Prisma.LeaveApprovalStepOrderByWithRelationInput[]
+  cursor?: Prisma.LeaveApprovalStepWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LeaveApprovalStepScalarFieldEnum | Prisma.LeaveApprovalStepScalarFieldEnum[]
 }
 
 /**

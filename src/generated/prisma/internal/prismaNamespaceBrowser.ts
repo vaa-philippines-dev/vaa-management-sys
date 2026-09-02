@@ -64,7 +64,10 @@ export const ModelName = {
   DepartmentSkill: 'DepartmentSkill',
   VASkill: 'VASkill',
   VADocument: 'VADocument',
+  LeaveApprovalRule: 'LeaveApprovalRule',
+  LeaveApprovalStep: 'LeaveApprovalStep',
   LeaveRequest: 'LeaveRequest',
+  LeaveApprovalAction: 'LeaveApprovalAction',
   EmployeeIdCounter: 'EmployeeIdCounter',
   VAOnboardingInvite: 'VAOnboardingInvite',
   Client: 'Client',
@@ -391,6 +394,32 @@ export const VADocumentScalarFieldEnum = {
 export type VADocumentScalarFieldEnum = (typeof VADocumentScalarFieldEnum)[keyof typeof VADocumentScalarFieldEnum]
 
 
+export const LeaveApprovalRuleScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  submitterRole: 'submitterRole',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LeaveApprovalRuleScalarFieldEnum = (typeof LeaveApprovalRuleScalarFieldEnum)[keyof typeof LeaveApprovalRuleScalarFieldEnum]
+
+
+export const LeaveApprovalStepScalarFieldEnum = {
+  id: 'id',
+  ruleId: 'ruleId',
+  order: 'order',
+  resolution: 'resolution',
+  approverRole: 'approverRole',
+  approverUserId: 'approverUserId',
+  requireAll: 'requireAll',
+  createdAt: 'createdAt'
+} as const
+
+export type LeaveApprovalStepScalarFieldEnum = (typeof LeaveApprovalStepScalarFieldEnum)[keyof typeof LeaveApprovalStepScalarFieldEnum]
+
+
 export const LeaveRequestScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -400,15 +429,28 @@ export const LeaveRequestScalarFieldEnum = {
   totalDays: 'totalDays',
   reason: 'reason',
   status: 'status',
-  approverId: 'approverId',
-  approvedAt: 'approvedAt',
-  approverNote: 'approverNote',
-  notificationSent: 'notificationSent',
+  currentStep: 'currentStep',
+  ruleId: 'ruleId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type LeaveRequestScalarFieldEnum = (typeof LeaveRequestScalarFieldEnum)[keyof typeof LeaveRequestScalarFieldEnum]
+
+
+export const LeaveApprovalActionScalarFieldEnum = {
+  id: 'id',
+  leaveRequestId: 'leaveRequestId',
+  stepOrder: 'stepOrder',
+  approverId: 'approverId',
+  status: 'status',
+  note: 'note',
+  emailSent: 'emailSent',
+  decidedAt: 'decidedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type LeaveApprovalActionScalarFieldEnum = (typeof LeaveApprovalActionScalarFieldEnum)[keyof typeof LeaveApprovalActionScalarFieldEnum]
 
 
 export const EmployeeIdCounterScalarFieldEnum = {

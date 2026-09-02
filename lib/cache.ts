@@ -16,6 +16,7 @@ export const CACHE_TAGS = {
   messages: 'messages',
   teams: 'teams',
   agent: 'agent',
+  leave: 'leave',
 } as const
 
 export function cached<T>(

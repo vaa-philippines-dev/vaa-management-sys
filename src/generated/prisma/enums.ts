@@ -129,6 +129,15 @@ export const LeaveStatus = {
 export type LeaveStatus = (typeof LeaveStatus)[keyof typeof LeaveStatus]
 
 
+export const ApproverResolution = {
+  DEPARTMENT_HEAD: 'DEPARTMENT_HEAD',
+  ROLE: 'ROLE',
+  SPECIFIC_USER: 'SPECIFIC_USER'
+} as const
+
+export type ApproverResolution = (typeof ApproverResolution)[keyof typeof ApproverResolution]
+
+
 export const DocumentType = {
   CONTRACT: 'CONTRACT',
   GOVERNMENT_ID: 'GOVERNMENT_ID',
@@ -319,7 +328,9 @@ export const NotificationType = {
   HOURS_SHORTFALL: 'HOURS_SHORTFALL',
   NEW_MESSAGE: 'NEW_MESSAGE',
   MESSAGE_REPLY: 'MESSAGE_REPLY',
-  RESIGNATION_INTAKE: 'RESIGNATION_INTAKE'
+  RESIGNATION_INTAKE: 'RESIGNATION_INTAKE',
+  LEAVE_APPROVAL_NEEDED: 'LEAVE_APPROVAL_NEEDED',
+  LEAVE_REQUEST_DECIDED: 'LEAVE_REQUEST_DECIDED'
 } as const
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]

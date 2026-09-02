@@ -501,6 +501,40 @@ export type EnumDocumentTypeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumDocumentTypeFilter<$PrismaModel>
 }
 
+export type EnumApproverResolutionFilter<$PrismaModel = never> = {
+  equals?: $Enums.ApproverResolution | Prisma.EnumApproverResolutionFieldRefInput<$PrismaModel>
+  in?: $Enums.ApproverResolution[] | Prisma.ListEnumApproverResolutionFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ApproverResolution[] | Prisma.ListEnumApproverResolutionFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumApproverResolutionFilter<$PrismaModel> | $Enums.ApproverResolution
+}
+
+export type EnumSystemRoleNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.SystemRole | Prisma.EnumSystemRoleFieldRefInput<$PrismaModel> | null
+  in?: $Enums.SystemRole[] | Prisma.ListEnumSystemRoleFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.SystemRole[] | Prisma.ListEnumSystemRoleFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumSystemRoleNullableFilter<$PrismaModel> | $Enums.SystemRole | null
+}
+
+export type EnumApproverResolutionWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ApproverResolution | Prisma.EnumApproverResolutionFieldRefInput<$PrismaModel>
+  in?: $Enums.ApproverResolution[] | Prisma.ListEnumApproverResolutionFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ApproverResolution[] | Prisma.ListEnumApproverResolutionFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumApproverResolutionWithAggregatesFilter<$PrismaModel> | $Enums.ApproverResolution
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumApproverResolutionFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumApproverResolutionFilter<$PrismaModel>
+}
+
+export type EnumSystemRoleNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SystemRole | Prisma.EnumSystemRoleFieldRefInput<$PrismaModel> | null
+  in?: $Enums.SystemRole[] | Prisma.ListEnumSystemRoleFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.SystemRole[] | Prisma.ListEnumSystemRoleFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumSystemRoleNullableWithAggregatesFilter<$PrismaModel> | $Enums.SystemRole | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSystemRoleNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSystemRoleNullableFilter<$PrismaModel>
+}
+
 export type EnumLeaveTypeFilter<$PrismaModel = never> = {
   equals?: $Enums.LeaveType | Prisma.EnumLeaveTypeFieldRefInput<$PrismaModel>
   in?: $Enums.LeaveType[] | Prisma.ListEnumLeaveTypeFieldRefInput<$PrismaModel>
@@ -1583,6 +1617,40 @@ export type NestedEnumDocumentTypeWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumDocumentTypeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumDocumentTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumApproverResolutionFilter<$PrismaModel = never> = {
+  equals?: $Enums.ApproverResolution | Prisma.EnumApproverResolutionFieldRefInput<$PrismaModel>
+  in?: $Enums.ApproverResolution[] | Prisma.ListEnumApproverResolutionFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ApproverResolution[] | Prisma.ListEnumApproverResolutionFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumApproverResolutionFilter<$PrismaModel> | $Enums.ApproverResolution
+}
+
+export type NestedEnumSystemRoleNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.SystemRole | Prisma.EnumSystemRoleFieldRefInput<$PrismaModel> | null
+  in?: $Enums.SystemRole[] | Prisma.ListEnumSystemRoleFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.SystemRole[] | Prisma.ListEnumSystemRoleFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumSystemRoleNullableFilter<$PrismaModel> | $Enums.SystemRole | null
+}
+
+export type NestedEnumApproverResolutionWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ApproverResolution | Prisma.EnumApproverResolutionFieldRefInput<$PrismaModel>
+  in?: $Enums.ApproverResolution[] | Prisma.ListEnumApproverResolutionFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ApproverResolution[] | Prisma.ListEnumApproverResolutionFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumApproverResolutionWithAggregatesFilter<$PrismaModel> | $Enums.ApproverResolution
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumApproverResolutionFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumApproverResolutionFilter<$PrismaModel>
+}
+
+export type NestedEnumSystemRoleNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SystemRole | Prisma.EnumSystemRoleFieldRefInput<$PrismaModel> | null
+  in?: $Enums.SystemRole[] | Prisma.ListEnumSystemRoleFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.SystemRole[] | Prisma.ListEnumSystemRoleFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumSystemRoleNullableWithAggregatesFilter<$PrismaModel> | $Enums.SystemRole | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSystemRoleNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSystemRoleNullableFilter<$PrismaModel>
 }
 
 export type NestedEnumLeaveTypeFilter<$PrismaModel = never> = {
