@@ -23,6 +23,14 @@ export const TEAM_LEADER_ASSIGN_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'OPERATI
 // can view this page via requireManager() but is deliberately excluded here —
 // view-only, same principle as requireAdminMutator().
 export const AGENT_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'OPERATIONS_MANAGER', 'HR']
+// Who can configure the Leave Approval Hierarchy (which roles/users approve whose
+// leave). Deciding the company's approval chain is an HR/admin policy call, not a
+// day-to-day manager one — same tier as TEAM_MANAGE_ROLES minus DEPT_MANAGER.
+export const LEAVE_ADMIN_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'HR']
+// Deleting an offboarding case is destructive and permanent (unlike the rest of
+// VA_MUTATOR_ROLES's day-to-day workflow actions on it), so it's scoped tighter:
+// full admins plus HR, who own the Offboarding module end-to-end.
+export const OFFBOARDING_DELETE_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'HR']
 
 // "View as" — lets a full admin (SUPER_ADMIN/SYSTEM_ADMIN) temporarily browse the app
 // simulating another SystemRole, via a cookie read in getCurrentUser() below. Deliberately

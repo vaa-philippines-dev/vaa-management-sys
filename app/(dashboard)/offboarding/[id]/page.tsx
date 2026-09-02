@@ -5,7 +5,8 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Ticket as TicketIcon } from 'lucide-react'
 import { TerminationPanel } from '@/components/tickets/TerminationPanel'
-import { VA_MUTATOR_ROLES, TICKET_VIEW_ALL_ROLES } from '@/lib/auth'
+import { DeleteOffboardingButton } from '@/components/offboarding/DeleteOffboardingButton'
+import { VA_MUTATOR_ROLES, TICKET_VIEW_ALL_ROLES, OFFBOARDING_DELETE_ROLES } from '@/lib/auth'
 import { canApproveClearanceDepartment } from '@/lib/offboarding-permissions'
 import type { ExitClearanceDepartment } from '@/src/generated/prisma/enums'
 
@@ -48,6 +49,7 @@ export default async function OffboardingDetailPage({
   if (!termination) notFound()
 
   const canEdit = VA_MUTATOR_ROLES.includes(user.systemRole)
+  const canDelete = OFFBOARDING_DELETE_ROLES.includes(user.systemRole)
 
   const approvableDepartments: string[] = []
   if (termination.isVoluntaryResignation) {
@@ -90,6 +92,12 @@ export default async function OffboardingDetailPage({
               {termination.ticket.ticketNumber}
             </Button>
           </Link>
+        )}
+        {canDelete && (
+          <DeleteOffboardingButton
+            id={termination.id}
+            vaName={`${termination.vaProfile.user.firstName} ${termination.vaProfile.user.lastName}`.trim()}
+          />
         )}
       </div>
 

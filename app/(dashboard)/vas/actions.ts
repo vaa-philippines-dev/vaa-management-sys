@@ -2,9 +2,10 @@
 
 import { prisma } from '@/lib/prisma'
 import { revalidatePath, revalidateTag } from 'next/cache'
+import { redirect } from 'next/navigation'
 import { CACHE_TAGS } from '@/lib/cache'
 import { randomBytes } from 'node:crypto'
-import { requireRole, requireAdminMutator, requireAuth, VA_MUTATOR_ROLES } from '@/lib/auth'
+import { requireRole, requireAdminMutator, requireAuth, VA_MUTATOR_ROLES, OFFBOARDING_DELETE_ROLES } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
 import { generateEmployeeId } from '@/lib/employee-id'
 import { normalizeWhatsApp, normalizeGcash } from '@/lib/phone'
@@ -1364,6 +1365,64 @@ export async function updateExitClearance(clearanceId: string, formData: FormDat
   revalidateTag(CACHE_TAGS.tickets, 'default')
   revalidatePath('/offboarding')
   revalidatePath(`/offboarding/${clearance.termination.id}`)
+}
+
+// Deleting an offboarding case is permanent — all satellite rows (discussion,
+// clearance/clearanceApprovals, complianceReview, finalPayout, exitSurveyInvite,
+// replacementRequest) cascade off Termination in the schema, but the system-
+// generated Ticket doesn't (Termination.ticketId is a nullable, SetNull FK onto
+// Ticket, not the other way around), so it's deleted explicitly alongside it.
+// Scoped to OFFBOARDING_DELETE_ROLES (admin + HR only) rather than the broader
+// VA_MUTATOR_ROLES that can otherwise work an offboarding case day-to-day.
+export async function deleteTermination(terminationId: string) {
+  const actor = await requireRole(...OFFBOARDING_DELETE_ROLES)
+
+  const termination = await prisma.termination.findUnique({
+    where: { id: terminationId },
+    select: {
+      ticketId: true,
+      vaProfileId: true,
+      type: true,
+      isVoluntaryResignation: true,
+      vaProfile: {
+        select: {
+          user: {
+            select: {
+              firstName: true,
+              lastName: true,
+              memberships: { where: { isPrimary: true, endedAt: null }, select: { departmentId: true } },
+            },
+          },
+        },
+      },
+    },
+  })
+  if (!termination) throw new Error('Offboarding case not found')
+
+  const vaName = `${termination.vaProfile.user.firstName} ${termination.vaProfile.user.lastName}`.trim()
+  const departmentId = termination.vaProfile.user.memberships[0]?.departmentId ?? null
+
+  await prisma.$transaction(async (tx) => {
+    await tx.termination.delete({ where: { id: terminationId } })
+    if (termination.ticketId) await tx.ticket.delete({ where: { id: termination.ticketId } })
+  })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'DELETE',
+    entityType: 'Termination',
+    entityId: terminationId,
+    before: { vaName, type: termination.type, isVoluntaryResignation: termination.isVoluntaryResignation },
+    metadata: { ticketId: termination.ticketId },
+    departmentId,
+  })
+
+  revalidatePath('/offboarding')
+  revalidatePath(`/vas/${termination.vaProfileId}`)
+  revalidateTag(CACHE_TAGS.vas, 'default')
+  revalidatePath('/tickets')
+  revalidateTag(CACHE_TAGS.tickets, 'default')
+  redirect('/offboarding')
 }
 
 // ──────────────────────────────────────────────────────────────────────
