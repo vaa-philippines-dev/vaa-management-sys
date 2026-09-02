@@ -96,12 +96,12 @@ type ViewerScope =
   | { type: 'unrestricted' }
   | { type: 'department'; departmentIds: string[] }
   | { type: 'team'; teamIds: string[] }
+  | { type: 'self'; userId: string }
 
-// Only the two explicitly-specified cases (Dept/Ops Manager -> own department,
-// team-affiliated VA -> own team) get restricted. Every other viewer (admins/HR/
-// EXECUTIVE, plain STAFF, non-team-affiliated VAs) keeps the pre-existing
-// unrestricted behavior — the task explicitly says not to invent new restrictions
-// for roles/situations not covered by the access matrix.
+// Dept/Ops Manager -> own department, team-affiliated VA -> own team. A VA with
+// no team gets no other scope to fall back on, so they're restricted to their
+// own record rather than the full roster. Every other viewer (admins/HR/
+// EXECUTIVE, plain STAFF) keeps the pre-existing unrestricted behavior.
 async function getViewerScope(
   currentUser: NonNullable<Awaited<ReturnType<typeof getCurrentUser>>>
 ): Promise<ViewerScope> {
@@ -111,6 +111,7 @@ async function getViewerScope(
   if (currentUser.userType === 'VIRTUAL_ASSISTANT') {
     const teamIds = await getOwnTeamIds(currentUser.id)
     if (teamIds.length > 0) return { type: 'team', teamIds }
+    return { type: 'self', userId: currentUser.id }
   }
   return { type: 'unrestricted' }
 }
@@ -285,8 +286,9 @@ async function VATableSection({
 }) {
   // Row-level scoping layered on top of the filter-param where clause: Dept/Ops
   // Managers only ever see VAs whose current department membership is one of
-  // their own; team-affiliated VA viewers only see VAs on the same team(s).
-  // Admins/HR/EXECUTIVE and any other untouched viewer stay unrestricted.
+  // their own; team-affiliated VA viewers only see VAs on the same team(s); a
+  // VA on no team sees only their own record. Admins/HR/EXECUTIVE and any other
+  // untouched viewer stay unrestricted.
   const scopeWhere: Prisma.VAProfileWhereInput =
     viewerScope.type === 'department'
       ? { user: { memberships: { some: { departmentId: { in: viewerScope.departmentIds }, endedAt: null } } } }
@@ -301,12 +303,16 @@ async function VATableSection({
               ],
             },
           }
-        : {}
+        : viewerScope.type === 'self'
+          ? { userId: viewerScope.userId }
+          : {}
   const scopeCacheKey = viewerScope.type === 'unrestricted'
     ? 'all'
     : viewerScope.type === 'department'
       ? `dept:${viewerScope.departmentIds.slice().sort().join(',')}`
-      : `team:${viewerScope.teamIds.slice().sort().join(',')}`
+      : viewerScope.type === 'team'
+        ? `team:${viewerScope.teamIds.slice().sort().join(',')}`
+        : `self:${viewerScope.userId}`
 
   const userWhere: Record<string, unknown> = {}
   if (q) {

@@ -4,9 +4,14 @@ import { cached, CACHE_TAGS } from '@/lib/cache'
 import { redirect } from 'next/navigation'
 import { SkillManager } from '@/components/skills/SkillManager'
 
+// Matches REPORTS_VIEW_ROLES/AGENT_VIEW_ROLES — same "On Going" nav section,
+// same visibility rule: every non-VA role can view, only canMutate() can edit.
+const SKILLS_VIEW_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'STAFF', 'HR']
+
 export default async function SkillsPage() {
   const user = await getCurrentUser()
   if (!user) redirect('/login')
+  if (!SKILLS_VIEW_ROLES.includes(user.systemRole)) redirect('/dashboard')
   const canEdit = canMutate(user)
 
   const [skills, departments, deptSkills] = await Promise.all([

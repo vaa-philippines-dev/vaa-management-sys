@@ -105,6 +105,12 @@ export const getCurrentUser = cache(async () => {
   return {
     ...realUser,
     systemRole: isViewingAs ? (viewAsRole as ViewAsRole) : realUser.systemRole,
+    // Simulating VA must also flip userType — a large chunk of VA-scoping logic
+    // (sidebar nav, work logs/assignments/clients/vas scoping, dashboard, celebrants,
+    // teams) branches on userType === 'VIRTUAL_ASSISTANT', not systemRole. Without this,
+    // "view as VA" only fools systemRole-gated pages and leaves everything else showing
+    // the real admin's unscoped view.
+    userType: isViewingAs && viewAsRole === 'VA' ? 'VIRTUAL_ASSISTANT' : realUser.userType,
     realSystemRole: realUser.systemRole,
     isViewingAs,
     viewAsDepartment,

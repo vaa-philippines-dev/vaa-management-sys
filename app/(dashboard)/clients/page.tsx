@@ -53,9 +53,14 @@ async function resolveClientsWhere(user: Awaited<ReturnType<typeof getCurrentUse
     return { departmentId: { in: getManagedDepartmentIds(user) } }
   }
 
-  if (user.userType === 'VIRTUAL_ASSISTANT' && (await isTeamAffiliated(user.id))) {
-    const primaryDept = getPrimaryDepartment(user)
-    return { departmentId: { in: primaryDept ? [primaryDept.id] : [] } }
+  if (user.userType === 'VIRTUAL_ASSISTANT') {
+    if (await isTeamAffiliated(user.id)) {
+      const primaryDept = getPrimaryDepartment(user)
+      return { departmentId: { in: primaryDept ? [primaryDept.id] : [] } }
+    }
+    // Non-team VAs get no department to scope by — restrict to clients they're
+    // actually assigned to rather than falling through to "everything" below.
+    return { assignments: { some: { vaProfileId: user.vaProfile?.id ?? '' } } }
   }
 
   return user.systemRole === 'STAFF' ? { managerId: user.id } : undefined
