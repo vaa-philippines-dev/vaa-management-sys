@@ -32,11 +32,16 @@ export const LEAVE_ADMIN_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'HR']
 // full admins plus HR, who own the Offboarding module end-to-end.
 export const OFFBOARDING_DELETE_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'HR']
 
-// "View as" — lets a full admin (SUPER_ADMIN/SYSTEM_ADMIN) temporarily browse the app
-// simulating another SystemRole, via a cookie read in getCurrentUser() below. Deliberately
-// excludes SUPER_ADMIN/SYSTEM_ADMIN as targets (no viewing-as into another full admin).
+// "View as" — lets a full admin (SUPER_ADMIN/SYSTEM_ADMIN) or HR temporarily browse
+// the app simulating another SystemRole, via a cookie read in getCurrentUser() below.
+// Deliberately excludes SUPER_ADMIN/SYSTEM_ADMIN as targets (no viewing-as into
+// another full admin) — HR itself can still be simulated/impersonated like any other role.
 export const VIEW_AS_ROLES = ['EXECUTIVE', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'HR', 'STAFF', 'VA'] as const
 export type ViewAsRole = (typeof VIEW_AS_ROLES)[number]
+// HR owns Leave/Offboarding end-to-end (see LEAVE_ADMIN_ROLES/OFFBOARDING_DELETE_ROLES
+// above) and needs to test those flows as the roles that actually use them — granted
+// the same "view as" access as full admins rather than a narrower carve-out.
+export const VIEW_AS_GRANTOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'HR']
 export const VIEW_AS_COOKIE = 'view_as_role'
 // Dept Manager is department-scoped (see getManagedDepartmentIds() below), but the
 // real admin doing the simulating typically has no DepartmentMembership rows of
@@ -44,6 +49,12 @@ export const VIEW_AS_COOKIE = 'view_as_role'
 // (clients/VAs/teams/celebrants) empty. This second cookie lets the admin also pick
 // *which* department to preview as its manager.
 export const VIEW_AS_DEPARTMENT_COOKIE = 'view_as_department_id'
+// Narrows "view as <role>" from a generic role simulation to one specific real
+// account of that role — id/email/vaProfile/memberships all come from that real
+// user instead of the admin's, so Server Actions (e.g. submitting a leave
+// request) genuinely act as that person rather than being stamped with the
+// admin's own id. See setViewAsUser() in app/(dashboard)/_view-as/actions.ts.
+export const VIEW_AS_USER_COOKIE = 'view_as_user_id'
 
 // Dev-only auth bypass for local testing of multi-user flows (e.g. Inbox
 // realtime) without needing two real Google OAuth logins. Only ever active
@@ -87,15 +98,16 @@ const getRealCurrentUser = cache(async () => {
 })
 
 // Wraps getRealCurrentUser() with the "view as" override: when the real user is a full
-// admin and a valid VIEW_AS_COOKIE is set, every downstream requireRole()/requireAdminMutator()/
-// canMutate() etc. call sees the simulated systemRole instead of the real one — a genuine
-// permission simulation, not just a UI relabel. realSystemRole/isViewingAs stay attached so
-// the navbar can show/exit the simulation regardless of which role is currently active.
+// admin or HR (see VIEW_AS_GRANTOR_ROLES) and a valid VIEW_AS_COOKIE is set, every
+// downstream requireRole()/requireAdminMutator()/canMutate() etc. call sees the
+// simulated systemRole instead of the real one — a genuine permission simulation, not
+// just a UI relabel. realSystemRole/isViewingAs stay attached so the navbar can
+// show/exit the simulation regardless of which role is currently active.
 export const getCurrentUser = cache(async () => {
   const realUser = await getRealCurrentUser()
   if (!realUser) return null
 
-  const canViewAs = ['SUPER_ADMIN', 'SYSTEM_ADMIN'].includes(realUser.systemRole)
+  const canViewAs = (VIEW_AS_GRANTOR_ROLES as readonly string[]).includes(realUser.systemRole)
   const cookieStore = await cookies()
   const viewAsRole = canViewAs ? cookieStore.get(VIEW_AS_COOKIE)?.value : undefined
   const isViewingAs = !!viewAsRole && (VIEW_AS_ROLES as readonly string[]).includes(viewAsRole)
@@ -110,17 +122,46 @@ export const getCurrentUser = cache(async () => {
     }
   }
 
+  // See VIEW_AS_USER_COOKIE above — when set, the real admin's own id/email/
+  // vaProfile/memberships are swapped out entirely for that account's, so writes
+  // (leave requests, etc.) are genuinely owned by them instead of the admin.
+  // Only honored when it matches the currently simulated role, so switching
+  // roles (setViewAsRole) can't leave a stale account swap in effect. Falls back
+  // to the plain role simulation below if the cookie is stale (e.g. the account
+  // was deleted).
+  let viewAsUser: Awaited<ReturnType<typeof getRealCurrentUser>> | null = null
+  if (isViewingAs) {
+    const viewAsUserId = cookieStore.get(VIEW_AS_USER_COOKIE)?.value
+    if (viewAsUserId) {
+      viewAsUser = await prisma.user.findUnique({
+        where: { id: viewAsUserId, systemRole: viewAsRole as ViewAsRole },
+        include: {
+          vaProfile: true,
+          profile: true,
+          memberships: { include: { department: true, position: true } },
+          roleAssignments: { where: { status: 'ACTIVE' } },
+        },
+      })
+    }
+  }
+  const identity = viewAsUser ?? realUser
+
   return {
-    ...realUser,
-    systemRole: isViewingAs ? (viewAsRole as ViewAsRole) : realUser.systemRole,
+    ...identity,
+    systemRole: isViewingAs ? (viewAsRole as ViewAsRole) : identity.systemRole,
     // Simulating VA must also flip userType — a large chunk of VA-scoping logic
     // (sidebar nav, work logs/assignments/clients/vas scoping, dashboard, celebrants,
     // teams) branches on userType === 'VIRTUAL_ASSISTANT', not systemRole. Without this,
     // "view as VA" only fools systemRole-gated pages and leaves everything else showing
     // the real admin's unscoped view.
-    userType: isViewingAs && viewAsRole === 'VA' ? 'VIRTUAL_ASSISTANT' : realUser.userType,
+    userType: isViewingAs && viewAsRole === 'VA' ? 'VIRTUAL_ASSISTANT' : identity.userType,
     realSystemRole: realUser.systemRole,
+    realUserId: realUser.id,
     isViewingAs,
+    // True only when a specific VA account was picked (viewAsUser above) — id/email/
+    // vaProfile all belong to that VA, not the admin. False for the plain role-only
+    // simulation used by every other VIEW_AS_ROLES entry.
+    isViewingAsAccount: !!viewAsUser,
     viewAsDepartment,
     viewAsDepartmentId: viewAsDepartment?.id ?? null,
   }

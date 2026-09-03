@@ -6,7 +6,15 @@ import { Eye } from 'lucide-react'
 import { ROLE_LABELS } from '@/lib/role-labels'
 import { clearViewAsRole } from '@/app/(dashboard)/_view-as/actions'
 
-export function ViewAsBanner({ role, departmentName }: { role: string; departmentName?: string | null }) {
+export function ViewAsBanner({
+  role,
+  departmentName,
+  accountName,
+}: {
+  role: string
+  departmentName?: string | null
+  accountName?: string | null
+}) {
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
 
@@ -21,7 +29,8 @@ export function ViewAsBanner({ role, departmentName }: { role: string; departmen
     <div className="flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-700 dark:text-amber-400">
       <Eye className="h-3.5 w-3.5" />
       <span>
-        Viewing as {ROLE_LABELS[role] ?? role}
+        Viewing as {accountName || (ROLE_LABELS[role] ?? role)}
+        {accountName ? ` (${ROLE_LABELS[role] ?? role})` : ''}
         {departmentName ? ` · ${departmentName}` : ''}
       </span>
       <button

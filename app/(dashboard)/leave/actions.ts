@@ -175,6 +175,10 @@ export async function submitLeaveRequest(formData: FormData) {
     entityType: 'LeaveRequest',
     entityId: leaveRequest.id,
     after: { leaveType, startDate: startDate.toISOString(), endDate: endDate.toISOString(), totalDays, reason },
+    // actorId is the VA when submitted via "view as" impersonation (see
+    // isViewingAsAccount in lib/auth.ts) — record the real admin here so the
+    // audit trail can still tell a test submission from the VA's own.
+    metadata: actor.isViewingAsAccount ? { submittedViaViewAsBy: actor.realUserId } : undefined,
   })
 
   revalidatePath('/leave')
