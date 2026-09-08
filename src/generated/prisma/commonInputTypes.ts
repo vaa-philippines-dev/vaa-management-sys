@@ -797,6 +797,20 @@ export type EnumTerminationWorkflowStatusFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumTerminationWorkflowStatusFilter<$PrismaModel> | $Enums.TerminationWorkflowStatus
 }
 
+export type EnumSeparationOutcomeNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.SeparationOutcome | Prisma.EnumSeparationOutcomeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.SeparationOutcome[] | Prisma.ListEnumSeparationOutcomeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.SeparationOutcome[] | Prisma.ListEnumSeparationOutcomeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumSeparationOutcomeNullableFilter<$PrismaModel> | $Enums.SeparationOutcome | null
+}
+
+export type EnumRehireEligibilityNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.RehireEligibility | Prisma.EnumRehireEligibilityFieldRefInput<$PrismaModel> | null
+  in?: $Enums.RehireEligibility[] | Prisma.ListEnumRehireEligibilityFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.RehireEligibility[] | Prisma.ListEnumRehireEligibilityFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumRehireEligibilityNullableFilter<$PrismaModel> | $Enums.RehireEligibility | null
+}
+
 export type EnumTerminationTypeWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.TerminationType | Prisma.EnumTerminationTypeFieldRefInput<$PrismaModel>
   in?: $Enums.TerminationType[] | Prisma.ListEnumTerminationTypeFieldRefInput<$PrismaModel>
@@ -815,6 +829,26 @@ export type EnumTerminationWorkflowStatusWithAggregatesFilter<$PrismaModel = nev
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumTerminationWorkflowStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumTerminationWorkflowStatusFilter<$PrismaModel>
+}
+
+export type EnumSeparationOutcomeNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SeparationOutcome | Prisma.EnumSeparationOutcomeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.SeparationOutcome[] | Prisma.ListEnumSeparationOutcomeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.SeparationOutcome[] | Prisma.ListEnumSeparationOutcomeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumSeparationOutcomeNullableWithAggregatesFilter<$PrismaModel> | $Enums.SeparationOutcome | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSeparationOutcomeNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSeparationOutcomeNullableFilter<$PrismaModel>
+}
+
+export type EnumRehireEligibilityNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RehireEligibility | Prisma.EnumRehireEligibilityFieldRefInput<$PrismaModel> | null
+  in?: $Enums.RehireEligibility[] | Prisma.ListEnumRehireEligibilityFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.RehireEligibility[] | Prisma.ListEnumRehireEligibilityFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumRehireEligibilityNullableWithAggregatesFilter<$PrismaModel> | $Enums.RehireEligibility | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRehireEligibilityNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRehireEligibilityNullableFilter<$PrismaModel>
 }
 
 export type BoolNullableFilter<$PrismaModel = never> = {
@@ -1888,6 +1922,20 @@ export type NestedEnumTerminationWorkflowStatusFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumTerminationWorkflowStatusFilter<$PrismaModel> | $Enums.TerminationWorkflowStatus
 }
 
+export type NestedEnumSeparationOutcomeNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.SeparationOutcome | Prisma.EnumSeparationOutcomeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.SeparationOutcome[] | Prisma.ListEnumSeparationOutcomeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.SeparationOutcome[] | Prisma.ListEnumSeparationOutcomeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumSeparationOutcomeNullableFilter<$PrismaModel> | $Enums.SeparationOutcome | null
+}
+
+export type NestedEnumRehireEligibilityNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.RehireEligibility | Prisma.EnumRehireEligibilityFieldRefInput<$PrismaModel> | null
+  in?: $Enums.RehireEligibility[] | Prisma.ListEnumRehireEligibilityFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.RehireEligibility[] | Prisma.ListEnumRehireEligibilityFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumRehireEligibilityNullableFilter<$PrismaModel> | $Enums.RehireEligibility | null
+}
+
 export type NestedEnumTerminationTypeWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.TerminationType | Prisma.EnumTerminationTypeFieldRefInput<$PrismaModel>
   in?: $Enums.TerminationType[] | Prisma.ListEnumTerminationTypeFieldRefInput<$PrismaModel>
@@ -1906,6 +1954,26 @@ export type NestedEnumTerminationWorkflowStatusWithAggregatesFilter<$PrismaModel
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumTerminationWorkflowStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumTerminationWorkflowStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumSeparationOutcomeNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SeparationOutcome | Prisma.EnumSeparationOutcomeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.SeparationOutcome[] | Prisma.ListEnumSeparationOutcomeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.SeparationOutcome[] | Prisma.ListEnumSeparationOutcomeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumSeparationOutcomeNullableWithAggregatesFilter<$PrismaModel> | $Enums.SeparationOutcome | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSeparationOutcomeNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSeparationOutcomeNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumRehireEligibilityNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RehireEligibility | Prisma.EnumRehireEligibilityFieldRefInput<$PrismaModel> | null
+  in?: $Enums.RehireEligibility[] | Prisma.ListEnumRehireEligibilityFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.RehireEligibility[] | Prisma.ListEnumRehireEligibilityFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumRehireEligibilityNullableWithAggregatesFilter<$PrismaModel> | $Enums.RehireEligibility | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRehireEligibilityNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRehireEligibilityNullableFilter<$PrismaModel>
 }
 
 export type NestedBoolNullableFilter<$PrismaModel = never> = {

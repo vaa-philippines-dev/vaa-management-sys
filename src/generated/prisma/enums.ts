@@ -228,6 +228,28 @@ export const TerminationType = {
 export type TerminationType = (typeof TerminationType)[keyof typeof TerminationType]
 
 
+export const SeparationOutcome = {
+  CUSTOMER_RESIGNATION_ONLY: 'CUSTOMER_RESIGNATION_ONLY',
+  EOC_TOC: 'EOC_TOC',
+  CUSTOMER_AND_OR_VAA_RESIGNATION: 'CUSTOMER_AND_OR_VAA_RESIGNATION',
+  COMPANY_INITIATED_REMOVAL: 'COMPANY_INITIATED_REMOVAL',
+  AWOL: 'AWOL',
+  UNRESPONSIVE: 'UNRESPONSIVE',
+  OTHER: 'OTHER'
+} as const
+
+export type SeparationOutcome = (typeof SeparationOutcome)[keyof typeof SeparationOutcome]
+
+
+export const RehireEligibility = {
+  YES: 'YES',
+  NO: 'NO',
+  SUBJECT_TO_MANAGEMENT_REVIEW: 'SUBJECT_TO_MANAGEMENT_REVIEW'
+} as const
+
+export type RehireEligibility = (typeof RehireEligibility)[keyof typeof RehireEligibility]
+
+
 export const TerminationWorkflowStatus = {
   INITIATED: 'INITIATED',
   PENDING_LETTER: 'PENDING_LETTER',

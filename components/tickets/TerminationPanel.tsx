@@ -9,8 +9,13 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Copy, Check } from 'lucide-react'
 import { format } from 'date-fns'
-import { updateExitClearance } from '@/app/(dashboard)/vas/actions'
-import { OFFBOARDING_TYPE_LABELS as TYPE_LABEL, OFFBOARDING_WORKFLOW_LABELS as WORKFLOW_LABEL } from '@/lib/offboarding'
+import { updateExitClearance, updateSeparationDetails } from '@/app/(dashboard)/vas/actions'
+import {
+  OFFBOARDING_TYPE_LABELS as TYPE_LABEL,
+  OFFBOARDING_WORKFLOW_LABELS as WORKFLOW_LABEL,
+  SEPARATION_OUTCOME_OPTIONS,
+  REHIRE_ELIGIBILITY_OPTIONS,
+} from '@/lib/offboarding'
 import { ResignationSections, type ResignationData } from '@/components/tickets/ResignationSections'
 
 const CHECKLIST_ITEMS: { key: 'equipmentReturned' | 'accountsRevoked' | 'documentsSubmitted' | 'finalPayCleared'; label: string }[] = [
@@ -46,6 +51,9 @@ export function TerminationPanel({
     clientName: string | null
     exitSurvey: { token: string; completed: boolean; expiresAt: string } | null
     clearance: Clearance | null
+    separationOutcome: string | null
+    separationOutcomeOtherNote: string | null
+    rehireEligibility: string | null
   } & ResignationData
   canEdit: boolean
   approvableDepartments: string[]
@@ -54,6 +62,31 @@ export function TerminationPanel({
   const [note, setNote] = useState(termination.clearance?.outstandingBalanceNote ?? '')
   const [isPending, startTransition] = useTransition()
   const [copied, setCopied] = useState(false)
+  const [separationOutcome, setSeparationOutcome] = useState(termination.separationOutcome ?? '')
+  const [separationOutcomeOtherNote, setSeparationOutcomeOtherNote] = useState(termination.separationOutcomeOtherNote ?? '')
+  const [rehireEligibility, setRehireEligibility] = useState(termination.rehireEligibility ?? '')
+  const [eocDate, setEocDate] = useState('')
+  const [separationError, setSeparationError] = useState<string | null>(null)
+  const [savingSeparation, setSavingSeparation] = useState(false)
+
+  const saveSeparationDetails = async (overrides: { separationOutcome?: string; rehireEligibility?: string }) => {
+    if (!canEdit) return
+    const outcome = overrides.separationOutcome ?? separationOutcome
+    setSavingSeparation(true)
+    setSeparationError(null)
+    try {
+      const fd = new FormData()
+      fd.set('separationOutcome', outcome)
+      fd.set('separationOutcomeOtherNote', separationOutcomeOtherNote)
+      fd.set('rehireEligibility', overrides.rehireEligibility ?? rehireEligibility)
+      if (outcome === 'EOC_TOC' && eocDate) fd.set('eocDate', eocDate)
+      await updateSeparationDetails(termination.id, fd)
+    } catch (err) {
+      setSeparationError(err instanceof Error ? err.message : 'Failed to save')
+    } finally {
+      setSavingSeparation(false)
+    }
+  }
 
   const exitSurveyUrl = termination.exitSurvey && typeof window !== 'undefined'
     ? `${window.location.origin}/exit-survey/${termination.exitSurvey.token}`
@@ -118,6 +151,66 @@ export function TerminationPanel({
         <div>
           <p className="text-xs text-muted-foreground mb-1">Effective Date</p>
           <p className="font-medium">{format(new Date(termination.effectiveDate), 'MMM dd, yyyy')}</p>
+        </div>
+
+        <div className="pt-2 border-t space-y-2">
+          <p className="text-xs text-muted-foreground">Type of Separation</p>
+          {canEdit ? (
+            <select
+              value={separationOutcome}
+              onChange={(e) => {
+                setSeparationOutcome(e.target.value)
+                saveSeparationDetails({ separationOutcome: e.target.value })
+              }}
+              disabled={savingSeparation}
+              className="w-full h-8 text-xs rounded-md border bg-background px-2"
+            >
+              <option value="">— Not set —</option>
+              {SEPARATION_OUTCOME_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+          ) : (
+            <p className="font-medium">{SEPARATION_OUTCOME_OPTIONS.find((o) => o.value === termination.separationOutcome)?.label ?? '—'}</p>
+          )}
+          {canEdit && separationOutcome === 'OTHER' && (
+            <Input
+              value={separationOutcomeOtherNote}
+              onChange={(e) => setSeparationOutcomeOtherNote(e.target.value)}
+              onBlur={() => saveSeparationDetails({})}
+              placeholder="Describe the separation reason"
+              className="h-8 text-xs"
+            />
+          )}
+          {canEdit && separationOutcome === 'EOC_TOC' && (
+            <div>
+              <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">
+                EOC Date (must be on/before the last working day above)
+              </Label>
+              <Input type="date" value={eocDate} onChange={(e) => setEocDate(e.target.value)} onBlur={() => saveSeparationDetails({})} className="h-8 text-xs" />
+            </div>
+          )}
+          {separationError && <p className="text-xs text-destructive">{separationError}</p>}
+
+          <p className="text-xs text-muted-foreground pt-1">Eligible for Rehire</p>
+          {canEdit ? (
+            <select
+              value={rehireEligibility}
+              onChange={(e) => {
+                setRehireEligibility(e.target.value)
+                saveSeparationDetails({ rehireEligibility: e.target.value })
+              }}
+              disabled={savingSeparation}
+              className="w-full h-8 text-xs rounded-md border bg-background px-2"
+            >
+              <option value="">— Not set —</option>
+              {REHIRE_ELIGIBILITY_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+          ) : (
+            <p className="font-medium">{REHIRE_ELIGIBILITY_OPTIONS.find((o) => o.value === termination.rehireEligibility)?.label ?? '—'}</p>
+          )}
         </div>
 
         {termination.exitSurvey && (

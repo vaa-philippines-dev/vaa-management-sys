@@ -14,6 +14,34 @@ export const OFFBOARDING_TYPE_OPTIONS = Object.entries(OFFBOARDING_TYPE_LABELS).
   label,
 }))
 
+// FB-0006: the official Exit Clearance Form's "TYPE OF SEPARATION" checkboxes —
+// a manual reclassification independent of OFFBOARDING_TYPE_LABELS above.
+export const SEPARATION_OUTCOME_LABELS: Record<string, string> = {
+  CUSTOMER_RESIGNATION_ONLY: 'Customer Resignation Only',
+  EOC_TOC: 'EOC | TOC',
+  CUSTOMER_AND_OR_VAA_RESIGNATION: 'Customer and/or VAA Philippines Resignation',
+  COMPANY_INITIATED_REMOVAL: 'Company-initiated Removal',
+  AWOL: 'AWOL',
+  UNRESPONSIVE: 'Unresponsive',
+  OTHER: 'Other',
+}
+
+export const SEPARATION_OUTCOME_OPTIONS = Object.entries(SEPARATION_OUTCOME_LABELS).map(([value, label]) => ({
+  value,
+  label,
+}))
+
+export const REHIRE_ELIGIBILITY_LABELS: Record<string, string> = {
+  YES: 'Yes',
+  NO: 'No',
+  SUBJECT_TO_MANAGEMENT_REVIEW: 'Subject to Management Review',
+}
+
+export const REHIRE_ELIGIBILITY_OPTIONS = Object.entries(REHIRE_ELIGIBILITY_LABELS).map(([value, label]) => ({
+  value,
+  label,
+}))
+
 export const OFFBOARDING_WORKFLOW_LABELS: Record<string, string> = {
   INITIATED: 'Initiated',
   PENDING_LETTER: 'Awaiting Resignation Letter',
@@ -58,7 +86,7 @@ export const DEPARTMENT_CHECKLISTS: Record<string, string[]> = {
     'All assigned tasks completed',
     'Work turnover completed (logins, company files, credentials, outstanding accountabilities)',
     'Shadowing completed (if applicable)',
-    'Removed from communication channels',
+    'Removed from communication channels (WhatsApp GC and other Departmental GC, etc)',
   ],
   CUSTOMER_SUCCESS: [
     'Customer notified',
@@ -77,5 +105,9 @@ export const DEPARTMENT_CHECKLISTS: Record<string, string[]> = {
     'Final payout computed',
     'Final payout endorsed',
   ],
-  HR: ['Exit survey verified', 'Removed access to internal VAA systems and files', 'Device/equipment returned (if applicable)'],
+  HR: [
+    'Exit survey verified',
+    'Removed access to internal VAA systems and files (if applicable) (Masterlist, Masterlist Folder, 201, Payroll, Students Place)',
+    'Device/equipment returned (if applicable)',
+  ],
 }

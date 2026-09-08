@@ -112,6 +112,9 @@ export default async function OffboardingDetailPage({
           vaProfileId: termination.vaProfile.id,
           vaName: `${termination.vaProfile.user.firstName} ${termination.vaProfile.user.lastName}`.trim(),
           clientName: termination.assignment?.client.name ?? null,
+          separationOutcome: termination.separationOutcome,
+          separationOutcomeOtherNote: termination.separationOutcomeOtherNote,
+          rehireEligibility: termination.rehireEligibility,
           exitSurvey: termination.exitSurveyInvite
             ? {
                 token: termination.exitSurveyInvite.token,

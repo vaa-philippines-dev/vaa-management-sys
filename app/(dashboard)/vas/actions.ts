@@ -24,6 +24,8 @@ import type {
   ReplacementPipelineStatus,
   ExitClearanceDepartment,
   ClearanceApprovalStatus,
+  SeparationOutcome,
+  RehireEligibility,
 } from '@/src/generated/prisma/enums'
 
 // BR-02: standard notice period is 30 working days, minimum 2 weeks (10
@@ -1368,6 +1370,79 @@ export async function updateExitClearance(clearanceId: string, formData: FormDat
   revalidateTag(CACHE_TAGS.tickets, 'default')
   revalidatePath('/offboarding')
   revalidatePath(`/offboarding/${clearance.termination.id}`)
+}
+
+const SEPARATION_OUTCOME_VALUES: string[] = [
+  'CUSTOMER_RESIGNATION_ONLY',
+  'EOC_TOC',
+  'CUSTOMER_AND_OR_VAA_RESIGNATION',
+  'COMPANY_INITIATED_REMOVAL',
+  'AWOL',
+  'UNRESPONSIVE',
+  'OTHER',
+]
+const REHIRE_ELIGIBILITY_VALUES: string[] = ['YES', 'NO', 'SUBJECT_TO_MANAGEMENT_REVIEW']
+
+// FB-0006: the official Exit Clearance Form's "Type of Separation" / "Eligible
+// for Rehire" fields — a manual (re)classification settable at any point on an
+// open case, not fixed at creation. When reclassifying to EOC_TOC, the caller
+// may supply the date the client's contract actually ended (eocDate); HR's
+// rule is that date must be on/before the case's already-recorded effectiveDate
+// (the universal last-working-day surrogate — kept in sync with
+// ResignationDiscussion.lastWorkingDay for the resignation SOP).
+export async function updateSeparationDetails(terminationId: string, formData: FormData) {
+  const actor = await requireRole(...VA_MUTATOR_ROLES)
+
+  const separationOutcome = (formData.get('separationOutcome') as string) || null
+  const separationOutcomeOtherNote = ((formData.get('separationOutcomeOtherNote') as string) || '').trim() || null
+  const rehireEligibility = (formData.get('rehireEligibility') as string) || null
+  const eocDateInput = (formData.get('eocDate') as string) || ''
+
+  if (separationOutcome && !SEPARATION_OUTCOME_VALUES.includes(separationOutcome)) {
+    throw new Error('Invalid separation outcome')
+  }
+  if (rehireEligibility && !REHIRE_ELIGIBILITY_VALUES.includes(rehireEligibility)) {
+    throw new Error('Invalid rehire eligibility')
+  }
+
+  const termination = await prisma.termination.findUnique({
+    where: { id: terminationId },
+    select: { ticketId: true, effectiveDate: true },
+  })
+  if (!termination) throw new Error('Offboarding case not found')
+
+  let effectiveDate = termination.effectiveDate
+  if (separationOutcome === 'EOC_TOC' && eocDateInput) {
+    const eocDate = new Date(eocDateInput)
+    if (Number.isNaN(eocDate.getTime())) throw new Error('Invalid EOC date')
+    if (eocDate > termination.effectiveDate) {
+      throw new Error("The EOC date must be on or before the VA's last working day")
+    }
+    effectiveDate = eocDate
+  }
+
+  await prisma.termination.update({
+    where: { id: terminationId },
+    data: {
+      separationOutcome: separationOutcome as SeparationOutcome | null,
+      separationOutcomeOtherNote: separationOutcome === 'OTHER' ? separationOutcomeOtherNote : null,
+      rehireEligibility: rehireEligibility as RehireEligibility | null,
+      effectiveDate,
+    },
+  })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'UPDATE',
+    entityType: 'Termination',
+    entityId: terminationId,
+    after: { separationOutcome, rehireEligibility, effectiveDate },
+  })
+
+  if (termination.ticketId) revalidatePath(`/tickets/${termination.ticketId}`)
+  revalidateTag(CACHE_TAGS.tickets, 'default')
+  revalidatePath('/offboarding')
+  revalidatePath(`/offboarding/${terminationId}`)
 }
 
 // Deleting an offboarding case is permanent — all satellite rows (discussion,

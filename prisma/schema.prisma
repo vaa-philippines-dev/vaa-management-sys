@@ -175,6 +175,26 @@ enum TerminationType {
   VAA_INITIATED // Type C — VAA-initiated (resignation or removal)
 }
 
+// FB-0006 (2026-09 HR feedback): the "TYPE OF SEPARATION" checkbox list from the
+// official TEMPLATE VAA PH | EXIT CLEARANCE FORM — a manual reclassification,
+// independent of (and finer-grained than) TerminationType above.
+enum SeparationOutcome {
+  CUSTOMER_RESIGNATION_ONLY
+  EOC_TOC
+  CUSTOMER_AND_OR_VAA_RESIGNATION
+  COMPANY_INITIATED_REMOVAL
+  AWOL
+  UNRESPONSIVE
+  OTHER
+}
+
+// The official form's "Eligible for Rehire" field.
+enum RehireEligibility {
+  YES
+  NO
+  SUBJECT_TO_MANAGEMENT_REVIEW
+}
+
 enum TerminationWorkflowStatus {
   INITIATED
   // Voluntary-resignation-only stages (see Termination.isVoluntaryResignation)
@@ -1010,6 +1030,13 @@ model Termination {
   trainingPassedAt  DateTime? @map("training_passed_at")
   trainingNotedById String?   @map("training_noted_by_id")
   trainingNotedBy   User?     @relation("ResignationTrainingNotedBy", fields: [trainingNotedById], references: [id], onDelete: SetNull)
+
+  // FB-0006: official Exit Clearance Form fields — manually (re)classified at
+  // any point during an open case, not fixed at creation. Gated by VA_MUTATOR_ROLES
+  // like the rest of day-to-day case management (see updateSeparationDetails()).
+  separationOutcome          SeparationOutcome? @map("separation_outcome")
+  separationOutcomeOtherNote String?            @map("separation_outcome_other_note")
+  rehireEligibility          RehireEligibility? @map("rehire_eligibility")
 
   @@index([vaProfileId])
   @@index([assignmentId])

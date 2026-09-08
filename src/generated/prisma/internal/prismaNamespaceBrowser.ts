@@ -596,7 +596,10 @@ export const TerminationScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   trainingPassedAt: 'trainingPassedAt',
-  trainingNotedById: 'trainingNotedById'
+  trainingNotedById: 'trainingNotedById',
+  separationOutcome: 'separationOutcome',
+  separationOutcomeOtherNote: 'separationOutcomeOtherNote',
+  rehireEligibility: 'rehireEligibility'
 } as const
 
 export type TerminationScalarFieldEnum = (typeof TerminationScalarFieldEnum)[keyof typeof TerminationScalarFieldEnum]
