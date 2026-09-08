@@ -5,7 +5,9 @@ import { revalidatePath, revalidateTag } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { CACHE_TAGS } from '@/lib/cache'
 import { randomBytes } from 'node:crypto'
-import { requireRole, requireAdminMutator, requireAuth, VA_MUTATOR_ROLES, OFFBOARDING_DELETE_ROLES } from '@/lib/auth'
+import { requireRole, requireAdminMutator, requireAuth, VA_MUTATOR_ROLES, OFFBOARDING_DELETE_ROLES, RESIGNATION_OVERRIDE_ROLES } from '@/lib/auth'
+import { google } from 'googleapis'
+import { getDriveAuth, getRootFolderId, findOrCreateFolder } from '@/lib/google/drive'
 import { logAudit } from '@/lib/audit'
 import { generateEmployeeId } from '@/lib/employee-id'
 import { normalizeWhatsApp, normalizeGcash } from '@/lib/phone'
@@ -100,6 +102,27 @@ export async function quickAddVA(formData: FormData) {
       initiatedBy: actor.id,
     },
   })
+
+  // Best-effort 201 folder creation so HR gets a link the moment the VA record
+  // exists (2026-08-19 HR meeting). Uses the same "201 VA | {name}" naming and
+  // findOrCreateFolder() as app/api/upload/route.ts and .../upload/document/route.ts,
+  // so a later document upload lands in this same folder instead of a duplicate.
+  // Never fails VA creation — Drive being unconfigured/unreachable is not fatal.
+  try {
+    const auth = getDriveAuth()
+    const drive = google.drive({ version: 'v3', auth })
+    const rootId = await getRootFolderId(drive)
+    const folderId = await findOrCreateFolder(drive, rootId, `201 VA | ${name}`)
+    const folderMeta = await drive.files.get({ fileId: folderId, fields: 'webViewLink', supportsAllDrives: true })
+    if (folderMeta.data.webViewLink) {
+      await prisma.vAProfile.update({
+        where: { userId: user.id },
+        data: { folder201Link: folderMeta.data.webViewLink },
+      })
+    }
+  } catch (e) {
+    console.error('[VA] Failed to create 201 Drive folder:', e instanceof Error ? e.message : e)
+  }
 
   revalidatePath('/vas')
   revalidateTag(CACHE_TAGS.vas, 'default')
@@ -1569,7 +1592,12 @@ export async function logDiscussionOutcome(terminationId: string, formData: Form
 
   const termination = await prisma.termination.findUnique({ where: { id: terminationId } })
   if (!termination || !termination.isVoluntaryResignation) throw new Error('Not a resignation case')
-  if (termination.workflowStatus !== 'INITIATED') {
+  // HR/admins may re-log this after it's locked (workflowStatus already moved
+  // to PENDING_LETTER) to correct a Team Leader's mistake — see
+  // RESIGNATION_OVERRIDE_ROLES. Everyone else gets exactly one shot, and no
+  // one may reopen past the letter stage.
+  const isReopen = termination.workflowStatus === 'PENDING_LETTER' && RESIGNATION_OVERRIDE_ROLES.includes(actor.systemRole)
+  if (termination.workflowStatus !== 'INITIATED' && !isReopen) {
     throw new Error('The discussion outcome can only be logged once, before the letter stage.')
   }
 
@@ -1596,6 +1624,7 @@ export async function logDiscussionOutcome(terminationId: string, formData: Form
       entityType: 'Termination',
       entityId: terminationId,
       after: { workflowStatus: 'CANCELLED', retained: true },
+      metadata: isReopen ? { reopenedByOverride: true } : undefined,
     })
     revalidatePath(`/vas/${termination.vaProfileId}`)
     revalidatePath('/offboarding')
@@ -1649,7 +1678,9 @@ export async function logDiscussionOutcome(terminationId: string, formData: Form
     entityType: 'Termination',
     entityId: terminationId,
     after: { workflowStatus: 'PENDING_LETTER' },
-    metadata: overrideReason ? { lwdOverrideReason: overrideReason } : undefined,
+    metadata: (overrideReason || isReopen)
+      ? { ...(overrideReason ? { lwdOverrideReason: overrideReason } : {}), ...(isReopen ? { reopenedByOverride: true } : {}) }
+      : undefined,
   })
   revalidatePath(`/vas/${termination.vaProfileId}`)
   revalidatePath('/offboarding')
