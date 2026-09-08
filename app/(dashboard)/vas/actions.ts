@@ -1260,9 +1260,11 @@ export async function terminateVA(formData: FormData) {
         ticketId: ticket.id,
         initiatedById: actor.id,
         effectiveDate: effective,
-        // Per-assignment terminations have no exit survey/clearance step —
-        // only whole-VA offboarding does, so those start further back in the workflow.
-        workflowStatus: assignmentId ? 'COMPLETED' : 'EXIT_SURVEY_PENDING',
+        // Per-assignment terminations have no clearance step — only whole-VA
+        // offboarding does. FB-0004: the Exit Survey (a personal-feedback form)
+        // only applies to voluntary resignations (see logCustomerNotification()),
+        // never to this involuntary path, so there's no survey step to wait on here.
+        workflowStatus: assignmentId ? 'COMPLETED' : 'CLEARANCE_PENDING',
         completedAt: assignmentId ? new Date() : null,
       },
     })
@@ -1297,14 +1299,6 @@ export async function terminateVA(formData: FormData) {
   })
 
   if (!assignmentId) {
-    const token = randomBytes(32).toString('base64url')
-    await prisma.exitSurveyInvite.create({
-      data: {
-        terminationId,
-        token,
-        expiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
-      },
-    })
     await prisma.exitClearance.create({ data: { terminationId } })
   }
 
