@@ -10,7 +10,7 @@ import { logAudit } from '@/lib/audit'
 import { generateEmployeeId } from '@/lib/employee-id'
 import { normalizeWhatsApp, normalizeGcash } from '@/lib/phone'
 import { OFFBOARDING_TYPE_LABELS as TERMINATION_TYPE_LABELS } from '@/lib/offboarding'
-import { canApproveClearanceDepartment } from '@/lib/offboarding-permissions'
+import { canApproveClearanceDepartment, canInitiateEocOrClientInitiatedTermination } from '@/lib/offboarding-permissions'
 import { DEPARTMENT_CHECKLISTS } from '@/lib/offboarding'
 import { addWorkingDays } from '@/lib/working-days'
 import { nextTerminationTicketNumber } from '@/lib/tickets'
@@ -1220,6 +1220,15 @@ export async function terminateVA(formData: FormData) {
   if (assignmentId) {
     const assignment = await prisma.assignment.findUnique({ where: { id: assignmentId }, select: { vaProfileId: true } })
     if (!assignment || assignment.vaProfileId !== vaProfileId) throw new Error('Assignment does not belong to this VA')
+  }
+
+  // FB-0002: Type A (EOC) / Type B (CLIENT_INITIATED) belong to Customer Success
+  // and the VA's own Service Department, not HR — see canInitiateEocOrClientInitiatedTermination().
+  if (
+    (type === 'EOC' || type === 'CLIENT_INITIATED') &&
+    !(await canInitiateEocOrClientInitiatedTermination(actor, va.userId))
+  ) {
+    throw new Error("Forbidden — only Customer Success or the VA's Service Department can start this type of case")
   }
 
   const vaName = `${va.user.firstName} ${va.user.lastName}`.trim()

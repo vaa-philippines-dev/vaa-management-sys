@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
-import { getCurrentUser, VA_MUTATOR_ROLES } from '@/lib/auth'
+import { getCurrentUser, VA_MUTATOR_ROLES, VA_SENSITIVE_INFO_EDIT_ROLES } from '@/lib/auth'
+import { canInitiateEocOrClientInitiatedTermination } from '@/lib/offboarding-permissions'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { listDriveFiles } from '@/lib/google/drive'
 import { notFound, redirect } from 'next/navigation'
@@ -105,6 +106,8 @@ export default async function VADetailPage({
   const primaryMem = activeMemberships.find((m) => m.isPrimary) ?? activeMemberships[0]
   const canViewSensitive = isHRE || currentUser.id === va.user.id
   const canEdit = VA_MUTATOR_ROLES.includes(currentUser.systemRole)
+  const canEditSensitive = VA_SENSITIVE_INFO_EDIT_ROLES.includes(currentUser.systemRole)
+  const canInitiateTypeAB = await canInitiateEocOrClientInitiatedTermination(currentUser, va.user.id)
 
   const statusHistory = await cached(`vas:history:${va.user.id}`, [CACHE_TAGS.vas], 30, () =>
     prisma.vAHistory.findMany({
@@ -313,6 +316,8 @@ export default async function VADetailPage({
             driveFiles={driveFiles}
             currentUserId={currentUser.id}
             canEdit={canEdit}
+            canEditSensitive={canEditSensitive}
+            canInitiateTypeAB={canInitiateTypeAB}
           />
 
           {/* History */}

@@ -2,7 +2,7 @@
 // the client component VAProfileEditor.tsx for its label constants) since
 // this pulls in prisma/auth and would otherwise break the client bundle.
 import { prisma } from '@/lib/prisma'
-import { isDepartmentUnrestricted, getManagedDepartmentIds, hasModuleAccess, type getCurrentUser } from '@/lib/auth'
+import { isDepartmentUnrestricted, canMutate, getManagedDepartmentIds, hasModuleAccess, type getCurrentUser } from '@/lib/auth'
 import type { ExitClearanceDepartment } from '@/src/generated/prisma/enums'
 
 type CurrentUser = Awaited<ReturnType<typeof getCurrentUser>>
@@ -57,4 +57,23 @@ export async function canApproveClearanceDepartment(
     default:
       return false
   }
+}
+
+// FB-0002 (2026-09 HR feedback): Type A (EOC) / Type B (CLIENT_INITIATED)
+// terminations belong to Customer Success and the VA's own Service Department,
+// not HR — unlike VA_MUTATOR_ROLES' blanket access, this deliberately excludes
+// HR from *initiating* these two types (they keep read access everywhere else).
+// Uses canMutate() (not isDepartmentUnrestricted()) for the full-admin bypass
+// since that helper also includes HR, which would defeat the restriction.
+export async function canInitiateEocOrClientInitiatedTermination(
+  user: CurrentUser,
+  vaUserId: string
+): Promise<boolean> {
+  if (!user) return false
+  if (canMutate(user)) return true
+  if (!CLEARANCE_MANAGER_ROLES.includes(user.systemRole)) return false
+
+  const managed = getManagedDepartmentIds(user)
+  const [ownDeptId, csDeptId] = await Promise.all([vaPrimaryDepartmentId(vaUserId), departmentIdByAcronym('CS')])
+  return (ownDeptId !== null && managed.includes(ownDeptId)) || (csDeptId !== null && managed.includes(csDeptId))
 }

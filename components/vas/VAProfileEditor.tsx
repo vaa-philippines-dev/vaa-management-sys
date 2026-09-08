@@ -71,9 +71,12 @@ type VAData = {
 export function VAProfileEditor({
   data,
   assignments,
+  documents,
   driveFiles,
   currentUserId,
   canEdit = false,
+  canEditSensitive = false,
+  canInitiateTypeAB = false,
 }: {
   data: VAData
   skills: { id: string; name: string; proficiency: string | null }[]
@@ -82,9 +85,16 @@ export function VAProfileEditor({
   driveFiles: DriveFile[]
   currentUserId?: string
   canEdit?: boolean
+  // Personal Information, Employment & Payment, and 201 Files are sensitive —
+  // gated separately from the broader canEdit (see VA_SENSITIVE_INFO_EDIT_ROLES).
+  canEditSensitive?: boolean
+  // FB-0002: whether this viewer may start a Type A (EOC) / Type B
+  // (CLIENT_INITIATED) case for this specific VA — see TerminationCard below.
+  canInitiateTypeAB?: boolean
 }) {
   const vaName = `${data.user.firstName} ${data.user.lastName}`.trim()
   const [recentUpload, setRecentUpload] = useState<string | null>(null)
+  const [otherDocuments, setOtherDocuments] = useState(documents)
 
   const handleRecentUpload = (field: string) => {
     setRecentUpload(field)
@@ -98,7 +108,7 @@ export function VAProfileEditor({
           icon={User}
           label="Personal Information"
           renderEdit={(onClose) => <PersonalFormContent data={data} onClose={onClose} />}
-          canEdit={canEdit}
+          canEdit={canEditSensitive}
         >
           <TableRow label="Assigned Email" value={data.user.email} />
           <TableRow label="Work Email" value={data.profile?.workEmail} />
@@ -131,7 +141,7 @@ export function VAProfileEditor({
           icon={Briefcase}
           label="Employment & Payment"
           renderEdit={(onClose) => <EmploymentFormContent data={data} onClose={onClose} />}
-          canEdit={canEdit}
+          canEdit={canEditSensitive}
         >
           <TableRow label="Position" value={data.membership?.positionTitle || data.vaProfile.vaaPosition} />
           <TableRow label="Status" value={data.employment?.employmentStatus?.replace(/_/g, ' ')} />
@@ -173,9 +183,23 @@ export function VAProfileEditor({
               <DocBadge icon={IdCard} label="Passport" url={data.profile?.passportPhoto ?? null} highlighted={recentUpload === 'passportPhoto'} />
               <DocBadge icon={Camera} label="PhilHealth" url={data.profile?.philhealthPhoto ?? null} highlighted={recentUpload === 'philhealthPhoto'} />
               <DocBadge icon={FileText} label="Contract" url={data.profile?.signedContract ?? null} highlighted={recentUpload === 'signedContract'} />
+              {otherDocuments.map((d) => (
+                <DocBadge
+                  key={d.id}
+                  icon={FileText}
+                  label={DOCUMENT_TYPE_LABELS[d.documentType] ?? d.documentType}
+                  url={d.googleDriveUrl}
+                />
+              ))}
             </div>
-            {canEdit && (
+            {canEditSensitive && (
               <Files201Content data={data} vaName={vaName} onJustUploaded={handleRecentUpload} onClose={() => {}} currentUserId={currentUserId} />
+            )}
+            {canEditSensitive && (
+              <OtherDocumentUpload
+                vaProfileId={data.vaProfile.id}
+                onUploaded={(doc) => setOtherDocuments((prev) => [doc, ...prev])}
+              />
             )}
           </div>
         </div>
@@ -184,7 +208,13 @@ export function VAProfileEditor({
       <div className="space-y-4">
         <StatusCard vaProfileId={data.vaProfile.id} status={data.vaProfile.status} engagementStatus={data.vaProfile.engagementStatus} canEdit={canEdit} />
 
-        <TerminationCard vaProfileId={data.vaProfile.id} vaName={vaName} assignments={assignments} canEdit={canEdit} />
+        <TerminationCard
+          vaProfileId={data.vaProfile.id}
+          vaName={vaName}
+          assignments={assignments}
+          canEdit={canEdit}
+          canInitiateTypeAB={canInitiateTypeAB}
+        />
 
         <div className="rounded-2xl border bg-card p-4 shadow-sm">
           <p className="text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wider">Overview</p>
@@ -679,6 +709,93 @@ function DocBadge({ icon: Icon, label, url, highlighted }: { icon: React.Compone
   )
 }
 
+const DOCUMENT_TYPE_OPTIONS = [
+  { value: 'GOVERNMENT_ID', label: 'Valid ID' },
+  { value: 'NDA', label: 'NDA' },
+  { value: 'CLEARANCE', label: 'Clearance' },
+  { value: 'CERTIFICATE', label: 'Certificate' },
+  { value: 'ONBOARDING', label: 'Onboarding Document' },
+  { value: 'PERFORMANCE_REVIEW', label: 'Performance Review' },
+  { value: 'PORTFOLIO', label: 'Portfolio' },
+  { value: 'VA_CLIENT_FILE', label: 'Client File' },
+  { value: 'HEALTH_CHECK', label: 'Health Check' },
+  { value: 'PAYOUT_SUMMARY', label: 'Payout Summary' },
+  { value: 'OTHER', label: 'Other' },
+]
+const DOCUMENT_TYPE_LABELS: Record<string, string> = Object.fromEntries(
+  DOCUMENT_TYPE_OPTIONS.map((o) => [o.value, o.label])
+)
+
+function OtherDocumentUpload({
+  vaProfileId,
+  onUploaded,
+}: {
+  vaProfileId: string
+  onUploaded: (doc: { id: string; documentType: string; fileName: string; googleDriveUrl: string }) => void
+}) {
+  const [documentType, setDocumentType] = useState('GOVERNMENT_ID')
+  const [uploading, setUploading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const handleFile = (file: File) => {
+    setUploading(true)
+    setError(null)
+
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('vaProfileId', vaProfileId)
+    formData.append('documentType', documentType)
+
+    const xhr = new XMLHttpRequest()
+    xhr.addEventListener('load', () => {
+      setUploading(false)
+      try {
+        const res = JSON.parse(xhr.responseText)
+        if (res.error) { setError(res.error); return }
+        onUploaded({ id: res.id, documentType: res.documentType, fileName: res.fileName, googleDriveUrl: res.url })
+        toast.success('Document uploaded successfully!')
+      } catch {
+        setError('Failed to parse response')
+      }
+    })
+    xhr.addEventListener('error', () => { setUploading(false); setError('Upload failed') })
+    xhr.open('POST', '/api/upload/document')
+    xhr.send(formData)
+  }
+
+  return (
+    <div className="rounded-lg border p-3 space-y-2 border-dashed">
+      <p className="text-xs font-medium">Other Documents</p>
+      <div className="flex items-center gap-2">
+        <select
+          value={documentType}
+          onChange={(e) => setDocumentType(e.target.value)}
+          className="flex-1 h-8 rounded-lg border bg-background px-2 text-xs"
+        >
+          {DOCUMENT_TYPE_OPTIONS.map((o) => (
+            <option key={o.value} value={o.value}>{o.label}</option>
+          ))}
+        </select>
+        <label className="shrink-0">
+          <input
+            type="file"
+            className="hidden"
+            onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f) }}
+          />
+          <Button type="button" variant="outline" size="sm" className="text-xs h-8" disabled={uploading}>
+            {uploading ? <Loader2 className="h-3 w-3 animate-spin" /> : 'Upload'}
+          </Button>
+        </label>
+      </div>
+      {error && (
+        <span className="text-[11px] text-destructive flex items-center gap-1">
+          <AlertCircle className="h-3 w-3" />{error}
+        </span>
+      )}
+    </div>
+  )
+}
+
 const GENERAL_STATUS_OPTIONS = [
   { value: 'ACTIVE', label: 'Active' },
   { value: 'PENDING', label: 'Pending' },
@@ -827,16 +944,18 @@ function TerminationCard({
   vaName,
   assignments,
   canEdit,
+  canInitiateTypeAB,
 }: {
   vaProfileId: string
   vaName: string
   assignments: { id: string; clientName: string; status: string }[]
   canEdit: boolean
+  canInitiateTypeAB: boolean
 }) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [scope, setScope] = useState('VA')
-  const [type, setType] = useState('EOC')
+  const [type, setType] = useState(canInitiateTypeAB ? 'EOC' : 'VAA_INITIATED')
   const [voluntary, setVoluntary] = useState<'RESIGNED' | 'TERMINATED'>('RESIGNED')
   const [affectsBothParties, setAffectsBothParties] = useState(false)
   const [effectiveDate, setEffectiveDate] = useState('')
@@ -852,10 +971,15 @@ function TerminationCard({
 
   const openAssignments = assignments.filter((a) => OPEN_ASSIGNMENT_STATUSES.has(a.status))
   const resultingStatus = type === 'EOC' ? 'END_OF_CONTRACT' : type === 'CLIENT_INITIATED' ? 'TERMINATED' : voluntary
+  // FB-0002: HR-only viewers (no CS/SD scope for this VA) may only start Type C
+  // (VAA_INITIATED) cases — Type A/B belong to Customer Success / Service Dept.
+  const availableTypeOptions = canInitiateTypeAB
+    ? TERMINATION_TYPE_OPTIONS
+    : TERMINATION_TYPE_OPTIONS.filter((opt) => opt.value === 'VAA_INITIATED')
 
   const openModal = () => {
     setScope('VA')
-    setType('EOC')
+    setType(canInitiateTypeAB ? 'EOC' : 'VAA_INITIATED')
     setVoluntary('RESIGNED')
     setAffectsBothParties(false)
     setEffectiveDate(format(new Date(), 'yyyy-MM-dd'))
@@ -955,7 +1079,7 @@ function TerminationCard({
           <div>
             <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Type</Label>
             <select value={type} onChange={(e) => setType(e.target.value)} className="w-full h-8 text-xs rounded-md border bg-background px-2">
-              {TERMINATION_TYPE_OPTIONS.map((opt) => (
+              {availableTypeOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
             </select>

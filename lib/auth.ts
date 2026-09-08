@@ -31,6 +31,12 @@ export const LEAVE_ADMIN_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'HR']
 // VA_MUTATOR_ROLES's day-to-day workflow actions on it), so it's scoped tighter:
 // full admins plus HR, who own the Offboarding module end-to-end.
 export const OFFBOARDING_DELETE_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'HR']
+// A VA's Personal Information, Employment & Payment, and 201 Files/attachments
+// are sensitive employee data — per HR feedback, only HR + full admins may edit
+// these specific sections. Dept/Ops Managers and Team Leaders (who otherwise
+// sit in VA_MUTATOR_ROLES) drop to view-only here; every other VA_MUTATOR_ROLES
+// section (address, socials, skills, status, offboarding) is unaffected.
+export const VA_SENSITIVE_INFO_EDIT_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'HR']
 
 // "View as" — lets a full admin (SUPER_ADMIN/SYSTEM_ADMIN) or HR temporarily browse
 // the app simulating another SystemRole, via a cookie read in getCurrentUser() below.
