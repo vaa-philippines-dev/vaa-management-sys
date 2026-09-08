@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { Readable } from 'stream'
 import { logAudit } from '@/lib/audit'
 import { requireAuth } from '@/lib/auth'
+import { getDriveAuth, getRootFolderId, findOrCreateFolder } from '@/lib/google/drive'
 
 const HR_UPLOAD_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'HR']
 
@@ -14,67 +15,6 @@ const ALLOWED_MIME_TYPES = new Set([
   'application/pdf',
 ])
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024 // 10 MB
-
-let _rootFolderId: string | null = null
-
-function getDriveAuth() {
-  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL
-  const key = (process.env.GOOGLE_PRIVATE_KEY || '').replace(/\\n/g, '\n')
-  if (!email || !key) throw new Error('Google credentials not configured')
-  return new google.auth.GoogleAuth({
-    credentials: { client_email: email, private_key: key },
-    scopes: ['https://www.googleapis.com/auth/drive'],
-  })
-}
-
-async function getRootFolderId(drive: ReturnType<typeof google.drive>): Promise<string> {
-  if (_rootFolderId) return _rootFolderId
-
-  const configuredId = process.env.GOOGLE_DRIVE_PARENT_FOLDER_ID
-
-  if (!configuredId) {
-    throw new Error('GOOGLE_DRIVE_PARENT_FOLDER_ID not configured — must point to a Shared Drive folder')
-  }
-
-  await drive.files.get({
-    fileId: configuredId,
-    fields: 'id',
-    supportsAllDrives: true,
-  })
-
-  _rootFolderId = configuredId
-  return configuredId
-}
-
-async function findOrCreateFolder(
-  drive: ReturnType<typeof google.drive>,
-  parentId: string,
-  folderName: string
-): Promise<string> {
-  const existing = await drive.files.list({
-    q: `'${parentId}' in parents and name = '${folderName.replace(/'/g, "\\'")}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false`,
-    fields: 'files(id)',
-    pageSize: 1,
-    supportsAllDrives: true,
-  })
-
-  if (existing.data.files?.length) {
-    return existing.data.files[0].id!
-  }
-
-  const created = await drive.files.create({
-    requestBody: {
-      name: folderName,
-      mimeType: 'application/vnd.google-apps.folder',
-      parents: [parentId],
-    },
-    fields: 'id',
-    supportsAllDrives: true,
-  })
-
-  if (!created.data.id) throw new Error('Failed to create folder')
-  return created.data.id
-}
 
 const DOC_TYPE_FOLDERS: Record<string, string> = {
   passportPhoto: 'Passport',

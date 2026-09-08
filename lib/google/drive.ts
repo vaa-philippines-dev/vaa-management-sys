@@ -137,3 +137,63 @@ export async function makeFilePublic(
 export function toDirectImageUrl(fileId: string): string {
   return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`
 }
+
+// Strict variants (throw instead of degrading to null/[]) used by the upload
+// routes — shared between app/api/upload/route.ts (fixed 201-file slots) and
+// app/api/upload/document/route.ts (generic VADocument uploads) so both land
+// in the same "201 VA | {vaName}/{folder}" Drive tree.
+let _uploadRootFolderId: string | null = null
+
+export function getDriveAuth() {
+  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL
+  const key = (process.env.GOOGLE_PRIVATE_KEY || '').replace(/\\n/g, '\n')
+  if (!email || !key) throw new Error('Google credentials not configured')
+  return new google.auth.GoogleAuth({
+    credentials: { client_email: email, private_key: key },
+    scopes: ['https://www.googleapis.com/auth/drive'],
+  })
+}
+
+export async function getRootFolderId(drive: ReturnType<typeof google.drive>): Promise<string> {
+  if (_uploadRootFolderId) return _uploadRootFolderId
+
+  const configuredId = process.env.GOOGLE_DRIVE_PARENT_FOLDER_ID
+  if (!configuredId) {
+    throw new Error('GOOGLE_DRIVE_PARENT_FOLDER_ID not configured — must point to a Shared Drive folder')
+  }
+
+  await drive.files.get({ fileId: configuredId, fields: 'id', supportsAllDrives: true })
+
+  _uploadRootFolderId = configuredId
+  return configuredId
+}
+
+export async function findOrCreateFolder(
+  drive: ReturnType<typeof google.drive>,
+  parentId: string,
+  folderName: string
+): Promise<string> {
+  const existing = await drive.files.list({
+    q: `'${parentId}' in parents and name = '${folderName.replace(/'/g, "\\'")}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false`,
+    fields: 'files(id)',
+    pageSize: 1,
+    supportsAllDrives: true,
+  })
+
+  if (existing.data.files?.length) {
+    return existing.data.files[0].id!
+  }
+
+  const created = await drive.files.create({
+    requestBody: {
+      name: folderName,
+      mimeType: 'application/vnd.google-apps.folder',
+      parents: [parentId],
+    },
+    fields: 'id',
+    supportsAllDrives: true,
+  })
+
+  if (!created.data.id) throw new Error('Failed to create folder')
+  return created.data.id
+}
