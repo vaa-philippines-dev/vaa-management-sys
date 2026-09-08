@@ -1,4 +1,5 @@
 import { getCurrentUser, getPrimaryDepartment, VIEW_AS_ROLES, VIEW_AS_GRANTOR_ROLES } from '@/lib/auth'
+import { getLedTeamIds } from '@/lib/teams'
 import { prisma } from '@/lib/prisma'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { ThemeToggle } from './ThemeToggle'
@@ -12,6 +13,7 @@ export async function Navbar() {
   const primaryMembership = user?.memberships.find((m) => m.isPrimary) ?? user?.memberships[0]
   const isAdmin = user ? ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE'].includes(user.systemRole) : false
   const isVA = user?.userType === 'VIRTUAL_ASSISTANT'
+  const isLedTeamLeader = isVA && user ? (await getLedTeamIds(user.id)).length > 0 : false
   const canViewAs = user ? (VIEW_AS_GRANTOR_ROLES as readonly string[]).includes(user.realSystemRole) : false
 
   // Only fetched for admins who can actually use "view as" — powers the per-department
@@ -53,7 +55,7 @@ export async function Navbar() {
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b bg-background/80 px-6 backdrop-blur-sm">
       <div className="flex flex-1 items-center gap-3">
-        <CommandPalette isAdmin={isAdmin} isVA={isVA} />
+        <CommandPalette isAdmin={isAdmin} isVA={isVA} isLedTeamLeader={isLedTeamLeader} />
         {user?.isViewingAs && (
           <ViewAsBanner role={user.systemRole} departmentName={user.viewAsDepartment?.name} accountName={viewAsAccountName} />
         )}

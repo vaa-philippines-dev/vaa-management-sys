@@ -328,12 +328,14 @@ export function Sidebar({
   initialFavorites = [],
   showDepartmentSection = false,
   canManageLeave = false,
+  isLedTeamLeader = false,
 }: {
   role?: 'MANAGER' | 'VA'
   isAdmin?: boolean
   initialFavorites?: FavoriteRecord[]
   showDepartmentSection?: boolean
   canManageLeave?: boolean
+  isLedTeamLeader?: boolean
 }) {
   const pathname = usePathname()
   const routes = role === 'VA' ? vaRoutes : managerRoutes
@@ -459,6 +461,21 @@ export function Sidebar({
               onChanged={setFavorites}
             />
           ))}
+
+          {/* FB-0007: team leaders have no distinguishing SystemRole — they're VAs
+              gated by getLedTeamIds(), same as /resign itself. */}
+          {role === 'VA' && isLedTeamLeader && (
+            <FavoritableRow
+              href="/resign"
+              label="Report a Resignation"
+              icon={UserMinus}
+              isActive={isMainRowActive('/resign', isRouteActive('/resign'))}
+              canFavorite={canFavorite}
+              favorite={favorites.find((f) => f.href === '/resign')}
+              atMax={atMax}
+              onChanged={setFavorites}
+            />
+          )}
 
           {showDepartmentSection && (
             <>

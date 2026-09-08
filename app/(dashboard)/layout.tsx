@@ -10,7 +10,7 @@ import { ClientCsvImportFloatingWidget } from '@/components/clients/ClientCsvImp
 import { ImportClientCsvModal } from '@/components/clients/ImportClientCsvModal'
 import { getCurrentUser, CLIENT_MUTATOR_ROLES, LEAVE_ADMIN_ROLES } from '@/lib/auth'
 import { getSidebarFavorites } from '@/lib/favorites'
-import { isTeamAffiliated } from '@/lib/teams'
+import { isTeamAffiliated, getLedTeamIds } from '@/lib/teams'
 import { prisma } from '@/lib/prisma'
 
 export default async function DashboardLayout({
@@ -31,6 +31,11 @@ export default async function DashboardLayout({
     isHR ||
     isManagerDeptRole ||
     (user?.userType === 'VIRTUAL_ASSISTANT' ? await isTeamAffiliated(user.id) : false)
+  // FB-0007: "team leaders" have no distinguishing SystemRole — they're VAs
+  // (systemRole=VA) assigned as a Team's leader/temp-leader — so /resign's nav
+  // entry is gated the same way the page itself is (getLedTeamIds()), not by role.
+  const isLedTeamLeader =
+    user?.userType === 'VIRTUAL_ASSISTANT' ? (await getLedTeamIds(user.id)).length > 0 : false
 
   const canImportClients = user ? CLIENT_MUTATOR_ROLES.includes(user.systemRole) : false
   const serviceDepartments = canImportClients
@@ -53,6 +58,7 @@ export default async function DashboardLayout({
                 initialFavorites={favorites}
                 showDepartmentSection={showDepartmentSection}
                 canManageLeave={canManageLeave}
+                isLedTeamLeader={isLedTeamLeader}
               />
               <div className="flex flex-1 flex-col overflow-hidden">
                 <Navbar />

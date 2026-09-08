@@ -40,6 +40,7 @@ type Shortcut = {
   icon: React.ComponentType<{ className?: string }>
   keywords?: string
   adminOnly?: boolean
+  teamLeaderOnly?: boolean
 }
 
 const SHORTCUTS: Shortcut[] = [
@@ -77,9 +78,11 @@ const VA_SHORTCUTS: Shortcut[] = [
   { label: 'My Work Logs', description: 'Hours you have logged', href: '/work-logs', icon: Clock, keywords: 'hours timesheet' },
   { label: 'My Assignments', description: 'Clients you are assigned to', href: '/assignments', icon: Briefcase },
   { label: 'Tickets', description: 'Support tickets and conversations', href: '/tickets', icon: Ticket },
+  // FB-0007: only shown to VAs who lead at least one team (see isLedTeamLeader).
+  { label: 'Report a Resignation', description: 'File a resignation for someone on your team', href: '/resign', icon: UserMinus, keywords: 'resign quit leaving', teamLeaderOnly: true },
 ]
 
-export function CommandPalette({ isAdmin, isVA }: { isAdmin: boolean; isVA: boolean }) {
+export function CommandPalette({ isAdmin, isVA, isLedTeamLeader = false }: { isAdmin: boolean; isVA: boolean; isLedTeamLeader?: boolean }) {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [activeIndex, setActiveIndex] = useState(0)
@@ -88,8 +91,8 @@ export function CommandPalette({ isAdmin, isVA }: { isAdmin: boolean; isVA: bool
 
   const shortcuts = useMemo(() => {
     const base = isVA ? VA_SHORTCUTS : SHORTCUTS
-    return base.filter((s) => !s.adminOnly || isAdmin)
-  }, [isAdmin, isVA])
+    return base.filter((s) => (!s.adminOnly || isAdmin) && (!s.teamLeaderOnly || isLedTeamLeader))
+  }, [isAdmin, isVA, isLedTeamLeader])
 
   const results = useMemo(() => {
     if (!query.trim()) return shortcuts
