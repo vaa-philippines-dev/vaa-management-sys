@@ -12,11 +12,18 @@ export async function createResignationCase({
   vaProfileId,
   assignmentId,
   reason,
+  effectiveDate,
+  recordingLink,
 }: {
   actorId: string
   vaProfileId: string
   assignmentId?: string | null
   reason: string | null
+  // FB-0005: when reported by a Team Leader via /resign, the last working day
+  // and the resignation-call recording are captured immediately at filing time
+  // rather than left for a later discussion step.
+  effectiveDate?: Date
+  recordingLink?: string | null
 }): Promise<{ terminationId: string; ticketId: string }> {
   const va = await prisma.vAProfile.findUnique({
     where: { id: vaProfileId },
@@ -71,9 +78,24 @@ export async function createResignationCase({
         workflowStatus: 'INITIATED',
         ticketId: ticket.id,
         initiatedById: actorId,
-        effectiveDate: new Date(),
+        effectiveDate: effectiveDate ?? new Date(),
       },
     })
+
+    // The TL's report IS the discussion record for this intake path — logDiscussionOutcome()
+    // later upserts onto this same row rather than creating a duplicate.
+    if (effectiveDate || recordingLink) {
+      await tx.resignationDiscussion.create({
+        data: {
+          terminationId: termination.id,
+          conductedAt: new Date(),
+          retained: false,
+          recordingLink: recordingLink ?? null,
+          lastWorkingDay: effectiveDate ?? null,
+        },
+      })
+    }
+
     return { terminationId: termination.id, ticketId: ticket.id }
   })
 }

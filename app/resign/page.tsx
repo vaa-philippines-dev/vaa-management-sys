@@ -43,7 +43,15 @@ export default async function ResignPage() {
             select: {
               firstName: true,
               lastName: true,
-              vaProfile: { select: { id: true } },
+              vaProfile: {
+                select: {
+                  id: true,
+                  assignments: {
+                    where: { status: { in: ['ACTIVE', 'PAUSED', 'ON_HOLD'] } },
+                    select: { id: true, client: { select: { name: true } } },
+                  },
+                },
+              },
             },
           },
         },
@@ -62,6 +70,14 @@ export default async function ResignPage() {
       }))
   )
 
+  const assignmentsByVa: Record<string, { id: string; clientName: string }[]> = {}
+  for (const team of teams) {
+    for (const m of team.memberships) {
+      if (!m.user.vaProfile) continue
+      assignmentsByVa[m.user.vaProfile.id] = m.user.vaProfile.assignments.map((a) => ({ id: a.id, clientName: a.client.name }))
+    }
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4 py-10">
       <Card className="w-full max-w-lg">
@@ -72,7 +88,7 @@ export default async function ResignPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <TeamLeaderResignationForm vaOptions={vaOptions} />
+          <TeamLeaderResignationForm vaOptions={vaOptions} assignmentsByVa={assignmentsByVa} />
         </CardContent>
       </Card>
     </div>
