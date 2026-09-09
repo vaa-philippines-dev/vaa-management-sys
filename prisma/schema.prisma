@@ -478,6 +478,7 @@ model User {
   terminationsInitiated        Termination[]          @relation("TerminationInitiator")
   clearancesCleared            ExitClearance[]        @relation("ClearanceClearedBy")
   agentDecisions               AgentSuggestion[]      @relation("AgentSuggestionDecidedBy")
+  assignmentKpiChecksCompleted AssignmentKpiCheck[]   @relation("AssignmentKpiCheckCompletedBy")
 
   // Resignation SOP extension
   resignationLwdOverrides    ResignationDiscussion[] @relation("ResignationLwdOverrideBy")
@@ -906,11 +907,48 @@ model Assignment {
 
   workLogs     WorkLog[]
   terminations Termination[]
+  kpiChecks    AssignmentKpiCheck[]
 
   @@index([vaProfileId])
   @@index([clientId])
   @@index([status])
   @@map("assignments")
+}
+
+// The DMF sheet's "Performance Monitoring" tab: 7 fixed check-in milestones
+// per assignment (Day 4 / Week 1 / Week 2 / Month 1 / 2 / 3 / 6), each a due
+// date + a manually-set completed flag. Due dates are computed once from the
+// assignment's startDate (see lib/kpi-checks.ts, ported directly from the
+// sheet's own formulas) and stored rather than computed on every read, since
+// a completed checkpoint's due date must stay historical even if the
+// assignment's startDate is corrected later.
+enum KpiMilestone {
+  D4
+  W1
+  W2
+  M1
+  M2
+  M3
+  M6
+}
+
+model AssignmentKpiCheck {
+  id           String       @id @default(cuid())
+  assignmentId String       @map("assignment_id")
+  assignment   Assignment   @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  milestone    KpiMilestone
+  dueDate      DateTime     @map("due_date")
+  completed    Boolean      @default(false)
+  completedAt  DateTime?    @map("completed_at")
+  completedById String?     @map("completed_by_id")
+  completedBy  User?        @relation("AssignmentKpiCheckCompletedBy", fields: [completedById], references: [id], onDelete: SetNull)
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+
+  @@unique([assignmentId, milestone])
+  @@index([dueDate])
+  @@index([completed])
+  @@map("assignment_kpi_checks")
 }
 
 model WorkLog {

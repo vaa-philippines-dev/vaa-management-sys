@@ -715,6 +715,23 @@ export type EnumAssignmentSourceWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumAssignmentSourceFilter<$PrismaModel>
 }
 
+export type EnumKpiMilestoneFilter<$PrismaModel = never> = {
+  equals?: $Enums.KpiMilestone | Prisma.EnumKpiMilestoneFieldRefInput<$PrismaModel>
+  in?: $Enums.KpiMilestone[] | Prisma.ListEnumKpiMilestoneFieldRefInput<$PrismaModel>
+  notIn?: $Enums.KpiMilestone[] | Prisma.ListEnumKpiMilestoneFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumKpiMilestoneFilter<$PrismaModel> | $Enums.KpiMilestone
+}
+
+export type EnumKpiMilestoneWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.KpiMilestone | Prisma.EnumKpiMilestoneFieldRefInput<$PrismaModel>
+  in?: $Enums.KpiMilestone[] | Prisma.ListEnumKpiMilestoneFieldRefInput<$PrismaModel>
+  notIn?: $Enums.KpiMilestone[] | Prisma.ListEnumKpiMilestoneFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumKpiMilestoneWithAggregatesFilter<$PrismaModel> | $Enums.KpiMilestone
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumKpiMilestoneFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumKpiMilestoneFilter<$PrismaModel>
+}
+
 export type EnumTicketCategoryFilter<$PrismaModel = never> = {
   equals?: $Enums.TicketCategory | Prisma.EnumTicketCategoryFieldRefInput<$PrismaModel>
   in?: $Enums.TicketCategory[] | Prisma.ListEnumTicketCategoryFieldRefInput<$PrismaModel>
@@ -1838,6 +1855,23 @@ export type NestedEnumAssignmentSourceWithAggregatesFilter<$PrismaModel = never>
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumAssignmentSourceFilter<$PrismaModel>
   _max?: Prisma.NestedEnumAssignmentSourceFilter<$PrismaModel>
+}
+
+export type NestedEnumKpiMilestoneFilter<$PrismaModel = never> = {
+  equals?: $Enums.KpiMilestone | Prisma.EnumKpiMilestoneFieldRefInput<$PrismaModel>
+  in?: $Enums.KpiMilestone[] | Prisma.ListEnumKpiMilestoneFieldRefInput<$PrismaModel>
+  notIn?: $Enums.KpiMilestone[] | Prisma.ListEnumKpiMilestoneFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumKpiMilestoneFilter<$PrismaModel> | $Enums.KpiMilestone
+}
+
+export type NestedEnumKpiMilestoneWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.KpiMilestone | Prisma.EnumKpiMilestoneFieldRefInput<$PrismaModel>
+  in?: $Enums.KpiMilestone[] | Prisma.ListEnumKpiMilestoneFieldRefInput<$PrismaModel>
+  notIn?: $Enums.KpiMilestone[] | Prisma.ListEnumKpiMilestoneFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumKpiMilestoneWithAggregatesFilter<$PrismaModel> | $Enums.KpiMilestone
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumKpiMilestoneFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumKpiMilestoneFilter<$PrismaModel>
 }
 
 export type NestedEnumTicketCategoryFilter<$PrismaModel = never> = {

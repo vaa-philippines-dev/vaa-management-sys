@@ -147,6 +147,11 @@ export type Client = Prisma.ClientModel
  */
 export type Assignment = Prisma.AssignmentModel
 /**
+ * Model AssignmentKpiCheck
+ * 
+ */
+export type AssignmentKpiCheck = Prisma.AssignmentKpiCheckModel
+/**
  * Model WorkLog
  * 
  */

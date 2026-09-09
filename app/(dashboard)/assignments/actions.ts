@@ -7,6 +7,7 @@ import { redirect } from 'next/navigation'
 import { requireRole, ASSIGNMENT_MUTATOR_ROLES } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
 import { notify } from '@/lib/notifications'
+import { computeKpiCheckpoints } from '@/lib/kpi-checks'
 
 export async function createAssignment(formData: FormData) {
   const actor = await requireRole(...ASSIGNMENT_MUTATOR_ROLES)
@@ -37,6 +38,16 @@ export async function createAssignment(formData: FormData) {
       client: { select: { name: true } },
       vaProfile: { select: { userId: true } },
     },
+  })
+
+  // Seeds the 7 fixed KPI check-in milestones (Day 4/Week 1/Week 2/Month
+  // 1/2/3/6) for this assignment up front — see lib/kpi-checks.ts.
+  await prisma.assignmentKpiCheck.createMany({
+    data: computeKpiCheckpoints(startDate).map(({ milestone, dueDate }) => ({
+      assignmentId: assignment.id,
+      milestone,
+      dueDate,
+    })),
   })
 
   await logAudit({
@@ -93,6 +104,21 @@ export async function updateAssignment(id: string, formData: FormData) {
     data: { type, agreedHours, startDate, endDate, monthlyHours, notes },
   })
 
+  // Recompute KPI checkpoint due dates when the start date actually changes
+  // — but only for checkpoints not yet marked done, so a correction to the
+  // start date can't retroactively shift when an already-completed check-in
+  // happened.
+  if (startDate.getTime() !== before.startDate.getTime()) {
+    await Promise.all(
+      computeKpiCheckpoints(startDate).map(({ milestone, dueDate }) =>
+        prisma.assignmentKpiCheck.updateMany({
+          where: { assignmentId: id, milestone, completed: false },
+          data: { dueDate },
+        })
+      )
+    )
+  }
+
   await logAudit({
     actorId: actor.id,
     action: 'UPDATE',
@@ -112,6 +138,31 @@ export async function updateAssignment(id: string, formData: FormData) {
   revalidatePath('/assignments')
   revalidatePath(`/assignments/${id}`)
   revalidateTag(CACHE_TAGS.assignments, 'default')
+}
+
+// Marks one KPI check-in milestone done — the sheet's own "ACTION: Reschedule"
+// column is just a static call-to-action until this happens, not a real
+// per-row state machine, so this is the only mutation the KPI panels need.
+export async function completeKpiCheck(checkId: string) {
+  const actor = await requireRole(...ASSIGNMENT_MUTATOR_ROLES)
+
+  const check = await prisma.assignmentKpiCheck.update({
+    where: { id: checkId },
+    data: { completed: true, completedAt: new Date(), completedById: actor.id },
+    select: { id: true, milestone: true, assignmentId: true },
+  })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'UPDATE',
+    entityType: 'AssignmentKpiCheck',
+    entityId: check.id,
+    after: { completed: true, milestone: check.milestone, assignmentId: check.assignmentId },
+  })
+
+  revalidatePath('/dashboard')
+  revalidateTag(CACHE_TAGS.assignments, 'default')
+  revalidateTag(CACHE_TAGS.dashboard, 'default')
 }
 
 export async function updateAssignmentStatus(id: string, status: string) {

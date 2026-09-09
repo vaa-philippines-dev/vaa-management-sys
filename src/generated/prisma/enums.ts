@@ -412,6 +412,19 @@ export const GeneralStatus = {
 export type GeneralStatus = (typeof GeneralStatus)[keyof typeof GeneralStatus]
 
 
+export const KpiMilestone = {
+  D4: 'D4',
+  W1: 'W1',
+  W2: 'W2',
+  M1: 'M1',
+  M2: 'M2',
+  M3: 'M3',
+  M6: 'M6'
+} as const
+
+export type KpiMilestone = (typeof KpiMilestone)[keyof typeof KpiMilestone]
+
+
 export const ChannelKind = {
   DEPARTMENT: 'DEPARTMENT',
   DIRECT: 'DIRECT',

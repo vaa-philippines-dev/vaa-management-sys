@@ -405,6 +405,7 @@ export const ModelName = {
   VAOnboardingInvite: 'VAOnboardingInvite',
   Client: 'Client',
   Assignment: 'Assignment',
+  AssignmentKpiCheck: 'AssignmentKpiCheck',
   WorkLog: 'WorkLog',
   Ticket: 'Ticket',
   TicketConversation: 'TicketConversation',
@@ -449,7 +450,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveApprovalRule" | "leaveApprovalStep" | "leaveRequest" | "leaveApprovalAction" | "employeeIdCounter" | "vAOnboardingInvite" | "client" | "assignment" | "workLog" | "ticket" | "ticketConversation" | "termination" | "resignationDiscussion" | "replacementRequest" | "exitClearanceApproval" | "complianceReview" | "finalPayout" | "exitSurveyInvite" | "exitSurveyResponse" | "exitClearance" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "customer" | "account" | "notification" | "sidebarFavorite" | "team" | "teamMembership" | "clientPipeline" | "agentSuggestion" | "agentRun"
+    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveApprovalRule" | "leaveApprovalStep" | "leaveRequest" | "leaveApprovalAction" | "employeeIdCounter" | "vAOnboardingInvite" | "client" | "assignment" | "assignmentKpiCheck" | "workLog" | "ticket" | "ticketConversation" | "termination" | "resignationDiscussion" | "replacementRequest" | "exitClearanceApproval" | "complianceReview" | "finalPayout" | "exitSurveyInvite" | "exitSurveyResponse" | "exitClearance" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "customer" | "account" | "notification" | "sidebarFavorite" | "team" | "teamMembership" | "clientPipeline" | "agentSuggestion" | "agentRun"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2004,6 +2005,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.AssignmentCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.AssignmentCountAggregateOutputType> | number
+        }
+      }
+    }
+    AssignmentKpiCheck: {
+      payload: Prisma.$AssignmentKpiCheckPayload<ExtArgs>
+      fields: Prisma.AssignmentKpiCheckFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AssignmentKpiCheckFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentKpiCheckPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AssignmentKpiCheckFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentKpiCheckPayload>
+        }
+        findFirst: {
+          args: Prisma.AssignmentKpiCheckFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentKpiCheckPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AssignmentKpiCheckFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentKpiCheckPayload>
+        }
+        findMany: {
+          args: Prisma.AssignmentKpiCheckFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentKpiCheckPayload>[]
+        }
+        create: {
+          args: Prisma.AssignmentKpiCheckCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentKpiCheckPayload>
+        }
+        createMany: {
+          args: Prisma.AssignmentKpiCheckCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AssignmentKpiCheckCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentKpiCheckPayload>[]
+        }
+        delete: {
+          args: Prisma.AssignmentKpiCheckDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentKpiCheckPayload>
+        }
+        update: {
+          args: Prisma.AssignmentKpiCheckUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentKpiCheckPayload>
+        }
+        deleteMany: {
+          args: Prisma.AssignmentKpiCheckDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AssignmentKpiCheckUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AssignmentKpiCheckUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentKpiCheckPayload>[]
+        }
+        upsert: {
+          args: Prisma.AssignmentKpiCheckUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentKpiCheckPayload>
+        }
+        aggregate: {
+          args: Prisma.AssignmentKpiCheckAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAssignmentKpiCheck>
+        }
+        groupBy: {
+          args: Prisma.AssignmentKpiCheckGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AssignmentKpiCheckGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AssignmentKpiCheckCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AssignmentKpiCheckCountAggregateOutputType> | number
         }
       }
     }
@@ -4603,6 +4678,21 @@ export const AssignmentScalarFieldEnum = {
 export type AssignmentScalarFieldEnum = (typeof AssignmentScalarFieldEnum)[keyof typeof AssignmentScalarFieldEnum]
 
 
+export const AssignmentKpiCheckScalarFieldEnum = {
+  id: 'id',
+  assignmentId: 'assignmentId',
+  milestone: 'milestone',
+  dueDate: 'dueDate',
+  completed: 'completed',
+  completedAt: 'completedAt',
+  completedById: 'completedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AssignmentKpiCheckScalarFieldEnum = (typeof AssignmentKpiCheckScalarFieldEnum)[keyof typeof AssignmentKpiCheckScalarFieldEnum]
+
+
 export const WorkLogScalarFieldEnum = {
   id: 'id',
   workDate: 'workDate',
@@ -5545,6 +5635,20 @@ export type ListEnumAssignmentSourceFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
+ * Reference to a field of type 'KpiMilestone'
+ */
+export type EnumKpiMilestoneFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'KpiMilestone'>
+    
+
+
+/**
+ * Reference to a field of type 'KpiMilestone[]'
+ */
+export type ListEnumKpiMilestoneFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'KpiMilestone[]'>
+    
+
+
+/**
  * Reference to a field of type 'TicketCategory'
  */
 export type EnumTicketCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketCategory'>
@@ -5996,6 +6100,7 @@ export type GlobalOmitConfig = {
   vAOnboardingInvite?: Prisma.VAOnboardingInviteOmit
   client?: Prisma.ClientOmit
   assignment?: Prisma.AssignmentOmit
+  assignmentKpiCheck?: Prisma.AssignmentKpiCheckOmit
   workLog?: Prisma.WorkLogOmit
   ticket?: Prisma.TicketOmit
   ticketConversation?: Prisma.TicketConversationOmit

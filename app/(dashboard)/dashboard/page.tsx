@@ -8,6 +8,9 @@ import { Button } from '@/components/ui/button'
 import { DepartmentStructureCard } from '@/components/dashboard/DepartmentStructureCard'
 import { DepartmentTeamsCard } from '@/components/dashboard/DepartmentTeamsCard'
 import { DepartmentCelebrationsCard } from '@/components/dashboard/DepartmentCelebrationsCard'
+import { DepartmentHeadcountCard } from '@/components/dashboard/DepartmentHeadcountCard'
+import { DepartmentDataIssuesCard } from '@/components/dashboard/DepartmentDataIssuesCard'
+import { DepartmentKpiChecksCard } from '@/components/dashboard/DepartmentKpiChecksCard'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
@@ -24,19 +27,6 @@ import {
 import { startOfMonth, endOfMonth, format } from 'date-fns'
 import { Skeleton } from '@/components/ui/skeleton'
 import { CircularProgress } from '@/components/ui/circular-progress'
-
-// VAProfile has no discrete full-time/part-time field — inferred from
-// totalCapacityHours (schema default 40h/week); null defaults to full-time
-// to match that same schema default.
-const FULL_TIME_CAPACITY_THRESHOLD_HOURS = 35
-
-const AVAILABILITY_STATUS_LABELS: Record<string, string> = {
-  AVAILABLE: 'Available',
-  PARTIALLY_ASSIGNED: 'Partial',
-  FULLY_ASSIGNED: 'Full',
-  ON_LEAVE: 'On Leave',
-  UNAVAILABLE: 'Unavailable',
-}
 
 export default async function DashboardPage({
   searchParams,
@@ -119,15 +109,23 @@ export default async function DashboardPage({
         <>
           <div className="grid gap-4 md:grid-cols-2">
             <Suspense fallback={<Skeleton className="h-40 rounded-lg" />}>
-              <DepartmentAvailability deptId={deptId} />
+              <DepartmentHeadcountCard deptId={deptId} />
             </Suspense>
             <Suspense fallback={<Skeleton className="h-40 rounded-lg" />}>
               <DepartmentTeamsCard deptId={deptId} />
             </Suspense>
           </div>
-          <Suspense fallback={<Skeleton className="h-32 rounded-lg" />}>
-            <DepartmentCelebrationsCard deptId={deptId} />
+          <Suspense fallback={<Skeleton className="h-40 rounded-lg" />}>
+            <DepartmentKpiChecksCard deptId={deptId} />
           </Suspense>
+          <div className="grid gap-4 md:grid-cols-2">
+            <Suspense fallback={<Skeleton className="h-32 rounded-lg" />}>
+              <DepartmentCelebrationsCard deptId={deptId} />
+            </Suspense>
+            <Suspense fallback={<Skeleton className="h-32 rounded-lg" />}>
+              <DepartmentDataIssuesCard deptId={deptId} />
+            </Suspense>
+          </div>
         </>
       )}
 
@@ -135,51 +133,6 @@ export default async function DashboardPage({
         <ManagerRecentAssignments deptId={deptId ?? null} />
       </Suspense>
     </div>
-  )
-}
-
-async function DepartmentAvailability({ deptId }: { deptId: string }) {
-  const vas = await cached(`dashboard:availability:${deptId}`, [CACHE_TAGS.vas, CACHE_TAGS.dashboard], 60, () =>
-    prisma.vAProfile.findMany({
-      where: { status: 'ACTIVE', user: { memberships: { some: { departmentId: deptId, endedAt: null } } } },
-      select: { availabilityStatus: true, totalCapacityHours: true },
-    })
-  )
-
-  const statusCounts: Record<string, number> = {}
-  let fullTime = 0
-  let partTime = 0
-  for (const va of vas) {
-    statusCounts[va.availabilityStatus] = (statusCounts[va.availabilityStatus] ?? 0) + 1
-    const capacity = va.totalCapacityHours ? Number(va.totalCapacityHours) : FULL_TIME_CAPACITY_THRESHOLD_HOURS
-    if (capacity >= FULL_TIME_CAPACITY_THRESHOLD_HOURS) fullTime++
-    else partTime++
-  }
-
-  return (
-    <Card>
-      <CardHeader className="pb-3">
-        <CardTitle className="text-base flex items-center gap-2"><Users className="h-4 w-4" />Availability</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        {vas.length === 0 ? (
-          <p className="text-sm text-muted-foreground py-2">No active VAs in this department.</p>
-        ) : (
-          <>
-            <div className="flex flex-wrap gap-2">
-              {Object.entries(AVAILABILITY_STATUS_LABELS).map(([key, label]) => (
-                <Badge key={key} variant="outline" className="text-xs">
-                  {label}: {statusCounts[key] ?? 0}
-                </Badge>
-              ))}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {fullTime} full-time · {partTime} part-time
-            </p>
-          </>
-        )}
-      </CardContent>
-    </Card>
   )
 }
 
