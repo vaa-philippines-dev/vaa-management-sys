@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import type { Prisma } from '@/src/generated/prisma/client'
-import { getCurrentUser, getManagedDepartmentIds, getPrimaryDepartment, CLIENT_MUTATOR_ROLES } from '@/lib/auth'
+import { getCurrentUser, getManagedDepartmentIds, getPrimaryDepartment, CLIENT_MUTATOR_ROLES, DEPARTMENT_SCOPED_ROLES } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { isTeamAffiliated } from '@/lib/teams'
 import { Card, CardContent } from '@/components/ui/card'
@@ -11,7 +11,6 @@ import { AddClientButton } from '@/components/clients/AddClientButton'
 import { FilterBar } from '@/components/filters/FilterBar'
 import { redirect } from 'next/navigation'
 
-const DEPARTMENT_SCOPED_ROLES = ['DEPT_MANAGER', 'OPERATIONS_MANAGER']
 const UNRESTRICTED_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'HR']
 
 // The four filter tabs don't map 1:1 onto GeneralStatus — "Paused" is

@@ -1,11 +1,13 @@
-import { getCurrentUser } from '@/lib/auth'
+import { getCurrentUser, isDepartmentUnrestricted, getManagedDepartmentIds } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { prisma } from '@/lib/prisma'
 import { getFeaturedFavorite } from '@/lib/favorites'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { DepartmentStructureCard } from '@/components/dashboard/DepartmentStructureCard'
+import { DepartmentTeamsCard } from '@/components/dashboard/DepartmentTeamsCard'
+import { DepartmentCelebrationsCard } from '@/components/dashboard/DepartmentCelebrationsCard'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
@@ -18,8 +20,6 @@ import {
   Plus,
   ArrowRight,
   AlertCircle,
-  UsersRound,
-  CalendarHeart,
 } from 'lucide-react'
 import { startOfMonth, endOfMonth, format } from 'date-fns'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -29,9 +29,6 @@ import { CircularProgress } from '@/components/ui/circular-progress'
 // totalCapacityHours (schema default 40h/week); null defaults to full-time
 // to match that same schema default.
 const FULL_TIME_CAPACITY_THRESHOLD_HOURS = 35
-// How far ahead the department dashboard's "Upcoming Anniversaries" widget
-// looks — kept short since it's a glance widget, not the full Celebrants page.
-const UPCOMING_EVENTS_WINDOW_DAYS = 30
 
 const AVAILABILITY_STATUS_LABELS: Record<string, string> = {
   AVAILABLE: 'Available',
@@ -39,21 +36,6 @@ const AVAILABILITY_STATUS_LABELS: Record<string, string> = {
   FULLY_ASSIGNED: 'Full',
   ON_LEAVE: 'On Leave',
   UNAVAILABLE: 'Unavailable',
-}
-
-// Rolls a recurring (month, day) anniversary into its next occurrence from
-// `from` — this year if not yet passed, otherwise next year.
-function nextOccurrence(month: number, day: number, from: Date): Date {
-  const year = from.getFullYear()
-  let candidate = new Date(year, month, day)
-  if (candidate < from) candidate = new Date(year + 1, month, day)
-  return candidate
-}
-
-function toValidDate(value: unknown): Date | null {
-  if (!value) return null
-  const d = value instanceof Date ? value : new Date(value as string)
-  return isNaN(d.getTime()) ? null : d
 }
 
 export default async function DashboardPage({
@@ -97,6 +79,16 @@ export default async function DashboardPage({
     )
   }
 
+  // Today any authenticated non-VA user can read any department's stats by
+  // editing the ?dept= URL param — close that gap. EXECUTIVE is folded into
+  // the unrestricted read check (view-only by design, same precedent as
+  // hasModuleAccess()'s EXECUTIVE-read carve-out in lib/auth.ts) so this
+  // doesn't regress the all-department visibility it already has.
+  const readUnrestricted = isDepartmentUnrestricted(user) || user.systemRole === 'EXECUTIVE'
+  if (deptId && !readUnrestricted && !getManagedDepartmentIds(user).includes(deptId)) {
+    redirect('/dashboard')
+  }
+
   const department = deptId
     ? await cached(`dashboard:department:${deptId}`, [CACHE_TAGS.departments, CACHE_TAGS.dashboard], 600, () =>
         prisma.department.findUnique({ where: { id: deptId } })
@@ -106,6 +98,12 @@ export default async function DashboardPage({
   return (
     <div className="space-y-6">
       <DashboardHeader userName={`${user.firstName} ${user.lastName}`} departmentName={department?.name ?? null} />
+
+      {deptId && (
+        <Suspense fallback={<Skeleton className="h-40 rounded-lg" />}>
+          <DepartmentStructureCard deptId={deptId} />
+        </Suspense>
+      )}
 
       <Suspense fallback={<StatsSkeleton />}>
         <ManagerStats deptId={deptId ?? null} />
@@ -124,11 +122,11 @@ export default async function DashboardPage({
               <DepartmentAvailability deptId={deptId} />
             </Suspense>
             <Suspense fallback={<Skeleton className="h-40 rounded-lg" />}>
-              <DepartmentTeams deptId={deptId} />
+              <DepartmentTeamsCard deptId={deptId} />
             </Suspense>
           </div>
           <Suspense fallback={<Skeleton className="h-32 rounded-lg" />}>
-            <DepartmentUpcomingEvents deptId={deptId} />
+            <DepartmentCelebrationsCard deptId={deptId} />
           </Suspense>
         </>
       )}
@@ -179,126 +177,6 @@ async function DepartmentAvailability({ deptId }: { deptId: string }) {
               {fullTime} full-time · {partTime} part-time
             </p>
           </>
-        )}
-      </CardContent>
-    </Card>
-  )
-}
-
-async function DepartmentTeams({ deptId }: { deptId: string }) {
-  const teams = await cached(`dashboard:teams:${deptId}`, [CACHE_TAGS.teams, CACHE_TAGS.dashboard], 60, () =>
-    prisma.team.findMany({
-      where: { departmentId: deptId, status: 'ACTIVE' },
-      include: {
-        leader: { select: { firstName: true, lastName: true } },
-        _count: { select: { memberships: { where: { endedAt: null } } } },
-      },
-      orderBy: { name: 'asc' },
-    })
-  )
-
-  return (
-    <Card>
-      <CardHeader className="pb-3">
-        <CardTitle className="text-base flex items-center gap-2"><UsersRound className="h-4 w-4" />Teams</CardTitle>
-      </CardHeader>
-      <CardContent className={teams.length === 0 ? undefined : 'p-0'}>
-        {teams.length === 0 ? (
-          <p className="text-sm text-muted-foreground py-2">No teams in this department yet.</p>
-        ) : (
-          <Table>
-            <TableHeader>
-              <TableRow className="border-b bg-muted/50">
-                <TableHead className="text-xs font-semibold uppercase tracking-wider">Team</TableHead>
-                <TableHead className="text-xs font-semibold uppercase tracking-wider">Leader</TableHead>
-                <TableHead className="text-xs font-semibold uppercase tracking-wider text-right">Members</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {teams.map((t) => (
-                <TableRow key={t.id} className="border-b">
-                  <TableCell className="py-2.5">
-                    <Link href={`/teams/${t.id}`} className="font-medium hover:underline">{t.name}</Link>
-                  </TableCell>
-                  <TableCell className="py-2.5 text-sm text-muted-foreground">
-                    {t.leader ? `${t.leader.firstName} ${t.leader.lastName}` : 'Unassigned'}
-                  </TableCell>
-                  <TableCell className="py-2.5 text-right text-sm">{t._count.memberships}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        )}
-      </CardContent>
-    </Card>
-  )
-}
-
-async function DepartmentUpcomingEvents({ deptId }: { deptId: string }) {
-  const users = await cached(`dashboard:upcomingEvents:${deptId}`, [CACHE_TAGS.users, CACHE_TAGS.dashboard], 60, () =>
-    prisma.user.findMany({
-      where: { memberships: { some: { departmentId: deptId, endedAt: null } } },
-      include: {
-        vaProfile: true,
-        employmentRecords: { where: { isCurrent: true }, take: 1 },
-      },
-    })
-  )
-
-  const now = new Date()
-  type UpcomingEvent = { id: string; name: string; label: string; date: Date; daysUntil: number }
-  const events: UpcomingEvent[] = []
-
-  for (const u of users) {
-    const currentEmploymentRecord = u.employmentRecords[0]
-    let label: string | null = null
-    let anchorDate: Date | null = null
-
-    const vaHireDate = toValidDate(u.vaProfile?.currentHireDate)
-    if (u.userType === 'VIRTUAL_ASSISTANT' && vaHireDate) {
-      label = 'VA Anniversary'
-      anchorDate = vaHireDate
-    } else if (u.userType === 'INTERNAL_STAFF' && currentEmploymentRecord) {
-      const staffStartDate = toValidDate(currentEmploymentRecord.startDate)
-      if (staffStartDate) {
-        label = 'Staff Anniversary'
-        anchorDate = staffStartDate
-      }
-    }
-
-    if (!label || !anchorDate) continue
-    const next = nextOccurrence(anchorDate.getMonth(), anchorDate.getDate(), now)
-    const daysUntil = Math.ceil((next.getTime() - now.getTime()) / 86400000)
-    if (daysUntil > UPCOMING_EVENTS_WINDOW_DAYS) continue
-    events.push({ id: u.id, name: `${u.firstName} ${u.lastName}`, label, date: next, daysUntil })
-  }
-
-  events.sort((a, b) => a.daysUntil - b.daysUntil)
-  const upcoming = events.slice(0, 5)
-
-  return (
-    <Card>
-      <CardHeader className="pb-3 flex flex-row items-center justify-between">
-        <CardTitle className="text-base flex items-center gap-2"><CalendarHeart className="h-4 w-4" />Upcoming Anniversaries</CardTitle>
-        <Link href="/celebrants" className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1">View all <ArrowRight className="h-3 w-3" /></Link>
-      </CardHeader>
-      <CardContent>
-        {upcoming.length === 0 ? (
-          <p className="text-sm text-muted-foreground py-2">No upcoming anniversaries in the next {UPCOMING_EVENTS_WINDOW_DAYS} days.</p>
-        ) : (
-          <div className="space-y-2">
-            {upcoming.map((e) => (
-              <div key={e.id} className="flex items-center justify-between p-2.5 rounded-lg border bg-card">
-                <div>
-                  <p className="text-sm font-medium">{e.name}</p>
-                  <p className="text-xs text-muted-foreground">{e.label} • {format(e.date, 'MMM d')}</p>
-                </div>
-                <Badge variant="outline" className="text-xs">
-                  {e.daysUntil === 0 ? 'Today' : `in ${e.daysUntil}d`}
-                </Badge>
-              </div>
-            ))}
-          </div>
         )}
       </CardContent>
     </Card>

@@ -11,6 +11,10 @@ export const VA_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 
 // Everyone else (DEPT_MANAGER, STAFF, VA) only sees tickets they created or are assigned to.
 export const TICKET_VIEW_ALL_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE']
 export const TICKET_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN']
+// Dept Manager / Operations Manager — scoped to their own department(s) via
+// getManagedDepartmentIds() rather than seeing every department unscoped.
+// Previously copy-pasted locally in vas/page.tsx and clients/page.tsx.
+export const DEPARTMENT_SCOPED_ROLES = ['DEPT_MANAGER', 'OPERATIONS_MANAGER']
 // Team creation + membership composition (add/remove/transfer) — Dept Manager owns team composition.
 // HR also gets this, elevated to an unscoped (all-department) grant — see assertDepartmentManaged() in teams/actions.ts.
 export const TEAM_MANAGE_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'HR']

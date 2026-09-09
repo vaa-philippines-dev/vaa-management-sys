@@ -8,7 +8,7 @@ import { StatusIndicator } from '@/components/ui/status-indicator'
 import { ArrowLeft, Crown, ShieldHalf, Users, UsersRound } from 'lucide-react'
 import { TeamDetailControls } from '@/components/teams/TeamDetailControls'
 import { TeamNameEditor } from '@/components/teams/TeamNameEditor'
-import { cn } from '@/lib/utils'
+import { StructureCard } from '@/components/departments/StructureCard'
 
 function initials(name: string) {
   const parts = name.trim().split(/\s+/)
@@ -145,9 +145,9 @@ export default async function TeamDetailPage({
       </div>
 
       <div className="grid gap-4 md:grid-cols-3 fade-in-stagger">
-        <LeaderCard label="Team Leader" user={team.leader} icon={Crown} />
-        <LeaderCard label="Temp Leader 1" user={team.tempLeader1} icon={ShieldHalf} />
-        <LeaderCard label="Temp Leader 2" user={team.tempLeader2} icon={ShieldHalf} />
+        <StructureCard label="Team Leader" people={team.leader ? [team.leader] : []} icon={Crown} />
+        <StructureCard label="Temp Leader 1" people={team.tempLeader1 ? [team.tempLeader1] : []} icon={ShieldHalf} />
+        <StructureCard label="Temp Leader 2" people={team.tempLeader2 ? [team.tempLeader2] : []} icon={ShieldHalf} />
       </div>
 
       {canManageMembership || canAssignLeaders ? (
@@ -200,35 +200,6 @@ export default async function TeamDetailPage({
           )}
         </div>
       )}
-    </div>
-  )
-}
-
-function LeaderCard({
-  label,
-  user,
-  icon: Icon,
-}: {
-  label: string
-  user: { firstName: string; lastName: string } | null
-  icon: React.ComponentType<{ className?: string }>
-}) {
-  return (
-    <div className="rounded-lg border bg-card p-4 transition-shadow hover:shadow-sm">
-      <div className="flex items-center gap-2">
-        <Icon className={cn('h-3.5 w-3.5', user ? 'text-primary' : 'text-muted-foreground/40')} />
-        <p className="text-xs font-medium text-muted-foreground">{label}</p>
-      </div>
-      <div className="flex items-center gap-2 mt-2">
-        {user && (
-          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-semibold text-primary">
-            {initials(userName(user))}
-          </span>
-        )}
-        <p className="text-sm font-semibold">
-          {user ? userName(user) : <span className="text-muted-foreground/60 font-normal">Vacant</span>}
-        </p>
-      </div>
     </div>
   )
 }

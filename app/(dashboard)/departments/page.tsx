@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
+import { getDepartmentStructures, type DepartmentStructure } from '@/lib/structure'
 import Link from 'next/link'
 import {
   Building2,
@@ -103,6 +104,13 @@ export default async function DepartmentsPage() {
         _count: { select: { children: true, memberships: true, clients: true } },
       },
     })
+  )
+
+  const structures = await cached(
+    'depts:directory:structures',
+    [CACHE_TAGS.departments, CACHE_TAGS.users, CACHE_TAGS.teams],
+    60,
+    () => getDepartmentStructures(departments.map((d) => d.id))
   )
 
   const levelOrder = ['EXECUTIVE', 'MANAGEMENT', 'SERVICE'] as const
@@ -209,19 +217,20 @@ export default async function DepartmentsPage() {
                     dept={d}
                     teams={childrenByParent.get(d.id) ?? []}
                     accent={meta.textColor}
+                    structure={structures[d.id]}
                   />
                 ))}
                 {levelLeaves.map((d) => (
-                  <LeafDepartmentCard key={d.id} dept={d} />
+                  <LeafDepartmentCard key={d.id} dept={d} structure={structures[d.id]} />
                 ))}
               </div>
             ) : (
               <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
                 {levelParents.map((d) => (
-                  <LeafDepartmentCard key={d.id} dept={d} />
+                  <LeafDepartmentCard key={d.id} dept={d} structure={structures[d.id]} />
                 ))}
                 {levelLeaves.map((d) => (
-                  <LeafDepartmentCard key={d.id} dept={d} />
+                  <LeafDepartmentCard key={d.id} dept={d} structure={structures[d.id]} />
                 ))}
               </div>
             )}
@@ -266,10 +275,12 @@ function ServiceDepartmentCard({
   dept,
   teams,
   accent,
+  structure,
 }: {
   dept: Dept
   teams: Dept[]
   accent: string
+  structure?: DepartmentStructure
 }) {
   const Icon = DEPARTMENT_ICONS[dept.name] ?? DEPARTMENT_ICONS.default
   return (
@@ -304,10 +315,12 @@ function ServiceDepartmentCard({
                 {teams.length} teams
               </span>
             </div>
+            <DMTeaserLine structure={structure} />
           </div>
           <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
         </div>
       </Link>
+      <StructureLinkRow deptId={dept.id} />
       {teams.length > 0 && (
         <div className="border-t bg-muted/30 px-4 py-2.5 space-y-1">
           <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1.5">
@@ -334,51 +347,75 @@ function ServiceDepartmentCard({
   )
 }
 
-function LeafDepartmentCard({ dept }: { dept: Dept }) {
+function LeafDepartmentCard({ dept, structure }: { dept: Dept; structure?: DepartmentStructure }) {
   const Icon = DEPARTMENT_ICONS[dept.name] ?? DEPARTMENT_ICONS.default
   return (
+    <div className="rounded-lg border bg-card overflow-hidden hover:shadow-md hover:border-primary/30 transition-all">
+      <Link href={`/dashboard?dept=${dept.id}`} className="group block p-4">
+        <div className="flex items-start gap-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <Icon className="h-4 w-4" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <h4 className="text-sm font-semibold truncate group-hover:text-primary transition-colors">
+                {dept.name}
+              </h4>
+              {dept.acronym && (
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+                  {dept.acronym}
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground">
+              {dept.membershipsCount > 0 && (
+                <span className="flex items-center gap-1">
+                  <Users className="h-3 w-3" />
+                  {dept.membershipsCount} members
+                </span>
+              )}
+              {dept.clientsCount > 0 && (
+                <span className="flex items-center gap-1">
+                  <Briefcase className="h-3 w-3" />
+                  {dept.clientsCount} clients
+                </span>
+              )}
+              {dept.childrenCount > 0 && (
+                <span className="flex items-center gap-1">
+                  <UsersRound className="h-3 w-3" />
+                  {dept.childrenCount} sub
+                </span>
+              )}
+            </div>
+            <DMTeaserLine structure={structure} />
+          </div>
+          <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+        </div>
+      </Link>
+      <StructureLinkRow deptId={dept.id} />
+    </div>
+  )
+}
+
+function DMTeaserLine({ structure }: { structure?: DepartmentStructure }) {
+  if (!structure || structure.deptManagers.length === 0) return null
+  const [first, ...rest] = structure.deptManagers
+  return (
+    <p className="text-xs text-muted-foreground mt-1 truncate">
+      DM · {first.firstName} {first.lastName}
+      {rest.length > 0 && ` +${rest.length}`}
+    </p>
+  )
+}
+
+function StructureLinkRow({ deptId }: { deptId: string }) {
+  return (
     <Link
-      href={`/dashboard?dept=${dept.id}`}
-      className="group rounded-lg border bg-card p-4 transition-all hover:shadow-md hover:border-primary/30"
+      href={`/departments/${deptId}`}
+      className="flex items-center justify-end gap-1 px-4 py-1.5 border-t bg-muted/20 text-[11px] font-medium text-muted-foreground hover:text-primary transition-colors"
     >
-      <div className="flex items-start gap-3">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-          <Icon className="h-4 w-4" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <h4 className="text-sm font-semibold truncate group-hover:text-primary transition-colors">
-              {dept.name}
-            </h4>
-            {dept.acronym && (
-              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
-                {dept.acronym}
-              </span>
-            )}
-          </div>
-          <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground">
-            {dept.membershipsCount > 0 && (
-              <span className="flex items-center gap-1">
-                <Users className="h-3 w-3" />
-                {dept.membershipsCount} members
-              </span>
-            )}
-            {dept.clientsCount > 0 && (
-              <span className="flex items-center gap-1">
-                <Briefcase className="h-3 w-3" />
-                {dept.clientsCount} clients
-              </span>
-            )}
-            {dept.childrenCount > 0 && (
-              <span className="flex items-center gap-1">
-                <UsersRound className="h-3 w-3" />
-                {dept.childrenCount} sub
-              </span>
-            )}
-          </div>
-        </div>
-        <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-      </div>
+      Structure
+      <ChevronRight className="h-3 w-3" />
     </Link>
   )
 }

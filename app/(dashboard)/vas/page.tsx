@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import type { Prisma } from '@/src/generated/prisma/client'
-import { getCurrentUser, canMutate, getManagedDepartmentIds, VA_MUTATOR_ROLES } from '@/lib/auth'
+import { getCurrentUser, canMutate, getManagedDepartmentIds, VA_MUTATOR_ROLES, DEPARTMENT_SCOPED_ROLES } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
@@ -17,10 +17,10 @@ import { VABulkSelectToggle } from '@/components/vas/VABulkSelectToggle'
 import { VARowCheckbox } from '@/components/vas/VARowCheckbox'
 import { VASelectAllCheckbox } from '@/components/vas/VASelectAllCheckbox'
 import { Pagination } from '@/components/ui/pagination'
+import { differenceInMonths } from 'date-fns'
 import {
   Users,
   UserCog,
-  Briefcase,
   Clock,
   Pencil,
   Eye,
@@ -51,6 +51,19 @@ function formatDate(date: Date) {
   const d = date instanceof Date ? date : new Date(date)
   if (isNaN(d.getTime())) return null
   return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(d)
+}
+
+// Derived from currentHireDate, not stored — a strict monotonic inverse of
+// it, so it reuses the Hire Date sort rather than needing its own SortField.
+function formatYearsOfService(hireDate: Date | null): string | null {
+  if (!hireDate) return null
+  const months = differenceInMonths(new Date(), hireDate)
+  if (months < 0) return null
+  const years = Math.floor(months / 12)
+  const remMonths = months % 12
+  if (years === 0) return `${remMonths}m`
+  if (remMonths === 0) return `${years}y`
+  return `${years}y ${remMonths}m`
 }
 
 const STATUS_TONE: Record<string, Tone> = {
@@ -89,8 +102,6 @@ const EMPLOYMENT_TONE: Record<string, Tone> = {
 }
 
 const hrgRoles = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'EXECUTIVE', 'HR']
-
-const DEPARTMENT_SCOPED_ROLES = ['DEPT_MANAGER', 'OPERATIONS_MANAGER']
 
 type ViewerScope =
   | { type: 'unrestricted' }
@@ -141,6 +152,7 @@ export default async function VAPage({
   const params = await searchParams
   const q = typeof params.q === 'string' ? params.q : undefined
   const dept = typeof params.dept === 'string' ? params.dept : undefined
+  const team = typeof params.team === 'string' ? params.team : undefined
   const avail = typeof params.avail === 'string' ? params.avail : undefined
   const empStatus = typeof params.emp === 'string' ? params.emp : undefined
   const statusParam = typeof params.status === 'string' ? params.status : DEFAULT_STATUS
@@ -150,8 +162,8 @@ export default async function VAPage({
   const page = Math.max(1, parseInt(typeof params.page === 'string' ? params.page : '1', 10) || 1)
 
   const tableSection = (
-    <Suspense key={`${q}-${dept}-${avail}-${empStatus}-${status}-${sort}-${viewAll}-${page}`} fallback={<TableSkeleton />}>
-      <VATableSection q={q} dept={dept} avail={avail} empStatus={empStatus} status={status} sort={sort} isHRE={isHRE} isAdmin={isAdmin} viewAll={viewAll} page={page} viewerScope={viewerScope} />
+    <Suspense key={`${q}-${dept}-${team}-${avail}-${empStatus}-${status}-${sort}-${viewAll}-${page}`} fallback={<TableSkeleton />}>
+      <VATableSection q={q} dept={dept} team={team} avail={avail} empStatus={empStatus} status={status} sort={sort} isHRE={isHRE} isAdmin={isAdmin} viewAll={viewAll} page={page} viewerScope={viewerScope} />
     </Suspense>
   )
 
@@ -202,9 +214,18 @@ export default async function VAPage({
 }
 
 async function FilterWrapper() {
-  const departments = await cached('vas:departments', [CACHE_TAGS.departments], 600, () =>
-    prisma.department.findMany({ where: { status: 'ACTIVE', parentId: { not: null } }, orderBy: { sortOrder: 'asc' } })
-  )
+  const [departments, teams] = await Promise.all([
+    cached('vas:departments', [CACHE_TAGS.departments], 600, () =>
+      prisma.department.findMany({ where: { status: 'ACTIVE', parentId: { not: null } }, orderBy: { sortOrder: 'asc' } })
+    ),
+    cached('vas:teams', [CACHE_TAGS.teams], 600, () =>
+      prisma.team.findMany({
+        where: { status: 'ACTIVE' },
+        select: { id: true, name: true, department: { select: { name: true } } },
+        orderBy: [{ department: { sortOrder: 'asc' } }, { name: 'asc' }],
+      })
+    ),
+  ])
 
   return (
     <FilterBar
@@ -228,6 +249,9 @@ async function FilterWrapper() {
         },
         ...(departments.length > 0
           ? [{ key: 'dept', label: 'Dept', options: departments.map((d) => ({ value: d.id, label: d.name })) }]
+          : []),
+        ...(teams.length > 0
+          ? [{ key: 'team', label: 'Team', options: teams.map((t) => ({ value: t.id, label: `${t.department.name} — ${t.name}` })) }]
           : []),
         {
           key: 'avail',
@@ -262,6 +286,7 @@ async function FilterWrapper() {
 async function VATableSection({
   q,
   dept,
+  team,
   avail,
   empStatus,
   status,
@@ -274,6 +299,7 @@ async function VATableSection({
 }: {
   q?: string
   dept?: string
+  team?: string
   avail?: string
   empStatus?: string
   status?: string
@@ -325,6 +351,9 @@ async function VATableSection({
   if (dept) {
     userWhere.memberships = { some: { departmentId: dept, endedAt: null } }
   }
+  if (team) {
+    userWhere.teamMemberships = { some: { teamId: team, endedAt: null } }
+  }
   if (empStatus) {
     userWhere.employmentRecords = { some: { isCurrent: true, employmentStatus: empStatus } }
   }
@@ -357,7 +386,7 @@ async function VATableSection({
     ...(viewerScope.type === 'unrestricted' ? {} : { AND: [scopeWhere] }),
   }
 
-  const cacheKey = `vas:list:${scopeCacheKey}:${JSON.stringify({ q, dept, avail, empStatus, status, sort, viewAll, page })}`
+  const cacheKey = `vas:list:${scopeCacheKey}:${JSON.stringify({ q, dept, team, avail, empStatus, status, sort, viewAll, page })}`
 
   const [filteredVAs, filteredCount, allVAs] = await Promise.all([
     cached(cacheKey, [CACHE_TAGS.vas], 60, () =>
@@ -372,6 +401,11 @@ async function VATableSection({
                 include: { department: true, position: true },
               },
               employmentRecords: { where: { isCurrent: true }, take: 1 },
+              teamMemberships: {
+                where: { endedAt: null },
+                select: { team: { select: { id: true, name: true } } },
+                orderBy: { startedAt: 'asc' },
+              },
             },
           },
           positionSkill: true,
@@ -382,7 +416,7 @@ async function VATableSection({
         ...(viewAll ? {} : { take: PAGE_SIZE, skip: (page - 1) * PAGE_SIZE }),
       })
     ),
-    cached(`vas:count:${scopeCacheKey}:${JSON.stringify({ q, dept, avail, empStatus, status })}`, [CACHE_TAGS.vas], 60, () =>
+    cached(`vas:count:${scopeCacheKey}:${JSON.stringify({ q, dept, team, avail, empStatus, status })}`, [CACHE_TAGS.vas], 60, () =>
       prisma.vAProfile.count({ where })
     ),
     cached(`vas:count:all:${scopeCacheKey}`, [CACHE_TAGS.vas], 60, () =>
@@ -392,60 +426,58 @@ async function VATableSection({
 
   const activeCount = filteredVAs.filter((v) => v.status === 'ACTIVE').length
   const availableCount = filteredVAs.filter((v) => v.availabilityStatus === 'AVAILABLE').length
-  const hasFilters = !!(q || dept || avail || empStatus || (status && status !== DEFAULT_STATUS))
+  const hasFilters = !!(q || dept || team || avail || empStatus || (status && status !== DEFAULT_STATUS))
   const pageCount = Math.max(1, Math.ceil(filteredCount / PAGE_SIZE))
 
-  const buildHref = (targetPage: number) => {
+  // Single param-serialization helper — the four link builders below (page,
+  // view-all toggle, paginated toggle, sort) previously each re-listed every
+  // query param independently, so adding `team` meant editing four
+  // near-identical blocks and risked silently dropping the filter from one.
+  type ParamsState = {
+    q?: string
+    dept?: string
+    team?: string
+    avail?: string
+    empStatus?: string
+    status?: string
+    sort?: string
+    viewAll?: boolean
+    page?: number
+  }
+  const baseParams: ParamsState = { q, dept, team, avail, empStatus, status, sort, viewAll, page }
+  const buildParams = (overrides: Partial<ParamsState>) => {
+    const merged = { ...baseParams, ...overrides }
     const sp = new URLSearchParams()
-    if (q) sp.set('q', q)
-    if (dept) sp.set('dept', dept)
-    if (avail) sp.set('avail', avail)
-    if (empStatus) sp.set('emp', empStatus)
-    sp.set('status', status ?? 'ALL')
-    if (sort) sp.set('sort', sort)
-    if (targetPage > 1) sp.set('page', String(targetPage))
+    if (merged.q) sp.set('q', merged.q)
+    if (merged.dept) sp.set('dept', merged.dept)
+    if (merged.team) sp.set('team', merged.team)
+    if (merged.avail) sp.set('avail', merged.avail)
+    if (merged.empStatus) sp.set('emp', merged.empStatus)
+    sp.set('status', merged.status ?? 'ALL')
+    if (merged.sort) sp.set('sort', merged.sort)
+    if (merged.viewAll) sp.set('view', 'all')
+    if (merged.page && merged.page > 1) sp.set('page', String(merged.page))
     return `?${sp.toString()}`
   }
 
-  const viewAllHref = (() => {
-    const sp = new URLSearchParams()
-    if (q) sp.set('q', q)
-    if (dept) sp.set('dept', dept)
-    if (avail) sp.set('avail', avail)
-    if (empStatus) sp.set('emp', empStatus)
-    sp.set('status', status ?? 'ALL')
-    if (sort) sp.set('sort', sort)
-    sp.set('view', 'all')
-    return `?${sp.toString()}`
-  })()
-
-  const paginatedHref = (() => {
-    const sp = new URLSearchParams()
-    if (q) sp.set('q', q)
-    if (dept) sp.set('dept', dept)
-    if (avail) sp.set('avail', avail)
-    if (empStatus) sp.set('emp', empStatus)
-    sp.set('status', status ?? 'ALL')
-    if (sort) sp.set('sort', sort)
-    return `?${sp.toString()}`
-  })()
-
+  const buildHref = (targetPage: number) => buildParams({ page: targetPage })
+  const viewAllHref = buildParams({ viewAll: true, page: undefined })
+  const paginatedHref = buildParams({ viewAll: false, page: undefined })
   const buildSortHref = (field: SortField) => {
     const nextDir = sortField === field && sortDir === 'desc' ? 'asc' : sortField === field ? 'desc' : (field === 'hireDate' || field === 'eocDate' ? 'desc' : 'asc')
-    const sp = new URLSearchParams()
-    if (q) sp.set('q', q)
-    if (dept) sp.set('dept', dept)
-    if (avail) sp.set('avail', avail)
-    if (empStatus) sp.set('emp', empStatus)
-    sp.set('status', status ?? 'ALL')
-    sp.set('sort', `${field}:${nextDir}`)
-    if (viewAll) sp.set('view', 'all')
-    return `?${sp.toString()}`
+    return buildParams({ sort: `${field}:${nextDir}`, page: undefined })
   }
 
   const sortIcon = (field: SortField) => {
     if (sortField !== field) return <ArrowUpDown className="h-3 w-3 text-muted-foreground/50" />
     return sortDir === 'asc' ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />
+  }
+
+  // Years of Service is a strict monotonic inverse of Hire Date, so its
+  // header reuses the Hire Date sort target — just with the arrow flipped.
+  const sortIconInverted = (field: SortField) => {
+    if (sortField !== field) return <ArrowUpDown className="h-3 w-3 text-muted-foreground/50" />
+    return sortDir === 'asc' ? <ArrowDown className="h-3 w-3" /> : <ArrowUp className="h-3 w-3" />
   }
 
   return (
@@ -503,6 +535,7 @@ async function VATableSection({
                 </TableHead>
                 <TableHead className="px-3 py-2.5 hidden md:table-cell">Work Email</TableHead>
                 <TableHead className="px-3 py-2.5 hidden lg:table-cell">Department</TableHead>
+                <TableHead className="px-3 py-2.5 hidden lg:table-cell">Team</TableHead>
                 <TableHead className="px-3 py-2.5 hidden lg:table-cell">
                   <Link href={buildSortHref('position')} className="flex items-center gap-1 hover:text-foreground">
                     Position {sortIcon('position')}
@@ -523,11 +556,17 @@ async function VATableSection({
                     Hire Date {sortIcon('hireDate')}
                   </Link>
                 </TableHead>
+                <TableHead className="px-3 py-2.5 hidden xl:table-cell">
+                  <Link href={buildSortHref('hireDate')} className="flex items-center gap-1 hover:text-foreground">
+                    Yrs {sortIconInverted('hireDate')}
+                  </Link>
+                </TableHead>
                 <TableHead className="px-3 py-2.5 hidden md:table-cell">
                   <Link href={buildSortHref('eocDate')} className="flex items-center gap-1 hover:text-foreground">
                     EOC/Transfer Date {sortIcon('eocDate')}
                   </Link>
                 </TableHead>
+                <TableHead className="px-3 py-2.5 hidden xl:table-cell">Remarks</TableHead>
                 <TableHead className="px-3 py-2.5 w-0"> </TableHead>
               </TableRow>
             </TableHeader>
@@ -535,6 +574,11 @@ async function VATableSection({
               {filteredVAs.map((va) => {
                 const emp = va.user.employmentRecords?.[0]
                 const primaryMem = va.user.memberships?.find((m) => m.isPrimary) ?? va.user.memberships?.[0]
+                // TeamMembership has no unique constraint on (teamId, userId) — a VA
+                // can end up with two simultaneously-active rows on the same team (a
+                // data-quality issue, not two distinct teams), so dedupe by team id
+                // rather than showing a misleading "+1" for a duplicate row.
+                const teams = Array.from(new Map(va.user.teamMemberships.map((tm) => [tm.team.id, tm.team])).values())
 
                 return (
                   <TableRow key={va.id} className="hover:bg-accent/50 group">
@@ -563,6 +607,22 @@ async function VATableSection({
                       ) : <span className="text-muted-foreground">—</span>}
                     </TableCell>
                     <TableCell className="px-3 py-2.5 hidden lg:table-cell">
+                      {teams.length > 0 ? (
+                        <span className="flex items-center gap-1">
+                          <Link href={`/teams/${teams[0].id}`}>
+                            <Badge variant="outline" className="text-[10px] py-0 px-1.5 hover:bg-accent">
+                              {teams[0].name}
+                            </Badge>
+                          </Link>
+                          {teams.length > 1 && (
+                            <span className="text-[10px] text-muted-foreground">+{teams.length - 1}</span>
+                          )}
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="px-3 py-2.5 hidden lg:table-cell">
                       {va.positionSkill?.shortName ?? va.vaaPosition ?? <span className="text-muted-foreground">—</span>}
                     </TableCell>
                     <TableCell className="px-3 py-2.5 hidden sm:table-cell">
@@ -583,8 +643,14 @@ async function VATableSection({
                     <TableCell className="px-3 py-2.5 text-muted-foreground hidden md:table-cell">
                       {(va.currentHireDate && formatDate(va.currentHireDate)) || <span className="text-muted-foreground/50">—</span>}
                     </TableCell>
+                    <TableCell className="px-3 py-2.5 text-muted-foreground hidden xl:table-cell">
+                      {formatYearsOfService(va.currentHireDate) ?? <span className="text-muted-foreground/50">—</span>}
+                    </TableCell>
                     <TableCell className="px-3 py-2.5 text-muted-foreground hidden md:table-cell">
                       {(va.currentEndDate && formatDate(va.currentEndDate)) || <span className="text-muted-foreground/50">—</span>}
+                    </TableCell>
+                    <TableCell className="px-3 py-2.5 text-muted-foreground hidden xl:table-cell max-w-[16rem] truncate" title={va.notes ?? undefined}>
+                      {va.notes || <span className="text-muted-foreground/50">—</span>}
                     </TableCell>
                     <TableCell className="px-3 py-2.5">
                       <Link href={`/vas/${va.id}`}>

@@ -31,6 +31,7 @@ import {
   IdCard,
   Bot,
   Handshake,
+  ListChecks,
   Shield,
   Megaphone,
   LifeBuoy,
@@ -268,15 +269,23 @@ const managerRoutes = [
 ]
 
 // Rendered in the "On Going" section at the very bottom of the manager sidebar,
-// below Favorites — kept out of managerRoutes' render loop above.
+// below Favorites — kept out of managerRoutes' render loop above. Admin-only:
+// this whole section is operational/back-office tooling, not day-to-day
+// manager navigation.
 const onGoingRoutes = [
   { label: 'Matching', href: '/matching', icon: Handshake },
   { label: 'Work Logs', href: '/work-logs', icon: ListTodo },
   { label: 'Services', href: '/skills', icon: UserCog },
-  { label: 'Tickets', href: '/tickets', icon: Ticket },
+  { label: 'Monthly Report', href: '/reports', icon: BarChart3 },
+]
+
+// Rendered in the "HR" section of the manager sidebar. Offboarding moved
+// here from the Department section — it's an HR-owned workflow, not
+// department-scoped structural navigation.
+const hrRoutes = [
+  { label: 'Offboarding', href: '/offboarding', icon: UserMinus },
   { label: 'Leave', href: '/leave', icon: CalendarClock },
   { label: 'Leave Approvals', href: '/leave/approvals', icon: CalendarCheck },
-  { label: 'Monthly Report', href: '/reports', icon: BarChart3 },
 ]
 
 // Rendered below VA Masterlist inside the "Department" section. Kept out of
@@ -284,15 +293,16 @@ const onGoingRoutes = [
 // shown, so Clients/Assignments appear once, not duplicated in both places.
 const departmentRoutes = [
   { label: 'VA Masterlist', href: '/vas', icon: Users },
-  { label: 'Offboarding', href: '/offboarding', icon: UserMinus },
   { label: 'Client Request', href: '/clients', icon: BriefcaseBusiness },
   { label: 'Assignments', href: '/assignments', icon: Briefcase },
   { label: 'Teams', href: '/teams', icon: UsersRound },
+  { label: 'Team Assignment', href: '/team-assignment', icon: ListChecks },
   { label: 'Celebrants', href: '/celebrants', icon: Calendar },
 ]
 
 // Rendered in the "Support" section at the very bottom of every sidebar.
 const supportRoutes = [
+  { label: 'Tickets', href: '/tickets', icon: Ticket },
   { label: 'Feedback', href: '/feedback', icon: Megaphone },
   { label: 'Help Center', href: '/help-center', icon: LifeBuoy },
   { label: 'Settings', href: '/settings', icon: Settings },
@@ -303,7 +313,6 @@ const vaRoutes = [
   { label: 'Inbox', href: '/inbox', icon: MessageSquare },
   { label: 'My Work Logs', href: '/work-logs', icon: Clock },
   { label: 'My Assignments', href: '/assignments', icon: Briefcase },
-  { label: 'Tickets', href: '/tickets', icon: Ticket },
 ]
 
 const adminRoutes = [
@@ -387,7 +396,8 @@ export function Sidebar({
     ...routes,
     ...(showDepartmentSection ? departmentRoutes : []),
     ...(isAdmin ? adminRoutes : []),
-    ...(role === 'MANAGER' ? onGoingRoutes : []),
+    ...(role === 'MANAGER' ? hrRoutes : []),
+    ...(role === 'MANAGER' && isAdmin ? onGoingRoutes : []),
     ...supportRoutes,
   ]
   const isRouteActive = (href: string) =>
@@ -491,16 +501,6 @@ export function Sidebar({
                 onChanged={setFavorites}
               />
               <FavoritableRow
-                href="/offboarding"
-                label="Offboarding"
-                icon={UserMinus}
-                isActive={isMainRowActive('/offboarding', isRouteActive('/offboarding'))}
-                canFavorite={canFavorite}
-                favorite={favorites.find((f) => f.href === '/offboarding')}
-                atMax={atMax}
-                onChanged={setFavorites}
-              />
-              <FavoritableRow
                 href="/clients"
                 label="Client Request"
                 icon={BriefcaseBusiness}
@@ -527,6 +527,16 @@ export function Sidebar({
                 isActive={isMainRowActive('/teams', isRouteActive('/teams'))}
                 canFavorite={canFavorite}
                 favorite={favorites.find((f) => f.href === '/teams')}
+                atMax={atMax}
+                onChanged={setFavorites}
+              />
+              <FavoritableRow
+                href="/team-assignment"
+                label="Team Assignment"
+                icon={ListChecks}
+                isActive={isMainRowActive('/team-assignment', isRouteActive('/team-assignment'))}
+                canFavorite={canFavorite}
+                favorite={favorites.find((f) => f.href === '/team-assignment')}
                 atMax={atMax}
                 onChanged={setFavorites}
               />
@@ -729,8 +739,8 @@ export function Sidebar({
 
           {role === 'MANAGER' && (
             <>
-              <p className="px-2 pt-3.5 pb-1 text-[10.5px] tracking-wide text-sidebar-foreground/60">On Going</p>
-              {onGoingRoutes.map((route) => (
+              <p className="px-2 pt-3.5 pb-1 text-[10.5px] tracking-wide text-sidebar-foreground/60">HR</p>
+              {hrRoutes.map((route) => (
                 <FavoritableRow
                   key={route.href}
                   href={route.href}
@@ -757,6 +767,27 @@ export function Sidebar({
                   onChanged={setFavorites}
                 />
               )}
+            </>
+          )}
+
+          {/* On Going is back-office/operational tooling — admin-only, unlike
+              the rest of the manager sidebar. */}
+          {role === 'MANAGER' && isAdmin && (
+            <>
+              <p className="px-2 pt-3.5 pb-1 text-[10.5px] tracking-wide text-sidebar-foreground/60">On Going</p>
+              {onGoingRoutes.map((route) => (
+                <FavoritableRow
+                  key={route.href}
+                  href={route.href}
+                  label={route.label}
+                  icon={route.icon}
+                  isActive={isMainRowActive(route.href, isRouteActive(route.href))}
+                  canFavorite={canFavorite}
+                  favorite={favorites.find((f) => f.href === route.href)}
+                  atMax={atMax}
+                  onChanged={setFavorites}
+                />
+              ))}
             </>
           )}
 
