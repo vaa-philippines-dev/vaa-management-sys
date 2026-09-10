@@ -1,4 +1,4 @@
-import { getCurrentUser, isDepartmentUnrestricted, getManagedDepartmentIds } from '@/lib/auth'
+import { getCurrentUser, isDepartmentUnrestricted, getManagedDepartmentIds, getPrimaryDepartment } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { prisma } from '@/lib/prisma'
 import { getFeaturedFavorite } from '@/lib/favorites'
@@ -75,8 +75,20 @@ export default async function DashboardPage({
   // hasModuleAccess()'s EXECUTIVE-read carve-out in lib/auth.ts) so this
   // doesn't regress the all-department visibility it already has.
   const readUnrestricted = isDepartmentUnrestricted(user) || user.systemRole === 'EXECUTIVE'
-  if (deptId && !readUnrestricted && !getManagedDepartmentIds(user).includes(deptId)) {
+  const managedIds = getManagedDepartmentIds(user)
+  if (deptId && !readUnrestricted && !managedIds.includes(deptId)) {
     redirect('/dashboard')
+  }
+
+  // A scoped manager (DEPT_MANAGER/OPERATIONS_MANAGER/TEAM_LEADER) landing on
+  // bare /dashboard — e.g. via the sidebar link, which carries no ?dept= —
+  // has no ambiguity to resolve like an unrestricted admin does (who gets
+  // sent to /departments to pick one): they manage exactly their own
+  // department(s), so send them straight there instead of the useless
+  // all-department totals view.
+  if (!deptId && !readUnrestricted) {
+    const defaultDeptId = getPrimaryDepartment(user)?.id ?? managedIds[0]
+    if (defaultDeptId) redirect(`/dashboard?dept=${defaultDeptId}`)
   }
 
   const department = deptId
