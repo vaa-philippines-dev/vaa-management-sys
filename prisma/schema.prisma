@@ -936,6 +936,7 @@ model Assignment {
   terminations Termination[]
   kpiChecks    AssignmentKpiCheck[]
   preparation  AssignmentPreparation?
+  clientFeedback AssignmentClientFeedback[]
 
   @@index([vaProfileId])
   @@index([clientId])
@@ -1935,4 +1936,61 @@ model AssignmentPreparation {
   @@index([clientStatus])
   @@index([targetStartDate])
   @@map("assignment_preparations")
+}
+
+// ── Client feedback (Performance Monitoring) ─────────────────────
+
+// The two client-feedback blocks on the DMF sheet's "Performance Monitoring"
+// tab. The tab's first half — the D4/W1/W2/M1/M2/M3/M6 check-in milestones —
+// is already AssignmentKpiCheck; this is the other half, which was never
+// ported: at two of those milestones the department also emails the *client*
+// for feedback on the VA, chases a response, and relays it back to the VA.
+//
+// Modelled as its own table rather than columns on AssignmentKpiCheck
+// because only two of the seven milestones have a feedback cycle, and the
+// cycle has its own independent state (email sent -> response -> relayed)
+// that has nothing to do with whether the internal check-in happened.
+enum FeedbackWindow {
+  W2
+  M6
+}
+
+enum ClientResponseStatus {
+  NOT_SENT
+  AWAITING_RESPONSE
+  RESPONDED
+  NO_RESPONSE
+  DECLINED
+}
+
+model AssignmentClientFeedback {
+  id           String         @id @default(cuid())
+  assignmentId String         @map("assignment_id")
+  assignment   Assignment     @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  // Mapped off the bare word "window", which is reserved in SQL and breaks
+  // any hand-written query that doesn't quote it. Prisma always quotes, but
+  // the migration/backfill scripts in scripts/ are raw SQL.
+  window       FeedbackWindow @map("feedback_window")
+
+  // The sheet's "W2/M6 CLIENT FEEDBACK" boolean: whether this engagement is
+  // in scope for a feedback request at all. Some aren't (very short
+  // engagements, clients who've opted out), and that's different from
+  // "in scope but nobody has sent it yet".
+  requested      Boolean              @default(false)
+  emailSentAt    DateTime?            @map("email_sent_at")
+  responseStatus ClientResponseStatus @default(NOT_SENT) @map("response_status")
+  receivedAt     DateTime?            @map("received_at")
+  feedback       String?
+
+  // "FEEDBACK TO VA" — the loop isn't closed until the VA has actually
+  // heard it, which the sheet tracks separately from receiving it.
+  relayedToVa Boolean   @default(false) @map("relayed_to_va")
+  relayedAt   DateTime? @map("relayed_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([assignmentId, window])
+  @@index([responseStatus])
+  @@map("assignment_client_feedback")
 }

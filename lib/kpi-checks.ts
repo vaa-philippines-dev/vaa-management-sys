@@ -2,17 +2,10 @@ import { addDays, addMonths } from 'date-fns'
 import { prisma } from '@/lib/prisma'
 import type { KpiMilestone } from '@/src/generated/prisma/enums'
 
-export const KPI_MILESTONES: KpiMilestone[] = ['D4', 'W1', 'W2', 'M1', 'M2', 'M3', 'M6']
-
-export const KPI_MILESTONE_LABELS: Record<KpiMilestone, string> = {
-  D4: '4th Day',
-  W1: 'Week 1',
-  W2: 'Week 2',
-  M1: 'Month 1',
-  M2: 'Month 2',
-  M3: 'Month 3',
-  M6: 'Month 6',
-}
+// Re-exported from lib/kpi-checks-labels.ts, which holds no Prisma import so
+// client components can use the labels. Kept exported from here too, since
+// every existing server-side importer already reaches for them at this path.
+export { KPI_MILESTONES, KPI_MILESTONE_LABELS } from '@/lib/kpi-checks-labels'
 
 // N business days after start, skipping Saturday/Sunday — matches the
 // sheet's WORKDAY(start, 3) used for the D4 checkpoint.

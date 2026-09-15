@@ -35,6 +35,7 @@ import {
   FolderKanban,
   ClipboardCheck,
   CalendarRange,
+  LineChart,
   Shield,
   Megaphone,
   LifeBuoy,
@@ -302,6 +303,7 @@ const departmentRoutes = [
   { label: 'Team Assignment', href: '/team-assignment', icon: ListChecks },
   { label: 'VA Preparation', href: '/va-preparation', icon: ClipboardCheck },
   { label: 'VA Availability', href: '/va-availability', icon: CalendarRange },
+  { label: 'Performance Monitoring', href: '/performance', icon: LineChart },
   { label: 'Projects', href: '/projects', icon: FolderKanban },
   { label: 'Celebrants', href: '/celebrants', icon: Calendar },
 ]
@@ -563,6 +565,16 @@ export function Sidebar({
                 isActive={isMainRowActive('/va-availability', isRouteActive('/va-availability'))}
                 canFavorite={canFavorite}
                 favorite={favorites.find((f) => f.href === '/va-availability')}
+                atMax={atMax}
+                onChanged={setFavorites}
+              />
+              <FavoritableRow
+                href="/performance"
+                label="Performance Monitoring"
+                icon={LineChart}
+                isActive={isMainRowActive('/performance', isRouteActive('/performance'))}
+                canFavorite={canFavorite}
+                favorite={favorites.find((f) => f.href === '/performance')}
                 atMax={atMax}
                 onChanged={setFavorites}
               />

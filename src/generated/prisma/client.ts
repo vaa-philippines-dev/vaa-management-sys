@@ -306,3 +306,8 @@ export type Project = Prisma.ProjectModel
  * 
  */
 export type AssignmentPreparation = Prisma.AssignmentPreparationModel
+/**
+ * Model AssignmentClientFeedback
+ * 
+ */
+export type AssignmentClientFeedback = Prisma.AssignmentClientFeedbackModel

@@ -560,3 +560,22 @@ export const PreparationClientStatus = {
 } as const
 
 export type PreparationClientStatus = (typeof PreparationClientStatus)[keyof typeof PreparationClientStatus]
+
+
+export const FeedbackWindow = {
+  W2: 'W2',
+  M6: 'M6'
+} as const
+
+export type FeedbackWindow = (typeof FeedbackWindow)[keyof typeof FeedbackWindow]
+
+
+export const ClientResponseStatus = {
+  NOT_SENT: 'NOT_SENT',
+  AWAITING_RESPONSE: 'AWAITING_RESPONSE',
+  RESPONDED: 'RESPONDED',
+  NO_RESPONSE: 'NO_RESPONSE',
+  DECLINED: 'DECLINED'
+} as const
+
+export type ClientResponseStatus = (typeof ClientResponseStatus)[keyof typeof ClientResponseStatus]

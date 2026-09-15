@@ -103,7 +103,8 @@ export const ModelName = {
   AgentSuggestion: 'AgentSuggestion',
   AgentRun: 'AgentRun',
   Project: 'Project',
-  AssignmentPreparation: 'AssignmentPreparation'
+  AssignmentPreparation: 'AssignmentPreparation',
+  AssignmentClientFeedback: 'AssignmentClientFeedback'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1124,6 +1125,24 @@ export const AssignmentPreparationScalarFieldEnum = {
 } as const
 
 export type AssignmentPreparationScalarFieldEnum = (typeof AssignmentPreparationScalarFieldEnum)[keyof typeof AssignmentPreparationScalarFieldEnum]
+
+
+export const AssignmentClientFeedbackScalarFieldEnum = {
+  id: 'id',
+  assignmentId: 'assignmentId',
+  window: 'window',
+  requested: 'requested',
+  emailSentAt: 'emailSentAt',
+  responseStatus: 'responseStatus',
+  receivedAt: 'receivedAt',
+  feedback: 'feedback',
+  relayedToVa: 'relayedToVa',
+  relayedAt: 'relayedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AssignmentClientFeedbackScalarFieldEnum = (typeof AssignmentClientFeedbackScalarFieldEnum)[keyof typeof AssignmentClientFeedbackScalarFieldEnum]
 
 
 export const SortOrder = {

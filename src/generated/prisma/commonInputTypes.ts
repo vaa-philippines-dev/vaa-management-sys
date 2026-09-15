@@ -1272,6 +1272,40 @@ export type EnumPreparationClientStatusWithAggregatesFilter<$PrismaModel = never
   _max?: Prisma.NestedEnumPreparationClientStatusFilter<$PrismaModel>
 }
 
+export type EnumFeedbackWindowFilter<$PrismaModel = never> = {
+  equals?: $Enums.FeedbackWindow | Prisma.EnumFeedbackWindowFieldRefInput<$PrismaModel>
+  in?: $Enums.FeedbackWindow[] | Prisma.ListEnumFeedbackWindowFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FeedbackWindow[] | Prisma.ListEnumFeedbackWindowFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFeedbackWindowFilter<$PrismaModel> | $Enums.FeedbackWindow
+}
+
+export type EnumClientResponseStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClientResponseStatus | Prisma.EnumClientResponseStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ClientResponseStatus[] | Prisma.ListEnumClientResponseStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ClientResponseStatus[] | Prisma.ListEnumClientResponseStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumClientResponseStatusFilter<$PrismaModel> | $Enums.ClientResponseStatus
+}
+
+export type EnumFeedbackWindowWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.FeedbackWindow | Prisma.EnumFeedbackWindowFieldRefInput<$PrismaModel>
+  in?: $Enums.FeedbackWindow[] | Prisma.ListEnumFeedbackWindowFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FeedbackWindow[] | Prisma.ListEnumFeedbackWindowFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFeedbackWindowWithAggregatesFilter<$PrismaModel> | $Enums.FeedbackWindow
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumFeedbackWindowFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumFeedbackWindowFilter<$PrismaModel>
+}
+
+export type EnumClientResponseStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClientResponseStatus | Prisma.EnumClientResponseStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ClientResponseStatus[] | Prisma.ListEnumClientResponseStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ClientResponseStatus[] | Prisma.ListEnumClientResponseStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumClientResponseStatusWithAggregatesFilter<$PrismaModel> | $Enums.ClientResponseStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumClientResponseStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumClientResponseStatusFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -2487,6 +2521,40 @@ export type NestedEnumPreparationClientStatusWithAggregatesFilter<$PrismaModel =
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumPreparationClientStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumPreparationClientStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumFeedbackWindowFilter<$PrismaModel = never> = {
+  equals?: $Enums.FeedbackWindow | Prisma.EnumFeedbackWindowFieldRefInput<$PrismaModel>
+  in?: $Enums.FeedbackWindow[] | Prisma.ListEnumFeedbackWindowFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FeedbackWindow[] | Prisma.ListEnumFeedbackWindowFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFeedbackWindowFilter<$PrismaModel> | $Enums.FeedbackWindow
+}
+
+export type NestedEnumClientResponseStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClientResponseStatus | Prisma.EnumClientResponseStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ClientResponseStatus[] | Prisma.ListEnumClientResponseStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ClientResponseStatus[] | Prisma.ListEnumClientResponseStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumClientResponseStatusFilter<$PrismaModel> | $Enums.ClientResponseStatus
+}
+
+export type NestedEnumFeedbackWindowWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.FeedbackWindow | Prisma.EnumFeedbackWindowFieldRefInput<$PrismaModel>
+  in?: $Enums.FeedbackWindow[] | Prisma.ListEnumFeedbackWindowFieldRefInput<$PrismaModel>
+  notIn?: $Enums.FeedbackWindow[] | Prisma.ListEnumFeedbackWindowFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumFeedbackWindowWithAggregatesFilter<$PrismaModel> | $Enums.FeedbackWindow
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumFeedbackWindowFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumFeedbackWindowFilter<$PrismaModel>
+}
+
+export type NestedEnumClientResponseStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClientResponseStatus | Prisma.EnumClientResponseStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ClientResponseStatus[] | Prisma.ListEnumClientResponseStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ClientResponseStatus[] | Prisma.ListEnumClientResponseStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumClientResponseStatusWithAggregatesFilter<$PrismaModel> | $Enums.ClientResponseStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumClientResponseStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumClientResponseStatusFilter<$PrismaModel>
 }
 
 

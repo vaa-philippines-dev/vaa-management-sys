@@ -436,7 +436,8 @@ export const ModelName = {
   AgentSuggestion: 'AgentSuggestion',
   AgentRun: 'AgentRun',
   Project: 'Project',
-  AssignmentPreparation: 'AssignmentPreparation'
+  AssignmentPreparation: 'AssignmentPreparation',
+  AssignmentClientFeedback: 'AssignmentClientFeedback'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -452,7 +453,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveApprovalRule" | "leaveApprovalStep" | "leaveRequest" | "leaveApprovalAction" | "employeeIdCounter" | "vAOnboardingInvite" | "client" | "assignment" | "assignmentKpiCheck" | "workLog" | "ticket" | "ticketConversation" | "termination" | "resignationDiscussion" | "replacementRequest" | "exitClearanceApproval" | "complianceReview" | "finalPayout" | "exitSurveyInvite" | "exitSurveyResponse" | "exitClearance" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "customer" | "account" | "notification" | "sidebarFavorite" | "team" | "teamMembership" | "clientPipeline" | "agentSuggestion" | "agentRun" | "project" | "assignmentPreparation"
+    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveApprovalRule" | "leaveApprovalStep" | "leaveRequest" | "leaveApprovalAction" | "employeeIdCounter" | "vAOnboardingInvite" | "client" | "assignment" | "assignmentKpiCheck" | "workLog" | "ticket" | "ticketConversation" | "termination" | "resignationDiscussion" | "replacementRequest" | "exitClearanceApproval" | "complianceReview" | "finalPayout" | "exitSurveyInvite" | "exitSurveyResponse" | "exitClearance" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "customer" | "account" | "notification" | "sidebarFavorite" | "team" | "teamMembership" | "clientPipeline" | "agentSuggestion" | "agentRun" | "project" | "assignmentPreparation" | "assignmentClientFeedback"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -4378,6 +4379,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AssignmentClientFeedback: {
+      payload: Prisma.$AssignmentClientFeedbackPayload<ExtArgs>
+      fields: Prisma.AssignmentClientFeedbackFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AssignmentClientFeedbackFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentClientFeedbackPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AssignmentClientFeedbackFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentClientFeedbackPayload>
+        }
+        findFirst: {
+          args: Prisma.AssignmentClientFeedbackFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentClientFeedbackPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AssignmentClientFeedbackFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentClientFeedbackPayload>
+        }
+        findMany: {
+          args: Prisma.AssignmentClientFeedbackFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentClientFeedbackPayload>[]
+        }
+        create: {
+          args: Prisma.AssignmentClientFeedbackCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentClientFeedbackPayload>
+        }
+        createMany: {
+          args: Prisma.AssignmentClientFeedbackCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AssignmentClientFeedbackCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentClientFeedbackPayload>[]
+        }
+        delete: {
+          args: Prisma.AssignmentClientFeedbackDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentClientFeedbackPayload>
+        }
+        update: {
+          args: Prisma.AssignmentClientFeedbackUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentClientFeedbackPayload>
+        }
+        deleteMany: {
+          args: Prisma.AssignmentClientFeedbackDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AssignmentClientFeedbackUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AssignmentClientFeedbackUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentClientFeedbackPayload>[]
+        }
+        upsert: {
+          args: Prisma.AssignmentClientFeedbackUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentClientFeedbackPayload>
+        }
+        aggregate: {
+          args: Prisma.AssignmentClientFeedbackAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAssignmentClientFeedback>
+        }
+        groupBy: {
+          args: Prisma.AssignmentClientFeedbackGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AssignmentClientFeedbackGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AssignmentClientFeedbackCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AssignmentClientFeedbackCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -5421,6 +5496,24 @@ export const AssignmentPreparationScalarFieldEnum = {
 export type AssignmentPreparationScalarFieldEnum = (typeof AssignmentPreparationScalarFieldEnum)[keyof typeof AssignmentPreparationScalarFieldEnum]
 
 
+export const AssignmentClientFeedbackScalarFieldEnum = {
+  id: 'id',
+  assignmentId: 'assignmentId',
+  window: 'window',
+  requested: 'requested',
+  emailSentAt: 'emailSentAt',
+  responseStatus: 'responseStatus',
+  receivedAt: 'receivedAt',
+  feedback: 'feedback',
+  relayedToVa: 'relayedToVa',
+  relayedAt: 'relayedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AssignmentClientFeedbackScalarFieldEnum = (typeof AssignmentClientFeedbackScalarFieldEnum)[keyof typeof AssignmentClientFeedbackScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -6267,6 +6360,34 @@ export type ListEnumPreparationClientStatusFieldRefInput<$PrismaModel> = FieldRe
 
 
 /**
+ * Reference to a field of type 'FeedbackWindow'
+ */
+export type EnumFeedbackWindowFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FeedbackWindow'>
+    
+
+
+/**
+ * Reference to a field of type 'FeedbackWindow[]'
+ */
+export type ListEnumFeedbackWindowFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FeedbackWindow[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ClientResponseStatus'
+ */
+export type EnumClientResponseStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClientResponseStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ClientResponseStatus[]'
+ */
+export type ListEnumClientResponseStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClientResponseStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -6442,6 +6563,7 @@ export type GlobalOmitConfig = {
   agentRun?: Prisma.AgentRunOmit
   project?: Prisma.ProjectOmit
   assignmentPreparation?: Prisma.AssignmentPreparationOmit
+  assignmentClientFeedback?: Prisma.AssignmentClientFeedbackOmit
 }
 
 /* Types for Logging */
