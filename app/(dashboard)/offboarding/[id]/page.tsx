@@ -6,7 +6,13 @@ import { Button } from '@/components/ui/button'
 import { ArrowLeft, Ticket as TicketIcon } from 'lucide-react'
 import { TerminationPanel } from '@/components/tickets/TerminationPanel'
 import { DeleteOffboardingButton } from '@/components/offboarding/DeleteOffboardingButton'
-import { VA_MUTATOR_ROLES, TICKET_VIEW_ALL_ROLES, OFFBOARDING_DELETE_ROLES } from '@/lib/auth'
+import {
+  VA_MUTATOR_ROLES,
+  TICKET_VIEW_ALL_ROLES,
+  OFFBOARDING_DELETE_ROLES,
+  isDepartmentUnrestricted,
+  getManagedDepartmentIds,
+} from '@/lib/auth'
 import { canApproveClearanceDepartment } from '@/lib/offboarding-permissions'
 import type { ExitClearanceDepartment } from '@/src/generated/prisma/enums'
 
@@ -30,7 +36,19 @@ export default async function OffboardingDetailPage({
   const termination = await prisma.termination.findUnique({
     where: { id },
     include: {
-      vaProfile: { select: { id: true, userId: true, user: { select: { firstName: true, lastName: true } } } },
+      vaProfile: {
+        select: {
+          id: true,
+          userId: true,
+          user: {
+            select: {
+              firstName: true,
+              lastName: true,
+              memberships: { where: { endedAt: null }, select: { departmentId: true } },
+            },
+          },
+        },
+      },
       assignment: { select: { client: { select: { name: true } } } },
       ticket: { select: { id: true, ticketNumber: true } },
       exitSurveyInvite: { select: { token: true, completedAt: true, expiresAt: true } },
@@ -48,8 +66,22 @@ export default async function OffboardingDetailPage({
 
   if (!termination) notFound()
 
-  const canEdit = VA_MUTATOR_ROLES.includes(user.systemRole)
-  const canDelete = OFFBOARDING_DELETE_ROLES.includes(user.systemRole)
+  // Same department scope the list applies (see offboarding/page.tsx) —
+  // without it, a scoped manager who can't see a case in the list could
+  // still open it by guessing/sharing the URL. Admins and HR are unscoped;
+  // clearance approvers and the case's own initiator are handled by the
+  // approvableDepartments / initiatedById checks below and are not narrowed
+  // here, since their standing to act isn't department-membership-based.
+  const readUnrestricted = isDepartmentUnrestricted(user)
+  const managedIds = getManagedDepartmentIds(user)
+  const inManagedDepartment = termination.vaProfile.user.memberships.some((m) =>
+    managedIds.includes(m.departmentId)
+  )
+
+  const canEdit =
+    VA_MUTATOR_ROLES.includes(user.systemRole) && (readUnrestricted || inManagedDepartment)
+  const canDelete =
+    OFFBOARDING_DELETE_ROLES.includes(user.systemRole) && (readUnrestricted || inManagedDepartment)
 
   const approvableDepartments: string[] = []
   if (termination.isVoluntaryResignation) {

@@ -367,6 +367,7 @@ model Department {
   employmentRecords EmploymentRecord[]
   channel           Channel?
   teams             Team[]                 @relation("DepartmentTeams")
+  projects          Project[]              @relation("DepartmentProjects")
 
   @@unique([name, parentId])
   @@unique([acronym, parentId])
@@ -479,6 +480,8 @@ model User {
   clearancesCleared            ExitClearance[]        @relation("ClearanceClearedBy")
   agentDecisions               AgentSuggestion[]      @relation("AgentSuggestionDecidedBy")
   assignmentKpiChecksCompleted AssignmentKpiCheck[]   @relation("AssignmentKpiCheckCompletedBy")
+  projectsOwned                Project[]              @relation("ProjectOwner")
+  projectsCreated              Project[]              @relation("ProjectCreatedBy")
 
   // Resignation SOP extension
   resignationLwdOverrides    ResignationDiscussion[] @relation("ResignationLwdOverrideBy")
@@ -1730,4 +1733,70 @@ model AgentRun {
   @@index([job, startedAt])
   @@index([status])
   @@map("agent_runs")
+}
+
+// ── Projects / Proposals ─────────────────────────────────────────
+
+// The DMF sheet's "Projects/Proposals" tab: department-owned internal
+// initiatives — programs, trainings, budget requests, internal tooling —
+// that move through a review/approval cycle before anyone works on them.
+// Deliberately NOT tied to Client/Assignment: nothing here is billable or
+// VA-staffed. The sheet is one running list grouped by year under a
+// "PROJECT MONITORING TRACKER" header, which is just proposedDate ordering.
+enum ProjectStatus {
+  FOR_REVIEW
+  FOR_APPROVAL
+  APPROVED
+  IN_PROGRESS
+  COMPLETED
+  ON_HOLD
+  DECLINED
+}
+
+// The sheet's PRIORITY column has its own three labels rather than the
+// Ticket-style LOW/MEDIUM/HIGH/URGENT — kept verbatim so a manager reading
+// the sheet and the app sees the same word for the same thing.
+enum ProjectPriority {
+  NORMAL
+  IMPORTANT
+  CRITICAL
+}
+
+model Project {
+  id          String          @id @default(cuid())
+  name        String
+  description String?
+  status      ProjectStatus   @default(FOR_REVIEW)
+  priority    ProjectPriority @default(NORMAL)
+
+  // The sheet's leading DATE column — when the proposal was raised. Distinct
+  // from startDate (when work actually begins, often months later or never)
+  // and from createdAt (when the row was typed into the system).
+  proposedDate  DateTime? @map("proposed_date")
+  startDate     DateTime? @map("start_date")
+  completedDate DateTime? @map("completed_date")
+
+  // PROPOSAL FILE in the sheet is a hyperlink whose display text is the doc
+  // title, so both halves are kept rather than collapsing to a bare URL.
+  proposalFileName String? @map("proposal_file_name")
+  proposalFileUrl  String? @map("proposal_file_url")
+
+  referenceNotes String? @map("reference_notes")
+  remarks        String?
+
+  departmentId String     @map("department_id")
+  department   Department @relation("DepartmentProjects", fields: [departmentId], references: [id], onDelete: Cascade)
+
+  ownerId String? @map("owner_id")
+  owner   User?   @relation("ProjectOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+
+  createdById String? @map("created_by_id")
+  createdBy   User?   @relation("ProjectCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([departmentId, status])
+  @@index([proposedDate])
+  @@map("projects")
 }

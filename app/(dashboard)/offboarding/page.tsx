@@ -1,5 +1,11 @@
 import { prisma } from '@/lib/prisma'
-import { getCurrentUser, VA_MUTATOR_ROLES, TICKET_VIEW_ALL_ROLES } from '@/lib/auth'
+import {
+  getCurrentUser,
+  VA_MUTATOR_ROLES,
+  TICKET_VIEW_ALL_ROLES,
+  isDepartmentUnrestricted,
+  getManagedDepartmentIds,
+} from '@/lib/auth'
 import { canApproveClearanceDepartment } from '@/lib/offboarding-permissions'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
@@ -26,7 +32,25 @@ export default async function OffboardingPage() {
   const canViewAll = VA_MUTATOR_ROLES.includes(user.systemRole)
   const canViewTickets = TICKET_VIEW_ALL_ROLES.includes(user.systemRole)
 
+  // Offboarding is an HR-owned workflow, but a Dept/Ops Manager or Team
+  // Leader only owns their own department's people — VA_MUTATOR_ROLES alone
+  // was showing every scoped manager every case in the company. Admins and
+  // HR stay unscoped (isDepartmentUnrestricted, the same split the rest of
+  // the app uses); everyone else in VA_MUTATOR_ROLES is narrowed to the
+  // departments they're actually a member of.
+  const readUnrestricted = isDepartmentUnrestricted(user)
+  const managedIds = getManagedDepartmentIds(user)
+  const departmentScope =
+    canViewAll && !readUnrestricted
+      ? {
+          vaProfile: {
+            user: { memberships: { some: { departmentId: { in: managedIds }, endedAt: null } } },
+          },
+        }
+      : {}
+
   let terminations = await prisma.termination.findMany({
+    where: departmentScope,
     include: {
       vaProfile: { select: { id: true, userId: true, user: { select: { firstName: true, lastName: true } } } },
       assignment: { select: { client: { select: { name: true } } } },
@@ -52,7 +76,9 @@ export default async function OffboardingPage() {
       <div>
         <h2 className="text-2xl font-bold tracking-tight">Offboarding</h2>
         <p className="text-sm text-muted-foreground mt-1">
-          Termination and resignation cases across the company
+          {readUnrestricted
+            ? 'Termination and resignation cases across the company'
+            : 'Termination and resignation cases in your department'}
         </p>
       </div>
 

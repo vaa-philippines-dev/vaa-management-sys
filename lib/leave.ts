@@ -35,8 +35,36 @@ export async function resolveStepApprovers(step: ResolvableStep, submitterId: st
     case 'SPECIFIC_USER':
       return step.approverUserId ? [step.approverUserId] : []
 
+    // ROLE was resolving to *every* active holder of the role company-wide,
+    // so a leave request from one department landed in the approval queue of
+    // every Dept Manager in the business. Narrow it to role-holders who share
+    // a live department membership with the submitter. Central functions (HR,
+    // Executive, Sys Admin) typically aren't members of the requester's
+    // department at all, so an empty department-scoped result falls back to
+    // the company-wide set rather than silently skipping the step — same
+    // "resolve to nobody means skip" hazard openStep() already warns about.
     case 'ROLE': {
       if (!step.approverRole) return []
+
+      const submitterDepartmentIds = (
+        await prisma.departmentMembership.findMany({
+          where: { userId: submitterId, endedAt: null },
+          select: { departmentId: true },
+        })
+      ).map((m) => m.departmentId)
+
+      if (submitterDepartmentIds.length > 0) {
+        const scoped = await prisma.user.findMany({
+          where: {
+            systemRole: step.approverRole,
+            isActive: true,
+            memberships: { some: { departmentId: { in: submitterDepartmentIds }, endedAt: null } },
+          },
+          select: { id: true },
+        })
+        if (scoped.length > 0) return scoped.map((u) => u.id)
+      }
+
       const users = await prisma.user.findMany({
         where: { systemRole: step.approverRole, isActive: true },
         select: { id: true },

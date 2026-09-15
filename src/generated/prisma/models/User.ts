@@ -314,6 +314,8 @@ export type UserWhereInput = {
   clearancesCleared?: Prisma.ExitClearanceListRelationFilter
   agentDecisions?: Prisma.AgentSuggestionListRelationFilter
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckListRelationFilter
+  projectsOwned?: Prisma.ProjectListRelationFilter
+  projectsCreated?: Prisma.ProjectListRelationFilter
   resignationLwdOverrides?: Prisma.ResignationDiscussionListRelationFilter
   resignationTrainingNotes?: Prisma.TerminationListRelationFilter
   replacementCandidacies?: Prisma.ReplacementRequestListRelationFilter
@@ -377,6 +379,8 @@ export type UserOrderByWithRelationInput = {
   clearancesCleared?: Prisma.ExitClearanceOrderByRelationAggregateInput
   agentDecisions?: Prisma.AgentSuggestionOrderByRelationAggregateInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckOrderByRelationAggregateInput
+  projectsOwned?: Prisma.ProjectOrderByRelationAggregateInput
+  projectsCreated?: Prisma.ProjectOrderByRelationAggregateInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionOrderByRelationAggregateInput
   resignationTrainingNotes?: Prisma.TerminationOrderByRelationAggregateInput
   replacementCandidacies?: Prisma.ReplacementRequestOrderByRelationAggregateInput
@@ -443,6 +447,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   clearancesCleared?: Prisma.ExitClearanceListRelationFilter
   agentDecisions?: Prisma.AgentSuggestionListRelationFilter
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckListRelationFilter
+  projectsOwned?: Prisma.ProjectListRelationFilter
+  projectsCreated?: Prisma.ProjectListRelationFilter
   resignationLwdOverrides?: Prisma.ResignationDiscussionListRelationFilter
   resignationTrainingNotes?: Prisma.TerminationListRelationFilter
   replacementCandidacies?: Prisma.ReplacementRequestListRelationFilter
@@ -552,6 +558,8 @@ export type UserCreateInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -615,6 +623,8 @@ export type UserUncheckedCreateInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -678,6 +688,8 @@ export type UserUpdateInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -741,6 +753,8 @@ export type UserUncheckedUpdateInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -1532,6 +1546,38 @@ export type UserUpdateOneWithoutAgentDecisionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAgentDecisionsInput, Prisma.UserUpdateWithoutAgentDecisionsInput>, Prisma.UserUncheckedUpdateWithoutAgentDecisionsInput>
 }
 
+export type UserCreateNestedOneWithoutProjectsOwnedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutProjectsOwnedInput, Prisma.UserUncheckedCreateWithoutProjectsOwnedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutProjectsOwnedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutProjectsCreatedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutProjectsCreatedInput, Prisma.UserUncheckedCreateWithoutProjectsCreatedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutProjectsCreatedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutProjectsOwnedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutProjectsOwnedInput, Prisma.UserUncheckedCreateWithoutProjectsOwnedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutProjectsOwnedInput
+  upsert?: Prisma.UserUpsertWithoutProjectsOwnedInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutProjectsOwnedInput, Prisma.UserUpdateWithoutProjectsOwnedInput>, Prisma.UserUncheckedUpdateWithoutProjectsOwnedInput>
+}
+
+export type UserUpdateOneWithoutProjectsCreatedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutProjectsCreatedInput, Prisma.UserUncheckedCreateWithoutProjectsCreatedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutProjectsCreatedInput
+  upsert?: Prisma.UserUpsertWithoutProjectsCreatedInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutProjectsCreatedInput, Prisma.UserUpdateWithoutProjectsCreatedInput>, Prisma.UserUncheckedUpdateWithoutProjectsCreatedInput>
+}
+
 export type UserCreateWithoutDepartmentHeadInput = {
   id?: string
   email: string
@@ -1585,6 +1631,8 @@ export type UserCreateWithoutDepartmentHeadInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -1647,6 +1695,8 @@ export type UserUncheckedCreateWithoutDepartmentHeadInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -1725,6 +1775,8 @@ export type UserUpdateWithoutDepartmentHeadInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -1787,6 +1839,8 @@ export type UserUncheckedUpdateWithoutDepartmentHeadInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -1849,6 +1903,8 @@ export type UserCreateWithoutMembershipsInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -1911,6 +1967,8 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -1989,6 +2047,8 @@ export type UserUpdateWithoutMembershipsInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -2051,6 +2111,8 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -2113,6 +2175,8 @@ export type UserCreateWithoutProfileInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -2175,6 +2239,8 @@ export type UserUncheckedCreateWithoutProfileInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -2253,6 +2319,8 @@ export type UserUpdateWithoutProfileInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -2315,6 +2383,8 @@ export type UserUncheckedUpdateWithoutProfileInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -2377,6 +2447,8 @@ export type UserCreateWithoutEmploymentRecordsInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -2439,6 +2511,8 @@ export type UserUncheckedCreateWithoutEmploymentRecordsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -2506,6 +2580,8 @@ export type UserCreateWithoutEmploymentRecordsInitiatedInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -2568,6 +2644,8 @@ export type UserUncheckedCreateWithoutEmploymentRecordsInitiatedInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -2646,6 +2724,8 @@ export type UserUpdateWithoutEmploymentRecordsInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -2708,6 +2788,8 @@ export type UserUncheckedUpdateWithoutEmploymentRecordsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -2781,6 +2863,8 @@ export type UserUpdateWithoutEmploymentRecordsInitiatedInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -2843,6 +2927,8 @@ export type UserUncheckedUpdateWithoutEmploymentRecordsInitiatedInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -2905,6 +2991,8 @@ export type UserCreateWithoutRoleAssignmentsInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -2967,6 +3055,8 @@ export type UserUncheckedCreateWithoutRoleAssignmentsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -3034,6 +3124,8 @@ export type UserCreateWithoutGrantedRoleAssignmentsInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -3096,6 +3188,8 @@ export type UserUncheckedCreateWithoutGrantedRoleAssignmentsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -3174,6 +3268,8 @@ export type UserUpdateWithoutRoleAssignmentsInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -3236,6 +3332,8 @@ export type UserUncheckedUpdateWithoutRoleAssignmentsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -3309,6 +3407,8 @@ export type UserUpdateWithoutGrantedRoleAssignmentsInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -3371,6 +3471,8 @@ export type UserUncheckedUpdateWithoutGrantedRoleAssignmentsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -3433,6 +3535,8 @@ export type UserCreateWithoutVaProfileInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -3495,6 +3599,8 @@ export type UserUncheckedCreateWithoutVaProfileInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -3573,6 +3679,8 @@ export type UserUpdateWithoutVaProfileInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -3635,6 +3743,8 @@ export type UserUncheckedUpdateWithoutVaProfileInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -3697,6 +3807,8 @@ export type UserCreateWithoutVaHistoryEventsInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -3759,6 +3871,8 @@ export type UserUncheckedCreateWithoutVaHistoryEventsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -3826,6 +3940,8 @@ export type UserCreateWithoutVaHistoryChangesInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -3888,6 +4004,8 @@ export type UserUncheckedCreateWithoutVaHistoryChangesInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -3966,6 +4084,8 @@ export type UserUpdateWithoutVaHistoryEventsInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -4028,6 +4148,8 @@ export type UserUncheckedUpdateWithoutVaHistoryEventsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -4101,6 +4223,8 @@ export type UserUpdateWithoutVaHistoryChangesInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -4163,6 +4287,8 @@ export type UserUncheckedUpdateWithoutVaHistoryChangesInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -4225,6 +4351,8 @@ export type UserCreateWithoutUploadedDocumentsInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -4287,6 +4415,8 @@ export type UserUncheckedCreateWithoutUploadedDocumentsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -4365,6 +4495,8 @@ export type UserUpdateWithoutUploadedDocumentsInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -4427,6 +4559,8 @@ export type UserUncheckedUpdateWithoutUploadedDocumentsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -4489,6 +4623,8 @@ export type UserCreateWithoutLeaveApprovalStepAssignmentsInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -4551,6 +4687,8 @@ export type UserUncheckedCreateWithoutLeaveApprovalStepAssignmentsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -4629,6 +4767,8 @@ export type UserUpdateWithoutLeaveApprovalStepAssignmentsInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -4691,6 +4831,8 @@ export type UserUncheckedUpdateWithoutLeaveApprovalStepAssignmentsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -4753,6 +4895,8 @@ export type UserCreateWithoutLeaveRequestsInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -4815,6 +4959,8 @@ export type UserUncheckedCreateWithoutLeaveRequestsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -4893,6 +5039,8 @@ export type UserUpdateWithoutLeaveRequestsInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -4955,6 +5103,8 @@ export type UserUncheckedUpdateWithoutLeaveRequestsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -5017,6 +5167,8 @@ export type UserCreateWithoutLeaveApprovalActionsInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -5079,6 +5231,8 @@ export type UserUncheckedCreateWithoutLeaveApprovalActionsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -5157,6 +5311,8 @@ export type UserUpdateWithoutLeaveApprovalActionsInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -5219,6 +5375,8 @@ export type UserUncheckedUpdateWithoutLeaveApprovalActionsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -5281,6 +5439,8 @@ export type UserCreateWithoutOnboardingInviteInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -5343,6 +5503,8 @@ export type UserUncheckedCreateWithoutOnboardingInviteInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -5410,6 +5572,8 @@ export type UserCreateWithoutOnboardingInvitesCreatedInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -5472,6 +5636,8 @@ export type UserUncheckedCreateWithoutOnboardingInvitesCreatedInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -5550,6 +5716,8 @@ export type UserUpdateWithoutOnboardingInviteInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -5612,6 +5780,8 @@ export type UserUncheckedUpdateWithoutOnboardingInviteInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -5685,6 +5855,8 @@ export type UserUpdateWithoutOnboardingInvitesCreatedInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -5747,6 +5919,8 @@ export type UserUncheckedUpdateWithoutOnboardingInvitesCreatedInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -5809,6 +5983,8 @@ export type UserCreateWithoutManagedClientsInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -5871,6 +6047,8 @@ export type UserUncheckedCreateWithoutManagedClientsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -5949,6 +6127,8 @@ export type UserUpdateWithoutManagedClientsInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -6011,6 +6191,8 @@ export type UserUncheckedUpdateWithoutManagedClientsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -6073,6 +6255,8 @@ export type UserCreateWithoutAssignmentKpiChecksCompletedInput = {
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -6135,6 +6319,8 @@ export type UserUncheckedCreateWithoutAssignmentKpiChecksCompletedInput = {
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -6213,6 +6399,8 @@ export type UserUpdateWithoutAssignmentKpiChecksCompletedInput = {
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -6275,6 +6463,8 @@ export type UserUncheckedUpdateWithoutAssignmentKpiChecksCompletedInput = {
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -6337,6 +6527,8 @@ export type UserCreateWithoutCreatedTicketsInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -6399,6 +6591,8 @@ export type UserUncheckedCreateWithoutCreatedTicketsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -6466,6 +6660,8 @@ export type UserCreateWithoutAssignedTicketsInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -6528,6 +6724,8 @@ export type UserUncheckedCreateWithoutAssignedTicketsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -6606,6 +6804,8 @@ export type UserUpdateWithoutCreatedTicketsInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -6668,6 +6868,8 @@ export type UserUncheckedUpdateWithoutCreatedTicketsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -6741,6 +6943,8 @@ export type UserUpdateWithoutAssignedTicketsInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -6803,6 +7007,8 @@ export type UserUncheckedUpdateWithoutAssignedTicketsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -6865,6 +7071,8 @@ export type UserCreateWithoutTicketConversationsInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -6927,6 +7135,8 @@ export type UserUncheckedCreateWithoutTicketConversationsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -7005,6 +7215,8 @@ export type UserUpdateWithoutTicketConversationsInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -7067,6 +7279,8 @@ export type UserUncheckedUpdateWithoutTicketConversationsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -7129,6 +7343,8 @@ export type UserCreateWithoutTerminationsInitiatedInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -7191,6 +7407,8 @@ export type UserUncheckedCreateWithoutTerminationsInitiatedInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -7259,6 +7477,8 @@ export type UserCreateWithoutResignationTrainingNotesInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
   replacementApprovals?: Prisma.ReplacementRequestCreateNestedManyWithoutApprovedByInput
@@ -7321,6 +7541,8 @@ export type UserUncheckedCreateWithoutResignationTrainingNotesInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
   replacementApprovals?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -7398,6 +7620,8 @@ export type UserUpdateWithoutTerminationsInitiatedInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -7460,6 +7684,8 @@ export type UserUncheckedUpdateWithoutTerminationsInitiatedInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -7534,6 +7760,8 @@ export type UserUpdateWithoutResignationTrainingNotesInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
   replacementApprovals?: Prisma.ReplacementRequestUpdateManyWithoutApprovedByNestedInput
@@ -7596,6 +7824,8 @@ export type UserUncheckedUpdateWithoutResignationTrainingNotesInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
   replacementApprovals?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -7658,6 +7888,8 @@ export type UserCreateWithoutResignationLwdOverridesInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
   replacementApprovals?: Prisma.ReplacementRequestCreateNestedManyWithoutApprovedByInput
@@ -7720,6 +7952,8 @@ export type UserUncheckedCreateWithoutResignationLwdOverridesInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
   replacementApprovals?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -7798,6 +8032,8 @@ export type UserUpdateWithoutResignationLwdOverridesInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
   replacementApprovals?: Prisma.ReplacementRequestUpdateManyWithoutApprovedByNestedInput
@@ -7860,6 +8096,8 @@ export type UserUncheckedUpdateWithoutResignationLwdOverridesInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
   replacementApprovals?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -7922,6 +8160,8 @@ export type UserCreateWithoutReplacementCandidaciesInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementApprovals?: Prisma.ReplacementRequestCreateNestedManyWithoutApprovedByInput
@@ -7984,6 +8224,8 @@ export type UserUncheckedCreateWithoutReplacementCandidaciesInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementApprovals?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutApprovedByInput
@@ -8051,6 +8293,8 @@ export type UserCreateWithoutReplacementApprovalsInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -8113,6 +8357,8 @@ export type UserUncheckedCreateWithoutReplacementApprovalsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -8191,6 +8437,8 @@ export type UserUpdateWithoutReplacementCandidaciesInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementApprovals?: Prisma.ReplacementRequestUpdateManyWithoutApprovedByNestedInput
@@ -8253,6 +8501,8 @@ export type UserUncheckedUpdateWithoutReplacementCandidaciesInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementApprovals?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -8326,6 +8576,8 @@ export type UserUpdateWithoutReplacementApprovalsInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -8388,6 +8640,8 @@ export type UserUncheckedUpdateWithoutReplacementApprovalsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -8450,6 +8704,8 @@ export type UserCreateWithoutExitClearanceApprovalsInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -8512,6 +8768,8 @@ export type UserUncheckedCreateWithoutExitClearanceApprovalsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -8590,6 +8848,8 @@ export type UserUpdateWithoutExitClearanceApprovalsInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -8652,6 +8912,8 @@ export type UserUncheckedUpdateWithoutExitClearanceApprovalsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -8714,6 +8976,8 @@ export type UserCreateWithoutComplianceReviewsPerformedInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -8776,6 +9040,8 @@ export type UserUncheckedCreateWithoutComplianceReviewsPerformedInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -8854,6 +9120,8 @@ export type UserUpdateWithoutComplianceReviewsPerformedInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -8916,6 +9184,8 @@ export type UserUncheckedUpdateWithoutComplianceReviewsPerformedInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -8978,6 +9248,8 @@ export type UserCreateWithoutFinalPayoutsEndorsedInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -9040,6 +9312,8 @@ export type UserUncheckedCreateWithoutFinalPayoutsEndorsedInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -9118,6 +9392,8 @@ export type UserUpdateWithoutFinalPayoutsEndorsedInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -9180,6 +9456,8 @@ export type UserUncheckedUpdateWithoutFinalPayoutsEndorsedInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -9241,6 +9519,8 @@ export type UserCreateWithoutClearancesClearedInput = {
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -9303,6 +9583,8 @@ export type UserUncheckedCreateWithoutClearancesClearedInput = {
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -9381,6 +9663,8 @@ export type UserUpdateWithoutClearancesClearedInput = {
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -9443,6 +9727,8 @@ export type UserUncheckedUpdateWithoutClearancesClearedInput = {
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -9505,6 +9791,8 @@ export type UserCreateWithoutChannelParticipantsInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -9567,6 +9855,8 @@ export type UserUncheckedCreateWithoutChannelParticipantsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -9645,6 +9935,8 @@ export type UserUpdateWithoutChannelParticipantsInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -9707,6 +9999,8 @@ export type UserUncheckedUpdateWithoutChannelParticipantsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -9769,6 +10063,8 @@ export type UserCreateWithoutMessagesInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -9831,6 +10127,8 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -9898,6 +10196,8 @@ export type UserCreateWithoutPinnedMessagesInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -9960,6 +10260,8 @@ export type UserUncheckedCreateWithoutPinnedMessagesInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -10038,6 +10340,8 @@ export type UserUpdateWithoutMessagesInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -10100,6 +10404,8 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -10173,6 +10479,8 @@ export type UserUpdateWithoutPinnedMessagesInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -10235,6 +10543,8 @@ export type UserUncheckedUpdateWithoutPinnedMessagesInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -10297,6 +10607,8 @@ export type UserCreateWithoutMessageMentionsInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -10359,6 +10671,8 @@ export type UserUncheckedCreateWithoutMessageMentionsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -10437,6 +10751,8 @@ export type UserUpdateWithoutMessageMentionsInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -10499,6 +10815,8 @@ export type UserUncheckedUpdateWithoutMessageMentionsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -10561,6 +10879,8 @@ export type UserCreateWithoutChannelReadsInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -10623,6 +10943,8 @@ export type UserUncheckedCreateWithoutChannelReadsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -10701,6 +11023,8 @@ export type UserUpdateWithoutChannelReadsInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -10763,6 +11087,8 @@ export type UserUncheckedUpdateWithoutChannelReadsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -10825,6 +11151,8 @@ export type UserCreateWithoutAuditLogsInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -10887,6 +11215,8 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -10965,6 +11295,8 @@ export type UserUpdateWithoutAuditLogsInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -11027,6 +11359,8 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -11089,6 +11423,8 @@ export type UserCreateWithoutNotificationsInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -11151,6 +11487,8 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -11229,6 +11567,8 @@ export type UserUpdateWithoutNotificationsInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -11291,6 +11631,8 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -11353,6 +11695,8 @@ export type UserCreateWithoutSidebarFavoritesInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -11415,6 +11759,8 @@ export type UserUncheckedCreateWithoutSidebarFavoritesInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -11493,6 +11839,8 @@ export type UserUpdateWithoutSidebarFavoritesInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -11555,6 +11903,8 @@ export type UserUncheckedUpdateWithoutSidebarFavoritesInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -11617,6 +11967,8 @@ export type UserCreateWithoutLedTeamsInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -11679,6 +12031,8 @@ export type UserUncheckedCreateWithoutLedTeamsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -11746,6 +12100,8 @@ export type UserCreateWithoutTempLedTeams1Input = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -11808,6 +12164,8 @@ export type UserUncheckedCreateWithoutTempLedTeams1Input = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -11875,6 +12233,8 @@ export type UserCreateWithoutTempLedTeams2Input = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -11937,6 +12297,8 @@ export type UserUncheckedCreateWithoutTempLedTeams2Input = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -12015,6 +12377,8 @@ export type UserUpdateWithoutLedTeamsInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -12077,6 +12441,8 @@ export type UserUncheckedUpdateWithoutLedTeamsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -12150,6 +12516,8 @@ export type UserUpdateWithoutTempLedTeams1Input = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -12212,6 +12580,8 @@ export type UserUncheckedUpdateWithoutTempLedTeams1Input = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -12285,6 +12655,8 @@ export type UserUpdateWithoutTempLedTeams2Input = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -12347,6 +12719,8 @@ export type UserUncheckedUpdateWithoutTempLedTeams2Input = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -12409,6 +12783,8 @@ export type UserCreateWithoutTeamMembershipsInput = {
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -12471,6 +12847,8 @@ export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -12549,6 +12927,8 @@ export type UserUpdateWithoutTeamMembershipsInput = {
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -12611,6 +12991,8 @@ export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -12673,6 +13055,8 @@ export type UserCreateWithoutAgentDecisionsInput = {
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
   clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
@@ -12735,6 +13119,8 @@ export type UserUncheckedCreateWithoutAgentDecisionsInput = {
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
   clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
@@ -12813,6 +13199,8 @@ export type UserUpdateWithoutAgentDecisionsInput = {
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
   clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
@@ -12875,6 +13263,552 @@ export type UserUncheckedUpdateWithoutAgentDecisionsInput = {
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
   clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
   assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
+  resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
+  replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
+  replacementApprovals?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
+  finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+}
+
+export type UserCreateWithoutProjectsOwnedInput = {
+  id?: string
+  email: string
+  employeeId?: string | null
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  extName?: string | null
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  messageColor?: $Enums.MessageColor
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  isBot?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
+  vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
+  pinnedMessages?: Prisma.MessageCreateNestedManyWithoutPinnedByUserInput
+  channelParticipants?: Prisma.ChannelParticipantCreateNestedManyWithoutUserInput
+  ledTeams?: Prisma.TeamCreateNestedManyWithoutLeaderInput
+  tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
+  tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
+  clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
+  assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
+  resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
+  resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
+  replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
+  replacementApprovals?: Prisma.ReplacementRequestCreateNestedManyWithoutApprovedByInput
+  exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
+  complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
+  finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+}
+
+export type UserUncheckedCreateWithoutProjectsOwnedInput = {
+  id?: string
+  email: string
+  employeeId?: string | null
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  extName?: string | null
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  messageColor?: $Enums.MessageColor
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  isBot?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileUncheckedCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipUncheckedCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
+  vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
+  pinnedMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPinnedByUserInput
+  channelParticipants?: Prisma.ChannelParticipantUncheckedCreateNestedManyWithoutUserInput
+  ledTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutLeaderInput
+  tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
+  tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
+  clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
+  assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
+  resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
+  replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
+  replacementApprovals?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
+  complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
+  finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+}
+
+export type UserCreateOrConnectWithoutProjectsOwnedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutProjectsOwnedInput, Prisma.UserUncheckedCreateWithoutProjectsOwnedInput>
+}
+
+export type UserCreateWithoutProjectsCreatedInput = {
+  id?: string
+  email: string
+  employeeId?: string | null
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  extName?: string | null
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  messageColor?: $Enums.MessageColor
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  isBot?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
+  vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
+  pinnedMessages?: Prisma.MessageCreateNestedManyWithoutPinnedByUserInput
+  channelParticipants?: Prisma.ChannelParticipantCreateNestedManyWithoutUserInput
+  ledTeams?: Prisma.TeamCreateNestedManyWithoutLeaderInput
+  tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
+  tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
+  clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
+  assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
+  resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
+  replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
+  replacementApprovals?: Prisma.ReplacementRequestCreateNestedManyWithoutApprovedByInput
+  exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
+  complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
+  finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+}
+
+export type UserUncheckedCreateWithoutProjectsCreatedInput = {
+  id?: string
+  email: string
+  employeeId?: string | null
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  extName?: string | null
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  messageColor?: $Enums.MessageColor
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  isBot?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileUncheckedCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipUncheckedCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
+  vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
+  pinnedMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPinnedByUserInput
+  channelParticipants?: Prisma.ChannelParticipantUncheckedCreateNestedManyWithoutUserInput
+  ledTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutLeaderInput
+  tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
+  tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
+  clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
+  assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
+  resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
+  replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
+  replacementApprovals?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
+  complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
+  finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+}
+
+export type UserCreateOrConnectWithoutProjectsCreatedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutProjectsCreatedInput, Prisma.UserUncheckedCreateWithoutProjectsCreatedInput>
+}
+
+export type UserUpsertWithoutProjectsOwnedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutProjectsOwnedInput, Prisma.UserUncheckedUpdateWithoutProjectsOwnedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutProjectsOwnedInput, Prisma.UserUncheckedCreateWithoutProjectsOwnedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutProjectsOwnedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutProjectsOwnedInput, Prisma.UserUncheckedUpdateWithoutProjectsOwnedInput>
+}
+
+export type UserUpdateWithoutProjectsOwnedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  extName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumMessageColorFieldUpdateOperationsInput | $Enums.MessageColor
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  vaProfile?: Prisma.VAProfileUpdateOneWithoutUserNestedInput
+  departmentHead?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUpdateManyWithoutUserNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutUserNestedInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUpdateManyWithoutInitiatorNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
+  uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
+  createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
+  assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
+  ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
+  vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
+  pinnedMessages?: Prisma.MessageUpdateManyWithoutPinnedByUserNestedInput
+  channelParticipants?: Prisma.ChannelParticipantUpdateManyWithoutUserNestedInput
+  ledTeams?: Prisma.TeamUpdateManyWithoutLeaderNestedInput
+  tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
+  tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
+  clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
+  assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
+  resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
+  resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
+  replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
+  replacementApprovals?: Prisma.ReplacementRequestUpdateManyWithoutApprovedByNestedInput
+  exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
+  complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
+  finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutProjectsOwnedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  extName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumMessageColorFieldUpdateOperationsInput | $Enums.MessageColor
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  vaProfile?: Prisma.VAProfileUncheckedUpdateOneWithoutUserNestedInput
+  departmentHead?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUncheckedUpdateManyWithoutUserNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutUserNestedInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutInitiatorNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
+  createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
+  assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
+  ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
+  vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
+  pinnedMessages?: Prisma.MessageUncheckedUpdateManyWithoutPinnedByUserNestedInput
+  channelParticipants?: Prisma.ChannelParticipantUncheckedUpdateManyWithoutUserNestedInput
+  ledTeams?: Prisma.TeamUncheckedUpdateManyWithoutLeaderNestedInput
+  tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
+  tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
+  clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
+  assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
+  resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
+  replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
+  replacementApprovals?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
+  finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+}
+
+export type UserUpsertWithoutProjectsCreatedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutProjectsCreatedInput, Prisma.UserUncheckedUpdateWithoutProjectsCreatedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutProjectsCreatedInput, Prisma.UserUncheckedCreateWithoutProjectsCreatedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutProjectsCreatedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutProjectsCreatedInput, Prisma.UserUncheckedUpdateWithoutProjectsCreatedInput>
+}
+
+export type UserUpdateWithoutProjectsCreatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  extName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumMessageColorFieldUpdateOperationsInput | $Enums.MessageColor
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  vaProfile?: Prisma.VAProfileUpdateOneWithoutUserNestedInput
+  departmentHead?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUpdateManyWithoutUserNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutUserNestedInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUpdateManyWithoutInitiatorNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
+  uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
+  createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
+  assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
+  ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
+  vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
+  pinnedMessages?: Prisma.MessageUpdateManyWithoutPinnedByUserNestedInput
+  channelParticipants?: Prisma.ChannelParticipantUpdateManyWithoutUserNestedInput
+  ledTeams?: Prisma.TeamUpdateManyWithoutLeaderNestedInput
+  tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
+  tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
+  clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
+  assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
+  resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
+  replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
+  replacementApprovals?: Prisma.ReplacementRequestUpdateManyWithoutApprovedByNestedInput
+  exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
+  complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
+  finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutProjectsCreatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  extName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumMessageColorFieldUpdateOperationsInput | $Enums.MessageColor
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  vaProfile?: Prisma.VAProfileUncheckedUpdateOneWithoutUserNestedInput
+  departmentHead?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUncheckedUpdateManyWithoutUserNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutUserNestedInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutInitiatorNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
+  createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
+  assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
+  ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
+  vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
+  pinnedMessages?: Prisma.MessageUncheckedUpdateManyWithoutPinnedByUserNestedInput
+  channelParticipants?: Prisma.ChannelParticipantUncheckedUpdateManyWithoutUserNestedInput
+  ledTeams?: Prisma.TeamUncheckedUpdateManyWithoutLeaderNestedInput
+  tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
+  tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
+  clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
+  assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -12923,6 +13857,8 @@ export type UserCountOutputType = {
   clearancesCleared: number
   agentDecisions: number
   assignmentKpiChecksCompleted: number
+  projectsOwned: number
+  projectsCreated: number
   resignationLwdOverrides: number
   resignationTrainingNotes: number
   replacementCandidacies: number
@@ -12966,6 +13902,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   clearancesCleared?: boolean | UserCountOutputTypeCountClearancesClearedArgs
   agentDecisions?: boolean | UserCountOutputTypeCountAgentDecisionsArgs
   assignmentKpiChecksCompleted?: boolean | UserCountOutputTypeCountAssignmentKpiChecksCompletedArgs
+  projectsOwned?: boolean | UserCountOutputTypeCountProjectsOwnedArgs
+  projectsCreated?: boolean | UserCountOutputTypeCountProjectsCreatedArgs
   resignationLwdOverrides?: boolean | UserCountOutputTypeCountResignationLwdOverridesArgs
   resignationTrainingNotes?: boolean | UserCountOutputTypeCountResignationTrainingNotesArgs
   replacementCandidacies?: boolean | UserCountOutputTypeCountReplacementCandidaciesArgs
@@ -13219,6 +14157,20 @@ export type UserCountOutputTypeCountAssignmentKpiChecksCompletedArgs<ExtArgs ext
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountProjectsOwnedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProjectWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountProjectsCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProjectWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountResignationLwdOverridesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ResignationDiscussionWhereInput
 }
@@ -13320,6 +14272,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   clearancesCleared?: boolean | Prisma.User$clearancesClearedArgs<ExtArgs>
   agentDecisions?: boolean | Prisma.User$agentDecisionsArgs<ExtArgs>
   assignmentKpiChecksCompleted?: boolean | Prisma.User$assignmentKpiChecksCompletedArgs<ExtArgs>
+  projectsOwned?: boolean | Prisma.User$projectsOwnedArgs<ExtArgs>
+  projectsCreated?: boolean | Prisma.User$projectsCreatedArgs<ExtArgs>
   resignationLwdOverrides?: boolean | Prisma.User$resignationLwdOverridesArgs<ExtArgs>
   resignationTrainingNotes?: boolean | Prisma.User$resignationTrainingNotesArgs<ExtArgs>
   replacementCandidacies?: boolean | Prisma.User$replacementCandidaciesArgs<ExtArgs>
@@ -13428,6 +14382,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   clearancesCleared?: boolean | Prisma.User$clearancesClearedArgs<ExtArgs>
   agentDecisions?: boolean | Prisma.User$agentDecisionsArgs<ExtArgs>
   assignmentKpiChecksCompleted?: boolean | Prisma.User$assignmentKpiChecksCompletedArgs<ExtArgs>
+  projectsOwned?: boolean | Prisma.User$projectsOwnedArgs<ExtArgs>
+  projectsCreated?: boolean | Prisma.User$projectsCreatedArgs<ExtArgs>
   resignationLwdOverrides?: boolean | Prisma.User$resignationLwdOverridesArgs<ExtArgs>
   resignationTrainingNotes?: boolean | Prisma.User$resignationTrainingNotesArgs<ExtArgs>
   replacementCandidacies?: boolean | Prisma.User$replacementCandidaciesArgs<ExtArgs>
@@ -13479,6 +14435,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     clearancesCleared: Prisma.$ExitClearancePayload<ExtArgs>[]
     agentDecisions: Prisma.$AgentSuggestionPayload<ExtArgs>[]
     assignmentKpiChecksCompleted: Prisma.$AssignmentKpiCheckPayload<ExtArgs>[]
+    projectsOwned: Prisma.$ProjectPayload<ExtArgs>[]
+    projectsCreated: Prisma.$ProjectPayload<ExtArgs>[]
     resignationLwdOverrides: Prisma.$ResignationDiscussionPayload<ExtArgs>[]
     resignationTrainingNotes: Prisma.$TerminationPayload<ExtArgs>[]
     replacementCandidacies: Prisma.$ReplacementRequestPayload<ExtArgs>[]
@@ -13935,6 +14893,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   clearancesCleared<T extends Prisma.User$clearancesClearedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$clearancesClearedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExitClearancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   agentDecisions<T extends Prisma.User$agentDecisionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$agentDecisionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AgentSuggestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   assignmentKpiChecksCompleted<T extends Prisma.User$assignmentKpiChecksCompletedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$assignmentKpiChecksCompletedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssignmentKpiCheckPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  projectsOwned<T extends Prisma.User$projectsOwnedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$projectsOwnedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  projectsCreated<T extends Prisma.User$projectsCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$projectsCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   resignationLwdOverrides<T extends Prisma.User$resignationLwdOverridesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$resignationLwdOverridesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ResignationDiscussionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   resignationTrainingNotes<T extends Prisma.User$resignationTrainingNotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$resignationTrainingNotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TerminationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   replacementCandidacies<T extends Prisma.User$replacementCandidaciesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$replacementCandidaciesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReplacementRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -15227,6 +16187,54 @@ export type User$assignmentKpiChecksCompletedArgs<ExtArgs extends runtime.Types.
   take?: number
   skip?: number
   distinct?: Prisma.AssignmentKpiCheckScalarFieldEnum | Prisma.AssignmentKpiCheckScalarFieldEnum[]
+}
+
+/**
+ * User.projectsOwned
+ */
+export type User$projectsOwnedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Project
+   */
+  select?: Prisma.ProjectSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Project
+   */
+  omit?: Prisma.ProjectOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectInclude<ExtArgs> | null
+  where?: Prisma.ProjectWhereInput
+  orderBy?: Prisma.ProjectOrderByWithRelationInput | Prisma.ProjectOrderByWithRelationInput[]
+  cursor?: Prisma.ProjectWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProjectScalarFieldEnum | Prisma.ProjectScalarFieldEnum[]
+}
+
+/**
+ * User.projectsCreated
+ */
+export type User$projectsCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Project
+   */
+  select?: Prisma.ProjectSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Project
+   */
+  omit?: Prisma.ProjectOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectInclude<ExtArgs> | null
+  where?: Prisma.ProjectWhereInput
+  orderBy?: Prisma.ProjectOrderByWithRelationInput | Prisma.ProjectOrderByWithRelationInput[]
+  cursor?: Prisma.ProjectWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProjectScalarFieldEnum | Prisma.ProjectScalarFieldEnum[]
 }
 
 /**

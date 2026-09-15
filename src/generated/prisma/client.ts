@@ -296,3 +296,8 @@ export type AgentSuggestion = Prisma.AgentSuggestionModel
  * 
  */
 export type AgentRun = Prisma.AgentRunModel
+/**
+ * Model Project
+ * 
+ */
+export type Project = Prisma.ProjectModel

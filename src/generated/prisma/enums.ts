@@ -500,3 +500,25 @@ export const AgentRunStatus = {
 } as const
 
 export type AgentRunStatus = (typeof AgentRunStatus)[keyof typeof AgentRunStatus]
+
+
+export const ProjectStatus = {
+  FOR_REVIEW: 'FOR_REVIEW',
+  FOR_APPROVAL: 'FOR_APPROVAL',
+  APPROVED: 'APPROVED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  ON_HOLD: 'ON_HOLD',
+  DECLINED: 'DECLINED'
+} as const
+
+export type ProjectStatus = (typeof ProjectStatus)[keyof typeof ProjectStatus]
+
+
+export const ProjectPriority = {
+  NORMAL: 'NORMAL',
+  IMPORTANT: 'IMPORTANT',
+  CRITICAL: 'CRITICAL'
+} as const
+
+export type ProjectPriority = (typeof ProjectPriority)[keyof typeof ProjectPriority]

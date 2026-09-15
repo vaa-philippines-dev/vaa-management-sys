@@ -47,8 +47,29 @@ Routing: `app/(auth)/` holds login + the OAuth callback route; `app/(dashboard)/
 - `Notification` (types `NEW_ASSIGNMENT`/`HOURS_SHORTFALL`/`NEW_MESSAGE`/`MESSAGE_REPLY`) is written via `notify()` in `lib/notifications.ts`, surfaced by `components/layout/NotificationBell.tsx`.
 - Support: `Ticket`/`TicketConversation`, optionally tied to a department or client.
 - External sync: `VAConnectionRecord` is a raw mirror of the manager's "VAConnections" Google Sheet (load phase only, refreshed by the `cron/sync-va-connections` route); `ExternalSyncMapping` maps the sheet's external VA/Client IDs to internal `VAProfile`/`Client` ids. Turning a synced row into an actual `Assignment` is a separate, not-yet-wired "connect" phase — see `lib/sync/`.
+- `Project`: the DMF sheet's "Projects/Proposals" tab — department-owned internal initiatives (programs, trainings, budget requests, internal tooling) with a `ProjectStatus` review/approval cycle and the sheet's own `ProjectPriority` labels (Normal/Important/Critical). Deliberately has no Client/Assignment link: nothing here is billable or VA-staffed.
 - Everything mutation-worthy writes to `AuditLog` (polymorphic `entityType`/`entityId` + JSON before/after diff) via `lib/audit.ts`.
 - `RoleAssignment` grants temporary elevated access (`CONTRIBUTOR/VIEWER/APPROVER`) scoped to a module and optionally a department, independent of a user's base `SystemRole` — this backs `hasModuleAccess()` in `lib/auth.ts`.
+
+
+## The Department Monitoring File (DMF)
+
+Most of the department-facing UI is a port of one Google Sheet — "Amazon | Department Monitoring File 2026" — which managers still run day to day. The service account already has read access; the id is in `GOOGLE_DEPT_MONITORING_SHEET_ID` (read it with the same `googleapis` + `GOOGLE_SERVICE_ACCOUNT_EMAIL`/`GOOGLE_PRIVATE_KEY` auth as `lib/google/va-connections-sheet.ts`). **No code reads it yet** — every port so far was transcribed by hand, so check the live tab before assuming a column doesn't exist.
+
+Tab → app mapping as it stands:
+
+| Sheet tab | In-app |
+|---|---|
+| DASHBOARD | `/dashboard?dept=<id>` |
+| Masterlist | `/vas` |
+| Team Assignment | `/team-assignment` |
+| Structure | `/departments/[id]` |
+| Headcount | partial — `DepartmentHeadcountCard` + `/reports/headcount`; the sheet's ~108-metric monthly/weekly time series is not ported |
+| Performance Monitoring | partial — `AssignmentKpiCheck` covers the D4/W1/W2/M1/M2/M3/M6 columns; the W2 and M6 **client feedback** blocks are not ported |
+| VA Availability | partial — only the aggregate buckets in `DepartmentHeadcountCard`; the per-VA hours ledger, RECOMMENDED tracking and DMF/TMF staleness alerts are not ported |
+| Projects/Proposals | `/projects` (`Project` model) |
+| VA Preparation | **not ported** — the pre-launch pipeline for a VA-client engagement (client meeting → preparation call → mock interview → VA connect → a 9-item onboarding checklist → live), plus its own EOC/pause block. `DepartmentDataIssuesCard`'s third rule is stubbed pending it. |
+| IDLE VAs, VA-Client Summary, VA Concerns, Pending Dept Requests, Trainings, Discrepancies | not ported |
 
 ## Auth
 

@@ -101,7 +101,8 @@ export const ModelName = {
   TeamMembership: 'TeamMembership',
   ClientPipeline: 'ClientPipeline',
   AgentSuggestion: 'AgentSuggestion',
-  AgentRun: 'AgentRun'
+  AgentRun: 'AgentRun',
+  Project: 'Project'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1046,6 +1047,29 @@ export const AgentRunScalarFieldEnum = {
 } as const
 
 export type AgentRunScalarFieldEnum = (typeof AgentRunScalarFieldEnum)[keyof typeof AgentRunScalarFieldEnum]
+
+
+export const ProjectScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  status: 'status',
+  priority: 'priority',
+  proposedDate: 'proposedDate',
+  startDate: 'startDate',
+  completedDate: 'completedDate',
+  proposalFileName: 'proposalFileName',
+  proposalFileUrl: 'proposalFileUrl',
+  referenceNotes: 'referenceNotes',
+  remarks: 'remarks',
+  departmentId: 'departmentId',
+  ownerId: 'ownerId',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
 
 
 export const SortOrder = {

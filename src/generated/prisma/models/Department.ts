@@ -326,6 +326,7 @@ export type DepartmentWhereInput = {
   employmentRecords?: Prisma.EmploymentRecordListRelationFilter
   channel?: Prisma.XOR<Prisma.ChannelNullableScalarRelationFilter, Prisma.ChannelWhereInput> | null
   teams?: Prisma.TeamListRelationFilter
+  projects?: Prisma.ProjectListRelationFilter
 }
 
 export type DepartmentOrderByWithRelationInput = {
@@ -363,6 +364,7 @@ export type DepartmentOrderByWithRelationInput = {
   employmentRecords?: Prisma.EmploymentRecordOrderByRelationAggregateInput
   channel?: Prisma.ChannelOrderByWithRelationInput
   teams?: Prisma.TeamOrderByRelationAggregateInput
+  projects?: Prisma.ProjectOrderByRelationAggregateInput
 }
 
 export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
@@ -405,6 +407,7 @@ export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
   employmentRecords?: Prisma.EmploymentRecordListRelationFilter
   channel?: Prisma.XOR<Prisma.ChannelNullableScalarRelationFilter, Prisma.ChannelWhereInput> | null
   teams?: Prisma.TeamListRelationFilter
+  projects?: Prisma.ProjectListRelationFilter
 }, "id" | "name_parentId" | "acronym_parentId">
 
 export type DepartmentOrderByWithAggregationInput = {
@@ -484,6 +487,7 @@ export type DepartmentCreateInput = {
   employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateInput = {
@@ -517,6 +521,7 @@ export type DepartmentUncheckedCreateInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelUncheckedCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamUncheckedCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUpdateInput = {
@@ -550,6 +555,7 @@ export type DepartmentUpdateInput = {
   employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateInput = {
@@ -583,6 +589,7 @@ export type DepartmentUncheckedUpdateInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUncheckedUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUncheckedUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateManyInput = {
@@ -1161,6 +1168,20 @@ export type DepartmentUpdateOneRequiredWithoutTeamsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.DepartmentUpdateToOneWithWhereWithoutTeamsInput, Prisma.DepartmentUpdateWithoutTeamsInput>, Prisma.DepartmentUncheckedUpdateWithoutTeamsInput>
 }
 
+export type DepartmentCreateNestedOneWithoutProjectsInput = {
+  create?: Prisma.XOR<Prisma.DepartmentCreateWithoutProjectsInput, Prisma.DepartmentUncheckedCreateWithoutProjectsInput>
+  connectOrCreate?: Prisma.DepartmentCreateOrConnectWithoutProjectsInput
+  connect?: Prisma.DepartmentWhereUniqueInput
+}
+
+export type DepartmentUpdateOneRequiredWithoutProjectsNestedInput = {
+  create?: Prisma.XOR<Prisma.DepartmentCreateWithoutProjectsInput, Prisma.DepartmentUncheckedCreateWithoutProjectsInput>
+  connectOrCreate?: Prisma.DepartmentCreateOrConnectWithoutProjectsInput
+  upsert?: Prisma.DepartmentUpsertWithoutProjectsInput
+  connect?: Prisma.DepartmentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DepartmentUpdateToOneWithWhereWithoutProjectsInput, Prisma.DepartmentUpdateWithoutProjectsInput>, Prisma.DepartmentUncheckedUpdateWithoutProjectsInput>
+}
+
 export type DepartmentCreateWithoutChildrenInput = {
   id?: string
   name: string
@@ -1191,6 +1212,7 @@ export type DepartmentCreateWithoutChildrenInput = {
   employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutChildrenInput = {
@@ -1223,6 +1245,7 @@ export type DepartmentUncheckedCreateWithoutChildrenInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelUncheckedCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamUncheckedCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutChildrenInput = {
@@ -1260,6 +1283,7 @@ export type DepartmentCreateWithoutParentInput = {
   employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutParentInput = {
@@ -1292,6 +1316,7 @@ export type DepartmentUncheckedCreateWithoutParentInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelUncheckedCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamUncheckedCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutParentInput = {
@@ -1334,6 +1359,7 @@ export type DepartmentCreateWithoutMergedFromInput = {
   employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutMergedFromInput = {
@@ -1366,6 +1392,7 @@ export type DepartmentUncheckedCreateWithoutMergedFromInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelUncheckedCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamUncheckedCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutMergedFromInput = {
@@ -1403,6 +1430,7 @@ export type DepartmentCreateWithoutMergedIntoInput = {
   employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutMergedIntoInput = {
@@ -1435,6 +1463,7 @@ export type DepartmentUncheckedCreateWithoutMergedIntoInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelUncheckedCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamUncheckedCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutMergedIntoInput = {
@@ -1477,6 +1506,7 @@ export type DepartmentCreateWithoutSplitIntoInput = {
   employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutSplitIntoInput = {
@@ -1509,6 +1539,7 @@ export type DepartmentUncheckedCreateWithoutSplitIntoInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelUncheckedCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamUncheckedCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutSplitIntoInput = {
@@ -1546,6 +1577,7 @@ export type DepartmentCreateWithoutSplitFromInput = {
   employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutSplitFromInput = {
@@ -1578,6 +1610,7 @@ export type DepartmentUncheckedCreateWithoutSplitFromInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelUncheckedCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamUncheckedCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutSplitFromInput = {
@@ -1631,6 +1664,7 @@ export type DepartmentUpdateWithoutChildrenInput = {
   employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutChildrenInput = {
@@ -1663,6 +1697,7 @@ export type DepartmentUncheckedUpdateWithoutChildrenInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUncheckedUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUncheckedUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUpsertWithWhereUniqueWithoutParentInput = {
@@ -1744,6 +1779,7 @@ export type DepartmentUpdateWithoutMergedFromInput = {
   employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutMergedFromInput = {
@@ -1776,6 +1812,7 @@ export type DepartmentUncheckedUpdateWithoutMergedFromInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUncheckedUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUncheckedUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUpsertWithWhereUniqueWithoutMergedIntoInput = {
@@ -1835,6 +1872,7 @@ export type DepartmentUpdateWithoutSplitIntoInput = {
   employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutSplitIntoInput = {
@@ -1867,6 +1905,7 @@ export type DepartmentUncheckedUpdateWithoutSplitIntoInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUncheckedUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUncheckedUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUpsertWithWhereUniqueWithoutSplitFromInput = {
@@ -1915,6 +1954,7 @@ export type DepartmentCreateWithoutPositionsInput = {
   employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutPositionsInput = {
@@ -1947,6 +1987,7 @@ export type DepartmentUncheckedCreateWithoutPositionsInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelUncheckedCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamUncheckedCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutPositionsInput = {
@@ -1995,6 +2036,7 @@ export type DepartmentUpdateWithoutPositionsInput = {
   employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutPositionsInput = {
@@ -2027,6 +2069,7 @@ export type DepartmentUncheckedUpdateWithoutPositionsInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUncheckedUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUncheckedUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateWithoutMembershipsInput = {
@@ -2059,6 +2102,7 @@ export type DepartmentCreateWithoutMembershipsInput = {
   employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutMembershipsInput = {
@@ -2091,6 +2135,7 @@ export type DepartmentUncheckedCreateWithoutMembershipsInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelUncheckedCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamUncheckedCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutMembershipsInput = {
@@ -2139,6 +2184,7 @@ export type DepartmentUpdateWithoutMembershipsInput = {
   employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutMembershipsInput = {
@@ -2171,6 +2217,7 @@ export type DepartmentUncheckedUpdateWithoutMembershipsInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUncheckedUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUncheckedUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateWithoutHeadInput = {
@@ -2203,6 +2250,7 @@ export type DepartmentCreateWithoutHeadInput = {
   employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutHeadInput = {
@@ -2235,6 +2283,7 @@ export type DepartmentUncheckedCreateWithoutHeadInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelUncheckedCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamUncheckedCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutHeadInput = {
@@ -2293,6 +2342,7 @@ export type DepartmentCreateWithoutEmploymentRecordsInput = {
   vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutEmploymentRecordsInput = {
@@ -2325,6 +2375,7 @@ export type DepartmentUncheckedCreateWithoutEmploymentRecordsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelUncheckedCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamUncheckedCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutEmploymentRecordsInput = {
@@ -2373,6 +2424,7 @@ export type DepartmentUpdateWithoutEmploymentRecordsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutEmploymentRecordsInput = {
@@ -2405,6 +2457,7 @@ export type DepartmentUncheckedUpdateWithoutEmploymentRecordsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUncheckedUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUncheckedUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateWithoutRoleAssignmentsInput = {
@@ -2437,6 +2490,7 @@ export type DepartmentCreateWithoutRoleAssignmentsInput = {
   employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutRoleAssignmentsInput = {
@@ -2469,6 +2523,7 @@ export type DepartmentUncheckedCreateWithoutRoleAssignmentsInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelUncheckedCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamUncheckedCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutRoleAssignmentsInput = {
@@ -2517,6 +2572,7 @@ export type DepartmentUpdateWithoutRoleAssignmentsInput = {
   employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutRoleAssignmentsInput = {
@@ -2549,6 +2605,7 @@ export type DepartmentUncheckedUpdateWithoutRoleAssignmentsInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUncheckedUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUncheckedUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateWithoutVaHistoryEventsInput = {
@@ -2581,6 +2638,7 @@ export type DepartmentCreateWithoutVaHistoryEventsInput = {
   employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutVaHistoryEventsInput = {
@@ -2613,6 +2671,7 @@ export type DepartmentUncheckedCreateWithoutVaHistoryEventsInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelUncheckedCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamUncheckedCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutVaHistoryEventsInput = {
@@ -2661,6 +2720,7 @@ export type DepartmentUpdateWithoutVaHistoryEventsInput = {
   employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutVaHistoryEventsInput = {
@@ -2693,6 +2753,7 @@ export type DepartmentUncheckedUpdateWithoutVaHistoryEventsInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUncheckedUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUncheckedUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateWithoutServicesInput = {
@@ -2725,6 +2786,7 @@ export type DepartmentCreateWithoutServicesInput = {
   employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutServicesInput = {
@@ -2757,6 +2819,7 @@ export type DepartmentUncheckedCreateWithoutServicesInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelUncheckedCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamUncheckedCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutServicesInput = {
@@ -2805,6 +2868,7 @@ export type DepartmentUpdateWithoutServicesInput = {
   employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutServicesInput = {
@@ -2837,6 +2901,7 @@ export type DepartmentUncheckedUpdateWithoutServicesInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUncheckedUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUncheckedUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateWithoutClientsInput = {
@@ -2869,6 +2934,7 @@ export type DepartmentCreateWithoutClientsInput = {
   employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutClientsInput = {
@@ -2901,6 +2967,7 @@ export type DepartmentUncheckedCreateWithoutClientsInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelUncheckedCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamUncheckedCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutClientsInput = {
@@ -2949,6 +3016,7 @@ export type DepartmentUpdateWithoutClientsInput = {
   employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutClientsInput = {
@@ -2981,6 +3049,7 @@ export type DepartmentUncheckedUpdateWithoutClientsInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUncheckedUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUncheckedUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateWithoutTicketsInput = {
@@ -3013,6 +3082,7 @@ export type DepartmentCreateWithoutTicketsInput = {
   employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutTicketsInput = {
@@ -3045,6 +3115,7 @@ export type DepartmentUncheckedCreateWithoutTicketsInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelUncheckedCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamUncheckedCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutTicketsInput = {
@@ -3093,6 +3164,7 @@ export type DepartmentUpdateWithoutTicketsInput = {
   employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutTicketsInput = {
@@ -3125,6 +3197,7 @@ export type DepartmentUncheckedUpdateWithoutTicketsInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUncheckedUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUncheckedUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateWithoutChannelInput = {
@@ -3157,6 +3230,7 @@ export type DepartmentCreateWithoutChannelInput = {
   vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutDepartmentInput
   employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutDepartmentInput
   teams?: Prisma.TeamCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutChannelInput = {
@@ -3189,6 +3263,7 @@ export type DepartmentUncheckedCreateWithoutChannelInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutDepartmentInput
   employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutDepartmentInput
   teams?: Prisma.TeamUncheckedCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutChannelInput = {
@@ -3237,6 +3312,7 @@ export type DepartmentUpdateWithoutChannelInput = {
   vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutDepartmentNestedInput
   employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutDepartmentNestedInput
   teams?: Prisma.TeamUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutChannelInput = {
@@ -3269,6 +3345,7 @@ export type DepartmentUncheckedUpdateWithoutChannelInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutDepartmentNestedInput
   employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutDepartmentNestedInput
   teams?: Prisma.TeamUncheckedUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateWithoutAuditLogsInput = {
@@ -3301,6 +3378,7 @@ export type DepartmentCreateWithoutAuditLogsInput = {
   employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutAuditLogsInput = {
@@ -3333,6 +3411,7 @@ export type DepartmentUncheckedCreateWithoutAuditLogsInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelUncheckedCreateNestedOneWithoutDepartmentInput
   teams?: Prisma.TeamUncheckedCreateNestedManyWithoutDepartmentInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutAuditLogsInput = {
@@ -3381,6 +3460,7 @@ export type DepartmentUpdateWithoutAuditLogsInput = {
   employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutAuditLogsInput = {
@@ -3413,6 +3493,7 @@ export type DepartmentUncheckedUpdateWithoutAuditLogsInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUncheckedUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUncheckedUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateWithoutTeamsInput = {
@@ -3445,6 +3526,7 @@ export type DepartmentCreateWithoutTeamsInput = {
   vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutDepartmentInput
   employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelCreateNestedOneWithoutDepartmentInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutTeamsInput = {
@@ -3477,6 +3559,7 @@ export type DepartmentUncheckedCreateWithoutTeamsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutDepartmentInput
   employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutDepartmentInput
   channel?: Prisma.ChannelUncheckedCreateNestedOneWithoutDepartmentInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutTeamsInput = {
@@ -3525,6 +3608,7 @@ export type DepartmentUpdateWithoutTeamsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutDepartmentNestedInput
   employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUpdateOneWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutTeamsInput = {
@@ -3557,6 +3641,155 @@ export type DepartmentUncheckedUpdateWithoutTeamsInput = {
   vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutDepartmentNestedInput
   employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUncheckedUpdateOneWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutDepartmentNestedInput
+}
+
+export type DepartmentCreateWithoutProjectsInput = {
+  id?: string
+  name: string
+  shortName?: string | null
+  acronym?: string | null
+  level?: $Enums.DepartmentLevel | null
+  status?: $Enums.DepartmentStatus
+  isParent?: boolean
+  description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sortOrder?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  parent?: Prisma.DepartmentCreateNestedOneWithoutChildrenInput
+  children?: Prisma.DepartmentCreateNestedManyWithoutParentInput
+  mergedInto?: Prisma.DepartmentCreateNestedOneWithoutMergedFromInput
+  mergedFrom?: Prisma.DepartmentCreateNestedManyWithoutMergedIntoInput
+  splitFrom?: Prisma.DepartmentCreateNestedOneWithoutSplitIntoInput
+  splitInto?: Prisma.DepartmentCreateNestedManyWithoutSplitFromInput
+  head?: Prisma.UserCreateNestedOneWithoutDepartmentHeadInput
+  memberships?: Prisma.DepartmentMembershipCreateNestedManyWithoutDepartmentInput
+  positions?: Prisma.PositionCreateNestedManyWithoutDepartmentInput
+  clients?: Prisma.ClientCreateNestedManyWithoutDepartmentInput
+  tickets?: Prisma.TicketCreateNestedManyWithoutDepartmentInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutDepartmentInput
+  roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillCreateNestedManyWithoutDepartmentInput
+  vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutDepartmentInput
+  employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutDepartmentInput
+  channel?: Prisma.ChannelCreateNestedOneWithoutDepartmentInput
+  teams?: Prisma.TeamCreateNestedManyWithoutDepartmentInput
+}
+
+export type DepartmentUncheckedCreateWithoutProjectsInput = {
+  id?: string
+  name: string
+  shortName?: string | null
+  acronym?: string | null
+  level?: $Enums.DepartmentLevel | null
+  status?: $Enums.DepartmentStatus
+  parentId?: string | null
+  mergedIntoId?: string | null
+  splitFromId?: string | null
+  isParent?: boolean
+  description?: string | null
+  baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  headId?: string | null
+  sortOrder?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  children?: Prisma.DepartmentUncheckedCreateNestedManyWithoutParentInput
+  mergedFrom?: Prisma.DepartmentUncheckedCreateNestedManyWithoutMergedIntoInput
+  splitInto?: Prisma.DepartmentUncheckedCreateNestedManyWithoutSplitFromInput
+  memberships?: Prisma.DepartmentMembershipUncheckedCreateNestedManyWithoutDepartmentInput
+  positions?: Prisma.PositionUncheckedCreateNestedManyWithoutDepartmentInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutDepartmentInput
+  tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutDepartmentInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutDepartmentInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutDepartmentInput
+  services?: Prisma.DepartmentSkillUncheckedCreateNestedManyWithoutDepartmentInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutDepartmentInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutDepartmentInput
+  channel?: Prisma.ChannelUncheckedCreateNestedOneWithoutDepartmentInput
+  teams?: Prisma.TeamUncheckedCreateNestedManyWithoutDepartmentInput
+}
+
+export type DepartmentCreateOrConnectWithoutProjectsInput = {
+  where: Prisma.DepartmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.DepartmentCreateWithoutProjectsInput, Prisma.DepartmentUncheckedCreateWithoutProjectsInput>
+}
+
+export type DepartmentUpsertWithoutProjectsInput = {
+  update: Prisma.XOR<Prisma.DepartmentUpdateWithoutProjectsInput, Prisma.DepartmentUncheckedUpdateWithoutProjectsInput>
+  create: Prisma.XOR<Prisma.DepartmentCreateWithoutProjectsInput, Prisma.DepartmentUncheckedCreateWithoutProjectsInput>
+  where?: Prisma.DepartmentWhereInput
+}
+
+export type DepartmentUpdateToOneWithWhereWithoutProjectsInput = {
+  where?: Prisma.DepartmentWhereInput
+  data: Prisma.XOR<Prisma.DepartmentUpdateWithoutProjectsInput, Prisma.DepartmentUncheckedUpdateWithoutProjectsInput>
+}
+
+export type DepartmentUpdateWithoutProjectsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
+  status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parent?: Prisma.DepartmentUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.DepartmentUpdateManyWithoutParentNestedInput
+  mergedInto?: Prisma.DepartmentUpdateOneWithoutMergedFromNestedInput
+  mergedFrom?: Prisma.DepartmentUpdateManyWithoutMergedIntoNestedInput
+  splitFrom?: Prisma.DepartmentUpdateOneWithoutSplitIntoNestedInput
+  splitInto?: Prisma.DepartmentUpdateManyWithoutSplitFromNestedInput
+  head?: Prisma.UserUpdateOneWithoutDepartmentHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUpdateManyWithoutDepartmentNestedInput
+  positions?: Prisma.PositionUpdateManyWithoutDepartmentNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutDepartmentNestedInput
+  tickets?: Prisma.TicketUpdateManyWithoutDepartmentNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutDepartmentNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUpdateManyWithoutDepartmentNestedInput
+  vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutDepartmentNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutDepartmentNestedInput
+  channel?: Prisma.ChannelUpdateOneWithoutDepartmentNestedInput
+  teams?: Prisma.TeamUpdateManyWithoutDepartmentNestedInput
+}
+
+export type DepartmentUncheckedUpdateWithoutProjectsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
+  status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.DepartmentUncheckedUpdateManyWithoutParentNestedInput
+  mergedFrom?: Prisma.DepartmentUncheckedUpdateManyWithoutMergedIntoNestedInput
+  splitInto?: Prisma.DepartmentUncheckedUpdateManyWithoutSplitFromNestedInput
+  memberships?: Prisma.DepartmentMembershipUncheckedUpdateManyWithoutDepartmentNestedInput
+  positions?: Prisma.PositionUncheckedUpdateManyWithoutDepartmentNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutDepartmentNestedInput
+  tickets?: Prisma.TicketUncheckedUpdateManyWithoutDepartmentNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutDepartmentNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutDepartmentNestedInput
+  services?: Prisma.DepartmentSkillUncheckedUpdateManyWithoutDepartmentNestedInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutDepartmentNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutDepartmentNestedInput
+  channel?: Prisma.ChannelUncheckedUpdateOneWithoutDepartmentNestedInput
+  teams?: Prisma.TeamUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateManyParentInput = {
@@ -3643,6 +3876,7 @@ export type DepartmentUpdateWithoutParentInput = {
   employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutParentInput = {
@@ -3675,6 +3909,7 @@ export type DepartmentUncheckedUpdateWithoutParentInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUncheckedUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUncheckedUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateManyWithoutParentInput = {
@@ -3725,6 +3960,7 @@ export type DepartmentUpdateWithoutMergedIntoInput = {
   employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutMergedIntoInput = {
@@ -3757,6 +3993,7 @@ export type DepartmentUncheckedUpdateWithoutMergedIntoInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUncheckedUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUncheckedUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateManyWithoutMergedIntoInput = {
@@ -3807,6 +4044,7 @@ export type DepartmentUpdateWithoutSplitFromInput = {
   employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutSplitFromInput = {
@@ -3839,6 +4077,7 @@ export type DepartmentUncheckedUpdateWithoutSplitFromInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUncheckedUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUncheckedUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateManyWithoutSplitFromInput = {
@@ -3907,6 +4146,7 @@ export type DepartmentUpdateWithoutHeadInput = {
   employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutHeadInput = {
@@ -3939,6 +4179,7 @@ export type DepartmentUncheckedUpdateWithoutHeadInput = {
   employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutDepartmentNestedInput
   channel?: Prisma.ChannelUncheckedUpdateOneWithoutDepartmentNestedInput
   teams?: Prisma.TeamUncheckedUpdateManyWithoutDepartmentNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateManyWithoutHeadInput = {
@@ -3978,6 +4219,7 @@ export type DepartmentCountOutputType = {
   vaHistoryEvents: number
   employmentRecords: number
   teams: number
+  projects: number
 }
 
 export type DepartmentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3994,6 +4236,7 @@ export type DepartmentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extens
   vaHistoryEvents?: boolean | DepartmentCountOutputTypeCountVaHistoryEventsArgs
   employmentRecords?: boolean | DepartmentCountOutputTypeCountEmploymentRecordsArgs
   teams?: boolean | DepartmentCountOutputTypeCountTeamsArgs
+  projects?: boolean | DepartmentCountOutputTypeCountProjectsArgs
 }
 
 /**
@@ -4097,6 +4340,13 @@ export type DepartmentCountOutputTypeCountTeamsArgs<ExtArgs extends runtime.Type
   where?: Prisma.TeamWhereInput
 }
 
+/**
+ * DepartmentCountOutputType without action
+ */
+export type DepartmentCountOutputTypeCountProjectsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProjectWhereInput
+}
+
 
 export type DepartmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -4133,6 +4383,7 @@ export type DepartmentSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   employmentRecords?: boolean | Prisma.Department$employmentRecordsArgs<ExtArgs>
   channel?: boolean | Prisma.Department$channelArgs<ExtArgs>
   teams?: boolean | Prisma.Department$teamsArgs<ExtArgs>
+  projects?: boolean | Prisma.Department$projectsArgs<ExtArgs>
   _count?: boolean | Prisma.DepartmentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["department"]>
 
@@ -4221,6 +4472,7 @@ export type DepartmentInclude<ExtArgs extends runtime.Types.Extensions.InternalA
   employmentRecords?: boolean | Prisma.Department$employmentRecordsArgs<ExtArgs>
   channel?: boolean | Prisma.Department$channelArgs<ExtArgs>
   teams?: boolean | Prisma.Department$teamsArgs<ExtArgs>
+  projects?: boolean | Prisma.Department$projectsArgs<ExtArgs>
   _count?: boolean | Prisma.DepartmentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type DepartmentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -4257,6 +4509,7 @@ export type $DepartmentPayload<ExtArgs extends runtime.Types.Extensions.Internal
     employmentRecords: Prisma.$EmploymentRecordPayload<ExtArgs>[]
     channel: Prisma.$ChannelPayload<ExtArgs> | null
     teams: Prisma.$TeamPayload<ExtArgs>[]
+    projects: Prisma.$ProjectPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -4687,6 +4940,7 @@ export interface Prisma__DepartmentClient<T, Null = never, ExtArgs extends runti
   employmentRecords<T extends Prisma.Department$employmentRecordsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Department$employmentRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmploymentRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   channel<T extends Prisma.Department$channelArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Department$channelArgs<ExtArgs>>): Prisma.Prisma__ChannelClient<runtime.Types.Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   teams<T extends Prisma.Department$teamsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Department$teamsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  projects<T extends Prisma.Department$projectsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Department$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5537,6 +5791,30 @@ export type Department$teamsArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.TeamScalarFieldEnum | Prisma.TeamScalarFieldEnum[]
+}
+
+/**
+ * Department.projects
+ */
+export type Department$projectsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Project
+   */
+  select?: Prisma.ProjectSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Project
+   */
+  omit?: Prisma.ProjectOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProjectInclude<ExtArgs> | null
+  where?: Prisma.ProjectWhereInput
+  orderBy?: Prisma.ProjectOrderByWithRelationInput | Prisma.ProjectOrderByWithRelationInput[]
+  cursor?: Prisma.ProjectWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProjectScalarFieldEnum | Prisma.ProjectScalarFieldEnum[]
 }
 
 /**
