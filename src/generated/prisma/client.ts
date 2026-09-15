@@ -301,3 +301,8 @@ export type AgentRun = Prisma.AgentRunModel
  * 
  */
 export type Project = Prisma.ProjectModel
+/**
+ * Model AssignmentPreparation
+ * 
+ */
+export type AssignmentPreparation = Prisma.AssignmentPreparationModel

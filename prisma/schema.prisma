@@ -482,6 +482,8 @@ model User {
   assignmentKpiChecksCompleted AssignmentKpiCheck[]   @relation("AssignmentKpiCheckCompletedBy")
   projectsOwned                Project[]              @relation("ProjectOwner")
   projectsCreated              Project[]              @relation("ProjectCreatedBy")
+  preparationsInCharge         AssignmentPreparation[] @relation("PreparationPersonInCharge")
+  preparationsShadowTrained    AssignmentPreparation[] @relation("PreparationShadowTrainer")
 
   // Resignation SOP extension
   resignationLwdOverrides    ResignationDiscussion[] @relation("ResignationLwdOverrideBy")
@@ -636,6 +638,9 @@ model VAProfile {
   terminations Termination[]
 
   agentSuggestions AgentSuggestion[]
+
+  preparationsReplacing  AssignmentPreparation[] @relation("PreparationReplacementFor")
+  preparationsReplacedBy AssignmentPreparation[] @relation("PreparationReplacedBy")
 
   @@index([availabilityStatus])
   @@index([positionSkillId])
@@ -911,6 +916,7 @@ model Assignment {
   workLogs     WorkLog[]
   terminations Termination[]
   kpiChecks    AssignmentKpiCheck[]
+  preparation  AssignmentPreparation?
 
   @@index([vaProfileId])
   @@index([clientId])
@@ -1799,4 +1805,115 @@ model Project {
   @@index([departmentId, status])
   @@index([proposedDate])
   @@map("projects")
+}
+
+// ── VA Preparation ───────────────────────────────────────────────
+
+// The DMF sheet's "VA Preparation" tab: everything between "the client
+// signed" and "the VA is live on the account". One row per VA-client
+// engagement, keyed in the sheet by RECORD NO — the same key its
+// "Performance Monitoring" tab uses, so in-app that key is the Assignment
+// itself and this is a 1:1 extension of it rather than a parallel table.
+//
+// Fields the Assignment/Client/VAProfile already carry (PRIMARY ACCOUNT, VA
+// NAME, NO OF HOURS, ACTUAL START DATE, TEAM) are deliberately not
+// duplicated here — only what has no home yet.
+
+// DEPARTMENT STATUS in the sheet, which grades the engagement against its
+// own TARGET START DATE rather than describing the VA.
+enum PreparationStartStatus {
+  NOT_YET_STARTED
+  STARTED_ON_TIME
+  DELAYED
+  CANCELLED
+}
+
+// VA TYPE: whether this engagement is the account's first VA, an extra head
+// on an existing account, or a swap for someone who left.
+enum PreparationVaType {
+  NEW
+  ADDITIONAL
+  REPLACEMENT
+}
+
+// Each SCHEDULE step is a date plus a free-text status that in practice only
+// ever reads blank or "Done" — modelled as an explicit enum so "scheduled
+// but not held yet" stays distinguishable from "never scheduled".
+enum PreparationStepStatus {
+  PENDING
+  SCHEDULED
+  DONE
+  SKIPPED
+}
+
+// VA STATUS WITH CLIENT, the sheet's EOC/REPLACEMENT block. PAUSED and
+// END_OF_WORK are the two that require an EFFECTIVITY DATE — exactly the
+// pair the dashboard's "VA Preparation Missing EOC/Pause Dates" check wants.
+enum PreparationClientStatus {
+  ACTIVE
+  PAUSED
+  END_OF_WORK
+}
+
+model AssignmentPreparation {
+  id           String     @id @default(cuid())
+  assignmentId String     @unique @map("assignment_id")
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+
+  startStatus     PreparationStartStatus @default(NOT_YET_STARTED) @map("start_status")
+  targetStartDate DateTime?              @map("target_start_date")
+  vaType          PreparationVaType      @default(NEW) @map("va_type")
+  scheduleType    String?                @map("schedule_type")
+  scheduleDays    String?                @map("schedule_days")
+  expertiseGroup  String?                @map("expertise_group")
+  vaBuffers       String?                @map("va_buffers")
+
+  vaClientFileUrl String? @map("va_client_file_url")
+  accountDocUrl   String? @map("account_doc_url")
+
+  replacementForId String?    @map("replacement_for_id")
+  replacementFor   VAProfile? @relation("PreparationReplacementFor", fields: [replacementForId], references: [id], onDelete: SetNull)
+
+  personInChargeId String? @map("person_in_charge_id")
+  personInCharge   User?   @relation("PreparationPersonInCharge", fields: [personInChargeId], references: [id], onDelete: SetNull)
+  shadowTrainerId  String? @map("shadow_trainer_id")
+  shadowTrainer    User?   @relation("PreparationShadowTrainer", fields: [shadowTrainerId], references: [id], onDelete: SetNull)
+
+  clientMeetingDate     DateTime?             @map("client_meeting_date")
+  clientMeetingStatus   PreparationStepStatus @default(PENDING) @map("client_meeting_status")
+  preparationStartDate  DateTime?             @map("preparation_start_date")
+  preparationEndDate    DateTime?             @map("preparation_end_date")
+  preparationCallDate   DateTime?             @map("preparation_call_date")
+  preparationCallStatus PreparationStepStatus @default(PENDING) @map("preparation_call_status")
+  mockInterviewDate     DateTime?             @map("mock_interview_date")
+  mockInterviewStatus   PreparationStepStatus @default(PENDING) @map("mock_interview_status")
+  vaConnectDate         DateTime?             @map("va_connect_date")
+  vaConnectStatus       PreparationStepStatus @default(PENDING) @map("va_connect_status")
+
+  // The sheet's nine TRUE/FALSE onboarding columns, kept as discrete booleans
+  // (not a JSON blob) so each one can be filtered and counted on its own.
+  announcementEmail  Boolean @default(false) @map("announcement_email")
+  clientBriefingCall Boolean @default(false) @map("client_briefing_call")
+  csBriefing         Boolean @default(false) @map("cs_briefing")
+  vaaBackground      Boolean @default(false) @map("vaa_background")
+  emailSignature     Boolean @default(false) @map("email_signature")
+  groupChat          Boolean @default(false) @map("group_chat")
+  milestoneFolder    Boolean @default(false) @map("milestone_folder")
+  weeklyReport       Boolean @default(false) @map("weekly_report")
+  portfolio          Boolean @default(false) @map("portfolio")
+
+  clientStatus    PreparationClientStatus @default(ACTIVE) @map("client_status")
+  effectivityDate DateTime?               @map("effectivity_date")
+  statusReason    String?                 @map("status_reason")
+  replacementNote String?                 @map("replacement_note")
+  replacedById    String?                 @map("replaced_by_id")
+  replacedBy      VAProfile?              @relation("PreparationReplacedBy", fields: [replacedById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([startStatus])
+  @@index([clientStatus])
+  @@index([targetStartDate])
+  @@map("assignment_preparations")
 }

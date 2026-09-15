@@ -50,6 +50,17 @@ export async function createAssignment(formData: FormData) {
     })),
   })
 
+  // Opens the VA Preparation record alongside it. The sheet has one
+  // Preparation row per engagement whether or not anyone has filled it in
+  // yet, so creating it empty here (rather than lazily on first edit) keeps
+  // every assignment visible on /va-preparation from day one instead of
+  // only the ones someone happened to touch. targetStartDate seeds from the
+  // assignment's own start date — the two only diverge once the engagement
+  // actually slips, which is exactly what startStatus then records.
+  await prisma.assignmentPreparation.create({
+    data: { assignmentId: assignment.id, targetStartDate: startDate },
+  })
+
   await logAudit({
     actorId: actor.id,
     action: 'CREATE',

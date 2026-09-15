@@ -102,7 +102,8 @@ export const ModelName = {
   ClientPipeline: 'ClientPipeline',
   AgentSuggestion: 'AgentSuggestion',
   AgentRun: 'AgentRun',
-  Project: 'Project'
+  Project: 'Project',
+  AssignmentPreparation: 'AssignmentPreparation'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1070,6 +1071,52 @@ export const ProjectScalarFieldEnum = {
 } as const
 
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
+
+
+export const AssignmentPreparationScalarFieldEnum = {
+  id: 'id',
+  assignmentId: 'assignmentId',
+  startStatus: 'startStatus',
+  targetStartDate: 'targetStartDate',
+  vaType: 'vaType',
+  scheduleType: 'scheduleType',
+  scheduleDays: 'scheduleDays',
+  expertiseGroup: 'expertiseGroup',
+  vaBuffers: 'vaBuffers',
+  vaClientFileUrl: 'vaClientFileUrl',
+  accountDocUrl: 'accountDocUrl',
+  replacementForId: 'replacementForId',
+  personInChargeId: 'personInChargeId',
+  shadowTrainerId: 'shadowTrainerId',
+  clientMeetingDate: 'clientMeetingDate',
+  clientMeetingStatus: 'clientMeetingStatus',
+  preparationStartDate: 'preparationStartDate',
+  preparationEndDate: 'preparationEndDate',
+  preparationCallDate: 'preparationCallDate',
+  preparationCallStatus: 'preparationCallStatus',
+  mockInterviewDate: 'mockInterviewDate',
+  mockInterviewStatus: 'mockInterviewStatus',
+  vaConnectDate: 'vaConnectDate',
+  vaConnectStatus: 'vaConnectStatus',
+  announcementEmail: 'announcementEmail',
+  clientBriefingCall: 'clientBriefingCall',
+  csBriefing: 'csBriefing',
+  vaaBackground: 'vaaBackground',
+  emailSignature: 'emailSignature',
+  groupChat: 'groupChat',
+  milestoneFolder: 'milestoneFolder',
+  weeklyReport: 'weeklyReport',
+  portfolio: 'portfolio',
+  clientStatus: 'clientStatus',
+  effectivityDate: 'effectivityDate',
+  statusReason: 'statusReason',
+  replacementNote: 'replacementNote',
+  replacedById: 'replacedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AssignmentPreparationScalarFieldEnum = (typeof AssignmentPreparationScalarFieldEnum)[keyof typeof AssignmentPreparationScalarFieldEnum]
 
 
 export const SortOrder = {

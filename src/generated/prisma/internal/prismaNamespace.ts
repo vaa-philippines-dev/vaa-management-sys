@@ -435,7 +435,8 @@ export const ModelName = {
   ClientPipeline: 'ClientPipeline',
   AgentSuggestion: 'AgentSuggestion',
   AgentRun: 'AgentRun',
-  Project: 'Project'
+  Project: 'Project',
+  AssignmentPreparation: 'AssignmentPreparation'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -451,7 +452,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveApprovalRule" | "leaveApprovalStep" | "leaveRequest" | "leaveApprovalAction" | "employeeIdCounter" | "vAOnboardingInvite" | "client" | "assignment" | "assignmentKpiCheck" | "workLog" | "ticket" | "ticketConversation" | "termination" | "resignationDiscussion" | "replacementRequest" | "exitClearanceApproval" | "complianceReview" | "finalPayout" | "exitSurveyInvite" | "exitSurveyResponse" | "exitClearance" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "customer" | "account" | "notification" | "sidebarFavorite" | "team" | "teamMembership" | "clientPipeline" | "agentSuggestion" | "agentRun" | "project"
+    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveApprovalRule" | "leaveApprovalStep" | "leaveRequest" | "leaveApprovalAction" | "employeeIdCounter" | "vAOnboardingInvite" | "client" | "assignment" | "assignmentKpiCheck" | "workLog" | "ticket" | "ticketConversation" | "termination" | "resignationDiscussion" | "replacementRequest" | "exitClearanceApproval" | "complianceReview" | "finalPayout" | "exitSurveyInvite" | "exitSurveyResponse" | "exitClearance" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "customer" | "account" | "notification" | "sidebarFavorite" | "team" | "teamMembership" | "clientPipeline" | "agentSuggestion" | "agentRun" | "project" | "assignmentPreparation"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -4303,6 +4304,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AssignmentPreparation: {
+      payload: Prisma.$AssignmentPreparationPayload<ExtArgs>
+      fields: Prisma.AssignmentPreparationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AssignmentPreparationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentPreparationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AssignmentPreparationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentPreparationPayload>
+        }
+        findFirst: {
+          args: Prisma.AssignmentPreparationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentPreparationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AssignmentPreparationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentPreparationPayload>
+        }
+        findMany: {
+          args: Prisma.AssignmentPreparationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentPreparationPayload>[]
+        }
+        create: {
+          args: Prisma.AssignmentPreparationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentPreparationPayload>
+        }
+        createMany: {
+          args: Prisma.AssignmentPreparationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AssignmentPreparationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentPreparationPayload>[]
+        }
+        delete: {
+          args: Prisma.AssignmentPreparationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentPreparationPayload>
+        }
+        update: {
+          args: Prisma.AssignmentPreparationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentPreparationPayload>
+        }
+        deleteMany: {
+          args: Prisma.AssignmentPreparationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AssignmentPreparationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AssignmentPreparationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentPreparationPayload>[]
+        }
+        upsert: {
+          args: Prisma.AssignmentPreparationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignmentPreparationPayload>
+        }
+        aggregate: {
+          args: Prisma.AssignmentPreparationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAssignmentPreparation>
+        }
+        groupBy: {
+          args: Prisma.AssignmentPreparationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AssignmentPreparationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AssignmentPreparationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AssignmentPreparationCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -5293,6 +5368,52 @@ export const ProjectScalarFieldEnum = {
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
 
 
+export const AssignmentPreparationScalarFieldEnum = {
+  id: 'id',
+  assignmentId: 'assignmentId',
+  startStatus: 'startStatus',
+  targetStartDate: 'targetStartDate',
+  vaType: 'vaType',
+  scheduleType: 'scheduleType',
+  scheduleDays: 'scheduleDays',
+  expertiseGroup: 'expertiseGroup',
+  vaBuffers: 'vaBuffers',
+  vaClientFileUrl: 'vaClientFileUrl',
+  accountDocUrl: 'accountDocUrl',
+  replacementForId: 'replacementForId',
+  personInChargeId: 'personInChargeId',
+  shadowTrainerId: 'shadowTrainerId',
+  clientMeetingDate: 'clientMeetingDate',
+  clientMeetingStatus: 'clientMeetingStatus',
+  preparationStartDate: 'preparationStartDate',
+  preparationEndDate: 'preparationEndDate',
+  preparationCallDate: 'preparationCallDate',
+  preparationCallStatus: 'preparationCallStatus',
+  mockInterviewDate: 'mockInterviewDate',
+  mockInterviewStatus: 'mockInterviewStatus',
+  vaConnectDate: 'vaConnectDate',
+  vaConnectStatus: 'vaConnectStatus',
+  announcementEmail: 'announcementEmail',
+  clientBriefingCall: 'clientBriefingCall',
+  csBriefing: 'csBriefing',
+  vaaBackground: 'vaaBackground',
+  emailSignature: 'emailSignature',
+  groupChat: 'groupChat',
+  milestoneFolder: 'milestoneFolder',
+  weeklyReport: 'weeklyReport',
+  portfolio: 'portfolio',
+  clientStatus: 'clientStatus',
+  effectivityDate: 'effectivityDate',
+  statusReason: 'statusReason',
+  replacementNote: 'replacementNote',
+  replacedById: 'replacedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AssignmentPreparationScalarFieldEnum = (typeof AssignmentPreparationScalarFieldEnum)[keyof typeof AssignmentPreparationScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -6083,6 +6204,62 @@ export type ListEnumProjectPriorityFieldRefInput<$PrismaModel> = FieldRefInputTy
 
 
 /**
+ * Reference to a field of type 'PreparationStartStatus'
+ */
+export type EnumPreparationStartStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreparationStartStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'PreparationStartStatus[]'
+ */
+export type ListEnumPreparationStartStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreparationStartStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PreparationVaType'
+ */
+export type EnumPreparationVaTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreparationVaType'>
+    
+
+
+/**
+ * Reference to a field of type 'PreparationVaType[]'
+ */
+export type ListEnumPreparationVaTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreparationVaType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PreparationStepStatus'
+ */
+export type EnumPreparationStepStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreparationStepStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'PreparationStepStatus[]'
+ */
+export type ListEnumPreparationStepStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreparationStepStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PreparationClientStatus'
+ */
+export type EnumPreparationClientStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreparationClientStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'PreparationClientStatus[]'
+ */
+export type ListEnumPreparationClientStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreparationClientStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -6257,6 +6434,7 @@ export type GlobalOmitConfig = {
   agentSuggestion?: Prisma.AgentSuggestionOmit
   agentRun?: Prisma.AgentRunOmit
   project?: Prisma.ProjectOmit
+  assignmentPreparation?: Prisma.AssignmentPreparationOmit
 }
 
 /* Types for Logging */

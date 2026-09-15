@@ -33,6 +33,7 @@ import {
   Handshake,
   ListChecks,
   FolderKanban,
+  ClipboardCheck,
   Shield,
   Megaphone,
   LifeBuoy,
@@ -298,6 +299,7 @@ const departmentRoutes = [
   { label: 'Assignments', href: '/assignments', icon: Briefcase },
   { label: 'Teams', href: '/teams', icon: UsersRound },
   { label: 'Team Assignment', href: '/team-assignment', icon: ListChecks },
+  { label: 'VA Preparation', href: '/va-preparation', icon: ClipboardCheck },
   { label: 'Projects', href: '/projects', icon: FolderKanban },
   { label: 'Celebrants', href: '/celebrants', icon: Calendar },
 ]

@@ -522,3 +522,41 @@ export const ProjectPriority = {
 } as const
 
 export type ProjectPriority = (typeof ProjectPriority)[keyof typeof ProjectPriority]
+
+
+export const PreparationStartStatus = {
+  NOT_YET_STARTED: 'NOT_YET_STARTED',
+  STARTED_ON_TIME: 'STARTED_ON_TIME',
+  DELAYED: 'DELAYED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type PreparationStartStatus = (typeof PreparationStartStatus)[keyof typeof PreparationStartStatus]
+
+
+export const PreparationVaType = {
+  NEW: 'NEW',
+  ADDITIONAL: 'ADDITIONAL',
+  REPLACEMENT: 'REPLACEMENT'
+} as const
+
+export type PreparationVaType = (typeof PreparationVaType)[keyof typeof PreparationVaType]
+
+
+export const PreparationStepStatus = {
+  PENDING: 'PENDING',
+  SCHEDULED: 'SCHEDULED',
+  DONE: 'DONE',
+  SKIPPED: 'SKIPPED'
+} as const
+
+export type PreparationStepStatus = (typeof PreparationStepStatus)[keyof typeof PreparationStepStatus]
+
+
+export const PreparationClientStatus = {
+  ACTIVE: 'ACTIVE',
+  PAUSED: 'PAUSED',
+  END_OF_WORK: 'END_OF_WORK'
+} as const
+
+export type PreparationClientStatus = (typeof PreparationClientStatus)[keyof typeof PreparationClientStatus]
