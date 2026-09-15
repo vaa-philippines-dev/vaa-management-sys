@@ -34,6 +34,7 @@ import {
   ListChecks,
   FolderKanban,
   ClipboardCheck,
+  CalendarRange,
   Shield,
   Megaphone,
   LifeBuoy,
@@ -300,6 +301,7 @@ const departmentRoutes = [
   { label: 'Teams', href: '/teams', icon: UsersRound },
   { label: 'Team Assignment', href: '/team-assignment', icon: ListChecks },
   { label: 'VA Preparation', href: '/va-preparation', icon: ClipboardCheck },
+  { label: 'VA Availability', href: '/va-availability', icon: CalendarRange },
   { label: 'Projects', href: '/projects', icon: FolderKanban },
   { label: 'Celebrants', href: '/celebrants', icon: Calendar },
 ]
@@ -541,6 +543,36 @@ export function Sidebar({
                 isActive={isMainRowActive('/team-assignment', isRouteActive('/team-assignment'))}
                 canFavorite={canFavorite}
                 favorite={favorites.find((f) => f.href === '/team-assignment')}
+                atMax={atMax}
+                onChanged={setFavorites}
+              />
+              <FavoritableRow
+                href="/va-preparation"
+                label="VA Preparation"
+                icon={ClipboardCheck}
+                isActive={isMainRowActive('/va-preparation', isRouteActive('/va-preparation'))}
+                canFavorite={canFavorite}
+                favorite={favorites.find((f) => f.href === '/va-preparation')}
+                atMax={atMax}
+                onChanged={setFavorites}
+              />
+              <FavoritableRow
+                href="/va-availability"
+                label="VA Availability"
+                icon={CalendarRange}
+                isActive={isMainRowActive('/va-availability', isRouteActive('/va-availability'))}
+                canFavorite={canFavorite}
+                favorite={favorites.find((f) => f.href === '/va-availability')}
+                atMax={atMax}
+                onChanged={setFavorites}
+              />
+              <FavoritableRow
+                href="/projects"
+                label="Projects"
+                icon={FolderKanban}
+                isActive={isMainRowActive('/projects', isRouteActive('/projects'))}
+                canFavorite={canFavorite}
+                favorite={favorites.find((f) => f.href === '/projects')}
                 atMax={atMax}
                 onChanged={setFavorites}
               />

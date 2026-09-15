@@ -31,6 +31,7 @@ export type VAProfileAvgAggregateOutputType = {
   baseRate: runtime.Decimal | null
   totalCapacityHours: runtime.Decimal | null
   preferredWorkHours: runtime.Decimal | null
+  hybridHours: runtime.Decimal | null
 }
 
 export type VAProfileSumAggregateOutputType = {
@@ -38,6 +39,7 @@ export type VAProfileSumAggregateOutputType = {
   baseRate: runtime.Decimal | null
   totalCapacityHours: runtime.Decimal | null
   preferredWorkHours: runtime.Decimal | null
+  hybridHours: runtime.Decimal | null
 }
 
 export type VAProfileMinAggregateOutputType = {
@@ -53,6 +55,13 @@ export type VAProfileMinAggregateOutputType = {
   totalCapacityHours: runtime.Decimal | null
   preferredWorkHours: runtime.Decimal | null
   availableSchedule: string | null
+  hybridHours: runtime.Decimal | null
+  isRecommended: boolean | null
+  recommendedForClient: string | null
+  recommendedUntil: string | null
+  availabilityRemarks: string | null
+  availabilityChangedAt: Date | null
+  availabilityReviewDueAt: Date | null
   hybrid: boolean | null
   onboardingFolderUrl: string | null
   portfolioUrl: string | null
@@ -88,6 +97,13 @@ export type VAProfileMaxAggregateOutputType = {
   totalCapacityHours: runtime.Decimal | null
   preferredWorkHours: runtime.Decimal | null
   availableSchedule: string | null
+  hybridHours: runtime.Decimal | null
+  isRecommended: boolean | null
+  recommendedForClient: string | null
+  recommendedUntil: string | null
+  availabilityRemarks: string | null
+  availabilityChangedAt: Date | null
+  availabilityReviewDueAt: Date | null
   hybrid: boolean | null
   onboardingFolderUrl: string | null
   portfolioUrl: string | null
@@ -123,6 +139,13 @@ export type VAProfileCountAggregateOutputType = {
   totalCapacityHours: number
   preferredWorkHours: number
   availableSchedule: number
+  hybridHours: number
+  isRecommended: number
+  recommendedForClient: number
+  recommendedUntil: number
+  availabilityRemarks: number
+  availabilityChangedAt: number
+  availabilityReviewDueAt: number
   hybrid: number
   onboardingFolderUrl: number
   portfolioUrl: number
@@ -152,6 +175,7 @@ export type VAProfileAvgAggregateInputType = {
   baseRate?: true
   totalCapacityHours?: true
   preferredWorkHours?: true
+  hybridHours?: true
 }
 
 export type VAProfileSumAggregateInputType = {
@@ -159,6 +183,7 @@ export type VAProfileSumAggregateInputType = {
   baseRate?: true
   totalCapacityHours?: true
   preferredWorkHours?: true
+  hybridHours?: true
 }
 
 export type VAProfileMinAggregateInputType = {
@@ -174,6 +199,13 @@ export type VAProfileMinAggregateInputType = {
   totalCapacityHours?: true
   preferredWorkHours?: true
   availableSchedule?: true
+  hybridHours?: true
+  isRecommended?: true
+  recommendedForClient?: true
+  recommendedUntil?: true
+  availabilityRemarks?: true
+  availabilityChangedAt?: true
+  availabilityReviewDueAt?: true
   hybrid?: true
   onboardingFolderUrl?: true
   portfolioUrl?: true
@@ -209,6 +241,13 @@ export type VAProfileMaxAggregateInputType = {
   totalCapacityHours?: true
   preferredWorkHours?: true
   availableSchedule?: true
+  hybridHours?: true
+  isRecommended?: true
+  recommendedForClient?: true
+  recommendedUntil?: true
+  availabilityRemarks?: true
+  availabilityChangedAt?: true
+  availabilityReviewDueAt?: true
   hybrid?: true
   onboardingFolderUrl?: true
   portfolioUrl?: true
@@ -244,6 +283,13 @@ export type VAProfileCountAggregateInputType = {
   totalCapacityHours?: true
   preferredWorkHours?: true
   availableSchedule?: true
+  hybridHours?: true
+  isRecommended?: true
+  recommendedForClient?: true
+  recommendedUntil?: true
+  availabilityRemarks?: true
+  availabilityChangedAt?: true
+  availabilityReviewDueAt?: true
   hybrid?: true
   onboardingFolderUrl?: true
   portfolioUrl?: true
@@ -366,6 +412,13 @@ export type VAProfileGroupByOutputType = {
   totalCapacityHours: runtime.Decimal | null
   preferredWorkHours: runtime.Decimal | null
   availableSchedule: string | null
+  hybridHours: runtime.Decimal | null
+  isRecommended: boolean
+  recommendedForClient: string | null
+  recommendedUntil: string | null
+  availabilityRemarks: string | null
+  availabilityChangedAt: Date | null
+  availabilityReviewDueAt: Date | null
   hybrid: boolean
   onboardingFolderUrl: string | null
   portfolioUrl: string | null
@@ -424,6 +477,13 @@ export type VAProfileWhereInput = {
   totalCapacityHours?: Prisma.DecimalNullableFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.DecimalNullableFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  hybridHours?: Prisma.DecimalNullableFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFilter<"VAProfile"> | boolean
+  recommendedForClient?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  recommendedUntil?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  availabilityRemarks?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  availabilityChangedAt?: Prisma.DateTimeNullableFilter<"VAProfile"> | Date | string | null
+  availabilityReviewDueAt?: Prisma.DateTimeNullableFilter<"VAProfile"> | Date | string | null
   hybrid?: Prisma.BoolFilter<"VAProfile"> | boolean
   onboardingFolderUrl?: Prisma.StringNullableFilter<"VAProfile"> | string | null
   portfolioUrl?: Prisma.StringNullableFilter<"VAProfile"> | string | null
@@ -469,6 +529,13 @@ export type VAProfileOrderByWithRelationInput = {
   totalCapacityHours?: Prisma.SortOrderInput | Prisma.SortOrder
   preferredWorkHours?: Prisma.SortOrderInput | Prisma.SortOrder
   availableSchedule?: Prisma.SortOrderInput | Prisma.SortOrder
+  hybridHours?: Prisma.SortOrderInput | Prisma.SortOrder
+  isRecommended?: Prisma.SortOrder
+  recommendedForClient?: Prisma.SortOrderInput | Prisma.SortOrder
+  recommendedUntil?: Prisma.SortOrderInput | Prisma.SortOrder
+  availabilityRemarks?: Prisma.SortOrderInput | Prisma.SortOrder
+  availabilityChangedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  availabilityReviewDueAt?: Prisma.SortOrderInput | Prisma.SortOrder
   hybrid?: Prisma.SortOrder
   onboardingFolderUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   portfolioUrl?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -517,6 +584,13 @@ export type VAProfileWhereUniqueInput = Prisma.AtLeast<{
   totalCapacityHours?: Prisma.DecimalNullableFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.DecimalNullableFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  hybridHours?: Prisma.DecimalNullableFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFilter<"VAProfile"> | boolean
+  recommendedForClient?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  recommendedUntil?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  availabilityRemarks?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  availabilityChangedAt?: Prisma.DateTimeNullableFilter<"VAProfile"> | Date | string | null
+  availabilityReviewDueAt?: Prisma.DateTimeNullableFilter<"VAProfile"> | Date | string | null
   hybrid?: Prisma.BoolFilter<"VAProfile"> | boolean
   onboardingFolderUrl?: Prisma.StringNullableFilter<"VAProfile"> | string | null
   portfolioUrl?: Prisma.StringNullableFilter<"VAProfile"> | string | null
@@ -562,6 +636,13 @@ export type VAProfileOrderByWithAggregationInput = {
   totalCapacityHours?: Prisma.SortOrderInput | Prisma.SortOrder
   preferredWorkHours?: Prisma.SortOrderInput | Prisma.SortOrder
   availableSchedule?: Prisma.SortOrderInput | Prisma.SortOrder
+  hybridHours?: Prisma.SortOrderInput | Prisma.SortOrder
+  isRecommended?: Prisma.SortOrder
+  recommendedForClient?: Prisma.SortOrderInput | Prisma.SortOrder
+  recommendedUntil?: Prisma.SortOrderInput | Prisma.SortOrder
+  availabilityRemarks?: Prisma.SortOrderInput | Prisma.SortOrder
+  availabilityChangedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  availabilityReviewDueAt?: Prisma.SortOrderInput | Prisma.SortOrder
   hybrid?: Prisma.SortOrder
   onboardingFolderUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   portfolioUrl?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -605,6 +686,13 @@ export type VAProfileScalarWhereWithAggregatesInput = {
   totalCapacityHours?: Prisma.DecimalNullableWithAggregatesFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.DecimalNullableWithAggregatesFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
+  hybridHours?: Prisma.DecimalNullableWithAggregatesFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolWithAggregatesFilter<"VAProfile"> | boolean
+  recommendedForClient?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
+  recommendedUntil?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
+  availabilityRemarks?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
+  availabilityChangedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"VAProfile"> | Date | string | null
+  availabilityReviewDueAt?: Prisma.DateTimeNullableWithAggregatesFilter<"VAProfile"> | Date | string | null
   hybrid?: Prisma.BoolWithAggregatesFilter<"VAProfile"> | boolean
   onboardingFolderUrl?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
   portfolioUrl?: Prisma.StringNullableWithAggregatesFilter<"VAProfile"> | string | null
@@ -638,6 +726,13 @@ export type VAProfileCreateInput = {
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
+  hybridHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: boolean
+  recommendedForClient?: string | null
+  recommendedUntil?: string | null
+  availabilityRemarks?: string | null
+  availabilityChangedAt?: Date | string | null
+  availabilityReviewDueAt?: Date | string | null
   hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
@@ -683,6 +778,13 @@ export type VAProfileUncheckedCreateInput = {
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
+  hybridHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: boolean
+  recommendedForClient?: string | null
+  recommendedUntil?: string | null
+  availabilityRemarks?: string | null
+  availabilityChangedAt?: Date | string | null
+  availabilityReviewDueAt?: Date | string | null
   hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
@@ -724,6 +826,13 @@ export type VAProfileUpdateInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -769,6 +878,13 @@ export type VAProfileUncheckedUpdateInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -812,6 +928,13 @@ export type VAProfileCreateManyInput = {
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
+  hybridHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: boolean
+  recommendedForClient?: string | null
+  recommendedUntil?: string | null
+  availabilityRemarks?: string | null
+  availabilityChangedAt?: Date | string | null
+  availabilityReviewDueAt?: Date | string | null
   hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
@@ -845,6 +968,13 @@ export type VAProfileUpdateManyMutationInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -880,6 +1010,13 @@ export type VAProfileUncheckedUpdateManyInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -920,6 +1057,13 @@ export type VAProfileCountOrderByAggregateInput = {
   totalCapacityHours?: Prisma.SortOrder
   preferredWorkHours?: Prisma.SortOrder
   availableSchedule?: Prisma.SortOrder
+  hybridHours?: Prisma.SortOrder
+  isRecommended?: Prisma.SortOrder
+  recommendedForClient?: Prisma.SortOrder
+  recommendedUntil?: Prisma.SortOrder
+  availabilityRemarks?: Prisma.SortOrder
+  availabilityChangedAt?: Prisma.SortOrder
+  availabilityReviewDueAt?: Prisma.SortOrder
   hybrid?: Prisma.SortOrder
   onboardingFolderUrl?: Prisma.SortOrder
   portfolioUrl?: Prisma.SortOrder
@@ -947,6 +1091,7 @@ export type VAProfileAvgOrderByAggregateInput = {
   baseRate?: Prisma.SortOrder
   totalCapacityHours?: Prisma.SortOrder
   preferredWorkHours?: Prisma.SortOrder
+  hybridHours?: Prisma.SortOrder
 }
 
 export type VAProfileMaxOrderByAggregateInput = {
@@ -962,6 +1107,13 @@ export type VAProfileMaxOrderByAggregateInput = {
   totalCapacityHours?: Prisma.SortOrder
   preferredWorkHours?: Prisma.SortOrder
   availableSchedule?: Prisma.SortOrder
+  hybridHours?: Prisma.SortOrder
+  isRecommended?: Prisma.SortOrder
+  recommendedForClient?: Prisma.SortOrder
+  recommendedUntil?: Prisma.SortOrder
+  availabilityRemarks?: Prisma.SortOrder
+  availabilityChangedAt?: Prisma.SortOrder
+  availabilityReviewDueAt?: Prisma.SortOrder
   hybrid?: Prisma.SortOrder
   onboardingFolderUrl?: Prisma.SortOrder
   portfolioUrl?: Prisma.SortOrder
@@ -997,6 +1149,13 @@ export type VAProfileMinOrderByAggregateInput = {
   totalCapacityHours?: Prisma.SortOrder
   preferredWorkHours?: Prisma.SortOrder
   availableSchedule?: Prisma.SortOrder
+  hybridHours?: Prisma.SortOrder
+  isRecommended?: Prisma.SortOrder
+  recommendedForClient?: Prisma.SortOrder
+  recommendedUntil?: Prisma.SortOrder
+  availabilityRemarks?: Prisma.SortOrder
+  availabilityChangedAt?: Prisma.SortOrder
+  availabilityReviewDueAt?: Prisma.SortOrder
   hybrid?: Prisma.SortOrder
   onboardingFolderUrl?: Prisma.SortOrder
   portfolioUrl?: Prisma.SortOrder
@@ -1024,6 +1183,7 @@ export type VAProfileSumOrderByAggregateInput = {
   baseRate?: Prisma.SortOrder
   totalCapacityHours?: Prisma.SortOrder
   preferredWorkHours?: Prisma.SortOrder
+  hybridHours?: Prisma.SortOrder
 }
 
 export type VAProfileListRelationFilter = {
@@ -1252,6 +1412,13 @@ export type VAProfileCreateWithoutUserInput = {
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
+  hybridHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: boolean
+  recommendedForClient?: string | null
+  recommendedUntil?: string | null
+  availabilityRemarks?: string | null
+  availabilityChangedAt?: Date | string | null
+  availabilityReviewDueAt?: Date | string | null
   hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
@@ -1295,6 +1462,13 @@ export type VAProfileUncheckedCreateWithoutUserInput = {
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
+  hybridHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: boolean
+  recommendedForClient?: string | null
+  recommendedUntil?: string | null
+  availabilityRemarks?: string | null
+  availabilityChangedAt?: Date | string | null
+  availabilityReviewDueAt?: Date | string | null
   hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
@@ -1352,6 +1526,13 @@ export type VAProfileUpdateWithoutUserInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1395,6 +1576,13 @@ export type VAProfileUncheckedUpdateWithoutUserInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1436,6 +1624,13 @@ export type VAProfileCreateWithoutPositionSkillInput = {
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
+  hybridHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: boolean
+  recommendedForClient?: string | null
+  recommendedUntil?: string | null
+  availabilityRemarks?: string | null
+  availabilityChangedAt?: Date | string | null
+  availabilityReviewDueAt?: Date | string | null
   hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
@@ -1479,6 +1674,13 @@ export type VAProfileUncheckedCreateWithoutPositionSkillInput = {
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
+  hybridHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: boolean
+  recommendedForClient?: string | null
+  recommendedUntil?: string | null
+  availabilityRemarks?: string | null
+  availabilityChangedAt?: Date | string | null
+  availabilityReviewDueAt?: Date | string | null
   hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
@@ -1551,6 +1753,13 @@ export type VAProfileScalarWhereInput = {
   totalCapacityHours?: Prisma.DecimalNullableFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.DecimalNullableFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  hybridHours?: Prisma.DecimalNullableFilter<"VAProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFilter<"VAProfile"> | boolean
+  recommendedForClient?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  recommendedUntil?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  availabilityRemarks?: Prisma.StringNullableFilter<"VAProfile"> | string | null
+  availabilityChangedAt?: Prisma.DateTimeNullableFilter<"VAProfile"> | Date | string | null
+  availabilityReviewDueAt?: Prisma.DateTimeNullableFilter<"VAProfile"> | Date | string | null
   hybrid?: Prisma.BoolFilter<"VAProfile"> | boolean
   onboardingFolderUrl?: Prisma.StringNullableFilter<"VAProfile"> | string | null
   portfolioUrl?: Prisma.StringNullableFilter<"VAProfile"> | string | null
@@ -1584,6 +1793,13 @@ export type VAProfileCreateWithoutVaSkillsInput = {
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
+  hybridHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: boolean
+  recommendedForClient?: string | null
+  recommendedUntil?: string | null
+  availabilityRemarks?: string | null
+  availabilityChangedAt?: Date | string | null
+  availabilityReviewDueAt?: Date | string | null
   hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
@@ -1628,6 +1844,13 @@ export type VAProfileUncheckedCreateWithoutVaSkillsInput = {
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
+  hybridHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: boolean
+  recommendedForClient?: string | null
+  recommendedUntil?: string | null
+  availabilityRemarks?: string | null
+  availabilityChangedAt?: Date | string | null
+  availabilityReviewDueAt?: Date | string | null
   hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
@@ -1684,6 +1907,13 @@ export type VAProfileUpdateWithoutVaSkillsInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1728,6 +1958,13 @@ export type VAProfileUncheckedUpdateWithoutVaSkillsInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1768,6 +2005,13 @@ export type VAProfileCreateWithoutDocumentsInput = {
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
+  hybridHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: boolean
+  recommendedForClient?: string | null
+  recommendedUntil?: string | null
+  availabilityRemarks?: string | null
+  availabilityChangedAt?: Date | string | null
+  availabilityReviewDueAt?: Date | string | null
   hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
@@ -1812,6 +2056,13 @@ export type VAProfileUncheckedCreateWithoutDocumentsInput = {
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
+  hybridHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: boolean
+  recommendedForClient?: string | null
+  recommendedUntil?: string | null
+  availabilityRemarks?: string | null
+  availabilityChangedAt?: Date | string | null
+  availabilityReviewDueAt?: Date | string | null
   hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
@@ -1868,6 +2119,13 @@ export type VAProfileUpdateWithoutDocumentsInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1912,6 +2170,13 @@ export type VAProfileUncheckedUpdateWithoutDocumentsInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1952,6 +2217,13 @@ export type VAProfileCreateWithoutAssignmentsInput = {
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
+  hybridHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: boolean
+  recommendedForClient?: string | null
+  recommendedUntil?: string | null
+  availabilityRemarks?: string | null
+  availabilityChangedAt?: Date | string | null
+  availabilityReviewDueAt?: Date | string | null
   hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
@@ -1996,6 +2268,13 @@ export type VAProfileUncheckedCreateWithoutAssignmentsInput = {
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
+  hybridHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: boolean
+  recommendedForClient?: string | null
+  recommendedUntil?: string | null
+  availabilityRemarks?: string | null
+  availabilityChangedAt?: Date | string | null
+  availabilityReviewDueAt?: Date | string | null
   hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
@@ -2052,6 +2331,13 @@ export type VAProfileUpdateWithoutAssignmentsInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2096,6 +2382,13 @@ export type VAProfileUncheckedUpdateWithoutAssignmentsInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2136,6 +2429,13 @@ export type VAProfileCreateWithoutWorkLogsInput = {
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
+  hybridHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: boolean
+  recommendedForClient?: string | null
+  recommendedUntil?: string | null
+  availabilityRemarks?: string | null
+  availabilityChangedAt?: Date | string | null
+  availabilityReviewDueAt?: Date | string | null
   hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
@@ -2180,6 +2480,13 @@ export type VAProfileUncheckedCreateWithoutWorkLogsInput = {
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
+  hybridHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: boolean
+  recommendedForClient?: string | null
+  recommendedUntil?: string | null
+  availabilityRemarks?: string | null
+  availabilityChangedAt?: Date | string | null
+  availabilityReviewDueAt?: Date | string | null
   hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
@@ -2236,6 +2543,13 @@ export type VAProfileUpdateWithoutWorkLogsInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2280,6 +2594,13 @@ export type VAProfileUncheckedUpdateWithoutWorkLogsInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2320,6 +2641,13 @@ export type VAProfileCreateWithoutTerminationsInput = {
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
+  hybridHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: boolean
+  recommendedForClient?: string | null
+  recommendedUntil?: string | null
+  availabilityRemarks?: string | null
+  availabilityChangedAt?: Date | string | null
+  availabilityReviewDueAt?: Date | string | null
   hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
@@ -2364,6 +2692,13 @@ export type VAProfileUncheckedCreateWithoutTerminationsInput = {
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
+  hybridHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: boolean
+  recommendedForClient?: string | null
+  recommendedUntil?: string | null
+  availabilityRemarks?: string | null
+  availabilityChangedAt?: Date | string | null
+  availabilityReviewDueAt?: Date | string | null
   hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
@@ -2420,6 +2755,13 @@ export type VAProfileUpdateWithoutTerminationsInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2464,6 +2806,13 @@ export type VAProfileUncheckedUpdateWithoutTerminationsInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2504,6 +2853,13 @@ export type VAProfileCreateWithoutAgentSuggestionsInput = {
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
+  hybridHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: boolean
+  recommendedForClient?: string | null
+  recommendedUntil?: string | null
+  availabilityRemarks?: string | null
+  availabilityChangedAt?: Date | string | null
+  availabilityReviewDueAt?: Date | string | null
   hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
@@ -2548,6 +2904,13 @@ export type VAProfileUncheckedCreateWithoutAgentSuggestionsInput = {
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
+  hybridHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: boolean
+  recommendedForClient?: string | null
+  recommendedUntil?: string | null
+  availabilityRemarks?: string | null
+  availabilityChangedAt?: Date | string | null
+  availabilityReviewDueAt?: Date | string | null
   hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
@@ -2604,6 +2967,13 @@ export type VAProfileUpdateWithoutAgentSuggestionsInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2648,6 +3018,13 @@ export type VAProfileUncheckedUpdateWithoutAgentSuggestionsInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2688,6 +3065,13 @@ export type VAProfileCreateWithoutPreparationsReplacingInput = {
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
+  hybridHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: boolean
+  recommendedForClient?: string | null
+  recommendedUntil?: string | null
+  availabilityRemarks?: string | null
+  availabilityChangedAt?: Date | string | null
+  availabilityReviewDueAt?: Date | string | null
   hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
@@ -2732,6 +3116,13 @@ export type VAProfileUncheckedCreateWithoutPreparationsReplacingInput = {
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
+  hybridHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: boolean
+  recommendedForClient?: string | null
+  recommendedUntil?: string | null
+  availabilityRemarks?: string | null
+  availabilityChangedAt?: Date | string | null
+  availabilityReviewDueAt?: Date | string | null
   hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
@@ -2777,6 +3168,13 @@ export type VAProfileCreateWithoutPreparationsReplacedByInput = {
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
+  hybridHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: boolean
+  recommendedForClient?: string | null
+  recommendedUntil?: string | null
+  availabilityRemarks?: string | null
+  availabilityChangedAt?: Date | string | null
+  availabilityReviewDueAt?: Date | string | null
   hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
@@ -2821,6 +3219,13 @@ export type VAProfileUncheckedCreateWithoutPreparationsReplacedByInput = {
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
+  hybridHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: boolean
+  recommendedForClient?: string | null
+  recommendedUntil?: string | null
+  availabilityRemarks?: string | null
+  availabilityChangedAt?: Date | string | null
+  availabilityReviewDueAt?: Date | string | null
   hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
@@ -2877,6 +3282,13 @@ export type VAProfileUpdateWithoutPreparationsReplacingInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2921,6 +3333,13 @@ export type VAProfileUncheckedUpdateWithoutPreparationsReplacingInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2972,6 +3391,13 @@ export type VAProfileUpdateWithoutPreparationsReplacedByInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3016,6 +3442,13 @@ export type VAProfileUncheckedUpdateWithoutPreparationsReplacedByInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3057,6 +3490,13 @@ export type VAProfileCreateManyPositionSkillInput = {
   totalCapacityHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: string | null
+  hybridHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: boolean
+  recommendedForClient?: string | null
+  recommendedUntil?: string | null
+  availabilityRemarks?: string | null
+  availabilityChangedAt?: Date | string | null
+  availabilityReviewDueAt?: Date | string | null
   hybrid?: boolean
   onboardingFolderUrl?: string | null
   portfolioUrl?: string | null
@@ -3090,6 +3530,13 @@ export type VAProfileUpdateWithoutPositionSkillInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3133,6 +3580,13 @@ export type VAProfileUncheckedUpdateWithoutPositionSkillInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3175,6 +3629,13 @@ export type VAProfileUncheckedUpdateManyWithoutPositionSkillInput = {
   totalCapacityHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   preferredWorkHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   availableSchedule?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hybridHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isRecommended?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recommendedForClient?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recommendedUntil?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  availabilityChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  availabilityReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hybrid?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboardingFolderUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   portfolioUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3304,6 +3765,13 @@ export type VAProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   totalCapacityHours?: boolean
   preferredWorkHours?: boolean
   availableSchedule?: boolean
+  hybridHours?: boolean
+  isRecommended?: boolean
+  recommendedForClient?: boolean
+  recommendedUntil?: boolean
+  availabilityRemarks?: boolean
+  availabilityChangedAt?: boolean
+  availabilityReviewDueAt?: boolean
   hybrid?: boolean
   onboardingFolderUrl?: boolean
   portfolioUrl?: boolean
@@ -3350,6 +3818,13 @@ export type VAProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   totalCapacityHours?: boolean
   preferredWorkHours?: boolean
   availableSchedule?: boolean
+  hybridHours?: boolean
+  isRecommended?: boolean
+  recommendedForClient?: boolean
+  recommendedUntil?: boolean
+  availabilityRemarks?: boolean
+  availabilityChangedAt?: boolean
+  availabilityReviewDueAt?: boolean
   hybrid?: boolean
   onboardingFolderUrl?: boolean
   portfolioUrl?: boolean
@@ -3387,6 +3862,13 @@ export type VAProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   totalCapacityHours?: boolean
   preferredWorkHours?: boolean
   availableSchedule?: boolean
+  hybridHours?: boolean
+  isRecommended?: boolean
+  recommendedForClient?: boolean
+  recommendedUntil?: boolean
+  availabilityRemarks?: boolean
+  availabilityChangedAt?: boolean
+  availabilityReviewDueAt?: boolean
   hybrid?: boolean
   onboardingFolderUrl?: boolean
   portfolioUrl?: boolean
@@ -3424,6 +3906,13 @@ export type VAProfileSelectScalar = {
   totalCapacityHours?: boolean
   preferredWorkHours?: boolean
   availableSchedule?: boolean
+  hybridHours?: boolean
+  isRecommended?: boolean
+  recommendedForClient?: boolean
+  recommendedUntil?: boolean
+  availabilityRemarks?: boolean
+  availabilityChangedAt?: boolean
+  availabilityReviewDueAt?: boolean
   hybrid?: boolean
   onboardingFolderUrl?: boolean
   portfolioUrl?: boolean
@@ -3446,7 +3935,7 @@ export type VAProfileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type VAProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "hourlyRate" | "baseRate" | "vaaPosition" | "positionSkillId" | "level" | "availabilityStatus" | "recommendability" | "totalCapacityHours" | "preferredWorkHours" | "availableSchedule" | "hybrid" | "onboardingFolderUrl" | "portfolioUrl" | "contractLink" | "folder201Link" | "file201Link" | "vaClientFileLink" | "healthCheckFileLink" | "vaProfileLink" | "payoutSummaryLink" | "dept201FolderLink" | "notes" | "status" | "onHold" | "engagementStatus" | "currentHireDate" | "currentEndDate" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["vAProfile"]>
+export type VAProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "hourlyRate" | "baseRate" | "vaaPosition" | "positionSkillId" | "level" | "availabilityStatus" | "recommendability" | "totalCapacityHours" | "preferredWorkHours" | "availableSchedule" | "hybridHours" | "isRecommended" | "recommendedForClient" | "recommendedUntil" | "availabilityRemarks" | "availabilityChangedAt" | "availabilityReviewDueAt" | "hybrid" | "onboardingFolderUrl" | "portfolioUrl" | "contractLink" | "folder201Link" | "file201Link" | "vaClientFileLink" | "healthCheckFileLink" | "vaProfileLink" | "payoutSummaryLink" | "dept201FolderLink" | "notes" | "status" | "onHold" | "engagementStatus" | "currentHireDate" | "currentEndDate" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["vAProfile"]>
 export type VAProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   positionSkill?: boolean | Prisma.VAProfile$positionSkillArgs<ExtArgs>
@@ -3496,6 +3985,13 @@ export type $VAProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     totalCapacityHours: runtime.Decimal | null
     preferredWorkHours: runtime.Decimal | null
     availableSchedule: string | null
+    hybridHours: runtime.Decimal | null
+    isRecommended: boolean
+    recommendedForClient: string | null
+    recommendedUntil: string | null
+    availabilityRemarks: string | null
+    availabilityChangedAt: Date | null
+    availabilityReviewDueAt: Date | null
     hybrid: boolean
     onboardingFolderUrl: string | null
     portfolioUrl: string | null
@@ -3961,6 +4457,13 @@ export interface VAProfileFieldRefs {
   readonly totalCapacityHours: Prisma.FieldRef<"VAProfile", 'Decimal'>
   readonly preferredWorkHours: Prisma.FieldRef<"VAProfile", 'Decimal'>
   readonly availableSchedule: Prisma.FieldRef<"VAProfile", 'String'>
+  readonly hybridHours: Prisma.FieldRef<"VAProfile", 'Decimal'>
+  readonly isRecommended: Prisma.FieldRef<"VAProfile", 'Boolean'>
+  readonly recommendedForClient: Prisma.FieldRef<"VAProfile", 'String'>
+  readonly recommendedUntil: Prisma.FieldRef<"VAProfile", 'String'>
+  readonly availabilityRemarks: Prisma.FieldRef<"VAProfile", 'String'>
+  readonly availabilityChangedAt: Prisma.FieldRef<"VAProfile", 'DateTime'>
+  readonly availabilityReviewDueAt: Prisma.FieldRef<"VAProfile", 'DateTime'>
   readonly hybrid: Prisma.FieldRef<"VAProfile", 'Boolean'>
   readonly onboardingFolderUrl: Prisma.FieldRef<"VAProfile", 'String'>
   readonly portfolioUrl: Prisma.FieldRef<"VAProfile", 'String'>

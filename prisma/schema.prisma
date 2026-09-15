@@ -610,6 +610,25 @@ model VAProfile {
   totalCapacityHours  Decimal?          @default(40) @map("total_capacity_hours")
   preferredWorkHours  Decimal?          @map("preferred_work_hours")
   availableSchedule   String?           @map("available_schedule")
+
+  // ── VA Availability (DMF sheet's "VA Availability" tab) ──
+  // CURRENT WORK HOURS, AVAILABLE WORK HOURS and CLIENT COUNT are
+  // deliberately NOT stored: they're the sum/count of this VA's active
+  // Assignments, which the sheet has to maintain by hand and this app can
+  // derive exactly (see lib/va-availability.ts). Only the columns with no
+  // other source live here. `hybrid` above is the sheet's yes/no; this is
+  // the hours behind it, which the boolean can't carry.
+  hybridHours            Decimal?  @map("hybrid_hours")
+  isRecommended          Boolean   @default(false) @map("is_recommended")
+  recommendedForClient   String?   @map("recommended_for_client")
+  // RECOMMENDED UNTIL is free text in the sheet ("Not yet Started" as often
+  // as a date), so it stays text rather than being forced into a DateTime.
+  recommendedUntil       String?   @map("recommended_until")
+  availabilityRemarks    String?   @map("availability_remarks")
+  availabilityChangedAt  DateTime? @map("availability_changed_at")
+  // DMF UPDATE STATUS DATE: when this VA's availability is next due a
+  // review. Past-due is what the sheet flags "CHANGED AVAILABILITY OVERDUE".
+  availabilityReviewDueAt DateTime? @map("availability_review_due_at")
   hybrid              Boolean           @default(false)
   onboardingFolderUrl String?           @map("onboarding_folder_url")
   portfolioUrl        String?           @map("portfolio_url")
