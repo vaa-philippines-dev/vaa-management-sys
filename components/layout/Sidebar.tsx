@@ -36,6 +36,7 @@ import {
   ClipboardCheck,
   CalendarRange,
   LineChart,
+  PieChart,
   Shield,
   Megaphone,
   LifeBuoy,
@@ -281,6 +282,7 @@ const onGoingRoutes = [
   { label: 'Work Logs', href: '/work-logs', icon: ListTodo },
   { label: 'Services', href: '/skills', icon: UserCog },
   { label: 'Monthly Report', href: '/reports', icon: BarChart3 },
+  { label: 'Headcount Report', href: '/reports/headcount', icon: PieChart },
 ]
 
 // Rendered in the "HR" section of the manager sidebar. Offboarding moved

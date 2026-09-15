@@ -64,12 +64,17 @@ Tab → app mapping as it stands:
 | Masterlist | `/vas` |
 | Team Assignment | `/team-assignment` |
 | Structure | `/departments/[id]` |
-| Headcount | partial — `DepartmentHeadcountCard` + `/reports/headcount`; the sheet's ~108-metric monthly/weekly time series is not ported |
-| Performance Monitoring | partial — `AssignmentKpiCheck` covers the D4/W1/W2/M1/M2/M3/M6 columns; the W2 and M6 **client feedback** blocks are not ported |
-| VA Availability | partial — only the aggregate buckets in `DepartmentHeadcountCard`; the per-VA hours ledger, RECOMMENDED tracking and DMF/TMF staleness alerts are not ported |
+| Headcount | `/reports/headcount` — monthly hires/EOCs (historical, from dated `EmploymentRecord`s) plus a **point-in-time** composition panel (`lib/headcount.ts`). There is deliberately no historical composition series: nothing snapshots `VAProfile`, so last March's FT/PT split is not reconstructible. A real series needs a scheduled snapshot write. |
+| Performance Monitoring | `/performance` — the KPI grid (`AssignmentKpiCheck`) plus the W2/M6 client feedback cycle (`AssignmentClientFeedback`) |
+| VA Availability | `/va-availability` (`lib/va-availability.ts`). CURRENT/AVAILABLE hours and CLIENT COUNT are **derived from active assignments, never stored** — the sheet keeps those by hand. The sheet's DMF↔TMF reconciliation columns are intentionally not ported: both files are one database here, so only the staleness clock survives. |
 | Projects/Proposals | `/projects` (`Project` model) |
-| VA Preparation | **not ported** — the pre-launch pipeline for a VA-client engagement (client meeting → preparation call → mock interview → VA connect → a 9-item onboarding checklist → live), plus its own EOC/pause block. `DepartmentDataIssuesCard`'s third rule is stubbed pending it. |
+| VA Preparation | `/va-preparation` (`AssignmentPreparation`, 1:1 with `Assignment`). Backs the third rule of `DepartmentDataIssuesCard`. |
 | IDLE VAs, VA-Client Summary, VA Concerns, Pending Dept Requests, Trainings, Discrepancies | not ported |
+
+Two conventions worth knowing before adding a sixth of these:
+
+- **Split every read-model in two.** A `lib/<feature>.ts` that imports Prisma cannot be imported by a `'use client'` component — Turbopack follows the import into `pg` and fails on `dns`. Labels, field lists and row types go in `lib/<feature>-fields.ts`; the Prisma reads stay in `lib/<feature>.ts`. Same split as `lib/leave-roles.ts` vs `lib/leave.ts`.
+- **The sidebar's Department section is hand-written JSX**, not a loop. `departmentRoutes` only feeds favourites and the command palette, so adding an entry there renders nothing — add a `<FavoritableRow>` too. `onGoingRoutes`, `adminRoutes` and `supportRoutes` *are* loops.
 
 ## Auth
 

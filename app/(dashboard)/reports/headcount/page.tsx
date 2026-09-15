@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { getCurrentUser } from '@/lib/auth'
+import { getCurrentUser, isDepartmentUnrestricted, getManagedDepartmentIds } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -9,6 +9,8 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { HeadcountReportControls } from '@/components/reports/HeadcountReportControls'
 import { Users } from 'lucide-react'
+import { getHeadcountComposition } from '@/lib/headcount'
+import { HeadcountComposition } from '@/components/reports/HeadcountComposition'
 
 const REPORTS_VIEW_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'STAFF', 'HR']
 
@@ -27,10 +29,18 @@ export default async function HeadcountReportPage({
   const periodStart = startOfMonth(refDate)
   const periodEnd = endOfMonth(refDate)
 
-  const [hires, terminations, activeCount] = await Promise.all([
-    cached(`reports:headcount:hires:${format(refDate, 'yyyy-MM')}`, [CACHE_TAGS.reports], 120, () =>
+  // This report was unscoped: every role in REPORTS_VIEW_ROLES — Dept
+  // Manager and Team Leader included — saw every department's headcount.
+  // Narrow it the same way the rest of the app does, admins and HR excepted.
+  const unrestricted = isDepartmentUnrestricted(currentUser) || currentUser.systemRole === 'EXECUTIVE'
+  const managedIds = getManagedDepartmentIds(currentUser)
+  const departmentScope = unrestricted ? {} : { departmentId: { in: managedIds } }
+  const scopeKey = unrestricted ? 'all' : managedIds.join(',')
+
+  const [hires, terminations, activeCount, composition] = await Promise.all([
+    cached(`reports:headcount:hires:${format(refDate, 'yyyy-MM')}:${scopeKey}`, [CACHE_TAGS.reports], 120, () =>
       prisma.employmentRecord.findMany({
-        where: { startDate: { gte: periodStart, lte: periodEnd } },
+        where: { startDate: { gte: periodStart, lte: periodEnd }, ...departmentScope },
         include: {
           user: { select: { firstName: true, lastName: true, userType: true } },
           department: { select: { id: true, name: true } },
@@ -38,9 +48,9 @@ export default async function HeadcountReportPage({
         orderBy: { startDate: 'asc' },
       })
     ),
-    cached(`reports:headcount:eocs:${format(refDate, 'yyyy-MM')}`, [CACHE_TAGS.reports], 120, () =>
+    cached(`reports:headcount:eocs:${format(refDate, 'yyyy-MM')}:${scopeKey}`, [CACHE_TAGS.reports], 120, () =>
       prisma.employmentRecord.findMany({
-        where: { endDate: { gte: periodStart, lte: periodEnd } },
+        where: { endDate: { gte: periodStart, lte: periodEnd }, ...departmentScope },
         include: {
           user: { select: { firstName: true, lastName: true, userType: true } },
           department: { select: { id: true, name: true } },
@@ -48,15 +58,18 @@ export default async function HeadcountReportPage({
         orderBy: { endDate: 'asc' },
       })
     ),
-    cached('reports:headcount:active', [CACHE_TAGS.reports], 120, () =>
+    cached(`reports:headcount:active:${scopeKey}`, [CACHE_TAGS.reports], 120, () =>
       prisma.employmentRecord.findMany({
-        where: { isCurrent: true },
+        where: { isCurrent: true, ...departmentScope },
         include: {
           user: { select: { userType: true } },
           department: { select: { id: true, name: true } },
         },
       })
     ),
+    // Point-in-time composition, deliberately not month-scoped — see the
+    // note in lib/headcount.ts about why there's no historical series.
+    getHeadcountComposition(unrestricted ? null : managedIds),
   ])
 
   type DeptBucket = { departmentId: string | null; departmentName: string; vaHires: number; staffHires: number; vaEocs: number; staffEocs: number; vaActive: number; staffActive: number }
@@ -145,6 +158,8 @@ export default async function HeadcountReportPage({
           </CardContent>
         </Card>
       </div>
+
+      <HeadcountComposition composition={composition} />
 
       {rows.length === 0 ? (
         <Card>
