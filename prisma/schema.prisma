@@ -1394,6 +1394,11 @@ model AuditLog {
 enum SyncEntityType {
   VA_PROFILE
   CLIENT
+  // Backs the DMF sheet import's VA Preparation / Performance Monitoring
+  // matching — the sheet's RECORD NO maps to an Assignment, recorded here
+  // (source: "dmf_sheet") so re-running the one-time import is an upsert,
+  // not a duplicate-generator, even after a VA name gets corrected later.
+  ASSIGNMENT
 }
 
 // Maps the manager's Google Sheet IDs (VAID, ClientID) to this app's

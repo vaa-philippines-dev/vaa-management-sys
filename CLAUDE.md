@@ -71,6 +71,16 @@ Tab → app mapping as it stands:
 | VA Preparation | `/va-preparation` (`AssignmentPreparation`, 1:1 with `Assignment`). Backs the third rule of `DepartmentDataIssuesCard`. |
 | IDLE VAs, VA-Client Summary, VA Concerns, Pending Dept Requests, Trainings, Discrepancies | not ported |
 
+## Populating the DMF data (VA Preparation, Performance Monitoring, VA Availability, Projects)
+
+`npm run import:dmf -- --department <Name>` (add `--apply` to write; without it, it's a dry run that only prints a report). Source: `lib/sync/dmf-import.ts`, matching in `lib/sync/dmf-match.ts`, date/bool/number parsing in `lib/sync/dmf-parse.ts`, the sheet reader in `lib/google/dmf-sheet.ts`. One-time backfill per department, not a recurring sync — once run, the app is the source of truth and the sheet becomes historical.
+
+**Matching**: the sheet has no ID that maps onto anything in this app (VA ID like `20-0002` matches no field; only 9/2,026 VAs even have an `employeeId`, in a different format). VA NAME is the only usable join key — checked against live data before building this: 271/292 unique Amazon VA names matched exactly (93%). VA Preparation and Performance Monitoring share the same RECORD NO for the same engagement; once one tab resolves a row to an `Assignment`, the mapping is cached in `ExternalSyncMapping` (`source: "dmf_sheet"`, `entityType: ASSIGNMENT`) so the other tab and future re-runs reuse it. Unmatched or ambiguous names are reported, never guessed.
+
+**VA Preparation and Performance Monitoring need a real `Assignment` to attach to, and mostly won't find one until this app's own Assignment data is real.** Confirmed against the live Amazon sheet: 0/468 rows matched an existing Assignment — not a matching bug, the database this was tested against has exactly 1 Assignment total. Every VA and Client name in the sheet resolved individually; there was simply no Assignment connecting that VA to that Client yet. VA Availability (matches directly to VAProfile, no Assignment involved) and Projects (no VA/Assignment link at all) import cleanly regardless of this. Do **not** have the importer create Assignments to route around this — that means fabricating hundreds of real staffing records (hours, dates, status) that drive billing/reporting everywhere else in the app; get real Assignment data in first, or make that call explicitly.
+
+**Known gotcha**: every DMF date must be built with `Date.UTC(...)`, never the native `new Date(string)` constructor — confirmed the hard way. `new Date("February 2026")` parses as local midnight, which on a non-UTC server silently shifts the stored date by a day. `parseDmfDate()` in `lib/sync/dmf-parse.ts` handles this for all three formats the sheet actually uses; if a new column needs a fourth format, extend it there rather than falling back to native parsing.
+
 Two conventions worth knowing before adding a sixth of these:
 
 - **Split every read-model in two.** A `lib/<feature>.ts` that imports Prisma cannot be imported by a `'use client'` component — Turbopack follows the import into `pg` and fails on `dns`. Labels, field lists and row types go in `lib/<feature>-fields.ts`; the Prisma reads stay in `lib/<feature>.ts`. Same split as `lib/leave-roles.ts` vs `lib/leave.ts`.

@@ -436,7 +436,8 @@ export type ChannelKind = (typeof ChannelKind)[keyof typeof ChannelKind]
 
 export const SyncEntityType = {
   VA_PROFILE: 'VA_PROFILE',
-  CLIENT: 'CLIENT'
+  CLIENT: 'CLIENT',
+  ASSIGNMENT: 'ASSIGNMENT'
 } as const
 
 export type SyncEntityType = (typeof SyncEntityType)[keyof typeof SyncEntityType]

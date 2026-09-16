@@ -12,6 +12,7 @@
     "db:push": "npx prisma db push",
     "db:seed": "npx tsx prisma/seed.ts",
     "db:studio": "npx prisma studio",
+    "import:dmf": "tsx --env-file=.env.local scripts/import-dmf.ts",
     "postinstall": "npx prisma generate"
   },
   "dependencies": {
