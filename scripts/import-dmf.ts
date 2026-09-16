@@ -24,11 +24,18 @@ function printSummary(s: ImportSummary) {
   console.log(`\n=== ${s.tab} ===`)
   console.log(`  rows read:        ${s.totalRows}`)
   console.log(`  matched:          ${s.matched}`)
+  if (s.created) console.log(`  assignments created: ${s.created}`)
   console.log(`  changed:          ${s.changed}`)
   if (s.unchanged) console.log(`  already imported: ${s.unchanged}`)
+  if (s.wouldCreate.length) {
+    console.log(`  would create (${s.wouldCreate.length}):`)
+    for (const i of s.wouldCreate.slice(0, 30)) console.log(`    - ${i.label}: ${i.reason}`)
+    if (s.wouldCreate.length > 30) console.log(`    ...and ${s.wouldCreate.length - 30} more`)
+  }
   if (s.unmatched.length) {
     console.log(`  unmatched (${s.unmatched.length}):`)
-    for (const i of s.unmatched) console.log(`    - ${i.label}: ${i.reason}`)
+    for (const i of s.unmatched.slice(0, 30)) console.log(`    - ${i.label}: ${i.reason}`)
+    if (s.unmatched.length > 30) console.log(`    ...and ${s.unmatched.length - 30} more`)
   }
   if (s.ambiguous.length) {
     console.log(`  ambiguous (${s.ambiguous.length}):`)

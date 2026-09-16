@@ -142,6 +142,12 @@ enum AssignmentStatus {
 enum AssignmentSource {
   MANUAL
   VA_CONNECTIONS_SYNC
+  // Created by the DMF sheet import (lib/sync/dmf-import.ts) when a VA
+  // Preparation/Performance Monitoring row had no existing Assignment to
+  // attach to. Unlike VA_CONNECTIONS_SYNC this is a one-time backfill, not
+  // a recurring sync — a DMF_SYNC assignment is freely editable afterward,
+  // nothing will overwrite it on a future run.
+  DMF_SYNC
 }
 
 enum SkillCategory {

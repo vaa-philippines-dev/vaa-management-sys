@@ -1,4 +1,6 @@
 import { prisma } from '@/lib/prisma'
+import { logAudit } from '@/lib/audit'
+import { computeKpiCheckpoints } from '@/lib/kpi-checks'
 import { fetchDmfTabRows, type RawDmfRow } from '@/lib/google/dmf-sheet'
 import { parseDmfDate, parseDmfBool, parseDmfNumber, rowLabel } from '@/lib/sync/dmf-parse'
 import { buildDmfIndexes, matchName, pickAssignment, normalizeName, type DmfIndexes } from '@/lib/sync/dmf-match'
@@ -12,7 +14,30 @@ import type {
   ClientResponseStatus,
   ProjectStatus,
   ProjectPriority,
+  AssignmentStatus,
 } from '@/src/generated/prisma/enums'
+
+// Well-known actor for audit-log entries this import writes, same pattern as
+// lib/sync/va-connections.ts's SYSTEM_ACTOR_EMAIL. isActive: false keeps it
+// out of assignable-user dropdowns while still satisfying AuditLog.actorId's
+// FK requirement.
+const SYSTEM_ACTOR_EMAIL = 'dmf-sheet-import@system.internal'
+
+async function getSystemActorId(): Promise<string> {
+  const user = await prisma.user.upsert({
+    where: { email: SYSTEM_ACTOR_EMAIL },
+    update: {},
+    create: {
+      email: SYSTEM_ACTOR_EMAIL,
+      firstName: 'DMF Sheet',
+      lastName: 'Import',
+      systemRole: 'SYSTEM_ADMIN',
+      userType: 'INTERNAL_STAFF',
+      isActive: false,
+    },
+  })
+  return user.id
+}
 
 // One-time backfill from a Department Monitoring File spreadsheet into the
 // tables VA Preparation / Performance Monitoring / VA Availability /
@@ -31,15 +56,44 @@ export type ImportSummary = {
   tab: string
   totalRows: number
   matched: number
+  created: number // Assignments created because none existed to attach to
   changed: number // rows that would be (or were) written
   unchanged: number // matched but nothing to update
   unmatched: ImportIssue[]
   ambiguous: ImportIssue[]
+  wouldCreate: ImportIssue[] // dry-run only: a new Assignment would be created here
   warnings: ImportIssue[]
 }
 
 function emptySummary(tab: string): ImportSummary {
-  return { tab, totalRows: 0, matched: 0, changed: 0, unchanged: 0, unmatched: [], ambiguous: [], warnings: [] }
+  return {
+    tab,
+    totalRows: 0,
+    matched: 0,
+    created: 0,
+    changed: 0,
+    unchanged: 0,
+    unmatched: [],
+    ambiguous: [],
+    wouldCreate: [],
+    warnings: [],
+  }
+}
+
+// What's needed to create an Assignment from a VA Preparation row when none
+// exists yet. Only passed by importVaPreparation — Performance Monitoring
+// alone doesn't carry agreed hours, so it never creates, only attaches.
+export type AssignmentCreationInput = {
+  agreedHoursRaw: string
+  expertiseGroup: string
+  clientStatusRaw: string
+  effectivityDateRaw: string
+}
+
+const CLIENT_STATUS_TO_ASSIGNMENT_STATUS: Record<string, AssignmentStatus> = {
+  active: 'ACTIVE',
+  paused: 'PAUSED',
+  'end of work': 'COMPLETED',
 }
 
 // ── Shared: resolve a sheet row's Assignment ──────────────────────
@@ -49,15 +103,25 @@ function emptySummary(tab: string): ImportSummary {
 // mapping is cached in ExternalSyncMapping and the other tab reuses it
 // instead of re-running name matching — cheaper, and immune to the two
 // tabs' VA/client name spelling ever drifting apart.
-async function resolveAssignment(
+//
+// When `creation` is supplied and no Assignment exists between the matched
+// VA and client, one is created from the sheet's own data (PRIMARY ACCOUNT,
+// ACTUAL/TARGET START DATE, NO OF HOURS, VA STATUS WITH CLIENT, EFFECTIVITY
+// DATE) rather than leaving VA Preparation/Performance Monitoring
+// permanently unable to attach anything. `type` defaults to REGULAR — no
+// column in either tab distinguishes ongoing work from a one-off project,
+// so this is a documented assumption, not a read.
+async function resolveOrCreateAssignment(
   recordNo: string,
   vaName: string,
   clientName: string,
   targetDate: Date | null,
   indexes: DmfIndexes,
   mappingCache: Map<string, string>,
-  apply: boolean
-): Promise<{ assignmentId: string | null; reason?: string }> {
+  apply: boolean,
+  creation: AssignmentCreationInput | null,
+  summary: ImportSummary
+): Promise<{ assignmentId: string | null; reason?: string; wouldCreate?: boolean }> {
   const cached = mappingCache.get(recordNo)
   if (cached) return { assignmentId: cached }
 
@@ -70,15 +134,98 @@ async function resolveAssignment(
   if (!client.id) return { assignmentId: null, reason: `No client in this department named "${clientName}"` }
 
   const candidates = indexes.assignmentsByVaAndClient.get(`${va.id}:${client.id}`)
-  const assignmentId = pickAssignment(candidates, targetDate)
+  let assignmentId = pickAssignment(candidates, targetDate)
+
+  if (!assignmentId && candidates?.length) {
+    return {
+      assignmentId: null,
+      reason: `${candidates.length} assignments between this VA and client, and no start date to break the tie`,
+    }
+  }
+
+  if (!assignmentId && creation) {
+    const agreedHours = parseDmfNumber(creation.agreedHoursRaw)
+    if (!targetDate || agreedHours == null) {
+      return {
+        assignmentId: null,
+        reason: `No assignment on record between "${vaName}" and "${clientName}", and can't create one — missing ${!targetDate ? 'a start date' : 'NO OF HOURS'}`,
+      }
+    }
+
+    const statusKey = creation.clientStatusRaw.trim().toLowerCase()
+    const status = CLIENT_STATUS_TO_ASSIGNMENT_STATUS[statusKey] ?? 'ACTIVE'
+    const endDate = status === 'ACTIVE' ? null : parseDmfDate(creation.effectivityDateRaw)
+
+    if (!apply) {
+      // Dry run: report what would happen without a real id to cache.
+      summary.created++
+      return {
+        assignmentId: null,
+        wouldCreate: true,
+        reason: `Would create a new Assignment (${agreedHours}h, starting ${targetDate.toISOString().slice(0, 10)})`,
+      }
+    }
+
+    const createdAssignment = await prisma.assignment.create({
+      data: {
+        type: 'REGULAR',
+        status,
+        agreedHours,
+        startDate: targetDate,
+        endDate,
+        skillRequirements: creation.expertiseGroup ? [creation.expertiseGroup] : [],
+        source: 'DMF_SYNC',
+        externalId: `DMF-${recordNo}`,
+        syncedAt: new Date(),
+        vaProfileId: va.id,
+        clientId: client.id,
+      },
+    })
+    const newAssignmentId = createdAssignment.id
+    assignmentId = newAssignmentId
+
+    // Mirrors what the app's own createAssignment() Server Action seeds on
+    // every new Assignment — an empty AssignmentPreparation row and the 7
+    // fixed KPI checkpoints — so this Assignment behaves identically to one
+    // created through the UI, and the update() calls later in this same
+    // import run (VA Preparation's own fields, KPI completion flags) have
+    // something to attach to instead of failing on a missing row.
+    await prisma.assignmentPreparation.create({
+      data: { assignmentId: newAssignmentId, targetStartDate: targetDate },
+    })
+    await prisma.assignmentKpiCheck.createMany({
+      data: computeKpiCheckpoints(targetDate).map(({ milestone, dueDate }) => ({
+        assignmentId: newAssignmentId,
+        milestone,
+        dueDate,
+      })),
+    })
+
+    await logAudit({
+      actorId: await getSystemActorId(),
+      action: 'CREATE',
+      entityType: 'Assignment',
+      entityId: newAssignmentId,
+      after: {
+        vaProfileId: va.id,
+        clientId: client.id,
+        agreedHours,
+        startDate: targetDate.toISOString(),
+        status,
+        source: 'DMF_SYNC',
+      },
+      metadata: { dmfRecordNo: recordNo },
+    })
+  }
+
   if (!assignmentId) {
     return {
       assignmentId: null,
-      reason: candidates?.length
-        ? `${candidates.length} assignments between this VA and client, and no start date to break the tie`
-        : `No assignment on record between "${vaName}" and "${clientName}"`,
+      reason: `No assignment on record between "${vaName}" and "${clientName}"`,
     }
   }
+
+  if (creation) summary.created++
 
   if (apply) {
     await prisma.externalSyncMapping.upsert({
@@ -164,17 +311,25 @@ export async function importVaPreparation(
     }
 
     const targetDate = parseDmfDate(row['ACTUAL START DATE']) ?? parseDmfDate(row['TARGET START DATE'])
-    const { assignmentId, reason } = await resolveAssignment(
+    const { assignmentId, reason, wouldCreate } = await resolveOrCreateAssignment(
       recordNo,
       row['VA NAME'],
       row['PRIMARY ACCOUNT'],
       targetDate,
       indexes,
       mappingCache,
-      apply
+      apply,
+      {
+        agreedHoursRaw: row['NO OF HOURS'],
+        expertiseGroup: row['EXPERTISE GROUP'],
+        clientStatusRaw: row['VA STATUS WITH CLIENT'],
+        effectivityDateRaw: row['EFFECTIVITY DATE'],
+      },
+      summary
     )
     if (!assignmentId) {
-      summary.unmatched.push({ label: `RECORD ${recordNo} — ${label}`, reason: reason ?? 'unresolved' })
+      const bucket = wouldCreate ? summary.wouldCreate : summary.unmatched
+      bucket.push({ label: `RECORD ${recordNo} — ${label}`, reason: reason ?? 'unresolved' })
       continue
     }
     summary.matched++
@@ -334,14 +489,20 @@ export async function importPerformanceMonitoring(
     }
 
     const targetDate = parseDmfDate(row['START DATE'])
-    const { assignmentId, reason } = await resolveAssignment(
+    // No creation input here — this tab carries no NO OF HOURS column to
+    // create an Assignment from. In practice this only matters if
+    // Performance Monitoring ever runs before VA Preparation (they share
+    // RECORD NO, and runDmfImport() always runs VA Preparation first).
+    const { assignmentId, reason } = await resolveOrCreateAssignment(
       recordNo,
       row['VA NAME'],
       row['PRIMARY ACCOUNT'],
       targetDate,
       indexes,
       mappingCache,
-      apply
+      apply,
+      null,
+      summary
     )
     if (!assignmentId) {
       summary.unmatched.push({ label: `RECORD ${recordNo} — ${label}`, reason: reason ?? 'unresolved' })

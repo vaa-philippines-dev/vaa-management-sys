@@ -181,7 +181,8 @@ export type AssignmentStatus = (typeof AssignmentStatus)[keyof typeof Assignment
 
 export const AssignmentSource = {
   MANUAL: 'MANUAL',
-  VA_CONNECTIONS_SYNC: 'VA_CONNECTIONS_SYNC'
+  VA_CONNECTIONS_SYNC: 'VA_CONNECTIONS_SYNC',
+  DMF_SYNC: 'DMF_SYNC'
 } as const
 
 export type AssignmentSource = (typeof AssignmentSource)[keyof typeof AssignmentSource]
