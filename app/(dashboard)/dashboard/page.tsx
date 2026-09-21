@@ -27,6 +27,7 @@ import {
 import { startOfMonth, endOfMonth, format } from 'date-fns'
 import { Skeleton } from '@/components/ui/skeleton'
 import { CircularProgress } from '@/components/ui/circular-progress'
+import { StatCard } from '@/components/ui/stat-card'
 
 export default async function DashboardPage({
   searchParams,
@@ -446,22 +447,6 @@ async function VADashboard({ userId, vaProfileId }: { userId: string; vaProfileI
         </CardContent>
       </Card>
     </div>
-  )
-}
-
-function StatCard({ icon: Icon, label, value, href }: { icon: React.ComponentType<{ className?: string }>; label: string; value: number | string; href: string }) {
-  return (
-    <Link href={href}>
-      <Card className="card-hover group/stat bg-gradient-to-br from-card to-muted/40">
-        <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
-          <CardTitle className="text-sm font-medium text-muted-foreground">{label}</CardTitle>
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted transition-transform group-hover/stat:scale-110">
-            <Icon className="h-4 w-4 text-muted-foreground" />
-          </div>
-        </CardHeader>
-        <CardContent><p className="text-2xl font-bold">{value}</p></CardContent>
-      </Card>
-    </Link>
   )
 }
 

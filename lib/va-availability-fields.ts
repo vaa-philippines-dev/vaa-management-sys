@@ -95,6 +95,35 @@ export function computeWorkPattern(isVA: boolean, preferred: number | null): Wor
 // on live data), which buries the handful that genuinely need attention.
 // That's a data-entry gap, surfaced by the Preferred column reading "—", not
 // a stale record.
+export type AvailabilitySummary = {
+  total: number
+  available: number
+  fullyAssigned: number
+  onLeave: number
+  totalAvailableHours: number
+  needsReview: number
+  recommended: number
+}
+
+// The page always fetches the whole scoped row set (no pagination here,
+// unlike /vas), so the scorecards reduce over what's already in hand rather
+// than issuing separate aggregate queries.
+export function computeAvailabilitySummary(rows: AvailabilityRow[]): AvailabilitySummary {
+  return rows.reduce(
+    (acc, r) => {
+      acc.total++
+      if (r.availabilityStatus === 'AVAILABLE') acc.available++
+      if (r.availabilityStatus === 'FULLY_ASSIGNED') acc.fullyAssigned++
+      if (r.availabilityStatus === 'ON_LEAVE') acc.onLeave++
+      acc.totalAvailableHours += r.availableHours
+      if (r.alert !== 'NONE') acc.needsReview++
+      if (r.isRecommended) acc.recommended++
+      return acc
+    },
+    { total: 0, available: 0, fullyAssigned: 0, onLeave: 0, totalAvailableHours: 0, needsReview: 0, recommended: 0 }
+  )
+}
+
 export function computeAlert(
   availabilityStatus: string,
   preferredHours: number | null,

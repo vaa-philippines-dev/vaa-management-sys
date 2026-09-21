@@ -5,12 +5,12 @@ import { google } from 'googleapis'
 // — every row in its VA Availability tab reads Dept: Amazon), so callers
 // pass both the sheet id and the department it belongs to.
 //
-// Currently only one DMF is wired (GOOGLE_DEPT_MONITORING_SHEET_ID, Amazon).
-// Other departments have their own sheets that aren't onboarded yet — add
-// them here as they're shared with the service account, keyed by the
-// department name as it appears in this app's `departments` table.
+// Other departments have their own sheets, onboarded here as they're shared
+// with the service account, keyed by the department name as it appears in
+// this app's `departments` table.
 export const DMF_SHEETS: Record<string, string | undefined> = {
   Amazon: process.env.GOOGLE_DEPT_MONITORING_SHEET_ID,
+  PPC: process.env.GOOGLE_DEPT_MONITORING_SHEET_ID_PPC,
 }
 
 function getAuth() {
@@ -22,6 +22,30 @@ function getAuth() {
     credentials: { client_email: email, private_key: key },
     scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
   })
+}
+
+// Resolves which of several candidate tab titles actually exists in this
+// spreadsheet — department DMF sheets are clones of a shared template but
+// have drifted apart over time (e.g. Amazon's "Projects/Proposals" tab is
+// just "Projects" in PPC's copy, though the underlying columns are
+// identical), so a caller can't safely hardcode one department's naming.
+// Throws with the full candidate list rather than guessing or silently
+// falling back to the first one.
+export async function resolveDmfTabTitle(sheetId: string, candidates: string[]): Promise<string> {
+  const auth = getAuth()
+  if (!auth) {
+    throw new Error('Google credentials not configured (GOOGLE_SERVICE_ACCOUNT_EMAIL / GOOGLE_PRIVATE_KEY)')
+  }
+
+  const sheets = google.sheets({ version: 'v4', auth })
+  const meta = await sheets.spreadsheets.get({ spreadsheetId: sheetId, fields: 'sheets.properties.title' })
+  const titles = new Set((meta.data.sheets ?? []).map((s) => s.properties?.title).filter((t): t is string => !!t))
+
+  const match = candidates.find((c) => titles.has(c))
+  if (!match) {
+    throw new Error(`None of the expected tab names [${candidates.join(', ')}] were found in this spreadsheet`)
+  }
+  return match
 }
 
 export type RawDmfRow = Record<string, string>

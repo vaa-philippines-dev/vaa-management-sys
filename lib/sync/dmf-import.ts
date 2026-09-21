@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { logAudit } from '@/lib/audit'
 import { computeKpiCheckpoints } from '@/lib/kpi-checks'
-import { fetchDmfTabRows, type RawDmfRow } from '@/lib/google/dmf-sheet'
+import { fetchDmfTabRows, resolveDmfTabTitle, type RawDmfRow } from '@/lib/google/dmf-sheet'
 import { parseDmfDate, parseDmfBool, parseDmfNumber, rowLabel } from '@/lib/sync/dmf-parse'
 import { buildDmfIndexes, matchName, pickAssignment, normalizeName, type DmfIndexes } from '@/lib/sync/dmf-match'
 import type {
@@ -617,8 +617,12 @@ const PROJECT_PRIORITY_MAP: Record<string, ProjectPriority> = {
 export async function importProjects(sheetId: string, departmentId: string, apply: boolean): Promise<ImportSummary> {
   const summary = emptySummary('Projects/Proposals')
   // Column A's header cell is blank in the live sheet (confirmed), so its
-  // proposed-date values are otherwise unreachable by header name.
-  const rows = await fetchDmfTabRows(sheetId, 'Projects/Proposals', 4, { 0: 'DATE' })
+  // proposed-date values are otherwise unreachable by header name. Tab title
+  // itself drifts between department clones (Amazon: "Projects/Proposals",
+  // PPC: plain "Projects") — same columns, different name — so resolve it
+  // rather than hardcoding one department's naming.
+  const tabTitle = await resolveDmfTabTitle(sheetId, ['Projects/Proposals', 'Projects'])
+  const rows = await fetchDmfTabRows(sheetId, tabTitle, 4, { 0: 'DATE' })
   summary.totalRows = rows.length
 
   const existing = await prisma.project.findMany({

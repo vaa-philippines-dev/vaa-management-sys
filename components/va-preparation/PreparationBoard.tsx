@@ -47,6 +47,23 @@ const STATUS_VARIANT: Record<string, 'default' | 'secondary' | 'outline' | 'dest
   CANCELLED: 'outline',
 }
 
+function ReadOnlyLink({ href }: { href: string | null }) {
+  if (!href) return <p className="text-sm py-2 text-muted-foreground">Not set</p>
+  return (
+    <p className="py-2">
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+      >
+        <ExternalLink className="h-3.5 w-3.5" />
+        View file
+      </a>
+    </p>
+  )
+}
+
 export function PreparationBoard({
   preparations,
   people,
@@ -386,8 +403,11 @@ export function PreparationBoard({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <Label htmlFor="expertiseGroup">Expertise group</Label>
-                  <Input id="expertiseGroup" name="expertiseGroup" defaultValue={editing.expertiseGroup ?? ''} />
+                  {/* Fixed/fetched per the sheet's own column coding, not
+                      DM/OM-editable — same as VA Name/Team/Primary Account.
+                      Only ever populated by the DMF import. */}
+                  <Label className="text-muted-foreground">Expertise group</Label>
+                  <p className="text-sm py-2">{editing.expertiseGroup || <span className="text-muted-foreground">Not set</span>}</p>
                 </div>
                 <div>
                   <Label htmlFor="vaBuffers">VA buffers</Label>
@@ -446,24 +466,18 @@ export function PreparationBoard({
                 </div>
               </div>
 
+              {/* VA-Client file / Account doc are fixed/fetched per the
+                  sheet's own column coding, not DM/OM-editable — display
+                  only, same as Expertise Group above. Only ever populated by
+                  the DMF import. */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <Label htmlFor="vaClientFileUrl">VA-Client file link</Label>
-                  <Input
-                    id="vaClientFileUrl"
-                    name="vaClientFileUrl"
-                    type="url"
-                    defaultValue={editing.vaClientFileUrl ?? ''}
-                  />
+                  <Label className="text-muted-foreground">VA-Client file link</Label>
+                  <ReadOnlyLink href={editing.vaClientFileUrl} />
                 </div>
                 <div>
-                  <Label htmlFor="accountDocUrl">Account doc link</Label>
-                  <Input
-                    id="accountDocUrl"
-                    name="accountDocUrl"
-                    type="url"
-                    defaultValue={editing.accountDocUrl ?? ''}
-                  />
+                  <Label className="text-muted-foreground">Account doc link</Label>
+                  <ReadOnlyLink href={editing.accountDocUrl} />
                 </div>
               </div>
             </section>

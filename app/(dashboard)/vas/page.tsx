@@ -18,6 +18,7 @@ import { VARowCheckbox } from '@/components/vas/VARowCheckbox'
 import { VASelectAllCheckbox } from '@/components/vas/VASelectAllCheckbox'
 import { Pagination } from '@/components/ui/pagination'
 import { differenceInMonths } from 'date-fns'
+import { StatCard } from '@/components/ui/stat-card'
 import {
   Users,
   UserCog,
@@ -28,6 +29,9 @@ import {
   ArrowUp,
   ArrowDown,
   ArrowUpDown,
+  PauseCircle,
+  UserMinus,
+  UserX,
 } from 'lucide-react'
 
 const PAGE_SIZE = 20
@@ -127,6 +131,37 @@ async function getViewerScope(
   return { type: 'unrestricted' }
 }
 
+// Shared by the row query and the scorecard counts below — extracted so the
+// two can't silently drift on what "in scope" means.
+function buildScopeWhere(viewerScope: ViewerScope): Prisma.VAProfileWhereInput {
+  return viewerScope.type === 'department'
+    ? { user: { memberships: { some: { departmentId: { in: viewerScope.departmentIds }, endedAt: null } } } }
+    : viewerScope.type === 'team'
+      ? {
+          user: {
+            OR: [
+              { ledTeams: { some: { id: { in: viewerScope.teamIds } } } },
+              { tempLedTeams1: { some: { id: { in: viewerScope.teamIds } } } },
+              { tempLedTeams2: { some: { id: { in: viewerScope.teamIds } } } },
+              { teamMemberships: { some: { teamId: { in: viewerScope.teamIds }, endedAt: null } } },
+            ],
+          },
+        }
+      : viewerScope.type === 'self'
+        ? { userId: viewerScope.userId }
+        : {}
+}
+
+function scopeKey(viewerScope: ViewerScope): string {
+  return viewerScope.type === 'unrestricted'
+    ? 'all'
+    : viewerScope.type === 'department'
+      ? `dept:${viewerScope.departmentIds.slice().sort().join(',')}`
+      : viewerScope.type === 'team'
+        ? `team:${viewerScope.teamIds.slice().sort().join(',')}`
+        : `self:${viewerScope.userId}`
+}
+
 export default async function VAPage({
   searchParams,
 }: {
@@ -169,6 +204,10 @@ export default async function VAPage({
 
   return (
     <div data-wide-page className="space-y-3">
+      <Suspense fallback={<StatsSkeleton />}>
+        <VAStatsCards viewerScope={viewerScope} />
+      </Suspense>
+
       {isAdmin ? (
         <VABulkSelectToggle
           headerActions={
@@ -209,6 +248,77 @@ export default async function VAPage({
           {tableSection}
         </>
       )}
+    </div>
+  )
+}
+
+// Dataset-wide scorecards, independent of the table's own filters/pagination
+// — always reflect the viewer's full scoped roster, not just the current
+// page or search. Each is its own single-purpose count() rather than one
+// fetch-and-reduce, since the roster can run into the thousands.
+async function VAStatsCards({ viewerScope }: { viewerScope: ViewerScope }) {
+  const scopeWhere = buildScopeWhere(viewerScope)
+  const scopeAnd: Prisma.VAProfileWhereInput = viewerScope.type === 'unrestricted' ? {} : { AND: [scopeWhere] }
+  const key = scopeKey(viewerScope)
+
+  const [total, active, idle, onHold, eoc, offboarded] = await cached(
+    `vas:stats:${key}`,
+    [CACHE_TAGS.vas],
+    60,
+    () =>
+      Promise.all([
+        prisma.vAProfile.count({ where: { user: { userType: 'VIRTUAL_ASSISTANT' }, ...scopeAnd } }),
+        prisma.vAProfile.count({ where: { user: { userType: 'VIRTUAL_ASSISTANT' }, status: 'ACTIVE', ...scopeAnd } }),
+        // Same IDLE definition as lib/team-assignments.ts's classifyAssignmentState()
+        // — active profile, not on leave/unavailable, zero active assignments —
+        // encoded as a where clause instead of fetch-then-classify.
+        prisma.vAProfile.count({
+          where: {
+            user: { userType: 'VIRTUAL_ASSISTANT' },
+            status: 'ACTIVE',
+            availabilityStatus: { notIn: ['ON_LEAVE', 'UNAVAILABLE'] },
+            assignments: { none: { status: 'ACTIVE' } },
+            ...scopeAnd,
+          },
+        }),
+        prisma.vAProfile.count({ where: { user: { userType: 'VIRTUAL_ASSISTANT' }, onHold: true, ...scopeAnd } }),
+        // Current engagement status lives on EmploymentRecord (isCurrent), not
+        // VAProfile.engagementStatus — same convention the table's own
+        // "Engagement Status" column and DepartmentHeadcountCard use.
+        prisma.vAProfile.count({
+          where: {
+            user: {
+              userType: 'VIRTUAL_ASSISTANT',
+              employmentRecords: { some: { isCurrent: true, employmentStatus: 'END_OF_CONTRACT' } },
+            },
+            ...scopeAnd,
+          },
+        }),
+        prisma.vAProfile.count({ where: { user: { userType: 'VIRTUAL_ASSISTANT' }, status: { in: ['RESIGNED', 'REMOVED'] }, ...scopeAnd } }),
+      ])
+  )
+
+  return (
+    <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-6 fade-in-stagger">
+      <StatCard icon={Users} label="Total VAs" value={total} />
+      <StatCard icon={UserCog} label="Active" value={active} href="/vas?status=ACTIVE" />
+      <StatCard icon={Clock} label="Idle / Bench" value={idle} />
+      <StatCard icon={PauseCircle} label="On Hold" value={onHold} />
+      <StatCard icon={UserMinus} label="EOC (Ending)" value={eoc} href="/vas?emp=END_OF_CONTRACT" />
+      <StatCard icon={UserX} label="Resigned / Removed" value={offboarded} />
+    </div>
+  )
+}
+
+function StatsSkeleton() {
+  return (
+    <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+      {[1, 2, 3, 4, 5, 6].map((i) => (
+        <div key={i} className="rounded-lg border bg-card p-4 space-y-3">
+          <Skeleton className="h-3 w-16" />
+          <Skeleton className="h-6 w-10" />
+        </div>
+      ))}
     </div>
   )
 }
@@ -315,30 +425,8 @@ async function VATableSection({
   // their own; team-affiliated VA viewers only see VAs on the same team(s); a
   // VA on no team sees only their own record. Admins/HR/EXECUTIVE and any other
   // untouched viewer stay unrestricted.
-  const scopeWhere: Prisma.VAProfileWhereInput =
-    viewerScope.type === 'department'
-      ? { user: { memberships: { some: { departmentId: { in: viewerScope.departmentIds }, endedAt: null } } } }
-      : viewerScope.type === 'team'
-        ? {
-            user: {
-              OR: [
-                { ledTeams: { some: { id: { in: viewerScope.teamIds } } } },
-                { tempLedTeams1: { some: { id: { in: viewerScope.teamIds } } } },
-                { tempLedTeams2: { some: { id: { in: viewerScope.teamIds } } } },
-                { teamMemberships: { some: { teamId: { in: viewerScope.teamIds }, endedAt: null } } },
-              ],
-            },
-          }
-        : viewerScope.type === 'self'
-          ? { userId: viewerScope.userId }
-          : {}
-  const scopeCacheKey = viewerScope.type === 'unrestricted'
-    ? 'all'
-    : viewerScope.type === 'department'
-      ? `dept:${viewerScope.departmentIds.slice().sort().join(',')}`
-      : viewerScope.type === 'team'
-        ? `team:${viewerScope.teamIds.slice().sort().join(',')}`
-        : `self:${viewerScope.userId}`
+  const scopeWhere = buildScopeWhere(viewerScope)
+  const scopeCacheKey = scopeKey(viewerScope)
 
   const userWhere: Record<string, unknown> = {}
   if (q) {

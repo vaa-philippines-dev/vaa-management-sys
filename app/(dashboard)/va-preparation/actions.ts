@@ -86,10 +86,13 @@ export async function updatePreparation(preparationId: string, formData: FormDat
     vaType: (formData.get('vaType') as PreparationVaType) || 'NEW',
     scheduleType: text(formData, 'scheduleType'),
     scheduleDays: text(formData, 'scheduleDays'),
-    expertiseGroup: text(formData, 'expertiseGroup'),
     vaBuffers: text(formData, 'vaBuffers'),
-    vaClientFileUrl: text(formData, 'vaClientFileUrl'),
-    accountDocUrl: text(formData, 'accountDocUrl'),
+    // expertiseGroup/vaClientFileUrl/accountDocUrl are deliberately NOT
+    // writable here — the sheet's own column coding marks these "fixed/
+    // fetched", not DM/OM-editable (unlike e.g. targetStartDate or
+    // vaBuffers, which are genuinely orange/editable there). They're only
+    // ever populated by the DMF import; a manager can view but not retype
+    // them, same as VA NAME/TEAM/PRIMARY ACCOUNT already are.
     replacementForId: text(formData, 'replacementForId'),
     personInChargeId: text(formData, 'personInChargeId'),
     shadowTrainerId: text(formData, 'shadowTrainerId'),
