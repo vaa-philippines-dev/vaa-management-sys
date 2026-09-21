@@ -24,7 +24,7 @@ export default async function PerformancePage() {
   const rows = await getPerformanceRows(unrestricted ? null : managedIds)
 
   return (
-    <div className="space-y-6">
+    <div data-wide-page className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
           <LineChart className="h-6 w-6" />

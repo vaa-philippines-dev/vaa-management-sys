@@ -26,7 +26,7 @@ export default async function VAAvailabilityPage() {
   const summary = computeAvailabilitySummary(rows)
 
   return (
-    <div className="space-y-6">
+    <div data-wide-page className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
           <CalendarRange className="h-6 w-6" />

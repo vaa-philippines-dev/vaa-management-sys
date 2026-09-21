@@ -95,7 +95,7 @@ export default async function VAConnectionsPage({
   }
 
   return (
-    <div className="space-y-4">
+    <div data-wide-page className="space-y-4">
       <div>
         <h2 className="text-lg font-bold tracking-tight">VA Connections</h2>
         <p className="text-xs text-muted-foreground">
