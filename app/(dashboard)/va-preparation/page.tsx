@@ -50,7 +50,7 @@ export default async function VAPreparationPage() {
   ])
 
   return (
-    <div className="space-y-6">
+    <div data-wide-page className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
           <ClipboardList className="h-6 w-6" />
