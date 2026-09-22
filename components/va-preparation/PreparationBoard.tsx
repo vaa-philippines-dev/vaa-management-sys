@@ -12,7 +12,18 @@ import { Select } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Modal } from '@/components/ui/modal'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Pencil, ExternalLink, AlertTriangle, CheckCircle2, Circle, ClipboardList } from 'lucide-react'
+import { Progress } from '@/components/ui/progress'
+import {
+  Pencil,
+  ExternalLink,
+  AlertTriangle,
+  CheckCircle2,
+  Circle,
+  Clock,
+  XCircle,
+  Check,
+  ClipboardList,
+} from 'lucide-react'
 import {
   CHECKLIST_FIELDS,
   PIPELINE_STEPS,
@@ -21,8 +32,9 @@ import {
   STEP_STATUS_LABELS,
   CLIENT_STATUS_LABELS,
   type PreparationRow,
+  type ChecklistKey,
 } from '@/lib/va-preparation-fields'
-import { updatePreparation, toggleChecklistItem, setStepStatus } from '@/app/(dashboard)/va-preparation/actions'
+import { updatePreparation } from '@/app/(dashboard)/va-preparation/actions'
 
 function formatDate(iso: string | null) {
   if (!iso) return '—'
@@ -45,6 +57,32 @@ const STATUS_VARIANT: Record<string, 'default' | 'secondary' | 'outline' | 'dest
   STARTED_ON_TIME: 'secondary',
   DELAYED: 'destructive',
   CANCELLED: 'outline',
+}
+
+const STEP_STATUS_STYLE: Record<
+  string,
+  { icon: typeof CheckCircle2; iconClassName: string; nodeClassName: string }
+> = {
+  DONE: {
+    icon: CheckCircle2,
+    iconClassName: 'text-success',
+    nodeClassName: 'bg-success/15 border-success',
+  },
+  SCHEDULED: {
+    icon: Clock,
+    iconClassName: 'text-info',
+    nodeClassName: 'bg-info/15 border-info',
+  },
+  SKIPPED: {
+    icon: XCircle,
+    iconClassName: 'text-muted-foreground',
+    nodeClassName: 'bg-muted border-muted-foreground/30',
+  },
+  PENDING: {
+    icon: Circle,
+    iconClassName: 'text-muted-foreground/40',
+    nodeClassName: 'bg-background border-muted-foreground/30',
+  },
 }
 
 function ReadOnlyLink({ href }: { href: string | null }) {
@@ -80,6 +118,10 @@ export function PreparationBoard({
   const router = useRouter()
   const [editing, setEditing] = useState<PreparationRow | null>(null)
   const [saving, setSaving] = useState(false)
+  const [pipelineStatuses, setPipelineStatuses] = useState<Record<string, string>>({})
+  const [checklistState, setChecklistState] = useState<Record<ChecklistKey, boolean>>(
+    {} as Record<ChecklistKey, boolean>
+  )
   const [search, setSearch] = useState('')
   const [startFilter, setStartFilter] = useState('')
   const [clientStatusFilter, setClientStatusFilter] = useState('')
@@ -103,23 +145,12 @@ export function PreparationBoard({
 
   const issueCount = preparations.filter((p) => p.missingEffectivityDate).length
 
-  const onToggle = async (prep: PreparationRow, field: string, next: boolean) => {
-    const res = await toggleChecklistItem(prep.id, field, next)
-    if (res?.error) {
-      toast.error(res.error)
-      return
-    }
-    router.refresh()
-  }
-
-  const onStep = async (prep: PreparationRow, step: string, status: string) => {
-    const res = await setStepStatus(prep.id, step, status as never)
-    if (res?.error) {
-      toast.error(res.error)
-      return
-    }
-    toast.success('Pipeline updated')
-    router.refresh()
+  const openEditor = (prep: PreparationRow) => {
+    setEditing(prep)
+    setPipelineStatuses(
+      Object.fromEntries(PIPELINE_STEPS.map((step) => [step.key, prep[step.statusField] as string]))
+    )
+    setChecklistState({ ...prep.checklist })
   }
 
   const onSubmit = async (formData: FormData) => {
@@ -244,59 +275,66 @@ export function PreparationBoard({
                     <div>Actual: {formatDate(p.actualStartDate)}</div>
                   </TableCell>
                   <TableCell>
-                    <div className="flex flex-col gap-0.5">
+                    <button
+                      type="button"
+                      disabled={!canMutate}
+                      onClick={() => openEditor(p)}
+                      className="flex flex-col gap-0.5 text-left disabled:cursor-default group"
+                    >
                       {PIPELINE_STEPS.map((step) => {
                         const status = p[step.statusField] as string
                         const date = p[step.dateField] as string | null
+                        const style = STEP_STATUS_STYLE[status] ?? STEP_STATUS_STYLE.PENDING
+                        const StepIcon = style.icon
                         const done = status === 'DONE'
                         return (
-                          <button
+                          <span
                             key={step.key}
-                            type="button"
-                            disabled={!canMutate}
-                            onClick={() => onStep(p, step.key, done ? 'PENDING' : 'DONE')}
-                            className="flex items-center gap-1.5 text-xs text-left disabled:cursor-default hover:opacity-70"
-                            title={
-                              canMutate
-                                ? `${step.label}: ${STEP_STATUS_LABELS[status as keyof typeof STEP_STATUS_LABELS]} — click to toggle`
-                                : `${step.label}: ${STEP_STATUS_LABELS[status as keyof typeof STEP_STATUS_LABELS]}`
-                            }
+                            className="flex items-center gap-1.5 text-xs"
+                            title={`${step.label}: ${STEP_STATUS_LABELS[status as keyof typeof STEP_STATUS_LABELS]}${canMutate ? ' — click to edit' : ''}`}
                           >
-                            {done ? (
-                              <CheckCircle2 className="h-3.5 w-3.5 text-success shrink-0" />
-                            ) : (
-                              <Circle className="h-3.5 w-3.5 text-muted-foreground/40 shrink-0" />
-                            )}
+                            <StepIcon className={`h-3.5 w-3.5 shrink-0 ${style.iconClassName}`} />
                             <span className={done ? 'text-muted-foreground' : ''}>{step.label}</span>
                             {date && <span className="text-muted-foreground/60">{formatDate(date)}</span>}
-                          </button>
+                          </span>
                         )
                       })}
-                    </div>
+                      {canMutate && (
+                        <span className="text-xs text-primary/0 group-hover:text-primary/70 transition-colors">
+                          Edit pipeline →
+                        </span>
+                      )}
+                    </button>
                   </TableCell>
                   <TableCell>
-                    <div className="space-y-1">
+                    <button
+                      type="button"
+                      disabled={!canMutate}
+                      onClick={() => openEditor(p)}
+                      className="flex flex-col gap-1 text-left disabled:cursor-default group"
+                    >
                       <div className="text-xs font-medium">
                         {p.checklistDone} / {CHECKLIST_FIELDS.length}
                       </div>
                       <div className="grid grid-cols-3 gap-0.5 w-max">
                         {CHECKLIST_FIELDS.map((f) => (
-                          <button
+                          <span
                             key={f.key}
-                            type="button"
-                            disabled={!canMutate}
-                            onClick={() => onToggle(p, f.key, !p.checklist[f.key])}
                             title={`${f.label}: ${p.checklist[f.key] ? 'done' : 'not done'}`}
-                            aria-label={f.label}
-                            className={`h-3 w-3 rounded-sm border disabled:cursor-default ${
+                            className={`h-3 w-3 rounded-sm border ${
                               p.checklist[f.key]
                                 ? 'bg-success/70 border-success/70'
-                                : 'bg-transparent border-muted-foreground/30 hover:border-muted-foreground/60'
+                                : 'bg-transparent border-muted-foreground/30'
                             }`}
                           />
                         ))}
                       </div>
-                    </div>
+                      {canMutate && (
+                        <span className="text-xs text-primary/0 group-hover:text-primary/70 transition-colors">
+                          Edit checklist →
+                        </span>
+                      )}
+                    </button>
                   </TableCell>
                   <TableCell>
                     <div className="space-y-0.5">
@@ -321,7 +359,7 @@ export function PreparationBoard({
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => setEditing(p)}
+                        onClick={() => openEditor(p)}
                         aria-label="Edit preparation"
                       >
                         <Pencil className="h-3.5 w-3.5" />
@@ -348,40 +386,31 @@ export function PreparationBoard({
           <form action={onSubmit} className="space-y-4">
             <section className="space-y-3">
               <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Setup</h4>
+              {/* Department status / VA type / Target start date are fixed/
+                  fetched per the sheet's own column coding, not DM/OM-
+                  editable — same as Expertise group / VA-Client file /
+                  Account doc below. Only ever populated by the DMF import. */}
               <div className="grid grid-cols-3 gap-3">
-                <div>
-                  <Label htmlFor="startStatus">Department status</Label>
-                  <Select id="startStatus" name="startStatus" defaultValue={editing.startStatus} className="w-full">
-                    {Object.entries(START_STATUS_LABELS).map(([v, l]) => (
-                      <option key={v} value={v}>
-                        {l}
-                      </option>
-                    ))}
-                  </Select>
+                <div className="space-y-1.5">
+                  <Label className="text-muted-foreground">Department status</Label>
+                  <p className="text-sm py-2">
+                    <Badge variant={STATUS_VARIANT[editing.startStatus] ?? 'outline'}>
+                      {START_STATUS_LABELS[editing.startStatus]}
+                    </Badge>
+                  </p>
                 </div>
-                <div>
-                  <Label htmlFor="vaType">VA type</Label>
-                  <Select id="vaType" name="vaType" defaultValue={editing.vaType} className="w-full">
-                    {Object.entries(VA_TYPE_LABELS).map(([v, l]) => (
-                      <option key={v} value={v}>
-                        {l}
-                      </option>
-                    ))}
-                  </Select>
+                <div className="space-y-1.5">
+                  <Label className="text-muted-foreground">VA type</Label>
+                  <p className="text-sm py-2">{VA_TYPE_LABELS[editing.vaType]}</p>
                 </div>
-                <div>
-                  <Label htmlFor="targetStartDate">Target start date</Label>
-                  <Input
-                    id="targetStartDate"
-                    name="targetStartDate"
-                    type="date"
-                    defaultValue={toDateInput(editing.targetStartDate)}
-                  />
+                <div className="space-y-1.5">
+                  <Label className="text-muted-foreground">Target start date</Label>
+                  <p className="text-sm py-2">{formatDate(editing.targetStartDate)}</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <div>
+                <div className="space-y-1.5">
                   <Label htmlFor="scheduleType">Schedule type</Label>
                   <Input
                     id="scheduleType"
@@ -390,7 +419,7 @@ export function PreparationBoard({
                     defaultValue={editing.scheduleType ?? ''}
                   />
                 </div>
-                <div>
+                <div className="space-y-1.5">
                   <Label htmlFor="scheduleDays">Schedule days</Label>
                   <Input
                     id="scheduleDays"
@@ -402,21 +431,21 @@ export function PreparationBoard({
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <div>
+                <div className="space-y-1.5">
                   {/* Fixed/fetched per the sheet's own column coding, not
                       DM/OM-editable — same as VA Name/Team/Primary Account.
                       Only ever populated by the DMF import. */}
                   <Label className="text-muted-foreground">Expertise group</Label>
                   <p className="text-sm py-2">{editing.expertiseGroup || <span className="text-muted-foreground">Not set</span>}</p>
                 </div>
-                <div>
+                <div className="space-y-1.5">
                   <Label htmlFor="vaBuffers">VA buffers</Label>
                   <Input id="vaBuffers" name="vaBuffers" defaultValue={editing.vaBuffers ?? ''} />
                 </div>
               </div>
 
               <div className="grid grid-cols-3 gap-3">
-                <div>
+                <div className="space-y-1.5">
                   <Label htmlFor="personInChargeId">Person in-charge</Label>
                   <Select
                     id="personInChargeId"
@@ -432,7 +461,7 @@ export function PreparationBoard({
                     ))}
                   </Select>
                 </div>
-                <div>
+                <div className="space-y-1.5">
                   <Label htmlFor="shadowTrainerId">Shadow trainer</Label>
                   <Select
                     id="shadowTrainerId"
@@ -448,7 +477,7 @@ export function PreparationBoard({
                     ))}
                   </Select>
                 </div>
-                <div>
+                <div className="space-y-1.5">
                   <Label htmlFor="replacementForId">Replacement for</Label>
                   <Select
                     id="replacementForId"
@@ -471,11 +500,11 @@ export function PreparationBoard({
                   only, same as Expertise Group above. Only ever populated by
                   the DMF import. */}
               <div className="grid grid-cols-2 gap-3">
-                <div>
+                <div className="space-y-1.5">
                   <Label className="text-muted-foreground">VA-Client file link</Label>
                   <ReadOnlyLink href={editing.vaClientFileUrl} />
                 </div>
-                <div>
+                <div className="space-y-1.5">
                   <Label className="text-muted-foreground">Account doc link</Label>
                   <ReadOnlyLink href={editing.accountDocUrl} />
                 </div>
@@ -485,7 +514,7 @@ export function PreparationBoard({
             <section className="space-y-3 border-t pt-3">
               <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Schedule</h4>
               <div className="grid grid-cols-2 gap-3">
-                <div>
+                <div className="space-y-1.5">
                   <Label htmlFor="preparationStartDate">Preparation start</Label>
                   <Input
                     id="preparationStartDate"
@@ -494,7 +523,7 @@ export function PreparationBoard({
                     defaultValue={toDateInput(editing.preparationStartDate)}
                   />
                 </div>
-                <div>
+                <div className="space-y-1.5">
                   <Label htmlFor="preparationEndDate">Preparation end</Label>
                   <Input
                     id="preparationEndDate"
@@ -505,34 +534,113 @@ export function PreparationBoard({
                 </div>
               </div>
 
-              {PIPELINE_STEPS.map((step) => (
-                <div key={step.key} className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label htmlFor={step.dateField}>{step.label} date</Label>
-                    <Input
-                      id={step.dateField}
-                      name={step.dateField}
-                      type="date"
-                      defaultValue={toDateInput(editing[step.dateField] as string | null)}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor={step.statusField}>{step.label} status</Label>
-                    <Select
-                      id={step.statusField}
-                      name={step.statusField}
-                      defaultValue={editing[step.statusField] as string}
-                      className="w-full"
+              <div>
+                {PIPELINE_STEPS.map((step, idx) => {
+                  const status = pipelineStatuses[step.key] ?? (editing[step.statusField] as string)
+                  const style = STEP_STATUS_STYLE[status] ?? STEP_STATUS_STYLE.PENDING
+                  const StepIcon = style.icon
+                  return (
+                    <div key={step.key} className="relative flex gap-3">
+                      {idx < PIPELINE_STEPS.length - 1 && (
+                        <span
+                          className="absolute left-[15px] top-8 bottom-0 w-px bg-muted-foreground/20"
+                          aria-hidden
+                        />
+                      )}
+                      <div
+                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 z-10 transition-colors ${style.nodeClassName}`}
+                      >
+                        <StepIcon className={`h-4 w-4 ${style.iconClassName}`} />
+                      </div>
+                      <div className="flex-1 rounded-lg border bg-muted/30 p-3 mb-3 space-y-2.5">
+                        <div className="flex items-center justify-between gap-3">
+                          <Label htmlFor={step.statusField} className="text-sm font-medium">
+                            {step.label}
+                          </Label>
+                          <Select
+                            id={step.statusField}
+                            name={step.statusField}
+                            defaultValue={status}
+                            onChange={(e) =>
+                              setPipelineStatuses((prev) => ({ ...prev, [step.key]: e.target.value }))
+                            }
+                            className="w-36 h-8 text-xs"
+                          >
+                            {Object.entries(STEP_STATUS_LABELS).map(([v, l]) => (
+                              <option key={v} value={v}>
+                                {l}
+                              </option>
+                            ))}
+                          </Select>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Label htmlFor={step.dateField} className="text-xs text-muted-foreground shrink-0">
+                            Date
+                          </Label>
+                          <Input
+                            id={step.dateField}
+                            name={step.dateField}
+                            type="date"
+                            defaultValue={toDateInput(editing[step.dateField] as string | null)}
+                            className="h-8"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </section>
+
+            <section className="space-y-3 border-t pt-3">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Onboarding Checklist
+                </h4>
+                <span className="text-xs font-medium text-muted-foreground">
+                  {Object.values(checklistState).filter(Boolean).length} / {CHECKLIST_FIELDS.length} done
+                </span>
+              </div>
+              <Progress
+                value={
+                  (Object.values(checklistState).filter(Boolean).length / CHECKLIST_FIELDS.length) * 100
+                }
+              />
+              <div className="grid grid-cols-3 gap-2">
+                {CHECKLIST_FIELDS.map((f) => {
+                  const checked = checklistState[f.key] ?? false
+                  return (
+                    <label
+                      key={f.key}
+                      className={`flex items-center gap-2 rounded-lg border px-3 py-2 cursor-pointer transition-colors ${
+                        checked
+                          ? 'bg-success/15 border-success/60'
+                          : 'bg-muted/30 border-muted-foreground/20 hover:border-muted-foreground/40'
+                      }`}
                     >
-                      {Object.entries(STEP_STATUS_LABELS).map(([v, l]) => (
-                        <option key={v} value={v}>
-                          {l}
-                        </option>
-                      ))}
-                    </Select>
-                  </div>
-                </div>
-              ))}
+                      <input
+                        type="checkbox"
+                        name={f.key}
+                        checked={checked}
+                        onChange={(e) =>
+                          setChecklistState((prev) => ({ ...prev, [f.key]: e.target.checked }))
+                        }
+                        className="sr-only"
+                      />
+                      <span
+                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-colors ${
+                          checked
+                            ? 'bg-success border-success text-success-foreground'
+                            : 'border-muted-foreground/30 text-transparent'
+                        }`}
+                      >
+                        <Check className="h-3.5 w-3.5" />
+                      </span>
+                      <span className="text-sm">{f.label}</span>
+                    </label>
+                  )
+                })}
+              </div>
             </section>
 
             <section className="space-y-3 border-t pt-3">
@@ -540,7 +648,7 @@ export function PreparationBoard({
                 EOC / Replacement
               </h4>
               <div className="grid grid-cols-2 gap-3">
-                <div>
+                <div className="space-y-1.5">
                   <Label htmlFor="clientStatus">VA status with client</Label>
                   <Select
                     id="clientStatus"
@@ -555,7 +663,7 @@ export function PreparationBoard({
                     ))}
                   </Select>
                 </div>
-                <div>
+                <div className="space-y-1.5">
                   <Label htmlFor="effectivityDate">Effectivity date</Label>
                   <Input
                     id="effectivityDate"
@@ -569,13 +677,13 @@ export function PreparationBoard({
                 </div>
               </div>
 
-              <div>
+              <div className="space-y-1.5">
                 <Label htmlFor="statusReason">Reason</Label>
                 <Input id="statusReason" name="statusReason" defaultValue={editing.statusReason ?? ''} />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <div>
+                <div className="space-y-1.5">
                   <Label htmlFor="replacementNote">Replacement note</Label>
                   <Textarea
                     id="replacementNote"
@@ -584,7 +692,7 @@ export function PreparationBoard({
                     defaultValue={editing.replacementNote ?? ''}
                   />
                 </div>
-                <div>
+                <div className="space-y-1.5">
                   <Label htmlFor="replacedById">Replaced by</Label>
                   <Select
                     id="replacedById"
