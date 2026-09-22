@@ -31,13 +31,6 @@ async function assertVAInScope(
   }
 }
 
-function parseNumber(value: FormDataEntryValue | null): number | null {
-  const raw = (value as string | null)?.trim()
-  if (!raw) return null
-  const n = Number(raw)
-  return Number.isNaN(n) ? null : n
-}
-
 function parseDate(value: FormDataEntryValue | null): Date | null {
   const raw = (value as string | null)?.trim()
   if (!raw) return null
@@ -45,65 +38,36 @@ function parseDate(value: FormDataEntryValue | null): Date | null {
   return Number.isNaN(d.getTime()) ? null : d
 }
 
+// Everything else on this row (preferred/hybrid hours, recommendation,
+// contract & employment status, etc.) is sourced from assignments, HR
+// records, or — once built — each VA's Team Leader via TMF. The
+// departmental view only ever writes these three DMF columns: DMF CHANGE
+// AVAILABILITY, DMF REMARKS and DMF DATE CHANGED.
 export async function updateAvailability(vaProfileId: string, formData: FormData) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
   await assertVAInScope(actor, vaProfileId)
 
   const before = await prisma.vAProfile.findUnique({
     where: { id: vaProfileId },
-    select: {
-      availabilityStatus: true,
-      preferredWorkHours: true,
-      hybridHours: true,
-      isRecommended: true,
-      availabilityChangedAt: true,
-    },
+    select: { availabilityStatus: true, availabilityRemarks: true, availabilityChangedAt: true },
   })
   if (!before) return { error: 'VA not found' }
 
   const availabilityStatus = (formData.get('availabilityStatus') as Availability) || 'AVAILABLE'
-  const preferredWorkHours = parseNumber(formData.get('preferredWorkHours'))
-  const hybridHours = parseNumber(formData.get('hybridHours'))
+  const availabilityRemarks = ((formData.get('availabilityRemarks') as string) ?? '').trim() || null
+  const changedAt = parseDate(formData.get('availabilityChangedAt')) ?? new Date()
 
-  if (preferredWorkHours != null && (preferredWorkHours < 0 || preferredWorkHours > 168)) {
-    return { error: 'Preferred hours must be between 0 and 168' }
-  }
-  if (hybridHours != null && hybridHours < 0) {
-    return { error: 'Hybrid hours cannot be negative' }
-  }
-
-  // The sheet's DMF DATE CHANGED only moves when the availability itself
-  // actually changes — touching a remark shouldn't reset the staleness clock
-  // and silently clear an overdue flag. The explicit review date wins if the
-  // user set one; otherwise it's stamped a review window out, which is what
-  // the sheet's DMF UPDATE STATUS DATE is (a month after the change).
-  const availabilityChanged =
-    availabilityStatus !== before.availabilityStatus ||
-    Number(preferredWorkHours ?? 0) !== Number(before.preferredWorkHours ?? 0) ||
-    Number(hybridHours ?? 0) !== Number(before.hybridHours ?? 0)
-
-  const changedAt = availabilityChanged ? new Date() : before.availabilityChangedAt
-  const explicitReviewDue = parseDate(formData.get('availabilityReviewDueAt'))
-  const reviewDueAt =
-    explicitReviewDue ??
-    (availabilityChanged && changedAt
-      ? new Date(changedAt.getTime() + AVAILABILITY_REVIEW_DAYS * 86_400_000)
-      : undefined)
-
-  const isRecommended = formData.get('isRecommended') === 'on'
+  // DMF UPDATE STATUS DATE is auto — always a review window out from
+  // whatever DMF DATE CHANGED was just set to, never entered by hand.
+  const reviewDueAt = new Date(changedAt.getTime() + AVAILABILITY_REVIEW_DAYS * 86_400_000)
 
   await prisma.vAProfile.update({
     where: { id: vaProfileId },
     data: {
       availabilityStatus,
-      preferredWorkHours,
-      hybridHours,
-      isRecommended,
-      recommendedForClient: ((formData.get('recommendedForClient') as string) ?? '').trim() || null,
-      recommendedUntil: ((formData.get('recommendedUntil') as string) ?? '').trim() || null,
-      availabilityRemarks: ((formData.get('availabilityRemarks') as string) ?? '').trim() || null,
+      availabilityRemarks,
       availabilityChangedAt: changedAt,
-      ...(reviewDueAt !== undefined ? { availabilityReviewDueAt: reviewDueAt } : {}),
+      availabilityReviewDueAt: reviewDueAt,
     },
   })
 
@@ -114,11 +78,14 @@ export async function updateAvailability(vaProfileId: string, formData: FormData
     entityId: vaProfileId,
     before: {
       availabilityStatus: before.availabilityStatus,
-      preferredWorkHours: before.preferredWorkHours ? Number(before.preferredWorkHours) : null,
-      hybridHours: before.hybridHours ? Number(before.hybridHours) : null,
-      isRecommended: before.isRecommended,
+      availabilityRemarks: before.availabilityRemarks,
+      availabilityChangedAt: before.availabilityChangedAt?.toISOString() ?? null,
     },
-    after: { availabilityStatus, preferredWorkHours, hybridHours, isRecommended },
+    after: {
+      availabilityStatus,
+      availabilityRemarks,
+      availabilityChangedAt: changedAt.toISOString(),
+    },
     metadata: { surface: 'va-availability' },
   })
 
