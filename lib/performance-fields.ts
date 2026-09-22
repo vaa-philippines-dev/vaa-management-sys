@@ -43,7 +43,11 @@ export type KpiCell = {
   milestone: KpiMilestone
   dueDate: string
   completed: boolean
+  completedAt: string | null
   overdue: boolean
+  // Checked in after its own due date — the signal that surfaces a check-in
+  // done late instead of just quietly landing in the "done" pile.
+  late: boolean
 }
 
 export type PerformanceRow = {
@@ -64,4 +68,35 @@ export type PerformanceRow = {
   kpiOverdue: number
 
   feedback: Record<FeedbackWindow, FeedbackCell>
+}
+
+export type PerformanceSummary = {
+  engagements: number
+  kpiChecksDone: number
+  kpiChecksTotal: number
+  overdueEngagements: number
+  lateCheckIns: number
+  feedbackAwaitingRelay: number
+}
+
+export function computePerformanceSummary(rows: PerformanceRow[]): PerformanceSummary {
+  return rows.reduce(
+    (acc, r) => {
+      acc.engagements++
+      acc.kpiChecksTotal += r.kpi.length
+      acc.kpiChecksDone += r.kpiDone
+      if (r.kpiOverdue > 0) acc.overdueEngagements++
+      acc.lateCheckIns += r.kpi.filter((c) => c.late).length
+      if (FEEDBACK_WINDOWS.some((w) => r.feedback[w].awaitingRelay)) acc.feedbackAwaitingRelay++
+      return acc
+    },
+    {
+      engagements: 0,
+      kpiChecksDone: 0,
+      kpiChecksTotal: 0,
+      overdueEngagements: 0,
+      lateCheckIns: 0,
+      feedbackAwaitingRelay: 0,
+    }
+  )
 }

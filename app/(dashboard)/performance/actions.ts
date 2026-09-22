@@ -111,36 +111,52 @@ export async function saveClientFeedback(
   return { ok: true }
 }
 
-// The KPI grid's own toggle. assignments/actions.ts already has
-// completeKpiCheck(), but it only ever marks done — correcting a check-in
-// ticked by mistake needs the other direction too.
-export async function setKpiCheckCompleted(checkId: string, completed: boolean) {
+// The KPI grid's own toggle, driven by the check-in modal. assignments/
+// actions.ts already has completeKpiCheck(), but it only ever stamps
+// "now" — this one takes a caller-chosen date instead, so a check-in done
+// yesterday (or backfilled from a paper note) doesn't get recorded as
+// happening at the moment someone got around to ticking it, and so a
+// check-in completed after its own due date can be flagged late rather
+// than blending in with the ones done on time.
+export async function setKpiCheckCompleted(checkId: string, formData: FormData) {
   const actor = await requireRole(...ASSIGNMENT_MUTATOR_ROLES)
 
   const check = await prisma.assignmentKpiCheck.findUnique({
     where: { id: checkId },
-    select: { assignmentId: true, milestone: true },
+    select: { assignmentId: true, milestone: true, dueDate: true, completed: true, completedAt: true },
   })
   if (!check) return { error: 'Checkpoint not found' }
   await assertAssignmentInScope(actor, check.assignmentId)
+
+  const completed = formData.get('completed') === 'on'
+  let completedAt: Date | null = null
+  if (completed) {
+    completedAt = parseDate(formData.get('completedAt')) ?? new Date()
+    if (completedAt.getTime() > Date.now()) {
+      return { error: 'Check-in date cannot be in the future' }
+    }
+  }
 
   await prisma.assignmentKpiCheck.update({
     where: { id: checkId },
     data: {
       completed,
-      completedAt: completed ? new Date() : null,
+      completedAt,
       completedById: completed ? actor.id : null,
     },
   })
+
+  const late = completed && completedAt !== null && completedAt > check.dueDate
 
   await logAudit({
     actorId: actor.id,
     action: 'UPDATE',
     entityType: 'AssignmentKpiCheck',
     entityId: checkId,
-    after: { completed, milestone: check.milestone, assignmentId: check.assignmentId },
+    before: { completed: check.completed, completedAt: check.completedAt },
+    after: { completed, completedAt, milestone: check.milestone, assignmentId: check.assignmentId, late },
   })
 
   revalidatePerformance()
-  return { ok: true }
+  return { ok: true, late }
 }

@@ -77,7 +77,7 @@ export async function getPerformanceRows(departmentIds: string[] | null): Promis
           shadowTrainer: { select: { firstName: true, lastName: true } },
         },
       },
-      kpiChecks: { select: { id: true, milestone: true, dueDate: true, completed: true } },
+      kpiChecks: { select: { id: true, milestone: true, dueDate: true, completed: true, completedAt: true } },
       clientFeedback: true,
     },
     orderBy: { startDate: 'desc' },
@@ -99,7 +99,9 @@ export async function getPerformanceRows(departmentIds: string[] | null): Promis
           milestone: c.milestone,
           dueDate: c.dueDate.toISOString(),
           completed: c.completed,
+          completedAt: iso(c.completedAt),
           overdue: !c.completed && c.dueDate < now,
+          late: c.completed && c.completedAt !== null && c.completedAt > c.dueDate,
         },
       ]
     })

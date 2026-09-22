@@ -13,7 +13,7 @@ import { Select } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Modal } from '@/components/ui/modal'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { AlertTriangle, MessageSquareQuote, LineChart, Megaphone } from 'lucide-react'
+import { AlertTriangle, MessageSquareQuote, LineChart, Megaphone, Clock } from 'lucide-react'
 import { KPI_MILESTONE_LABELS } from '@/lib/kpi-checks-labels'
 import {
   FEEDBACK_WINDOWS,
@@ -22,6 +22,7 @@ import {
   type PerformanceRow,
   type FeedbackWindow,
   type FeedbackCell,
+  type KpiCell,
 } from '@/lib/performance-fields'
 import { saveClientFeedback, setKpiCheckCompleted } from '@/app/(dashboard)/performance/actions'
 
@@ -43,6 +44,11 @@ function toDateInput(iso: string | null) {
   return iso ? iso.slice(0, 10) : ''
 }
 
+function daysBetween(a: string, b: string) {
+  const msPerDay = 24 * 60 * 60 * 1000
+  return Math.round((new Date(`${a}T00:00:00.000Z`).getTime() - new Date(`${b}T00:00:00.000Z`).getTime()) / msPerDay)
+}
+
 export function PerformanceBoard({
   rows,
   canMutate,
@@ -55,6 +61,10 @@ export function PerformanceBoard({
   const router = useRouter()
   const [editing, setEditing] = useState<{ row: PerformanceRow; window: FeedbackWindow } | null>(null)
   const [saving, setSaving] = useState(false)
+  const [editingKpi, setEditingKpi] = useState<{ row: PerformanceRow; check: KpiCell } | null>(null)
+  const [kpiCompletedChecked, setKpiCompletedChecked] = useState(false)
+  const [kpiDateValue, setKpiDateValue] = useState('')
+  const [savingKpi, setSavingKpi] = useState(false)
   const [search, setSearch] = useState('')
   const [overdueOnly, setOverdueOnly] = useState(false)
   const [awaitingRelayOnly, setAwaitingRelayOnly] = useState(false)
@@ -79,13 +89,31 @@ export function PerformanceBoard({
     FEEDBACK_WINDOWS.some((w) => r.feedback[w].awaitingRelay)
   ).length
 
-  const onToggleCheck = async (checkId: string, next: boolean) => {
-    const res = await setKpiCheckCompleted(checkId, next)
-    if (res?.error) {
-      toast.error(res.error)
-      return
+  const openKpiModal = (row: PerformanceRow, check: KpiCell) => {
+    setEditingKpi({ row, check })
+    setKpiCompletedChecked(check.completed)
+    setKpiDateValue(toDateInput(check.completedAt) || toDateInput(new Date().toISOString()))
+  }
+
+  const kpiDueInput = editingKpi ? toDateInput(editingKpi.check.dueDate) : ''
+  const kpiDayDiff = kpiCompletedChecked && kpiDateValue && kpiDueInput ? daysBetween(kpiDateValue, kpiDueInput) : null
+  const kpiIsLate = kpiDayDiff !== null && kpiDayDiff > 0
+
+  const onSubmitKpi = async (formData: FormData) => {
+    if (!editingKpi) return
+    setSavingKpi(true)
+    try {
+      const res = await setKpiCheckCompleted(editingKpi.check.id, formData)
+      if (res?.error) {
+        toast.error(res.error)
+        return
+      }
+      toast.success(res?.late ? 'Check-in saved — flagged as late' : 'Check-in saved')
+      setEditingKpi(null)
+      router.refresh()
+    } finally {
+      setSavingKpi(false)
     }
-    router.refresh()
   }
 
   const onSubmit = async (formData: FormData) => {
@@ -185,12 +213,22 @@ export function PerformanceBoard({
                           key={c.id}
                           type="button"
                           disabled={!canMutate}
-                          onClick={() => onToggleCheck(c.id, !c.completed)}
-                          title={`${KPI_MILESTONE_LABELS[c.milestone]} · due ${formatDate(c.dueDate)}${c.completed ? ' · done' : c.overdue ? ' · overdue' : ''}`}
+                          onClick={() => openKpiModal(r, c)}
+                          title={`${KPI_MILESTONE_LABELS[c.milestone]} · due ${formatDate(c.dueDate)}${
+                            c.completed
+                              ? c.late
+                                ? ` · checked ${formatDate(c.completedAt)} (late)`
+                                : ` · checked ${formatDate(c.completedAt)} (on time)`
+                              : c.overdue
+                                ? ' · overdue'
+                                : ''
+                          }`}
                           aria-label={`${KPI_MILESTONE_LABELS[c.milestone]} check-in`}
                           className={`h-6 w-7 rounded text-[10px] font-semibold border transition-colors disabled:cursor-default ${
                             c.completed
-                              ? 'bg-success/15 text-success border-success/30'
+                              ? c.late
+                                ? 'bg-destructive/15 text-destructive border-destructive/30'
+                                : 'bg-success/15 text-success border-success/30'
                               : c.overdue
                                 ? 'bg-warning/10 text-warning border-warning/30'
                                 : 'bg-transparent text-muted-foreground border-muted-foreground/25 hover:border-muted-foreground/50'
@@ -203,6 +241,12 @@ export function PerformanceBoard({
                     <div className="text-xs text-muted-foreground mt-1">
                       {r.kpiDone} / {r.kpi.length} done
                       {r.kpiOverdue > 0 && <span className="text-warning"> &middot; {r.kpiOverdue} overdue</span>}
+                      {r.kpi.some((c) => c.late) && (
+                        <span className="text-destructive">
+                          {' '}
+                          &middot; {r.kpi.filter((c) => c.late).length} late
+                        </span>
+                      )}
                     </div>
                   </TableCell>
                   {FEEDBACK_WINDOWS.map((w) => (
@@ -324,6 +368,81 @@ export function PerformanceBoard({
               </Button>
               <Button type="submit" disabled={saving}>
                 {saving ? 'Saving...' : 'Save'}
+              </Button>
+            </div>
+          </form>
+        )}
+      </Modal>
+
+      <Modal
+        open={editingKpi !== null}
+        onOpenChange={(next) => {
+          if (!next) setEditingKpi(null)
+        }}
+        title={
+          editingKpi
+            ? `${KPI_MILESTONE_LABELS[editingKpi.check.milestone]} check-in — ${editingKpi.row.vaName}`
+            : ''
+        }
+        description={editingKpi ? editingKpi.row.clientName : undefined}
+        size="sm"
+      >
+        {editingKpi && (
+          <form action={onSubmitKpi} className="space-y-3">
+            <p className="text-xs text-muted-foreground">
+              Due {formatDate(editingKpi.check.dueDate)}
+            </p>
+
+            <div className="flex items-center gap-2">
+              <input
+                id="completed"
+                name="completed"
+                type="checkbox"
+                checked={kpiCompletedChecked}
+                onChange={(e) => setKpiCompletedChecked(e.target.checked)}
+                className="h-4 w-4 rounded border-input"
+              />
+              <Label htmlFor="completed" className="mb-0">
+                Checked in
+              </Label>
+            </div>
+
+            <div>
+              <Label htmlFor="completedAt">Date checked</Label>
+              <Input
+                id="completedAt"
+                name="completedAt"
+                type="date"
+                value={kpiDateValue}
+                onChange={(e) => setKpiDateValue(e.target.value)}
+                disabled={!kpiCompletedChecked}
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Pick the day the check-in actually happened — it doesn&apos;t have to be today.
+              </p>
+            </div>
+
+            {kpiCompletedChecked && kpiDayDiff !== null && (
+              <div
+                className={`flex items-center gap-1.5 text-xs rounded-md px-2 py-1.5 ${
+                  kpiIsLate ? 'bg-destructive/10 text-destructive' : 'bg-success/10 text-success'
+                }`}
+              >
+                <Clock className="h-3.5 w-3.5 shrink-0" />
+                {kpiIsLate
+                  ? `Checked ${kpiDayDiff} day${kpiDayDiff === 1 ? '' : 's'} after the due date — flagged as late.`
+                  : kpiDayDiff < 0
+                    ? `Checked ${Math.abs(kpiDayDiff)} day${kpiDayDiff === -1 ? '' : 's'} before the due date.`
+                    : 'Checked on the due date — on time.'}
+              </div>
+            )}
+
+            <div className="flex justify-end gap-2 pt-2">
+              <Button type="button" variant="outline" onClick={() => setEditingKpi(null)}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={savingKpi}>
+                {savingKpi ? 'Saving...' : 'Save'}
               </Button>
             </div>
           </form>
