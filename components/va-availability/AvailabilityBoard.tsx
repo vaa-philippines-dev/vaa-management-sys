@@ -13,7 +13,7 @@ import { Select } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Modal } from '@/components/ui/modal'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Pencil, AlertTriangle, CheckCircle2, Star, CalendarRange } from 'lucide-react'
+import { Pencil, AlertTriangle, CheckCircle2, Star, CalendarRange, Info } from 'lucide-react'
 import {
   ALERT_LABELS,
   WORK_PATTERN_LABELS,
@@ -51,6 +51,10 @@ function formatDate(iso: string | null) {
 
 function toDateInput(iso: string | null) {
   return iso ? iso.slice(0, 10) : ''
+}
+
+function todayInput() {
+  return new Date().toISOString().slice(0, 10)
 }
 
 function hours(n: number | null) {
@@ -128,6 +132,17 @@ export function AvailabilityBoard({
 
   return (
     <div className="space-y-4">
+      {canMutate && (
+        <div className="flex items-start gap-2 rounded-lg border bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
+          <Info className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+          <span>
+            Everything below is read-only — booked hours and client count come from active assignments, the
+            rest from HR records and (once built) each VA&apos;s Team Leader. The only things you can change
+            here are <span className="font-medium text-foreground">availability, remarks, and the date changed</span>,
+            via <span className="font-medium text-foreground">Update</span>.
+          </span>
+        </div>
+      )}
       <div className="flex flex-wrap items-center gap-2">
         <Input
           placeholder="Search name, ID, position, team..."
@@ -187,8 +202,8 @@ export function AvailabilityBoard({
                 <TableHead className="text-right">Clients</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Recommended</TableHead>
-                <TableHead>Last updated</TableHead>
-                {canMutate && <TableHead className="w-24"></TableHead>}
+                <TableHead>Availability update</TableHead>
+                {canMutate && <TableHead className="w-32"></TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -242,8 +257,13 @@ export function AvailabilityBoard({
                       <span className="text-xs text-muted-foreground">&mdash;</span>
                     )}
                   </TableCell>
-                  <TableCell>
-                    <div className="text-xs text-muted-foreground">{formatDate(r.availabilityChangedAt)}</div>
+                  <TableCell className="max-w-[12rem]">
+                    <div className="text-xs">{formatDate(r.availabilityChangedAt)}</div>
+                    {r.availabilityRemarks && (
+                      <div className="text-xs text-muted-foreground truncate" title={r.availabilityRemarks}>
+                        {r.availabilityRemarks}
+                      </div>
+                    )}
                     {r.alert !== 'NONE' && (
                       <div className="flex items-center gap-1 text-xs text-warning">
                         <AlertTriangle className="h-3 w-3" />
@@ -253,7 +273,7 @@ export function AvailabilityBoard({
                   </TableCell>
                   {canMutate && (
                     <TableCell>
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center justify-end gap-1">
                         {r.alert !== 'NONE' && (
                           <Button
                             variant="ghost"
@@ -265,13 +285,9 @@ export function AvailabilityBoard({
                             <CheckCircle2 className="h-3.5 w-3.5 text-success" />
                           </Button>
                         )}
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => setEditing(r)}
-                          aria-label="Edit availability"
-                        >
-                          <Pencil className="h-3.5 w-3.5" />
+                        <Button variant="outline" size="sm" onClick={() => setEditing(r)}>
+                          <Pencil className="h-3.5 w-3.5 mr-1.5" />
+                          Update
                         </Button>
                       </div>
                     </TableCell>
@@ -289,18 +305,13 @@ export function AvailabilityBoard({
           if (!next) setEditing(null)
         }}
         title={editing ? editing.name : ''}
-        description="VA availability"
-        size="md"
+        description="Update availability"
+        size="sm"
       >
         {editing && (
           <form action={onSubmit} className="space-y-3">
-            <div className="rounded-lg bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
-              Booked {hours(editing.currentHours)} across {editing.clientCount} client
-              {editing.clientCount === 1 ? '' : 's'} &mdash; read from active assignments, not editable here.
-            </div>
-
             <div>
-              <Label htmlFor="availabilityStatus">Availability status</Label>
+              <Label htmlFor="availabilityStatus">Change availability</Label>
               <Select
                 id="availabilityStatus"
                 name="availabilityStatus"
@@ -315,87 +326,26 @@ export function AvailabilityBoard({
               </Select>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label htmlFor="preferredWorkHours">Preferred hours / week</Label>
-                <Input
-                  id="preferredWorkHours"
-                  name="preferredWorkHours"
-                  type="number"
-                  step="0.5"
-                  min="0"
-                  max="168"
-                  defaultValue={editing.preferredHours ?? ''}
-                />
-              </div>
-              <div>
-                <Label htmlFor="hybridHours">Hybrid hours</Label>
-                <Input
-                  id="hybridHours"
-                  name="hybridHours"
-                  type="number"
-                  step="0.5"
-                  min="0"
-                  defaultValue={editing.hybridHours ?? ''}
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 pt-1">
-              <input
-                id="isRecommended"
-                name="isRecommended"
-                type="checkbox"
-                defaultChecked={editing.isRecommended}
-                className="h-4 w-4 rounded border-input"
-              />
-              <Label htmlFor="isRecommended" className="mb-0">
-                Recommended for placement
-              </Label>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label htmlFor="recommendedForClient">Recommended for</Label>
-                <Input
-                  id="recommendedForClient"
-                  name="recommendedForClient"
-                  defaultValue={editing.recommendedForClient ?? ''}
-                />
-              </div>
-              <div>
-                <Label htmlFor="recommendedUntil">Recommended until</Label>
-                <Input
-                  id="recommendedUntil"
-                  name="recommendedUntil"
-                  placeholder="Not yet started"
-                  defaultValue={editing.recommendedUntil ?? ''}
-                />
-              </div>
-            </div>
-
             <div>
               <Label htmlFor="availabilityRemarks">Remarks</Label>
               <Textarea
                 id="availabilityRemarks"
                 name="availabilityRemarks"
-                rows={2}
+                rows={3}
                 placeholder="e.g. prefers 7PM to 2AM PH time"
                 defaultValue={editing.availabilityRemarks ?? ''}
               />
             </div>
 
             <div>
-              <Label htmlFor="availabilityReviewDueAt">Review due</Label>
+              <Label htmlFor="availabilityChangedAt">Date changed</Label>
               <Input
-                id="availabilityReviewDueAt"
-                name="availabilityReviewDueAt"
+                id="availabilityChangedAt"
+                name="availabilityChangedAt"
                 type="date"
-                defaultValue={toDateInput(editing.availabilityReviewDueAt)}
+                defaultValue={toDateInput(editing.availabilityChangedAt) || todayInput()}
               />
-              <p className="text-xs text-muted-foreground mt-1">
-                Leave blank to reset automatically 30 days out whenever the hours or status change.
-              </p>
+              <p className="text-xs text-muted-foreground mt-1">Review comes due 30 days from this date.</p>
             </div>
 
             <div className="flex justify-end gap-2 pt-2">
