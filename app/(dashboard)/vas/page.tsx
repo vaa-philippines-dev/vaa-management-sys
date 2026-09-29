@@ -39,7 +39,7 @@ const PAGE_SIZE = 20
 
 type SortField = 'name' | 'position' | 'status' | 'engagement' | 'hireDate' | 'eocDate'
 const DEFAULT_SORT: `${SortField}:${'asc' | 'desc'}` = 'hireDate:desc'
-const DEFAULT_STATUS = 'ALL'
+const DEFAULT_STATUS = 'ACTIVE'
 const SORT_FIELDS: SortField[] = ['name', 'position', 'status', 'engagement', 'hireDate', 'eocDate']
 
 function parseSort(raw: string | undefined): { field: SortField; dir: 'asc' | 'desc' } {
@@ -491,8 +491,8 @@ async function VATableSection({
     sortField === 'position' ? { positionSkill: { shortName: sortDir } } :
     sortField === 'status' ? { status: sortDir } :
     sortField === 'engagement' ? { engagementStatus: sortDir } :
-    sortField === 'eocDate' ? { currentEndDate: sortDir } :
-    { currentHireDate: sortDir }
+    sortField === 'eocDate' ? { currentEndDate: { sort: sortDir, nulls: 'last' } } :
+    { currentHireDate: { sort: sortDir, nulls: 'last' } }
 
   const where: Prisma.VAProfileWhereInput = {
     user: { userType: 'VIRTUAL_ASSISTANT', ...userWhere },
