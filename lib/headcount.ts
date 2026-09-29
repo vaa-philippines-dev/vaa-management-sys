@@ -50,9 +50,17 @@ export async function getHeadcountComposition(
       availabilityStatus: true,
       preferredWorkHours: true,
       hybridHours: true,
-      isRecommended: true,
       currentHireDate: true,
-      assignments: { where: { status: 'ACTIVE' }, select: { agreedHours: true } },
+      // All active work, tagged with its client's department: active/idle is
+      // judged on the counted departments' clients only (a shared VA's other
+      // department mustn't make them look placed here), while free capacity
+      // stays a whole-VA figure, same as VA Availability.
+      assignments: { where: { status: 'ACTIVE' }, select: { agreedHours: true, client: { select: { departmentId: true } } } },
+      // Recommendation is per department now (VADepartmentAvailability).
+      departmentAvailabilities: {
+        where: { isRecommended: true, ...(departmentIds === null ? {} : { departmentId: { in: departmentIds } }) },
+        select: { id: true },
+      },
     },
   })
 
@@ -80,9 +88,14 @@ export async function getHeadcountComposition(
   let recommendedIdle = 0
 
   for (const p of profiles) {
-    const hasClient = p.assignments.length > 0
+    const inScope =
+      departmentIds === null
+        ? p.assignments
+        : p.assignments.filter((a) => a.client.departmentId !== null && departmentIds.includes(a.client.departmentId))
+    const hasClient = inScope.length > 0
     const preferred = p.preferredWorkHours == null ? null : Number(p.preferredWorkHours)
-    const bookedHours = p.assignments.reduce((s, a) => s + Number(a.agreedHours), 0)
+    const bookedHours = inScope.reduce((s, a) => s + Number(a.agreedHours), 0)
+    const totalBookedHours = p.assignments.reduce((s, a) => s + Number(a.agreedHours), 0)
     const hybrid = p.hybridHours == null ? null : Number(p.hybridHours)
 
     const exiting =
@@ -112,14 +125,14 @@ export async function getHeadcountComposition(
       else idleUnassigned++
     }
 
-    const free = computeAvailableHours(preferred, bookedHours, hybrid)
+    const free = computeAvailableHours(preferred, totalBookedHours, hybrid)
     if (free > 0) {
       if (free >= FULL_TIME_HOURS) availFT++
       else if (free >= PART_TIME_FLOOR_HOURS) availPT++
       else availPTMin++
     }
 
-    if (p.isRecommended) {
+    if (p.departmentAvailabilities.length > 0) {
       recommended++
       if (!hasClient) recommendedIdle++
     }

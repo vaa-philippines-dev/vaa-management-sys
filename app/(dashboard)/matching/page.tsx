@@ -1,6 +1,8 @@
 import { prisma } from '@/lib/prisma'
+import type { Prisma } from '@/src/generated/prisma/client'
 import { getCurrentUser, AGENT_MUTATOR_ROLES } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
+import { getViewableDepartmentIds, clientScopeWhere, vaProfileScopeWhere } from '@/lib/scope'
 import { redirect } from 'next/navigation'
 import { Card, CardContent } from '@/components/ui/card'
 import { Handshake } from 'lucide-react'
@@ -71,10 +73,25 @@ export default async function MatchingPage({
   const departmentFilter = department && department !== 'ALL' ? department : null
   const searchQuery = q?.trim().toLowerCase() || null
 
+  // A suggestion belongs to its client's department; client-less ones (e.g. a
+  // VA-only flag) fall back to the VA's memberships. Rows with neither stay
+  // admin-only, since there's no department to attribute them to.
+  const deptIds = getViewableDepartmentIds(currentUser)
+  const scopeKey = deptIds === null ? 'all' : [...deptIds].sort().join(',')
+  const suggestionScope: Prisma.AgentSuggestionWhereInput =
+    deptIds === null
+      ? {}
+      : {
+          OR: [
+            { client: clientScopeWhere(deptIds) },
+            { clientId: null, vaProfile: vaProfileScopeWhere(deptIds) },
+          ],
+        }
+
   const [suggestions, pendingCounts, departments] = await Promise.all([
-    cached(`matching:suggestions:${statusFilter}`, [CACHE_TAGS.agent], 10, () =>
+    cached(`matching:suggestions:${statusFilter}:${scopeKey}`, [CACHE_TAGS.agent], 10, () =>
       prisma.agentSuggestion.findMany({
-        where: statusFilter === 'ALL' ? {} : { status: statusFilter },
+        where: { ...(statusFilter === 'ALL' ? {} : { status: statusFilter }), ...suggestionScope },
         include: {
           client: {
             select: {
@@ -95,13 +112,13 @@ export default async function MatchingPage({
         take: 300,
       })
     ),
-    cached('matching:pendingCounts', [CACHE_TAGS.agent], 10, () =>
-      prisma.agentSuggestion.groupBy({ by: ['kind'], where: { status: 'PENDING' }, _count: { _all: true } })
+    cached(`matching:pendingCounts:${scopeKey}`, [CACHE_TAGS.agent], 10, () =>
+      prisma.agentSuggestion.groupBy({ by: ['kind'], where: { status: 'PENDING', ...suggestionScope }, _count: { _all: true } })
     ),
     // Same query/pattern as serviceDepartments in app/(dashboard)/layout.tsx.
-    cached('matching:departments', [CACHE_TAGS.departments], 60, () =>
+    cached(`matching:departments:${scopeKey}`, [CACHE_TAGS.departments], 60, () =>
       prisma.department.findMany({
-        where: { level: 'SERVICE', status: 'ACTIVE' },
+        where: { level: 'SERVICE', status: 'ACTIVE', ...(deptIds === null ? {} : { id: { in: deptIds } }) },
         select: { id: true, name: true },
         orderBy: { name: 'asc' },
       })

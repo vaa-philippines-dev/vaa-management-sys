@@ -3,10 +3,9 @@ import { google } from 'googleapis'
 import { prisma } from '@/lib/prisma'
 import { Readable } from 'stream'
 import { logAudit } from '@/lib/audit'
-import { requireAuth } from '@/lib/auth'
+import { requireAuth, VA_SENSITIVE_INFO_EDIT_ROLES } from '@/lib/auth'
+import { assertUserInScope, getMutableDepartmentIds } from '@/lib/scope'
 import { getDriveAuth, getRootFolderId, findOrCreateFolder } from '@/lib/google/drive'
-
-const HR_UPLOAD_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'HR']
 
 const ALLOWED_MIME_TYPES = new Set([
   'image/jpeg',
@@ -40,9 +39,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid fieldName' }, { status: 400 })
     }
 
+    // These three slots are the VA's 201 Files (passport, PhilHealth, signed
+    // contract) — sensitive per VA_SENSITIVE_INFO_EDIT_ROLES, so staff uploads
+    // are HR/admin-only, same gate as app/api/upload/document/route.ts. A VA
+    // uploading to their own record is unchanged. The department-scope check is
+    // a no-op for today's HR/admin set but keeps this route safe if that widens.
     const isSelf = user.userType === 'VIRTUAL_ASSISTANT' && user.id === profileId
-    if (!isSelf && !HR_UPLOAD_ROLES.includes(user.systemRole)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    if (!isSelf) {
+      if (!VA_SENSITIVE_INFO_EDIT_ROLES.includes(user.systemRole)) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+      }
+      try {
+        await assertUserInScope(getMutableDepartmentIds(user), profileId)
+      } catch {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+      }
     }
 
     if (!ALLOWED_MIME_TYPES.has(file.type)) {

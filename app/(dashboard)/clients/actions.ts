@@ -7,6 +7,7 @@ import { redirect } from 'next/navigation'
 import { isServiceLevel, DepartmentValidationError } from '@/lib/departments'
 import { requireRole, CLIENT_MUTATOR_ROLES } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
+import { getMutableDepartmentIds, assertDepartmentInScope, assertClientInScope } from '@/lib/scope'
 import { getIntakeFieldsForDepartment, INTAKE_FIELD_CATALOG, type IntakeFieldKey } from '@/lib/clients/intake-fields'
 import { CLIENT_STATUS_LABEL } from '@/lib/clients/display'
 
@@ -29,6 +30,18 @@ function buildFormDetails(formData: FormData): Record<string, string> | undefine
   const vaConnectionDate = formData.get('vaConnectionDate') as string
   if (vaConnectionDate) details.vaConnectionDate = vaConnectionDate
   return Object.keys(details).length > 0 ? details : undefined
+}
+
+// Existing clients: own department(s) only. STAFF may also edit a client they
+// personally manage, mirroring what /clients shows them.
+async function assertCanMutateClient(actor: Awaited<ReturnType<typeof requireRole>>, clientId: string) {
+  const ids = getMutableDepartmentIds(actor)
+  if (ids === null) return
+  if (actor.systemRole === 'STAFF') {
+    const managed = await prisma.client.count({ where: { id: clientId, managerId: actor.id } })
+    if (managed > 0) return
+  }
+  await assertClientInScope(ids, clientId)
 }
 
 function parseDateField(formData: FormData, key: string): Date | undefined {
@@ -61,6 +74,10 @@ export async function createClient(formData: FormData) {
   const meetingDate = parseDateField(formData, 'meetingDate')
   const targetStartDate = parseDateField(formData, 'targetStartDate')
   const formDetails = buildFormDetails(formData)
+
+  // Scoped users must file the client under one of their own departments
+  // (a null department would create a client nobody scoped can see).
+  assertDepartmentInScope(getMutableDepartmentIds(actor), departmentId)
 
   const department = departmentId
     ? await prisma.department.findUnique({ where: { id: departmentId }, select: { level: true, name: true, shortName: true, acronym: true } })
@@ -212,10 +229,17 @@ export async function updateClient(id: string, formData: FormData) {
     }
   }
 
+  await assertCanMutateClient(actor, id)
+
   const before = await prisma.client.findUnique({
     where: { id },
     select: { name: true, contactName: true, contactEmail: true, contactPhone: true, platform: true, industry: true, timezone: true, website: true, isActive: true, onHold: true, status: true, managerId: true, departmentId: true },
   })
+  if (!before) throw new Error('Client not found')
+  // Moving a client (or clearing its department) must land in the actor's scope too.
+  if ((departmentId || null) !== before.departmentId) {
+    assertDepartmentInScope(getMutableDepartmentIds(actor), departmentId)
+  }
 
   await prisma.client.update({
     where: { id },
@@ -260,6 +284,8 @@ export async function renameClient(id: string, name: string) {
 
   const trimmed = name.trim()
   if (!trimmed) throw new Error('Client name is required')
+
+  await assertCanMutateClient(actor, id)
 
   const before = await prisma.client.findUnique({ where: { id }, select: { name: true } })
   if (!before) throw new Error('Client not found')
@@ -404,6 +430,12 @@ export async function bulkImportClients(departmentId: string, rowsInput: ClientC
     select: { id: true, name: true, shortName: true, acronym: true, level: true },
   })
   if (!department) throw new Error('Department not found')
+  // One department per import, so the whole import is rejected rather than
+  // row-by-row; existing-client matching below is confined to it as well.
+  const mutableIds = getMutableDepartmentIds(actor)
+  if (mutableIds !== null && !mutableIds.includes(department.id)) {
+    throw new Error(`Forbidden: you can't import clients into ${department.name} — it's outside your department scope`)
+  }
   if (department.level !== 'SERVICE') {
     throw new DepartmentValidationError([{ field: 'departmentId', message: 'Clients can only be assigned to Service-level departments' }])
   }

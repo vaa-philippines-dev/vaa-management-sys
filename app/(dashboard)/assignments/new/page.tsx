@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser, ASSIGNMENT_MUTATOR_ROLES } from '@/lib/auth'
 import { redirect } from 'next/navigation'
+import { getMutableDepartmentIds, clientScopeWhere, vaProfileScopeWhere } from '@/lib/scope'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { AssignmentForm } from '@/components/assignments/AssignmentForm'
@@ -17,10 +18,14 @@ export default async function NewAssignmentPage({
 
   const { clientId } = await searchParams
 
+  // Pickers only offer what createAssignment() will accept: clients in the
+  // viewer's departments and VAs with an active membership in one of them.
+  const deptIds = getMutableDepartmentIds(currentUser)
+
   const [clients, vas] = await Promise.all([
-    prisma.client.findMany({ where: { status: 'ACTIVE' }, orderBy: { name: 'asc' } }),
+    prisma.client.findMany({ where: { status: 'ACTIVE', ...clientScopeWhere(deptIds) }, orderBy: { name: 'asc' } }),
     prisma.vAProfile.findMany({
-      where: { status: 'ACTIVE' },
+      where: { status: 'ACTIVE', ...vaProfileScopeWhere(deptIds) },
       include: { user: true, vaSkills: { include: { skill: true } } },
       orderBy: { user: { firstName: 'asc' } },
     }),

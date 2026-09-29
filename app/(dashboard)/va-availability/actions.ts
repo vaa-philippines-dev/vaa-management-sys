@@ -14,19 +14,24 @@ import { logAudit } from '@/lib/audit'
 import { AVAILABILITY_REVIEW_DAYS } from '@/lib/va-availability-fields'
 import type { Availability } from '@/src/generated/prisma/enums'
 
+// The department is part of the key, not inferred from the VA: a VA in two
+// departments has two availability records, and a manager may only touch the
+// one for a department they manage — even if they also manage the VA's other
+// department, the edit lands on exactly the row they opened.
 async function assertVAInScope(
   actor: Awaited<ReturnType<typeof getCurrentUser>>,
-  vaProfileId: string
+  vaProfileId: string,
+  departmentId: string
 ) {
   const profile = await prisma.vAProfile.findUnique({
     where: { id: vaProfileId },
-    select: { user: { select: { memberships: { where: { endedAt: null }, select: { departmentId: true } } } } },
+    select: { user: { select: { memberships: { where: { endedAt: null, departmentId }, select: { id: true } } } } },
   })
   if (!profile) throw new Error('VA not found')
+  if (profile.user.memberships.length === 0) throw new Error('VA is not in this department')
   if (!actor || isDepartmentUnrestricted(actor)) return
 
-  const managedIds = getManagedDepartmentIds(actor)
-  if (!profile.user.memberships.some((m) => managedIds.includes(m.departmentId))) {
+  if (!getManagedDepartmentIds(actor).includes(departmentId)) {
     throw new Error('Forbidden: department not in your managed scope')
   }
 }
@@ -43,15 +48,14 @@ function parseDate(value: FormDataEntryValue | null): Date | null {
 // records, or — once built — each VA's Team Leader via TMF. The
 // departmental view only ever writes these three DMF columns: DMF CHANGE
 // AVAILABILITY, DMF REMARKS and DMF DATE CHANGED.
-export async function updateAvailability(vaProfileId: string, formData: FormData) {
+export async function updateAvailability(vaProfileId: string, departmentId: string, formData: FormData) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
-  await assertVAInScope(actor, vaProfileId)
+  await assertVAInScope(actor, vaProfileId, departmentId)
 
-  const before = await prisma.vAProfile.findUnique({
-    where: { id: vaProfileId },
-    select: { availabilityStatus: true, availabilityRemarks: true, availabilityChangedAt: true },
+  const before = await prisma.vADepartmentAvailability.findUnique({
+    where: { vaProfileId_departmentId: { vaProfileId, departmentId } },
+    select: { availabilityStatus: true, remarks: true, changedAt: true },
   })
-  if (!before) return { error: 'VA not found' }
 
   const availabilityStatus = (formData.get('availabilityStatus') as Availability) || 'AVAILABLE'
   const availabilityRemarks = ((formData.get('availabilityRemarks') as string) ?? '').trim() || null
@@ -61,14 +65,16 @@ export async function updateAvailability(vaProfileId: string, formData: FormData
   // whatever DMF DATE CHANGED was just set to, never entered by hand.
   const reviewDueAt = new Date(changedAt.getTime() + AVAILABILITY_REVIEW_DAYS * 86_400_000)
 
-  await prisma.vAProfile.update({
-    where: { id: vaProfileId },
-    data: {
-      availabilityStatus,
-      availabilityRemarks,
-      availabilityChangedAt: changedAt,
-      availabilityReviewDueAt: reviewDueAt,
-    },
+  const data = {
+    availabilityStatus,
+    remarks: availabilityRemarks,
+    changedAt,
+    reviewDueAt,
+  }
+  await prisma.vADepartmentAvailability.upsert({
+    where: { vaProfileId_departmentId: { vaProfileId, departmentId } },
+    create: { vaProfileId, departmentId, ...data },
+    update: data,
   })
 
   await logAudit({
@@ -76,10 +82,11 @@ export async function updateAvailability(vaProfileId: string, formData: FormData
     action: 'UPDATE',
     entityType: 'VAProfile',
     entityId: vaProfileId,
+    departmentId,
     before: {
-      availabilityStatus: before.availabilityStatus,
-      availabilityRemarks: before.availabilityRemarks,
-      availabilityChangedAt: before.availabilityChangedAt?.toISOString() ?? null,
+      availabilityStatus: before?.availabilityStatus ?? null,
+      availabilityRemarks: before?.remarks ?? null,
+      availabilityChangedAt: before?.changedAt?.toISOString() ?? null,
     },
     after: {
       availabilityStatus,
@@ -100,17 +107,16 @@ export async function updateAvailability(vaProfileId: string, formData: FormData
 // record without changing it, which clears the overdue flag and restarts the
 // review window. Separate from updateAvailability() precisely because that
 // one must NOT reset the clock on an unrelated edit.
-export async function confirmAvailability(vaProfileId: string) {
+export async function confirmAvailability(vaProfileId: string, departmentId: string) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
-  await assertVAInScope(actor, vaProfileId)
+  await assertVAInScope(actor, vaProfileId, departmentId)
 
   const now = new Date()
-  await prisma.vAProfile.update({
-    where: { id: vaProfileId },
-    data: {
-      availabilityChangedAt: now,
-      availabilityReviewDueAt: new Date(now.getTime() + AVAILABILITY_REVIEW_DAYS * 86_400_000),
-    },
+  const data = { changedAt: now, reviewDueAt: new Date(now.getTime() + AVAILABILITY_REVIEW_DAYS * 86_400_000) }
+  await prisma.vADepartmentAvailability.upsert({
+    where: { vaProfileId_departmentId: { vaProfileId, departmentId } },
+    create: { vaProfileId, departmentId, ...data },
+    update: data,
   })
 
   await logAudit({
@@ -118,6 +124,7 @@ export async function confirmAvailability(vaProfileId: string) {
     action: 'UPDATE',
     entityType: 'VAProfile',
     entityId: vaProfileId,
+    departmentId,
     after: { availabilityConfirmedAt: now.toISOString() },
     metadata: { surface: 'va-availability' },
   })

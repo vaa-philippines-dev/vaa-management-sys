@@ -6,6 +6,7 @@ import { CACHE_TAGS } from '@/lib/cache'
 import { redirect } from 'next/navigation'
 import { requireAuth } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
+import { getMutableDepartmentIds, assertAssignmentInScope } from '@/lib/scope'
 
 const WORK_LOG_STAFF_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'STAFF', 'HR']
 
@@ -28,8 +29,9 @@ export async function createWorkLog(formData: FormData) {
     if (assignment.vaProfileId !== user.vaProfile?.id) {
       throw new Error('Forbidden')
     }
-  } else if (!WORK_LOG_STAFF_ROLES.includes(user.systemRole)) {
-    throw new Error('Forbidden')
+  } else {
+    if (!WORK_LOG_STAFF_ROLES.includes(user.systemRole)) throw new Error('Forbidden')
+    await assertAssignmentInScope(getMutableDepartmentIds(user), assignmentId)
   }
 
   const workLog = await prisma.workLog.create({

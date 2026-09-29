@@ -59,6 +59,7 @@ export const ModelName = {
   EmploymentRecord: 'EmploymentRecord',
   RoleAssignment: 'RoleAssignment',
   VAProfile: 'VAProfile',
+  VADepartmentAvailability: 'VADepartmentAvailability',
   VAHistory: 'VAHistory',
   Skill: 'Skill',
   DepartmentSkill: 'DepartmentSkill',
@@ -331,6 +332,29 @@ export const VAProfileScalarFieldEnum = {
 } as const
 
 export type VAProfileScalarFieldEnum = (typeof VAProfileScalarFieldEnum)[keyof typeof VAProfileScalarFieldEnum]
+
+
+export const VADepartmentAvailabilityScalarFieldEnum = {
+  id: 'id',
+  vaProfileId: 'vaProfileId',
+  departmentId: 'departmentId',
+  availabilityStatus: 'availabilityStatus',
+  remarks: 'remarks',
+  changedAt: 'changedAt',
+  reviewDueAt: 'reviewDueAt',
+  isRecommended: 'isRecommended',
+  recommendedForClient: 'recommendedForClient',
+  recommendedUntil: 'recommendedUntil',
+  tmfAvailabilityStatus: 'tmfAvailabilityStatus',
+  tmfRemarks: 'tmfRemarks',
+  tmfChangedAt: 'tmfChangedAt',
+  tmfReviewDueAt: 'tmfReviewDueAt',
+  tmfUpdatedById: 'tmfUpdatedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VADepartmentAvailabilityScalarFieldEnum = (typeof VADepartmentAvailabilityScalarFieldEnum)[keyof typeof VADepartmentAvailabilityScalarFieldEnum]
 
 
 export const VAHistoryScalarFieldEnum = {

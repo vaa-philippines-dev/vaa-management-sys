@@ -34,24 +34,35 @@ export const WORK_PATTERN_LABELS: Record<WorkPattern, string> = {
   PART_TIME_ADMIN: 'Part time Admin',
 }
 
+// One row is one VA *in one department* — a VA in both PPC and Amazon is two
+// rows, each with its own DMF/TMF block (VADepartmentAvailability), so
+// neither department's edits can leak into the other's view.
 export type AvailabilityRow = {
+  rowKey: string
   vaProfileId: string
+  departmentId: string
   userId: string
   employeeId: string | null
   name: string
   position: string | null
-  departmentName: string | null
+  departmentName: string
   teamName: string | null
 
   // Hours. `current` and `available` are derived, never stored — see the
-  // VAProfile comment in prisma/schema.prisma.
+  // VAProfile comment in prisma/schema.prisma. `currentHours` and
+  // `clientCount` are this department's clients only; `otherDepartmentHours`
+  // is what the same VA is booked for elsewhere. Available hours subtract
+  // both, since a person's week doesn't grow with each department they join.
   preferredHours: number | null
   currentHours: number
+  otherDepartmentHours: number
   hybridHours: number | null
   availableHours: number
   clientCount: number
 
   workPattern: WorkPattern
+  // This department's DMF CHANGE AVAILABILITY, falling back to the VA's
+  // profile-wide status when the department has never set one.
   availabilityStatus: string
   contractType: string | null
   generalStatus: string
@@ -65,6 +76,17 @@ export type AvailabilityRow = {
   availabilityChangedAt: string | null
   availabilityReviewDueAt: string | null
   alert: AvailabilityAlert
+
+  // TMF block — the VA's Team Leader's own record of the same thing.
+  tmfAvailabilityStatus: string | null
+  tmfRemarks: string | null
+  tmfChangedAt: string | null
+  tmfReviewDueAt: string | null
+  tmfUpdatedByName: string | null
+  tmfAlert: AvailabilityAlert
+  // The sheet's reconciliation signal: the Team Leader and the department
+  // disagree about whether this VA is free. Only raised once both have set one.
+  tmfMismatch: boolean
 }
 
 // AVAILABLE WORK HOURS in the sheet = PREFERRED - CURRENT - HYBRID, floored

@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
+import { getViewableDepartmentIds } from '@/lib/scope'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -36,6 +37,15 @@ export default async function ClientDetailPage({
   })
 
   if (!client) notFound()
+
+  // Same scope as the /clients list: own department(s), plus clients a STAFF
+  // user personally manages. 404 rather than 403 so ids can't be probed.
+  const deptIds = getViewableDepartmentIds(currentUser)
+  const inScope =
+    deptIds === null ||
+    (client.departmentId !== null && deptIds.includes(client.departmentId)) ||
+    (currentUser.systemRole === 'STAFF' && client.managerId === currentUser.id)
+  if (!inScope) notFound()
 
   return (
     <div className="space-y-6">

@@ -49,7 +49,7 @@ export default async function OffboardingDetailPage({
           },
         },
       },
-      assignment: { select: { client: { select: { name: true } } } },
+      assignment: { select: { client: { select: { name: true, departmentId: true } } } },
       ticket: { select: { id: true, ticketNumber: true } },
       exitSurveyInvite: { select: { token: true, completedAt: true, expiresAt: true } },
       clearance: true,
@@ -74,9 +74,12 @@ export default async function OffboardingDetailPage({
   // here, since their standing to act isn't department-membership-based.
   const readUnrestricted = isDepartmentUnrestricted(user)
   const managedIds = getManagedDepartmentIds(user)
-  const inManagedDepartment = termination.vaProfile.user.memberships.some((m) =>
-    managedIds.includes(m.departmentId)
-  )
+  // An assignment-level case also needs that assignment's client department
+  // in scope, so a shared VA's other-department case stays hidden.
+  const assignmentDeptId = termination.assignment?.client.departmentId
+  const inManagedDepartment =
+    termination.vaProfile.user.memberships.some((m) => managedIds.includes(m.departmentId)) &&
+    (!termination.assignment || (assignmentDeptId != null && managedIds.includes(assignmentDeptId)))
 
   const canEdit =
     VA_MUTATOR_ROLES.includes(user.systemRole) && (readUnrestricted || inManagedDepartment)

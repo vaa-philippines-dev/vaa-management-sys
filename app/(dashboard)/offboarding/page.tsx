@@ -16,6 +16,7 @@ import { UserMinus, Ticket as TicketIcon } from 'lucide-react'
 import { OffboardingStatusBadge, OffboardingTypeBadge } from '@/components/offboarding/OffboardingStatusBadge'
 import { CopyLinkCard } from '@/components/offboarding/CopyLinkCard'
 import type { ExitClearanceDepartment } from '@/src/generated/prisma/enums'
+import type { Prisma } from '@/src/generated/prisma/client'
 
 const ALL_CLEARANCE_DEPARTMENTS: ExitClearanceDepartment[] = [
   'SERVICE_DEPARTMENT',
@@ -40,12 +41,16 @@ export default async function OffboardingPage() {
   // departments they're actually a member of.
   const readUnrestricted = isDepartmentUnrestricted(user)
   const managedIds = getManagedDepartmentIds(user)
-  const departmentScope =
+  // A case tied to one assignment belongs to that client's department, not
+  // every department the VA is in — a PPC manager mustn't see a shared VA's
+  // Amazon-client offboarding. Whole-VA cases keep the membership scope.
+  const departmentScope: Prisma.TerminationWhereInput =
     canViewAll && !readUnrestricted
       ? {
           vaProfile: {
             user: { memberships: { some: { departmentId: { in: managedIds }, endedAt: null } } },
           },
+          OR: [{ assignmentId: null }, { assignment: { client: { departmentId: { in: managedIds } } } }],
         }
       : {}
 

@@ -1,4 +1,5 @@
-import { getCurrentUser, isDepartmentUnrestricted, getManagedDepartmentIds, getPrimaryDepartment } from '@/lib/auth'
+import { getCurrentUser, getPrimaryDepartment } from '@/lib/auth'
+import { getViewableDepartmentIds } from '@/lib/scope'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { prisma } from '@/lib/prisma'
 import { getFeaturedFavorite } from '@/lib/favorites'
@@ -75,8 +76,10 @@ export default async function DashboardPage({
   // the unrestricted read check (view-only by design, same precedent as
   // hasModuleAccess()'s EXECUTIVE-read carve-out in lib/auth.ts) so this
   // doesn't regress the all-department visibility it already has.
-  const readUnrestricted = isDepartmentUnrestricted(user) || user.systemRole === 'EXECUTIVE'
-  const managedIds = getManagedDepartmentIds(user)
+  // Applies to every non-unrestricted role (Dept/Ops Manager, Team Leader, Staff).
+  const viewableIds = getViewableDepartmentIds(user)
+  const readUnrestricted = viewableIds === null
+  const managedIds = viewableIds ?? []
   if (deptId && !readUnrestricted && !managedIds.includes(deptId)) {
     redirect('/dashboard')
   }
@@ -90,6 +93,14 @@ export default async function DashboardPage({
   if (!deptId && !readUnrestricted) {
     const defaultDeptId = getPrimaryDepartment(user)?.id ?? managedIds[0]
     if (defaultDeptId) redirect(`/dashboard?dept=${defaultDeptId}`)
+    // No department at all: the stats below with deptId=null are company-wide
+    // totals, which a scoped user must never see.
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center">
+        <AlertCircle className="h-10 w-10 text-muted-foreground mb-3" />
+        <p className="text-sm text-muted-foreground">You aren&apos;t a member of any department yet. Please contact an administrator.</p>
+      </div>
+    )
   }
 
   const department = deptId

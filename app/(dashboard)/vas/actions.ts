@@ -5,7 +5,15 @@ import { revalidatePath, revalidateTag } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { CACHE_TAGS } from '@/lib/cache'
 import { randomBytes } from 'node:crypto'
-import { requireRole, requireAdminMutator, requireAuth, VA_MUTATOR_ROLES, OFFBOARDING_DELETE_ROLES, RESIGNATION_OVERRIDE_ROLES } from '@/lib/auth'
+import { requireRole, requireAdminMutator, requireAuth, VA_MUTATOR_ROLES, VA_SENSITIVE_INFO_EDIT_ROLES, OFFBOARDING_DELETE_ROLES, RESIGNATION_OVERRIDE_ROLES } from '@/lib/auth'
+import {
+  getMutableDepartmentIds,
+  assertVAProfileInScope,
+  assertUserInScope,
+  assertAssignmentInScope,
+  assertDepartmentInScope,
+  userScopeWhere,
+} from '@/lib/scope'
 import { google } from 'googleapis'
 import { getDriveAuth, getRootFolderId, findOrCreateFolder } from '@/lib/google/drive'
 import { logAudit } from '@/lib/audit'
@@ -39,6 +47,47 @@ const PAYOUT_SLA_WORKING_DAYS = 7
 
 const ONBOARDING_INVITE_TTL_MS = 7 * 24 * 60 * 60 * 1000 // 7 days
 
+// ── Department scope ─────────────────────────────────────────────────────
+// VA_MUTATOR_ROLES alone let a Dept/Ops Manager or Team Leader mutate any VA
+// in the company by id. Every VA-targeting action below also requires the
+// target to sit in one of the actor's departments (lib/scope.ts — admins/HR
+// get `null` and pass straight through). None of these actions are VA
+// self-service (all gate on staff roles), so there's no self path to preserve.
+type Actor = Awaited<ReturnType<typeof requireAuth>>
+
+async function assertVAInActorScope(actor: Actor, vaProfileId: string) {
+  await assertVAProfileInScope(getMutableDepartmentIds(actor), vaProfileId)
+}
+
+async function assertUserInActorScope(actor: Actor, userId: string) {
+  await assertUserInScope(getMutableDepartmentIds(actor), userId)
+}
+
+// An offboarding case resolves to its VA and — for a single-assignment case —
+// to that assignment's client department too, so a PPC manager can't work the
+// Amazon side of a VA who sits in both.
+async function assertTerminationInActorScope(actor: Actor, terminationId: string) {
+  const ids = getMutableDepartmentIds(actor)
+  if (ids === null) return
+  const t = await prisma.termination.findUnique({
+    where: { id: terminationId },
+    select: { vaProfileId: true, assignmentId: true },
+  })
+  if (!t) throw new Error('Offboarding case not found')
+  await assertVAProfileInScope(ids, t.vaProfileId)
+  if (t.assignmentId) await assertAssignmentInScope(ids, t.assignmentId)
+}
+
+// Per VA_SENSITIVE_INFO_EDIT_ROLES: only these UserProfile fields (Complete
+// Address + Socials sections) stay editable by the wider VA_MUTATOR_ROLES.
+// Everything else updateUserProfile() accepts belongs to Personal Information,
+// Employment & Payment or 201 Files, which are HR/admin-only.
+const NON_SENSITIVE_PROFILE_FIELDS = new Set([
+  'barangay', 'cityMunicipality', 'province', 'houseNumber', 'zipCode', 'landmark', 'address',
+  'regionCode', 'provinceCode', 'cityCode', 'barangayCode',
+  'facebookUrl', 'facebookName', 'linkedinUrl',
+])
+
 // The VA Masterlist's "Add VA" quick-add modal is the only VA creation path —
 // name + department/position only (email optional, auto-generated as a
 // placeholder if blank), no redirect so the modal can close and refresh in
@@ -57,6 +106,10 @@ export async function quickAddVA(formData: FormData) {
   const email = emailInput || `${firstName.toLowerCase()}-va@placeholder.vaa`
   const departmentId = ((formData.get('departmentId') as string) ?? '').trim() || null
   const positionSkillId = ((formData.get('positionSkillId') as string) ?? '').trim() || null
+
+  // A scoped actor must place the new VA in one of their own departments —
+  // a department-less VA would also be invisible to them straight after.
+  assertDepartmentInScope(getMutableDepartmentIds(actor), departmentId)
 
   const existing = await prisma.user.findUnique({ where: { email } })
   if (existing) throw new Error('A user with this email already exists')
@@ -138,6 +191,7 @@ export async function quickAddVA(formData: FormData) {
 // doubles as "resend link" for an unused invite.
 export async function createVAOnboardingInvite(userId: string) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
+  await assertUserInActorScope(actor, userId)
 
   const user = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, systemRole: true } })
   if (!user) throw new Error('VA not found')
@@ -165,6 +219,7 @@ export async function createVAOnboardingInvite(userId: string) {
 
 export async function addVASkill(vaProfileId: string, skillId: string, proficiency: string, yearsExperience?: number) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
+  await assertVAInActorScope(actor, vaProfileId)
 
   const va = await prisma.vAProfile.findUnique({ where: { id: vaProfileId }, select: { userId: true } })
   if (!va) throw new Error('VA profile not found')
@@ -275,6 +330,14 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
   const actor = await requireRole(...VA_MUTATOR_ROLES)
 
   const result: VACsvImportResult = { created: 0, updated: 0, skipped: [] }
+
+  // Scoped actors: rows may only create VAs in, or overwrite VAs already in,
+  // their own departments. Out-of-scope rows are skipped with a reason like
+  // any other bad row rather than failing the whole import.
+  const scopeIds = getMutableDepartmentIds(actor)
+  const inScopeUserIds = scopeIds === null
+    ? null
+    : new Set((await prisma.user.findMany({ where: userScopeWhere(scopeIds), select: { id: true } })).map((u) => u.id))
 
   // A VA can appear multiple times in the source file (department transfers,
   // re-engagements, service changes) — each row is a distinct employment
@@ -535,6 +598,19 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
 
     const departmentInput = (row.department || '').trim()
     const departmentId = departmentInput ? departmentIdByNormalizedName.get(normalizeDeptName(departmentInput)) ?? null : null
+
+    if (scopeIds !== null) {
+      if (matchedUserId && !inScopeUserIds!.has(matchedUserId)) {
+        result.skipped.push({ row: rowNum, reason: 'Existing VA is outside your department scope' })
+        continue
+      }
+      // New VAs need an in-scope department; updates may leave it blank (no
+      // membership change) but can't add one outside the actor's scope.
+      if ((!matchedUserId || departmentId) && !(departmentId && scopeIds.includes(departmentId))) {
+        result.skipped.push({ row: rowNum, reason: 'Department is missing or outside your department scope' })
+        continue
+      }
+    }
 
     // Build one history entry per row in this person's group (current row
     // included) so every employment episode from the file — not just the
@@ -843,8 +919,12 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
   return result
 }
 
+// Only reached from the Employment & Payment section (via updateEmployment)
+// and writes rates, position/level, hire date and 201/contract links — all
+// sensitive per VA_SENSITIVE_INFO_EDIT_ROLES, so the whole action is HR/admin.
 export async function updateVAProfile(vaProfileId: string, formData: FormData) {
-  const actor = await requireRole(...VA_MUTATOR_ROLES)
+  const actor = await requireRole(...VA_SENSITIVE_INFO_EDIT_ROLES)
+  await assertVAInActorScope(actor, vaProfileId)
 
   const data: Record<string, any> = {}
   const allowedFields = [
@@ -923,6 +1003,7 @@ export async function changeVAStatus(
   reason?: string
 ) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
+  await assertVAInActorScope(actor, vaProfileId)
 
   const field = statusType === 'GENERAL' ? 'status' : 'engagementStatus'
   const before = await prisma.vAProfile.findUnique({
@@ -994,6 +1075,9 @@ export async function transferVA(
   newBaseRate?: number
 ) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
+  // Source-side only: moving one of your VAs into another department is a
+  // legitimate hand-off, so the destination isn't scope-checked.
+  await assertVAInActorScope(actor, vaProfileId)
 
   const va = await prisma.vAProfile.findUnique({
     where: { id: vaProfileId },
@@ -1109,6 +1193,7 @@ export async function transferVA(
 
 export async function updateUserProfile(userId: string, formData: FormData) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
+  await assertUserInActorScope(actor, userId)
 
   const data: Record<string, any> = {}
   const userData: Record<string, any> = {}
@@ -1153,6 +1238,15 @@ export async function updateUserProfile(userId: string, formData: FormData) {
   if ('lastName' in data) { userData.lastName = data.lastName; delete data.lastName }
   if ('extName' in data) { userData.extName = data.extName; delete data.extName }
 
+  // This one action backs four sections (Personal, Address, Employment &
+  // Payment, Socials). Rejecting — not silently stripping — sensitive fields
+  // for non-HR roles means a tampered or mis-wired form fails loudly instead
+  // of half-saving; the Address/Socials forms never submit them.
+  if (!VA_SENSITIVE_INFO_EDIT_ROLES.includes(actor.systemRole)) {
+    const blocked = [...Object.keys(userData), ...Object.keys(data)].filter((f) => !NON_SENSITIVE_PROFILE_FIELDS.has(f))
+    if (blocked.length > 0) throw new Error(`Forbidden: only HR can edit ${blocked.join(', ')}`)
+  }
+
   const changedFields: string[] = []
 
   if (Object.keys(userData).length > 0) {
@@ -1196,8 +1290,12 @@ export async function updateUserProfile(userId: string, formData: FormData) {
 
 export { updateUserProfile as updateUserProfileAction }
 
+// The Employment & Payment section — HR/admin-only (VA_SENSITIVE_INFO_EDIT_ROLES).
+// Gated up front so a non-HR caller can't get the VAProfile half written
+// before updateUserProfile() rejects the payment fields. Both callees still
+// run their own scope checks on their respective ids.
 export async function updateEmployment(vaProfileId: string, userId: string, formData: FormData) {
-  await requireRole(...VA_MUTATOR_ROLES)
+  await requireRole(...VA_SENSITIVE_INFO_EDIT_ROLES)
   await updateVAProfile(vaProfileId, formData)
   await updateUserProfile(userId, formData)
 }
@@ -1223,6 +1321,11 @@ export async function terminateVA(formData: FormData) {
   const effectiveDateInput = (formData.get('effectiveDate') as string) || ''
 
   if (!vaProfileId || !type || !resultingStatus) throw new Error('Missing required termination fields')
+
+  // Ending one assignment is scoped by that client's department, not just the
+  // VA's — a PPC manager can't end a shared VA's Amazon engagement.
+  await assertVAInActorScope(actor, vaProfileId)
+  if (assignmentId) await assertAssignmentInScope(getMutableDepartmentIds(actor), assignmentId)
 
   const effective = effectiveDateInput ? new Date(effectiveDateInput) : new Date()
   if (Number.isNaN(effective.getTime())) throw new Error('Invalid effective date')
@@ -1352,6 +1455,9 @@ const CLEARANCE_CHECKLIST_FIELDS = ['equipmentReturned', 'accountsRevoked', 'doc
 
 export async function updateExitClearance(clearanceId: string, formData: FormData) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
+  const owning = await prisma.exitClearance.findUnique({ where: { id: clearanceId }, select: { terminationId: true } })
+  if (!owning) throw new Error('Exit clearance not found')
+  await assertTerminationInActorScope(actor, owning.terminationId)
 
   const data: Record<string, boolean> = {}
   for (const field of CLEARANCE_CHECKLIST_FIELDS) data[field] = formData.get(field) === 'true'
@@ -1415,8 +1521,9 @@ const REHIRE_ELIGIBILITY_VALUES: string[] = ['YES', 'NO', 'SUBJECT_TO_MANAGEMENT
 // ResignationDiscussion.lastWorkingDay for the resignation SOP).
 export async function updateSeparationDetails(terminationId: string, formData: FormData) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
+  await assertTerminationInActorScope(actor, terminationId)
 
-  const separationOutcome = (formData.get('separationOutcome') as string) || null
+  const separationOutcome =(formData.get('separationOutcome') as string) || null
   const separationOutcomeOtherNote = ((formData.get('separationOutcomeOtherNote') as string) || '').trim() || null
   const rehireEligibility = (formData.get('rehireEligibility') as string) || null
   const eocDateInput = (formData.get('eocDate') as string) || ''
@@ -1556,6 +1663,8 @@ export async function initiateResignation(formData: FormData) {
   const assignmentId = (formData.get('assignmentId') as string) || null
   const reason = ((formData.get('reason') as string) || '').trim() || null
   if (!vaProfileId) throw new Error('Missing VA profile')
+  await assertVAInActorScope(actor, vaProfileId)
+  if (assignmentId) await assertAssignmentInScope(getMutableDepartmentIds(actor), assignmentId)
 
   const { terminationId, ticketId } = await createResignationCase({
     actorId: actor.id,
@@ -1589,6 +1698,7 @@ export async function initiateResignation(formData: FormData) {
 // (min. 2 weeks unless an override reason is captured).
 export async function logDiscussionOutcome(terminationId: string, formData: FormData) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
+  await assertTerminationInActorScope(actor, terminationId)
 
   const termination = await prisma.termination.findUnique({ where: { id: terminationId } })
   if (!termination || !termination.isVoluntaryResignation) throw new Error('Not a resignation case')
@@ -1693,6 +1803,7 @@ export async function logDiscussionOutcome(terminationId: string, formData: Form
 // customer name.
 export async function submitResignationLetter(terminationId: string, formData: FormData) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
+  await assertTerminationInActorScope(actor, terminationId)
 
   const termination = await prisma.termination.findUnique({
     where: { id: terminationId },
@@ -1748,6 +1859,7 @@ export async function submitResignationLetter(terminationId: string, formData: F
 // FR-008: Replacement Request pipeline, sourced by the Service Department.
 export async function updateReplacementRequest(terminationId: string, formData: FormData) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
+  await assertTerminationInActorScope(actor, terminationId)
 
   const pipelineStatus = (formData.get('pipelineStatus') as string) || ''
   const validStatuses: ReplacementPipelineStatus[] = ['SOURCED', 'ENDORSED', 'INTERVIEWED', 'APPROVED', 'REJECTED', 'NOT_APPLICABLE']
@@ -1797,6 +1909,7 @@ export async function updateReplacementRequest(terminationId: string, formData: 
 // invite — reusing terminateVA's exact token/expiry pattern.
 export async function logCustomerNotification(terminationId: string) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
+  await assertTerminationInActorScope(actor, terminationId)
 
   const termination = await prisma.termination.findUnique({
     where: { id: terminationId },
@@ -1844,6 +1957,7 @@ const CLEARANCE_DEPARTMENTS: ExitClearanceDepartment[] = [
 // sub-tasks. Only callable once the Exit Survey invite is completed.
 export async function initiateExitClearance(terminationId: string) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
+  await assertTerminationInActorScope(actor, terminationId)
 
   const termination = await prisma.termination.findUnique({
     where: { id: terminationId },
@@ -1961,6 +2075,7 @@ export async function actOnClearanceApproval(approvalId: string, formData: FormD
 // the SOP, where the same reviewer typically does both in sequence.
 export async function submitComplianceReview(terminationId: string, formData: FormData) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
+  await assertTerminationInActorScope(actor, terminationId)
 
   const termination = await prisma.termination.findUnique({ where: { id: terminationId } })
   if (!termination || !termination.isVoluntaryResignation) throw new Error('Not a resignation case')
@@ -2044,6 +2159,7 @@ export async function submitComplianceReview(terminationId: string, formData: Fo
 // than at intake, since the SOP conditions it on full clearance + payout.
 export async function recordFinalPayout(terminationId: string, formData: FormData) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
+  await assertTerminationInActorScope(actor, terminationId)
 
   const amountRaw = (formData.get('amount') as string) || ''
   const amount = Number(amountRaw)
@@ -2122,6 +2238,7 @@ export async function recordFinalPayout(terminationId: string, formData: FormDat
 // sub-module — retrying on failure is just calling this again later.
 export async function markTrainingPassed(terminationId: string) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
+  await assertTerminationInActorScope(actor, terminationId)
 
   const termination = await prisma.termination.findUnique({ where: { id: terminationId } })
   if (!termination || !termination.isVoluntaryResignation) throw new Error('Not a resignation case')
@@ -2156,6 +2273,7 @@ const WITHDRAWABLE_STATUSES = ['INITIATED', 'PENDING_LETTER', 'UNDER_DOCUMENTATI
 // escalation rather than a standard path, which this simply blocks.
 export async function withdrawResignation(terminationId: string, formData: FormData) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
+  await assertTerminationInActorScope(actor, terminationId)
 
   const reason = ((formData.get('reason') as string) || '').trim()
   if (!reason) throw new Error('A reason is required to withdraw a resignation (FR-021).')
@@ -2190,7 +2308,10 @@ export async function updateUserProfileFiles(
   philhealthPhoto: string | null,
   signedContract: string | null
 ) {
-  await requireRole(...VA_MUTATOR_ROLES)
+  // 201 Files are sensitive (VA_SENSITIVE_INFO_EDIT_ROLES) — the editor only
+  // renders this form for HR/admins, and the action now enforces it too.
+  const actor = await requireRole(...VA_SENSITIVE_INFO_EDIT_ROLES)
+  await assertUserInActorScope(actor, userId)
 
   await prisma.userProfile.upsert({
     where: { userId },

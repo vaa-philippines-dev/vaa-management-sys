@@ -142,7 +142,10 @@ export async function getDepartmentTeamAssignments(departmentId: string): Promis
 
   const activeAssignments = vaProfileIds.length
     ? await prisma.assignment.findMany({
-        where: { vaProfileId: { in: vaProfileIds }, status: 'ACTIVE' },
+        // Only this department's clients: a VA shared with another department
+        // must not expose those clients/hours here, and reads IDLE if they have
+        // no active work in this department.
+        where: { vaProfileId: { in: vaProfileIds }, status: 'ACTIVE', client: { departmentId } },
         select: {
           vaProfileId: true,
           agreedHours: true,
@@ -251,7 +254,7 @@ export async function getDepartmentTeamAssignments(departmentId: string): Promis
   const unassignedVaProfileIds = unassignedUsers.map((u) => u.vaProfile?.id).filter((id): id is string => !!id)
   if (unassignedVaProfileIds.length) {
     const unassignedAssignments = await prisma.assignment.findMany({
-      where: { vaProfileId: { in: unassignedVaProfileIds }, status: 'ACTIVE' },
+      where: { vaProfileId: { in: unassignedVaProfileIds }, status: 'ACTIVE', client: { departmentId } },
       select: { vaProfileId: true, agreedHours: true, monthlyHours: true, client: { select: { id: true, name: true } } },
     })
     for (const a of unassignedAssignments) {

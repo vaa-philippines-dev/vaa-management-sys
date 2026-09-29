@@ -66,9 +66,10 @@ Tab → app mapping as it stands:
 | Structure | `/departments/[id]` |
 | Headcount | `/reports/headcount` — monthly hires/EOCs (historical, from dated `EmploymentRecord`s) plus a **point-in-time** composition panel (`lib/headcount.ts`). There is deliberately no historical composition series: nothing snapshots `VAProfile`, so last March's FT/PT split is not reconstructible. A real series needs a scheduled snapshot write. |
 | Performance Monitoring | `/performance` — the KPI grid (`AssignmentKpiCheck`) plus the W2/M6 client feedback cycle (`AssignmentClientFeedback`) |
-| VA Availability | `/va-availability` (`lib/va-availability.ts`). CURRENT/AVAILABLE hours and CLIENT COUNT are **derived from active assignments, never stored** — the sheet keeps those by hand. The sheet's DMF↔TMF reconciliation columns are intentionally not ported: both files are one database here, so only the staleness clock survives. |
+| VA Availability | `/va-availability` (`lib/va-availability.ts`). CURRENT/AVAILABLE hours and CLIENT COUNT are **derived from active assignments, never stored** — the sheet keeps those by hand. Rows are one VA **per department**: the department-owned columns (DMF remarks/date changed/review date/recommendation, and the Team Leader's TMF block) live in `VADepartmentAvailability`, keyed by (VA, department), so a VA in PPC and Amazon has two independent records. Preferred/hybrid hours stay on `VAProfile`. |
 | Projects/Proposals | `/projects` (`Project` model) |
 | VA Preparation | `/va-preparation` (`AssignmentPreparation`, 1:1 with `Assignment`). Backs the third rule of `DepartmentDataIssuesCard`. |
+| (TMF — Team Monitoring File) | `/tmf` (`lib/tmf.ts`). The Team Leader's file for one team: TMF availability (editable only by that team's leaders + admins/HR), client check-ins due, engagements, leave. Access is granted by *leading a team* (most leaders are VA accounts), not by SystemRole; Dept/Ops Managers get their departments' teams read-only. |
 | IDLE VAs, VA-Client Summary, VA Concerns, Pending Dept Requests, Trainings, Discrepancies | not ported |
 
 ## Populating the DMF data (VA Preparation, Performance Monitoring, VA Availability, Projects)
@@ -85,6 +86,10 @@ Two conventions worth knowing before adding a sixth of these:
 
 - **Split every read-model in two.** A `lib/<feature>.ts` that imports Prisma cannot be imported by a `'use client'` component — Turbopack follows the import into `pg` and fails on `dns`. Labels, field lists and row types go in `lib/<feature>-fields.ts`; the Prisma reads stay in `lib/<feature>.ts`. Same split as `lib/leave-roles.ts` vs `lib/leave.ts`.
 - **The sidebar's Department section is hand-written JSX**, not a loop. `departmentRoutes` only feeds favourites and the command palette, so adding an entry there renders nothing — add a `<FavoritableRow>` too. `onGoingRoutes`, `adminRoutes` and `supportRoutes` *are* loops.
+
+## Department scoping
+
+`lib/scope.ts` is the single rule for non-VA staff: admins/HR/EXECUTIVE see every department (`getViewableDepartmentIds()` → `null`), everyone else (DM/OM/TL/Staff) only their active memberships. **An assignment's department is its client's `departmentId`, never the VA's memberships** — a VA in two departments has assignments in both, and each department must only see its own. Use its where-fragments (`assignmentScopeWhere` etc.) for reads and its `assert*InScope` guards in every Server Action that takes a record id. VA-type users are scoped separately (self / own team) by each page.
 
 ## Auth
 

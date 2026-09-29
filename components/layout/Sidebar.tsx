@@ -310,6 +310,16 @@ const departmentRoutes = [
   { label: 'Celebrants', href: '/celebrants', icon: Calendar },
 ]
 
+// The Team Leader's TMF. Kept out of departmentRoutes because who can open it
+// isn't "anyone who sees the Department section" — it's whoever leads a team
+// (usually a VA account) plus Dept/Ops Managers and admins; see lib/tmf.ts.
+const tmfRoute = { label: 'Team Monitoring', href: '/tmf', icon: ClipboardList }
+
+// DMF board pages that redirect VA accounts away (they're manager views). A VA
+// team leader sees the Department section for Teams/Team Assignment, but these
+// would just bounce them to the dashboard, so they're hidden for VA accounts.
+const MANAGER_ONLY_DEPARTMENT_HREFS = new Set(['/va-preparation', '/va-availability', '/performance', '/projects'])
+
 // Rendered in the "Support" section at the very bottom of every sidebar.
 const supportRoutes = [
   { label: 'Tickets', href: '/tickets', icon: Ticket },
@@ -348,6 +358,7 @@ export function Sidebar({
   showDepartmentSection = false,
   canManageLeave = false,
   isLedTeamLeader = false,
+  canOpenTmf = false,
 }: {
   role?: 'MANAGER' | 'VA'
   isAdmin?: boolean
@@ -355,6 +366,7 @@ export function Sidebar({
   showDepartmentSection?: boolean
   canManageLeave?: boolean
   isLedTeamLeader?: boolean
+  canOpenTmf?: boolean
 }) {
   const pathname = usePathname()
   const routes = role === 'VA' ? vaRoutes : managerRoutes
@@ -404,7 +416,10 @@ export function Sidebar({
 
   const allRoutes = [
     ...routes,
-    ...(showDepartmentSection ? departmentRoutes : []),
+    ...(showDepartmentSection
+      ? departmentRoutes.filter((r) => role === 'MANAGER' || !MANAGER_ONLY_DEPARTMENT_HREFS.has(r.href))
+      : []),
+    ...(canOpenTmf ? [tmfRoute] : []),
     ...(isAdmin ? adminRoutes : []),
     ...(role === 'MANAGER' ? hrRoutes : []),
     ...(role === 'MANAGER' && isAdmin ? onGoingRoutes : []),
@@ -550,6 +565,20 @@ export function Sidebar({
                 atMax={atMax}
                 onChanged={setFavorites}
               />
+              {canOpenTmf && (
+                <FavoritableRow
+                  href={tmfRoute.href}
+                  label={tmfRoute.label}
+                  icon={tmfRoute.icon}
+                  isActive={isMainRowActive(tmfRoute.href, isRouteActive(tmfRoute.href))}
+                  canFavorite={canFavorite}
+                  favorite={favorites.find((f) => f.href === tmfRoute.href)}
+                  atMax={atMax}
+                  onChanged={setFavorites}
+                />
+              )}
+              {role === 'MANAGER' && (
+                <>
               <FavoritableRow
                 href="/va-preparation"
                 label="VA Preparation"
@@ -590,6 +619,8 @@ export function Sidebar({
                 atMax={atMax}
                 onChanged={setFavorites}
               />
+                </>
+              )}
 
               <FavoritableRow
                 href="/celebrants"

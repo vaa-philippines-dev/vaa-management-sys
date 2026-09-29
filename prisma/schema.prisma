@@ -374,6 +374,7 @@ model Department {
   channel           Channel?
   teams             Team[]                 @relation("DepartmentTeams")
   projects          Project[]              @relation("DepartmentProjects")
+  vaAvailabilities  VADepartmentAvailability[]
 
   @@unique([name, parentId])
   @@unique([acronym, parentId])
@@ -480,6 +481,7 @@ model User {
   tempLedTeams1                Team[]                 @relation("TeamTempLeader1")
   tempLedTeams2                Team[]                 @relation("TeamTempLeader2")
   teamMemberships              TeamMembership[]       @relation("TeamMember")
+  tmfAvailabilityUpdates       VADepartmentAvailability[] @relation("TmfAvailabilityUpdatedBy")
   onboardingInvite             VAOnboardingInvite?
   onboardingInvitesCreated     VAOnboardingInvite[]   @relation("OnboardingInviteCreator")
   terminationsInitiated        Termination[]          @relation("TerminationInitiator")
@@ -664,6 +666,8 @@ model VAProfile {
 
   agentSuggestions AgentSuggestion[]
 
+  departmentAvailabilities VADepartmentAvailability[]
+
   preparationsReplacing  AssignmentPreparation[] @relation("PreparationReplacementFor")
   preparationsReplacedBy AssignmentPreparation[] @relation("PreparationReplacedBy")
 
@@ -671,6 +675,50 @@ model VAProfile {
   @@index([positionSkillId])
   @@index([currentHireDate])
   @@map("va_profiles")
+}
+
+// One row per (VA, department): the parts of the DMF "VA Availability" tab
+// that belong to a department rather than to the person. A VA in both PPC and
+// Amazon has two of these, so PPC's remarks, recommendation and review clock
+// never overwrite Amazon's. Preferred/hybrid hours stay on VAProfile — those
+// are the person's own week, the same whichever department reads them.
+//
+// The sheet splits the row into a DMF block (the department manager's) and a
+// TMF block (the VA's Team Leader's, from their Team Monitoring File). Both
+// live here because both describe the same VA in the same department; the
+// TMF block is only ever written from /tmf.
+model VADepartmentAvailability {
+  id           String     @id @default(cuid())
+  vaProfileId  String     @map("va_profile_id")
+  vaProfile    VAProfile  @relation(fields: [vaProfileId], references: [id], onDelete: Cascade)
+  departmentId String     @map("department_id")
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+
+  // ── DMF block ──
+  // DMF CHANGE AVAILABILITY. Null means this department hasn't set one, and
+  // readers fall back to VAProfile.availabilityStatus.
+  availabilityStatus   Availability? @map("availability_status")
+  remarks              String?
+  changedAt            DateTime?     @map("changed_at")
+  reviewDueAt          DateTime?     @map("review_due_at")
+  isRecommended        Boolean       @default(false) @map("is_recommended")
+  recommendedForClient String?       @map("recommended_for_client")
+  recommendedUntil     String?       @map("recommended_until")
+
+  // ── TMF block ──
+  tmfAvailabilityStatus Availability? @map("tmf_availability_status")
+  tmfRemarks            String?       @map("tmf_remarks")
+  tmfChangedAt          DateTime?     @map("tmf_changed_at")
+  tmfReviewDueAt        DateTime?     @map("tmf_review_due_at")
+  tmfUpdatedById        String?       @map("tmf_updated_by_id")
+  tmfUpdatedBy          User?         @relation("TmfAvailabilityUpdatedBy", fields: [tmfUpdatedById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([vaProfileId, departmentId])
+  @@index([departmentId])
+  @@map("va_department_availability")
 }
 
 model VAHistory {

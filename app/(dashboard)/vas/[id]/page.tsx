@@ -1,5 +1,7 @@
 import { prisma } from '@/lib/prisma'
+import { getOwnTeamIds } from '@/lib/teams'
 import { getCurrentUser, VA_MUTATOR_ROLES, VA_SENSITIVE_INFO_EDIT_ROLES } from '@/lib/auth'
+import { getViewableDepartmentIds, isVAProfileInScope } from '@/lib/scope'
 import { canInitiateEocOrClientInitiatedTermination } from '@/lib/offboarding-permissions'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { listDriveFiles } from '@/lib/google/drive'
@@ -75,6 +77,34 @@ export default async function VADetailPage({
   if (!currentUser) redirect('/login')
   const isHRE = hrgRoles.includes(currentUser.systemRole)
 
+  // Staff viewers only reach VAs with an active membership in one of their
+  // departments (null = admins/HR/EXECUTIVE, everything). A VA-type viewer
+  // reaches their own profile, or a teammate's — the same "own team" rule the
+  // /vas roster applies to them — and then only that teammate's work in the
+  // shared teams' departments.
+  const isVAViewer = currentUser.userType === 'VIRTUAL_ASSISTANT'
+  let scopeIds = isVAViewer ? null : getViewableDepartmentIds(currentUser)
+  if (isVAViewer && currentUser.vaProfile?.id !== id) {
+    const teamIds = await getOwnTeamIds(currentUser.id)
+    const shared = teamIds.length
+      ? await prisma.team.findMany({
+          where: {
+            id: { in: teamIds },
+            OR: [
+              { memberships: { some: { endedAt: null, user: { vaProfile: { id } } } } },
+              { leader: { vaProfile: { id } } },
+              { tempLeader1: { vaProfile: { id } } },
+              { tempLeader2: { vaProfile: { id } } },
+            ],
+          },
+          select: { departmentId: true },
+        })
+      : []
+    if (shared.length === 0) notFound()
+    scopeIds = [...new Set(shared.map((t) => t.departmentId))]
+  }
+  if (!isVAViewer && !(await isVAProfileInScope(scopeIds, id))) notFound()
+
   const va = await cached(`vas:detail:${id}`, [CACHE_TAGS.vas], 30, () =>
     prisma.vAProfile.findUnique({
       where: { id },
@@ -100,6 +130,13 @@ export default async function VADetailPage({
   )
 
   if (!va) notFound()
+  // An assignment belongs to its client's department, not the VA's: a PPC
+  // manager viewing a PPC+Amazon VA must not see the Amazon clients. Filtered
+  // in memory (same rule as assignmentScopeWhere) so the per-VA cache entry
+  // above stays shared across viewers instead of forking per scope.
+  const assignments = scopeIds === null
+    ? va.assignments
+    : va.assignments.filter((a) => a.client.departmentId != null && scopeIds.includes(a.client.departmentId))
   const profile = va.user.profile
   const emp = va.user.employmentRecords?.[0]
   const activeMemberships = va.user.memberships ?? []
@@ -232,7 +269,7 @@ export default async function VADetailPage({
     proficiency: s.proficiency ?? null,
   }))
 
-  const assignmentData = va.assignments.map((a) => ({
+  const assignmentData = assignments.map((a) => ({
     id: a.id,
     clientName: a.client.name,
     type: a.type,
@@ -381,14 +418,14 @@ export default async function VADetailPage({
           {/* Assignments */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-base">Assignments ({va.assignments.length})</CardTitle>
+              <CardTitle className="text-base">Assignments ({assignments.length})</CardTitle>
             </CardHeader>
             <CardContent>
-              {va.assignments.length === 0 ? (
+              {assignments.length === 0 ? (
                 <p className="text-sm text-muted-foreground py-4">No assignments.</p>
               ) : (
                 <div className="space-y-3">
-                  {va.assignments.map((a) => (
+                  {assignments.map((a) => (
                     <Link key={a.id} href={`/assignments/${a.id}`}
                       className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/30 transition-colors">
                       <div>

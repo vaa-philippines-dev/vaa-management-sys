@@ -392,6 +392,7 @@ export const ModelName = {
   EmploymentRecord: 'EmploymentRecord',
   RoleAssignment: 'RoleAssignment',
   VAProfile: 'VAProfile',
+  VADepartmentAvailability: 'VADepartmentAvailability',
   VAHistory: 'VAHistory',
   Skill: 'Skill',
   DepartmentSkill: 'DepartmentSkill',
@@ -453,7 +454,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveApprovalRule" | "leaveApprovalStep" | "leaveRequest" | "leaveApprovalAction" | "employeeIdCounter" | "vAOnboardingInvite" | "client" | "assignment" | "assignmentKpiCheck" | "workLog" | "ticket" | "ticketConversation" | "termination" | "resignationDiscussion" | "replacementRequest" | "exitClearanceApproval" | "complianceReview" | "finalPayout" | "exitSurveyInvite" | "exitSurveyResponse" | "exitClearance" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "customer" | "account" | "notification" | "sidebarFavorite" | "team" | "teamMembership" | "clientPipeline" | "agentSuggestion" | "agentRun" | "project" | "assignmentPreparation" | "assignmentClientFeedback"
+    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vADepartmentAvailability" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveApprovalRule" | "leaveApprovalStep" | "leaveRequest" | "leaveApprovalAction" | "employeeIdCounter" | "vAOnboardingInvite" | "client" | "assignment" | "assignmentKpiCheck" | "workLog" | "ticket" | "ticketConversation" | "termination" | "resignationDiscussion" | "replacementRequest" | "exitClearanceApproval" | "complianceReview" | "finalPayout" | "exitSurveyInvite" | "exitSurveyResponse" | "exitClearance" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "customer" | "account" | "notification" | "sidebarFavorite" | "team" | "teamMembership" | "clientPipeline" | "agentSuggestion" | "agentRun" | "project" | "assignmentPreparation" | "assignmentClientFeedback"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1046,6 +1047,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.VAProfileCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.VAProfileCountAggregateOutputType> | number
+        }
+      }
+    }
+    VADepartmentAvailability: {
+      payload: Prisma.$VADepartmentAvailabilityPayload<ExtArgs>
+      fields: Prisma.VADepartmentAvailabilityFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VADepartmentAvailabilityFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VADepartmentAvailabilityPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VADepartmentAvailabilityFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VADepartmentAvailabilityPayload>
+        }
+        findFirst: {
+          args: Prisma.VADepartmentAvailabilityFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VADepartmentAvailabilityPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VADepartmentAvailabilityFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VADepartmentAvailabilityPayload>
+        }
+        findMany: {
+          args: Prisma.VADepartmentAvailabilityFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VADepartmentAvailabilityPayload>[]
+        }
+        create: {
+          args: Prisma.VADepartmentAvailabilityCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VADepartmentAvailabilityPayload>
+        }
+        createMany: {
+          args: Prisma.VADepartmentAvailabilityCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VADepartmentAvailabilityCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VADepartmentAvailabilityPayload>[]
+        }
+        delete: {
+          args: Prisma.VADepartmentAvailabilityDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VADepartmentAvailabilityPayload>
+        }
+        update: {
+          args: Prisma.VADepartmentAvailabilityUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VADepartmentAvailabilityPayload>
+        }
+        deleteMany: {
+          args: Prisma.VADepartmentAvailabilityDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VADepartmentAvailabilityUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VADepartmentAvailabilityUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VADepartmentAvailabilityPayload>[]
+        }
+        upsert: {
+          args: Prisma.VADepartmentAvailabilityUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VADepartmentAvailabilityPayload>
+        }
+        aggregate: {
+          args: Prisma.VADepartmentAvailabilityAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVADepartmentAvailability>
+        }
+        groupBy: {
+          args: Prisma.VADepartmentAvailabilityGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VADepartmentAvailabilityGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VADepartmentAvailabilityCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VADepartmentAvailabilityCountAggregateOutputType> | number
         }
       }
     }
@@ -4702,6 +4777,29 @@ export const VAProfileScalarFieldEnum = {
 export type VAProfileScalarFieldEnum = (typeof VAProfileScalarFieldEnum)[keyof typeof VAProfileScalarFieldEnum]
 
 
+export const VADepartmentAvailabilityScalarFieldEnum = {
+  id: 'id',
+  vaProfileId: 'vaProfileId',
+  departmentId: 'departmentId',
+  availabilityStatus: 'availabilityStatus',
+  remarks: 'remarks',
+  changedAt: 'changedAt',
+  reviewDueAt: 'reviewDueAt',
+  isRecommended: 'isRecommended',
+  recommendedForClient: 'recommendedForClient',
+  recommendedUntil: 'recommendedUntil',
+  tmfAvailabilityStatus: 'tmfAvailabilityStatus',
+  tmfRemarks: 'tmfRemarks',
+  tmfChangedAt: 'tmfChangedAt',
+  tmfReviewDueAt: 'tmfReviewDueAt',
+  tmfUpdatedById: 'tmfUpdatedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VADepartmentAvailabilityScalarFieldEnum = (typeof VADepartmentAvailabilityScalarFieldEnum)[keyof typeof VADepartmentAvailabilityScalarFieldEnum]
+
+
 export const VAHistoryScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -6518,6 +6616,7 @@ export type GlobalOmitConfig = {
   employmentRecord?: Prisma.EmploymentRecordOmit
   roleAssignment?: Prisma.RoleAssignmentOmit
   vAProfile?: Prisma.VAProfileOmit
+  vADepartmentAvailability?: Prisma.VADepartmentAvailabilityOmit
   vAHistory?: Prisma.VAHistoryOmit
   skill?: Prisma.SkillOmit
   departmentSkill?: Prisma.DepartmentSkillOmit

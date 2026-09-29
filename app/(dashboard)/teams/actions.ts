@@ -15,6 +15,22 @@ async function assertDepartmentManaged(actor: Awaited<ReturnType<typeof getCurre
   }
 }
 
+// A team is department-scoped by definition, so every member must hold an
+// active membership in the team's department — for admins too. Without this a
+// manager could pull another department's VA onto their roster by id. The team
+// page's candidate picker already lists only department members.
+async function assertActiveDepartmentMembers(departmentId: string, userIds: string[]) {
+  const rows = await prisma.departmentMembership.findMany({
+    where: { departmentId, userId: { in: userIds }, endedAt: null },
+    select: { userId: true },
+  })
+  const found = new Set(rows.map((r) => r.userId))
+  const missing = userIds.filter((id) => !found.has(id))
+  if (missing.length > 0) {
+    throw new Error(`${missing.length} selected user(s) are not active members of this team's department`)
+  }
+}
+
 async function getTeamDepartmentId(teamId: string): Promise<string> {
   const team = await prisma.team.findUnique({ where: { id: teamId }, select: { departmentId: true } })
   if (!team) throw new Error('Team not found')
@@ -167,6 +183,7 @@ export async function addTeamMembers(teamId: string, userIds: string[]) {
 
   const ids = userIds.filter(Boolean)
   if (ids.length === 0) return
+  await assertActiveDepartmentMembers(departmentId, ids)
 
   const alreadyActive = await prisma.teamMembership.findMany({
     where: { teamId, userId: { in: ids }, endedAt: null },
@@ -235,6 +252,9 @@ export async function transferTeamMembers(fromTeamId: string, toTeamId: string, 
 
   const ids = userIds.filter(Boolean)
   if (ids.length === 0) return
+  // Transfers can cross departments the actor manages; the destination
+  // department is the one that must hold them.
+  await assertActiveDepartmentMembers(toDepartmentId, ids)
 
   await prisma.$transaction(async (tx) => {
     await tx.teamMembership.updateMany({

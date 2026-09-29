@@ -35,7 +35,11 @@ export async function DepartmentHeadcountCard({ deptId }: { deptId: string }) {
           status: true,
           availabilityStatus: true,
           totalCapacityHours: true,
-          assignments: { where: { status: 'ACTIVE' }, select: { id: true } },
+          // This department's clients only — a VA shared with another
+          // department is "no client" here if all their work is over there.
+          assignments: { where: { status: 'ACTIVE', client: { departmentId: deptId } }, select: { id: true } },
+          // Per-department DMF availability; null falls back to the profile's.
+          departmentAvailabilities: { where: { departmentId: deptId }, take: 1, select: { availabilityStatus: true } },
           // The current engagement status lives on EmploymentRecord (isCurrent),
           // not VAProfile.engagementStatus — same convention vas/page.tsx uses
           // for its "Engagement Status" column.
@@ -44,8 +48,12 @@ export async function DepartmentHeadcountCard({ deptId }: { deptId: string }) {
       })
   )
 
-  const employedCount = vas.filter((v) => v.user.employmentRecords[0]?.employmentStatus === 'EMPLOYED').length
-  const activeVAs = vas.filter((v) => v.status === 'ACTIVE')
+  const withDeptStatus = vas.map((v) => ({
+    ...v,
+    availabilityStatus: v.departmentAvailabilities[0]?.availabilityStatus ?? v.availabilityStatus,
+  }))
+  const employedCount = withDeptStatus.filter((v) => v.user.employmentRecords[0]?.employmentStatus === 'EMPLOYED').length
+  const activeVAs = withDeptStatus.filter((v) => v.status === 'ACTIVE')
   const activeAvailableCount = activeVAs.filter((v) => v.availabilityStatus === 'AVAILABLE').length
   const activeNoClientCount = activeVAs.filter((v) => v.assignments.length === 0).length
   const fullCount = activeVAs.filter((v) => v.availabilityStatus === 'FULLY_ASSIGNED').length

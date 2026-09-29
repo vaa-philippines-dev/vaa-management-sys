@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
+import { getViewableDepartmentIds, assignmentScopeWhere } from '@/lib/scope'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -14,7 +15,7 @@ export default async function AssignmentsPage() {
   const user = await getCurrentUser()
   if (!user) redirect('/login')
 
-  const where: Record<string, unknown> = {}
+  let where: Record<string, unknown> = {}
   let scopeKey = 'all'
   if (user.userType === 'VIRTUAL_ASSISTANT') {
     // Scope to '' rather than undefined when a VA has no profile row yet — Prisma
@@ -22,6 +23,12 @@ export default async function AssignmentsPage() {
     const vaProfileId = user.vaProfile?.id ?? ''
     where.vaProfileId = vaProfileId
     scopeKey = `va:${vaProfileId}`
+  } else {
+    // Staff see only assignments whose client sits in one of their departments —
+    // a VA shared between PPC and Amazon must not surface Amazon work to PPC.
+    const deptIds = getViewableDepartmentIds(user)
+    where = assignmentScopeWhere(deptIds) as Record<string, unknown>
+    scopeKey = deptIds === null ? 'all' : `depts:${[...deptIds].sort().join(',')}`
   }
 
   // Cache key must carry every value the `where` closure depends on — a static

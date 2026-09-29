@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser, ASSIGNMENT_MUTATOR_ROLES } from '@/lib/auth'
 import { notFound, redirect } from 'next/navigation'
+import { getViewableDepartmentIds } from '@/lib/scope'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -32,6 +33,13 @@ export default async function AssignmentDetailPage({
 
   if (user?.userType === 'VIRTUAL_ASSISTANT' && assignment.vaProfileId !== user.vaProfile?.id) {
     notFound()
+  }
+
+  // Staff: the assignment belongs to its client's department, not the VA's —
+  // 404 rather than 403 so out-of-scope ids don't confirm they exist.
+  if (user.userType !== 'VIRTUAL_ASSISTANT') {
+    const deptIds = getViewableDepartmentIds(user)
+    if (deptIds !== null && !deptIds.includes(assignment.client.departmentId ?? '')) notFound()
   }
 
   const totalLogged = assignment.workLogs.reduce((s, l) => s + Number(l.hours), 0)

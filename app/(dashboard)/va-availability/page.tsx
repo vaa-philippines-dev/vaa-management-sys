@@ -22,7 +22,7 @@ export default async function VAAvailabilityPage() {
   const managedIds = getManagedDepartmentIds(user)
   const canMutate = VA_MUTATOR_ROLES.includes(user.systemRole)
 
-  const rows = await getAvailabilityRows(unrestricted ? null : managedIds)
+  const rows = await getAvailabilityRows({ departmentIds: unrestricted ? null : managedIds })
   const summary = computeAvailabilitySummary(rows)
 
   return (

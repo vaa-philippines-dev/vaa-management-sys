@@ -574,22 +574,40 @@ export async function importVaAvailability(
     // in the app (the VA profile editor). Overwriting it from an unclear
     // heuristic risked silently clobbering a real, separately-maintained
     // signal for a marginal gain.
-    const data = {
+    // Preferred/hybrid hours are the person's own week and stay on VAProfile.
+    // Everything else is this department's record of the VA (its DMF block)
+    // and the Team Leader's (TMF block) — written to VADepartmentAvailability
+    // so importing PPC's sheet can't overwrite Amazon's remarks for a VA in both.
+    const profileData = {
       preferredWorkHours: parseDmfNumber(row['PREFERRED WORK HOURS']),
       hybridHours: parseDmfNumber(row['HYBRID HOURS']),
+    }
+    const deptData = {
       isRecommended: parseDmfBool(row['RECOMMENDED']),
       recommendedForClient: row['RECOMMENDED FOR'] || null,
       recommendedUntil: row['RECOMMENDED UNTIL'] || null,
-      availabilityRemarks: row['DMF REMARKS'] || null,
-      availabilityChangedAt: parseDmfDate(row['DMF DATE CHANGED']),
-      availabilityReviewDueAt: parseDmfDate(row['DMF UPDATE STATUS DATE']),
+      remarks: row['DMF REMARKS'] || null,
+      changedAt: parseDmfDate(row['DMF DATE CHANGED']),
+      reviewDueAt: parseDmfDate(row['DMF UPDATE STATUS DATE']),
+      tmfRemarks: row['TMF REMARKS'] || null,
+      tmfChangedAt: parseDmfDate(row['TMF DATE CHANGED']),
+      tmfReviewDueAt: parseDmfDate(row['TMF UPDATE STATUS DATE']),
     }
 
     summary.changed++
     if (apply) {
-      await prisma.vAProfile.update({ where: { id: va.id }, data }).catch((e) => {
-        summary.warnings.push({ label, reason: `Write failed: ${e.message}` })
-      })
+      await prisma
+        .$transaction([
+          prisma.vAProfile.update({ where: { id: va.id }, data: profileData }),
+          prisma.vADepartmentAvailability.upsert({
+            where: { vaProfileId_departmentId: { vaProfileId: va.id, departmentId } },
+            create: { vaProfileId: va.id, departmentId, ...deptData },
+            update: deptData,
+          }),
+        ])
+        .catch((e) => {
+          summary.warnings.push({ label, reason: `Write failed: ${e.message}` })
+        })
     }
   }
 

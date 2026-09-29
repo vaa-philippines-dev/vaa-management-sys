@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { redirect } from 'next/navigation'
+import { getViewableDepartmentIds, clientScopeWhere } from '@/lib/scope'
 import { NewTicketForm } from '@/components/tickets/NewTicketForm'
 
 export default async function NewTicketPage() {
@@ -18,7 +19,14 @@ export default async function NewTicketPage() {
       orderBy: { name: 'asc' },
     }),
     prisma.client.findMany({
-      where: { isActive: true },
+      // Staff pick only from their own departments' clients; admins/HR see all.
+      // A VA picks only from clients they actually work (or worked) for.
+      where: {
+        isActive: true,
+        ...(user.userType === 'VIRTUAL_ASSISTANT'
+          ? { assignments: { some: { vaProfile: { userId: user.id } } } }
+          : clientScopeWhere(getViewableDepartmentIds(user))),
+      },
       select: { id: true, name: true },
       orderBy: { name: 'asc' },
     }),

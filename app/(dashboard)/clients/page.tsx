@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import type { Prisma } from '@/src/generated/prisma/client'
-import { getCurrentUser, getManagedDepartmentIds, getPrimaryDepartment, CLIENT_MUTATOR_ROLES, DEPARTMENT_SCOPED_ROLES } from '@/lib/auth'
+import { getCurrentUser, getPrimaryDepartment, CLIENT_MUTATOR_ROLES } from '@/lib/auth'
+import { getViewableDepartmentIds, getMutableDepartmentIds, clientScopeWhere } from '@/lib/scope'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { isTeamAffiliated } from '@/lib/teams'
 import { Card, CardContent } from '@/components/ui/card'
@@ -10,8 +11,6 @@ import { ImportClientCsvButton } from '@/components/clients/ImportClientCsvButto
 import { AddClientButton } from '@/components/clients/AddClientButton'
 import { FilterBar } from '@/components/filters/FilterBar'
 import { redirect } from 'next/navigation'
-
-const UNRESTRICTED_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'HR']
 
 // The four filter tabs don't map 1:1 onto GeneralStatus — "Paused" is
 // onHold=true layered on top of whatever status a client already has, and
@@ -40,17 +39,12 @@ function statusTabWhere(tab: string): Prisma.ClientWhereInput {
   }
 }
 
-// Department-category audience (Dept/Ops Manager, HR, admins, team-affiliated VAs)
-// see clients scoped to their department, same as the former standalone Clients
-// Monitoring page. Everyone else (e.g. plain STAFF) keeps the original "clients
-// I personally manage" view.
-async function resolveClientsWhere(user: Awaited<ReturnType<typeof getCurrentUser>>) {
-  if (!user) return undefined
-  if (UNRESTRICTED_ROLES.includes(user.systemRole)) return undefined
-
-  if (DEPARTMENT_SCOPED_ROLES.includes(user.systemRole)) {
-    return { departmentId: { in: getManagedDepartmentIds(user) } }
-  }
+// VAs keep their self/team scoping. Every other role goes through the shared
+// department scope (lib/scope.ts): admins/HR/EXECUTIVE see all, everyone else
+// only their own department(s) — including TEAM_LEADER, which used to fall
+// through to "every client".
+async function resolveClientsWhere(user: Awaited<ReturnType<typeof getCurrentUser>>): Promise<Prisma.ClientWhereInput | undefined> {
+  if (!user) return { id: { in: [] } }
 
   if (user.userType === 'VIRTUAL_ASSISTANT') {
     if (await isTeamAffiliated(user.id)) {
@@ -62,7 +56,14 @@ async function resolveClientsWhere(user: Awaited<ReturnType<typeof getCurrentUse
     return { assignments: { some: { vaProfileId: user.vaProfile?.id ?? '' } } }
   }
 
-  return user.systemRole === 'STAFF' ? { managerId: user.id } : undefined
+  const deptIds = getViewableDepartmentIds(user)
+  if (deptIds === null) return undefined
+  // STAFF historically saw "clients I manage"; keep that alongside their
+  // departments so a client they own under another department doesn't vanish.
+  if (user.systemRole === 'STAFF') {
+    return { OR: [clientScopeWhere(deptIds), { managerId: user.id }] }
+  }
+  return clientScopeWhere(deptIds)
 }
 
 export default async function ClientsPage({
@@ -74,9 +75,11 @@ export default async function ClientsPage({
   if (!user) redirect('/login')
   const canImport = CLIENT_MUTATOR_ROLES.includes(user.systemRole)
 
+  // Only departments the viewer may create clients in (null = all).
+  const mutableDeptIds = getMutableDepartmentIds(user)
   const serviceDepartments = canImport
     ? await prisma.department.findMany({
-        where: { level: 'SERVICE', status: 'ACTIVE' },
+        where: { level: 'SERVICE', status: 'ACTIVE', ...(mutableDeptIds === null ? {} : { id: { in: mutableDeptIds } }) },
         select: { id: true, name: true, shortName: true, acronym: true },
         orderBy: { sortOrder: 'asc' },
       })
@@ -89,14 +92,18 @@ export default async function ClientsPage({
   const q = typeof params.q === 'string' ? params.q : undefined
 
   const scopeWhere = await resolveClientsWhere(user)
+  // AND, not spread: the STAFF scope and the search are both OR clauses and a
+  // spread would let the search silently overwrite the scope.
   const where: Prisma.ClientWhereInput = {
-    ...scopeWhere,
-    ...statusTabWhere(statusTab),
-    ...(q ? { OR: [
-      { name: { contains: q, mode: 'insensitive' } },
-      { contactName: { contains: q, mode: 'insensitive' } },
-      { industry: { contains: q, mode: 'insensitive' } },
-    ] } : {}),
+    AND: [
+      scopeWhere ?? {},
+      statusTabWhere(statusTab),
+      q ? { OR: [
+        { name: { contains: q, mode: 'insensitive' } },
+        { contactName: { contains: q, mode: 'insensitive' } },
+        { industry: { contains: q, mode: 'insensitive' } },
+      ] } : {},
+    ],
   }
   const cacheKey = user ? `clients:list:${user.id}:${statusTab}:${q ?? ''}:${JSON.stringify(scopeWhere)}` : `clients:list:${statusTab}:${q ?? ''}`
 

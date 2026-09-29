@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { redirect } from 'next/navigation'
+import { getMutableDepartmentIds, assignmentScopeWhere } from '@/lib/scope'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { WorkLogForm } from '@/components/work-logs/WorkLogForm'
@@ -15,12 +16,15 @@ export default async function NewWorkLogPage({
   if (!user) redirect('/login')
 
   const isVA = user.userType === 'VIRTUAL_ASSISTANT'
-  const where: Record<string, unknown> = { status: 'ACTIVE' }
+  let where: Record<string, unknown> = { status: 'ACTIVE' }
   if (isVA) {
     // Scope to '' rather than undefined when a VA has no profile row yet —
     // Prisma treats `undefined` as "filter not provided" and would return
     // every active assignment in the system.
     where.vaProfileId = user.vaProfile?.id ?? ''
+  } else {
+    // Only offer assignments createWorkLog() will accept for this actor.
+    where = { ...where, ...assignmentScopeWhere(getMutableDepartmentIds(user)) }
   }
 
   const assignments = await prisma.assignment.findMany({

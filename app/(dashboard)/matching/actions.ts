@@ -5,6 +5,7 @@ import { requireRole, AGENT_MUTATOR_ROLES } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
 import { CACHE_TAGS } from '@/lib/cache'
 import { revalidateTag } from 'next/cache'
+import { getMutableDepartmentIds, assertClientInScope, assertVAProfileInScope } from '@/lib/scope'
 
 /**
  * Approves or rejects one AI Agent suggestion. This is the one place a human
@@ -16,9 +17,18 @@ export async function decideSuggestion(id: string, status: 'APPROVED' | 'REJECTE
 
   const suggestion = await prisma.agentSuggestion.findUnique({
     where: { id },
-    select: { id: true, status: true, kind: true, clientId: true },
+    select: { id: true, status: true, kind: true, clientId: true, vaProfileId: true },
   })
   if (!suggestion) throw new Error('Suggestion not found')
+
+  // Same attribution as the /matching list: client's department first, else
+  // the VA's; a suggestion with neither is admin-only.
+  const deptIds = getMutableDepartmentIds(actor)
+  if (deptIds !== null) {
+    if (suggestion.clientId) await assertClientInScope(deptIds, suggestion.clientId)
+    else if (suggestion.vaProfileId) await assertVAProfileInScope(deptIds, suggestion.vaProfileId)
+    else throw new Error('Forbidden: outside your department scope')
+  }
   if (suggestion.status !== 'PENDING') throw new Error('This suggestion has already been decided.')
 
   await prisma.$transaction(async (tx) => {

@@ -105,7 +105,7 @@ export function AvailabilityBoard({
   // or scope) or succeeds — so a thrown error is the only failure to show.
   const onConfirm = async (row: AvailabilityRow) => {
     try {
-      await confirmAvailability(row.vaProfileId)
+      await confirmAvailability(row.vaProfileId, row.departmentId)
       toast.success(`${row.name}'s availability re-confirmed`)
       router.refresh()
     } catch {
@@ -117,14 +117,12 @@ export function AvailabilityBoard({
     if (!editing) return
     setSaving(true)
     try {
-      const res = await updateAvailability(editing.vaProfileId, formData)
-      if (res?.error) {
-        toast.error(res.error)
-        return
-      }
+      await updateAvailability(editing.vaProfileId, editing.departmentId, formData)
       toast.success('Availability updated')
       setEditing(null)
       router.refresh()
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Could not update availability')
     } finally {
       setSaving(false)
     }
@@ -137,7 +135,7 @@ export function AvailabilityBoard({
           <Info className="h-3.5 w-3.5 mt-0.5 shrink-0" />
           <span>
             Everything below is read-only — booked hours and client count come from active assignments, the
-            rest from HR records and (once built) each VA&apos;s Team Leader. The only things you can change
+            rest from HR records and each VA&apos;s Team Leader (their TMF). The only things you can change
             here are <span className="font-medium text-foreground">availability, remarks, and the date changed</span>,
             via <span className="font-medium text-foreground">Update</span>.
           </span>
@@ -203,12 +201,13 @@ export function AvailabilityBoard({
                 <TableHead>Status</TableHead>
                 <TableHead>Recommended</TableHead>
                 <TableHead>Availability update</TableHead>
+                <TableHead>TMF</TableHead>
                 {canMutate && <TableHead className="w-32"></TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
               {visible.map((r) => (
-                <TableRow key={r.vaProfileId}>
+                <TableRow key={r.rowKey}>
                   <TableCell className="max-w-xs">
                     <Link href={`/vas/${r.vaProfileId}`} className="font-medium hover:text-primary">
                       {r.name}
@@ -224,7 +223,14 @@ export function AvailabilityBoard({
                     {WORK_PATTERN_LABELS[r.workPattern]}
                   </TableCell>
                   <TableCell className="text-right">{hours(r.preferredHours)}</TableCell>
-                  <TableCell className="text-right text-muted-foreground">{hours(r.currentHours)}</TableCell>
+                  <TableCell className="text-right text-muted-foreground">
+                    {hours(r.currentHours)}
+                    {r.otherDepartmentHours > 0 && (
+                      <div className="text-[11px] text-muted-foreground/70" title="Booked with clients in other departments">
+                        +{hours(r.otherDepartmentHours)} elsewhere
+                      </div>
+                    )}
+                  </TableCell>
                   <TableCell className="text-right text-muted-foreground">{hours(r.hybridHours)}</TableCell>
                   <TableCell
                     className={`text-right font-semibold ${r.availableHours > 0 ? 'text-success' : 'text-muted-foreground'}`}
@@ -271,6 +277,24 @@ export function AvailabilityBoard({
                       </div>
                     )}
                   </TableCell>
+                  <TableCell className="max-w-[10rem]">
+                    {r.tmfAvailabilityStatus ? (
+                      <div className="text-xs">
+                        <div className={r.tmfMismatch ? 'text-warning font-medium' : ''}>
+                          {STATUS_LABELS[r.tmfAvailabilityStatus] ?? r.tmfAvailabilityStatus}
+                        </div>
+                        <div className="text-muted-foreground">{formatDate(r.tmfChangedAt)}</div>
+                        {r.tmfMismatch && (
+                          <div className="flex items-center gap-1 text-warning">
+                            <AlertTriangle className="h-3 w-3" />
+                            Differs from DMF
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">&mdash;</span>
+                    )}
+                  </TableCell>
                   {canMutate && (
                     <TableCell>
                       <div className="flex items-center justify-end gap-1">
@@ -305,7 +329,7 @@ export function AvailabilityBoard({
           if (!next) setEditing(null)
         }}
         title={editing ? editing.name : ''}
-        description="Update availability"
+        description={editing ? `Update availability · ${editing.departmentName}` : 'Update availability'}
         size="sm"
       >
         {editing && (

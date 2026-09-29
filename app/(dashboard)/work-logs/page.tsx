@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
+import { getViewableDepartmentIds, assignmentScopeWhere } from '@/lib/scope'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -28,6 +29,13 @@ export default async function WorkLogsPage({
     const vaProfileId = user.vaProfile?.id ?? ''
     where.vaProfileId = vaProfileId
     scopeKey = `va:${vaProfileId}`
+  } else {
+    // A log belongs to its assignment's client department, same as the assignment.
+    const deptIds = getViewableDepartmentIds(user)
+    if (deptIds !== null) {
+      where.assignment = assignmentScopeWhere(deptIds)
+      scopeKey = `depts:${[...deptIds].sort().join(',')}`
+    }
   }
 
   // Cache key must carry every value the `where` closure depends on — a static

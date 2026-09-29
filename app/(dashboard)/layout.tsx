@@ -12,6 +12,7 @@ import { getCurrentUser, CLIENT_MUTATOR_ROLES, LEAVE_ADMIN_ROLES } from '@/lib/a
 import { getSidebarFavorites } from '@/lib/favorites'
 import { isTeamAffiliated, getLedTeamIds } from '@/lib/teams'
 import { prisma } from '@/lib/prisma'
+import { getMutableDepartmentIds } from '@/lib/scope'
 
 export default async function DashboardLayout({
   children,
@@ -34,13 +35,24 @@ export default async function DashboardLayout({
   // FB-0007: "team leaders" have no distinguishing SystemRole — they're VAs
   // (systemRole=VA) assigned as a Team's leader/temp-leader — so /resign's nav
   // entry is gated the same way the page itself is (getLedTeamIds()), not by role.
-  const isLedTeamLeader =
-    user?.userType === 'VIRTUAL_ASSISTANT' ? (await getLedTeamIds(user.id)).length > 0 : false
+  const leadsATeam = user ? (await getLedTeamIds(user.id)).length > 0 : false
+  const isLedTeamLeader = user?.userType === 'VIRTUAL_ASSISTANT' && leadsATeam
+  // Mirrors getTmfTeams() in lib/tmf.ts: leading a team (any account type),
+  // or a manager-side role that oversees teams. TEAM_LEADER-role users with no
+  // team of their own have nothing to open there, so they don't get the link.
+  const canOpenTmf =
+    leadsATeam ||
+    (role === 'MANAGER' &&
+      !!user &&
+      ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'HR', 'DEPT_MANAGER', 'OPERATIONS_MANAGER'].includes(user.systemRole))
 
   const canImportClients = user ? CLIENT_MUTATOR_ROLES.includes(user.systemRole) : false
+  // Import targets are limited to departments the user may write to (null = all);
+  // bulkImportClients() enforces the same rule server-side.
+  const importDeptIds = getMutableDepartmentIds(user)
   const serviceDepartments = canImportClients
     ? await prisma.department.findMany({
-        where: { level: 'SERVICE', status: 'ACTIVE' },
+        where: { level: 'SERVICE', status: 'ACTIVE', ...(importDeptIds === null ? {} : { id: { in: importDeptIds } }) },
         select: { id: true, name: true, shortName: true, acronym: true },
         orderBy: { sortOrder: 'asc' },
       })
@@ -59,6 +71,7 @@ export default async function DashboardLayout({
                 showDepartmentSection={showDepartmentSection}
                 canManageLeave={canManageLeave}
                 isLedTeamLeader={isLedTeamLeader}
+                canOpenTmf={canOpenTmf}
               />
               <div className="flex flex-1 flex-col overflow-hidden">
                 <Navbar />

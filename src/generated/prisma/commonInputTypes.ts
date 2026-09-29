@@ -433,6 +433,23 @@ export type EnumEmploymentStatusNullableWithAggregatesFilter<$PrismaModel = neve
   _max?: Prisma.NestedEnumEmploymentStatusNullableFilter<$PrismaModel>
 }
 
+export type EnumAvailabilityNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.Availability | Prisma.EnumAvailabilityFieldRefInput<$PrismaModel> | null
+  in?: $Enums.Availability[] | Prisma.ListEnumAvailabilityFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.Availability[] | Prisma.ListEnumAvailabilityFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumAvailabilityNullableFilter<$PrismaModel> | $Enums.Availability | null
+}
+
+export type EnumAvailabilityNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.Availability | Prisma.EnumAvailabilityFieldRefInput<$PrismaModel> | null
+  in?: $Enums.Availability[] | Prisma.ListEnumAvailabilityFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.Availability[] | Prisma.ListEnumAvailabilityFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumAvailabilityNullableWithAggregatesFilter<$PrismaModel> | $Enums.Availability | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAvailabilityNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAvailabilityNullableFilter<$PrismaModel>
+}
+
 export type EnumHistoryEventTypeFilter<$PrismaModel = never> = {
   equals?: $Enums.HistoryEventType | Prisma.EnumHistoryEventTypeFieldRefInput<$PrismaModel>
   in?: $Enums.HistoryEventType[] | Prisma.ListEnumHistoryEventTypeFieldRefInput<$PrismaModel>
@@ -1736,6 +1753,23 @@ export type NestedEnumEmploymentStatusNullableWithAggregatesFilter<$PrismaModel 
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedEnumEmploymentStatusNullableFilter<$PrismaModel>
   _max?: Prisma.NestedEnumEmploymentStatusNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumAvailabilityNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.Availability | Prisma.EnumAvailabilityFieldRefInput<$PrismaModel> | null
+  in?: $Enums.Availability[] | Prisma.ListEnumAvailabilityFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.Availability[] | Prisma.ListEnumAvailabilityFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumAvailabilityNullableFilter<$PrismaModel> | $Enums.Availability | null
+}
+
+export type NestedEnumAvailabilityNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.Availability | Prisma.EnumAvailabilityFieldRefInput<$PrismaModel> | null
+  in?: $Enums.Availability[] | Prisma.ListEnumAvailabilityFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.Availability[] | Prisma.ListEnumAvailabilityFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumAvailabilityNullableWithAggregatesFilter<$PrismaModel> | $Enums.Availability | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAvailabilityNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAvailabilityNullableFilter<$PrismaModel>
 }
 
 export type NestedEnumHistoryEventTypeFilter<$PrismaModel = never> = {

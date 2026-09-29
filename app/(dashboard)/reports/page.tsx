@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
+import { getViewableDepartmentIds, assignmentScopeWhere } from '@/lib/scope'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -28,13 +29,19 @@ export default async function ReportsPage({
   const periodStart = startOfMonth(refDate)
   const periodEnd = endOfMonth(refDate)
 
+  // Department managers get their own departments' hours, not the company's.
+  const deptIds = getViewableDepartmentIds(currentUser)
+  const scopeKey = deptIds === null ? 'all' : [...deptIds].sort().join(',')
+
   // The outer `where` is static but the nested workLogs filter closes over
   // periodStart/periodEnd, so the month must be in the key — otherwise loading
   // ?month=2026-07 then ?month=2026-08 renders August's header over July's logs.
-  const assignments = await cached(`reports:assignments:${format(refDate, 'yyyy-MM')}`, [CACHE_TAGS.reports], 120, () =>
+  // Same for the department scope — one manager's rows must not be served to another.
+  const assignments = await cached(`reports:assignments:${format(refDate, 'yyyy-MM')}:${scopeKey}`, [CACHE_TAGS.reports], 120, () =>
     prisma.assignment.findMany({
       where: {
         status: { in: ['ACTIVE', 'COMPLETED'] },
+        ...assignmentScopeWhere(deptIds),
       },
       include: {
         client: true,
