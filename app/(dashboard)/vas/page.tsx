@@ -510,39 +510,67 @@ async function VATableSection({
 
   const cacheKey = `vas:list:${scopeCacheKey}:${JSON.stringify({ q, dept, team, avail, empStatus, status, sort, viewAll, page })}`
 
-  const [filteredVAs, filteredCount, allVAs] = await Promise.all([
-    cached(cacheKey, [CACHE_TAGS.vas], 60, () =>
-      prisma.vAProfile.findMany({
-        where,
-        include: {
-          user: {
-            include: {
-              profile: true,
-              memberships: {
-                where: { endedAt: null },
-                include: { department: true, position: true },
-              },
-              employmentRecords: { where: { isCurrent: true }, take: 1 },
-              teamMemberships: {
-                where: { endedAt: null },
-                select: { team: { select: { id: true, name: true } } },
-                orderBy: { startedAt: 'asc' },
-              },
-            },
-          },
-          positionSkill: true,
-          vaSkills: { include: { skill: true } },
-          // Scoped by the assignment's client department, not the VA's — the
-          // cache key already carries scopeCacheKey, which includes the ids.
-          assignments: {
-            where: { status: 'ACTIVE', ...assignmentScopeWhere(assignmentDeptIds(viewerScope)) },
-            include: { client: true },
-          },
+  const include = {
+    user: {
+      include: {
+        profile: true,
+        memberships: {
+          where: { endedAt: null },
+          include: { department: true, position: true },
         },
+        employmentRecords: { where: { isCurrent: true }, take: 1 },
+        teamMemberships: {
+          where: { endedAt: null },
+          select: { team: { select: { id: true, name: true } } },
+          orderBy: { startedAt: 'asc' },
+        },
+      },
+    },
+    positionSkill: true,
+    vaSkills: { include: { skill: true } },
+    // Scoped by the assignment's client department, not the VA's — the
+    // cache key already carries scopeCacheKey, which includes the ids.
+    assignments: {
+      where: { status: 'ACTIVE', ...assignmentScopeWhere(assignmentDeptIds(viewerScope)) },
+      include: { client: true },
+    },
+  } satisfies Prisma.VAProfileInclude
+
+  // With no status filter, Active then Pending VAs always list above the
+  // inactive ones (Removed, Resigned, Blacklisted, ...), each tier in the chosen
+  // sort. Prisma can't ORDER BY a CASE, and the live Postgres enum's order
+  // may not match the schema (it was altered by hand-written migrations), so this pages across per-tier queries.
+  // Sorting explicitly by Status skips the tiers.
+  const tiers: Prisma.VAProfileWhereInput[] =
+    !status && sortField !== 'status'
+      ? [{ status: 'ACTIVE' }, { status: 'PENDING' }, { status: { notIn: ['ACTIVE', 'PENDING'] } }]
+      : [{}]
+
+  const fetchTieredVAs = async () => {
+    const tierCounts = tiers.length > 1
+      ? await Promise.all(tiers.map((t) => prisma.vAProfile.count({ where: { AND: [where, t] } })))
+      : [Infinity]
+    let skip = viewAll ? 0 : (page - 1) * PAGE_SIZE
+    let take = viewAll ? Infinity : PAGE_SIZE
+    const queries = []
+    for (let i = 0; i < tiers.length && take > 0; i++) {
+      if (skip >= tierCounts[i]) { skip -= tierCounts[i]; continue }
+      const n = Math.min(take, tierCounts[i] - skip)
+      queries.push(prisma.vAProfile.findMany({
+        where: { AND: [where, tiers[i]] },
+        include,
         orderBy,
-        ...(viewAll ? {} : { take: PAGE_SIZE, skip: (page - 1) * PAGE_SIZE }),
-      })
-    ),
+        ...(skip ? { skip } : {}),
+        ...(Number.isFinite(n) ? { take: n } : {}),
+      }))
+      take -= n
+      skip = 0
+    }
+    return (await Promise.all(queries)).flat()
+  }
+
+  const [filteredVAs, filteredCount, allVAs] = await Promise.all([
+    cached(cacheKey, [CACHE_TAGS.vas], 60, fetchTieredVAs),
     cached(`vas:count:${scopeCacheKey}:${JSON.stringify({ q, dept, team, avail, empStatus, status })}`, [CACHE_TAGS.vas], 60, () =>
       prisma.vAProfile.count({ where })
     ),
