@@ -29,6 +29,7 @@ import {
   BriefcaseBusiness,
   Database,
   IdCard,
+  Contact,
   Bot,
   Handshake,
   ListChecks,
@@ -299,6 +300,7 @@ const hrRoutes = [
 // shown, so Clients/Assignments appear once, not duplicated in both places.
 const departmentRoutes = [
   { label: 'VA Masterlist', href: '/vas', icon: Users },
+  { label: 'Staff Masterlist', href: '/staff', icon: Contact },
   { label: 'Client Request', href: '/clients', icon: BriefcaseBusiness },
   { label: 'Assignments', href: '/assignments', icon: Briefcase },
   { label: 'Teams', href: '/teams', icon: UsersRound },
@@ -318,7 +320,7 @@ const tmfRoute = { label: 'Team Monitoring', href: '/tmf', icon: ClipboardList }
 // DMF board pages that redirect VA accounts away (they're manager views). A VA
 // team leader sees the Department section for Teams/Team Assignment, but these
 // would just bounce them to the dashboard, so they're hidden for VA accounts.
-const MANAGER_ONLY_DEPARTMENT_HREFS = new Set(['/va-preparation', '/va-availability', '/performance', '/projects'])
+const MANAGER_ONLY_DEPARTMENT_HREFS = new Set(['/staff', '/va-preparation', '/va-availability', '/performance', '/projects'])
 
 // Rendered in the "Support" section at the very bottom of every sidebar.
 const supportRoutes = [
@@ -525,6 +527,18 @@ export function Sidebar({
                 atMax={atMax}
                 onChanged={setFavorites}
               />
+              {role === 'MANAGER' && (
+                <FavoritableRow
+                  href="/staff"
+                  label="Staff Masterlist"
+                  icon={Contact}
+                  isActive={isMainRowActive('/staff', isRouteActive('/staff'))}
+                  canFavorite={canFavorite}
+                  favorite={favorites.find((f) => f.href === '/staff')}
+                  atMax={atMax}
+                  onChanged={setFavorites}
+                />
+              )}
               <FavoritableRow
                 href="/clients"
                 label="Client Request"

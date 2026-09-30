@@ -13,6 +13,7 @@
     "db:seed": "npx tsx prisma/seed.ts",
     "db:studio": "npx prisma studio",
     "import:dmf": "tsx --env-file=.env.local scripts/import-dmf.ts",
+    "import:staff": "tsx --env-file=.env.local scripts/import-staff-masterlist.ts",
     "postinstall": "npx prisma generate"
   },
   "dependencies": {

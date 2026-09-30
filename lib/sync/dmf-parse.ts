@@ -8,6 +8,7 @@
 //     dates, which are the sheet's own computed columns and are deliberately
 //     NOT imported (lib/kpi-checks.ts computes the same dates from
 //     Assignment.startDate) — see importPerformanceMonitoring().
+//   - "2020 Nov 30"       (YYYY Mon DD) — the Staff Masterlist sheet's hire/start dates
 const MONTH_INDEX: Record<string, number> = {
   jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
   jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11,
@@ -33,6 +34,17 @@ export function parseDmfDate(raw: string | undefined | null): Date | null {
     const month = MONTH_INDEX[monStr.slice(0, 3).toLowerCase()]
     if (month === undefined) return null
     const d = new Date(Date.UTC(2000 + Number(yy), month, Number(dd)))
+    return Number.isNaN(d.getTime()) ? null : d
+  }
+
+  // "YYYY Mon DD" e.g. "2020 Nov 30" — the Staff Masterlist's VAA HIRE DATE
+  // and START DATE columns.
+  const yyyyMonDd = trimmed.match(/^(\d{4})\s+([A-Za-z]{3,})\s+(\d{1,2})$/)
+  if (yyyyMonDd) {
+    const [, yyyy, monStr, dd] = yyyyMonDd
+    const month = MONTH_INDEX[monStr.slice(0, 3).toLowerCase()]
+    if (month === undefined) return null
+    const d = new Date(Date.UTC(Number(yyyy), month, Number(dd)))
     return Number.isNaN(d.getTime()) ? null : d
   }
 

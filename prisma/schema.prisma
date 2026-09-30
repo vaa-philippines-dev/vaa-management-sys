@@ -502,10 +502,59 @@ model User {
   complianceReviewsPerformed ComplianceReview[]      @relation("ComplianceReviewedBy")
   finalPayoutsEndorsed       FinalPayout[]           @relation("FinalPayoutEndorsedBy")
 
+  // Staff Masterlist rows (one per engagement) that belong to this account
+  staffRecords               StaffRecord[]
+
   @@index([email])
   @@index([systemRole])
   @@index([userType])
   @@map("users")
+}
+
+// One row of the "VAA | STAFF MASTERLIST" sheet — an internal staff
+// engagement. A person promoted or transferred has one row per engagement,
+// same as the sheet. Department/subdepartment/position/level stay the sheet's
+// own text: several of its departments (Academy and Knowledge, Sales,
+// Marketing, Top Management, ...) aren't in the app's department tree.
+// Statuses are text for the same reason — the sheet uses values outside
+// GeneralStatus/EmploymentStatus (PROMOTED, INACTIVE, ON HOLD).
+// userId links the row to the person's login account when one exists. Team
+// Leaders keep their VA account (they work as VAs too), so a linked user is
+// not necessarily INTERNAL_STAFF.
+model StaffRecord {
+  id               String    @id @default(cuid())
+  userId           String?   @map("user_id")
+  user             User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  staffId          String?   @map("staff_id")
+  hireDate         DateTime? @map("hire_date")
+  startDate        DateTime? @map("start_date")
+  department       String?
+  subdepartment    String?
+  firstName        String    @map("first_name")
+  lastName         String?   @map("last_name")
+  position         String?
+  level            String?
+  workEmail        String?   @map("work_email")
+  personalEmail    String?   @map("personal_email")
+  whatsapp         String?
+  gcash            String?
+  emergencyContact String?   @map("emergency_contact")
+  address          String?
+  birthDate        DateTime? @map("birth_date")
+  remarks          String?
+  generalStatus    String?   @map("general_status")
+  statusDate       DateTime? @map("status_date")
+  employmentStatus String?   @map("employment_status")
+  eocDate          DateTime? @map("eoc_date")
+  nonCelebrant     Boolean   @default(false) @map("non_celebrant")
+  // Row number in the source sheet — the import's idempotency key.
+  sheetRow         Int?      @unique @map("sheet_row")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([generalStatus])
+  @@map("staff_records")
 }
 
 model UserProfile {

@@ -388,6 +388,7 @@ export const ModelName = {
   Position: 'Position',
   DepartmentMembership: 'DepartmentMembership',
   User: 'User',
+  StaffRecord: 'StaffRecord',
   UserProfile: 'UserProfile',
   EmploymentRecord: 'EmploymentRecord',
   RoleAssignment: 'RoleAssignment',
@@ -454,7 +455,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "position" | "departmentMembership" | "user" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vADepartmentAvailability" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveApprovalRule" | "leaveApprovalStep" | "leaveRequest" | "leaveApprovalAction" | "employeeIdCounter" | "vAOnboardingInvite" | "client" | "assignment" | "assignmentKpiCheck" | "workLog" | "ticket" | "ticketConversation" | "termination" | "resignationDiscussion" | "replacementRequest" | "exitClearanceApproval" | "complianceReview" | "finalPayout" | "exitSurveyInvite" | "exitSurveyResponse" | "exitClearance" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "customer" | "account" | "notification" | "sidebarFavorite" | "team" | "teamMembership" | "clientPipeline" | "agentSuggestion" | "agentRun" | "project" | "assignmentPreparation" | "assignmentClientFeedback"
+    modelProps: "department" | "position" | "departmentMembership" | "user" | "staffRecord" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vADepartmentAvailability" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveApprovalRule" | "leaveApprovalStep" | "leaveRequest" | "leaveApprovalAction" | "employeeIdCounter" | "vAOnboardingInvite" | "client" | "assignment" | "assignmentKpiCheck" | "workLog" | "ticket" | "ticketConversation" | "termination" | "resignationDiscussion" | "replacementRequest" | "exitClearanceApproval" | "complianceReview" | "finalPayout" | "exitSurveyInvite" | "exitSurveyResponse" | "exitClearance" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "customer" | "account" | "notification" | "sidebarFavorite" | "team" | "teamMembership" | "clientPipeline" | "agentSuggestion" | "agentRun" | "project" | "assignmentPreparation" | "assignmentClientFeedback"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -751,6 +752,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UserCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
+        }
+      }
+    }
+    StaffRecord: {
+      payload: Prisma.$StaffRecordPayload<ExtArgs>
+      fields: Prisma.StaffRecordFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.StaffRecordFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StaffRecordPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.StaffRecordFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StaffRecordPayload>
+        }
+        findFirst: {
+          args: Prisma.StaffRecordFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StaffRecordPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.StaffRecordFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StaffRecordPayload>
+        }
+        findMany: {
+          args: Prisma.StaffRecordFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StaffRecordPayload>[]
+        }
+        create: {
+          args: Prisma.StaffRecordCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StaffRecordPayload>
+        }
+        createMany: {
+          args: Prisma.StaffRecordCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.StaffRecordCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StaffRecordPayload>[]
+        }
+        delete: {
+          args: Prisma.StaffRecordDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StaffRecordPayload>
+        }
+        update: {
+          args: Prisma.StaffRecordUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StaffRecordPayload>
+        }
+        deleteMany: {
+          args: Prisma.StaffRecordDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.StaffRecordUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.StaffRecordUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StaffRecordPayload>[]
+        }
+        upsert: {
+          args: Prisma.StaffRecordUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StaffRecordPayload>
+        }
+        aggregate: {
+          args: Prisma.StaffRecordAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateStaffRecord>
+        }
+        groupBy: {
+          args: Prisma.StaffRecordGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.StaffRecordGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.StaffRecordCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.StaffRecordCountAggregateOutputType> | number
         }
       }
     }
@@ -4648,6 +4723,39 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+export const StaffRecordScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  staffId: 'staffId',
+  hireDate: 'hireDate',
+  startDate: 'startDate',
+  department: 'department',
+  subdepartment: 'subdepartment',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  position: 'position',
+  level: 'level',
+  workEmail: 'workEmail',
+  personalEmail: 'personalEmail',
+  whatsapp: 'whatsapp',
+  gcash: 'gcash',
+  emergencyContact: 'emergencyContact',
+  address: 'address',
+  birthDate: 'birthDate',
+  remarks: 'remarks',
+  generalStatus: 'generalStatus',
+  statusDate: 'statusDate',
+  employmentStatus: 'employmentStatus',
+  eocDate: 'eocDate',
+  nonCelebrant: 'nonCelebrant',
+  sheetRow: 'sheetRow',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StaffRecordScalarFieldEnum = (typeof StaffRecordScalarFieldEnum)[keyof typeof StaffRecordScalarFieldEnum]
+
+
 export const UserProfileScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -6612,6 +6720,7 @@ export type GlobalOmitConfig = {
   position?: Prisma.PositionOmit
   departmentMembership?: Prisma.DepartmentMembershipOmit
   user?: Prisma.UserOmit
+  staffRecord?: Prisma.StaffRecordOmit
   userProfile?: Prisma.UserProfileOmit
   employmentRecord?: Prisma.EmploymentRecordOmit
   roleAssignment?: Prisma.RoleAssignmentOmit

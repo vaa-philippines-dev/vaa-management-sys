@@ -55,6 +55,7 @@ export const ModelName = {
   Position: 'Position',
   DepartmentMembership: 'DepartmentMembership',
   User: 'User',
+  StaffRecord: 'StaffRecord',
   UserProfile: 'UserProfile',
   EmploymentRecord: 'EmploymentRecord',
   RoleAssignment: 'RoleAssignment',
@@ -203,6 +204,39 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const StaffRecordScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  staffId: 'staffId',
+  hireDate: 'hireDate',
+  startDate: 'startDate',
+  department: 'department',
+  subdepartment: 'subdepartment',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  position: 'position',
+  level: 'level',
+  workEmail: 'workEmail',
+  personalEmail: 'personalEmail',
+  whatsapp: 'whatsapp',
+  gcash: 'gcash',
+  emergencyContact: 'emergencyContact',
+  address: 'address',
+  birthDate: 'birthDate',
+  remarks: 'remarks',
+  generalStatus: 'generalStatus',
+  statusDate: 'statusDate',
+  employmentStatus: 'employmentStatus',
+  eocDate: 'eocDate',
+  nonCelebrant: 'nonCelebrant',
+  sheetRow: 'sheetRow',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StaffRecordScalarFieldEnum = (typeof StaffRecordScalarFieldEnum)[keyof typeof StaffRecordScalarFieldEnum]
 
 
 export const UserProfileScalarFieldEnum = {

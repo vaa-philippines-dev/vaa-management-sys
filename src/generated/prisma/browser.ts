@@ -38,6 +38,11 @@ export type DepartmentMembership = Prisma.DepartmentMembershipModel
  */
 export type User = Prisma.UserModel
 /**
+ * Model StaffRecord
+ * 
+ */
+export type StaffRecord = Prisma.StaffRecordModel
+/**
  * Model UserProfile
  * 
  */

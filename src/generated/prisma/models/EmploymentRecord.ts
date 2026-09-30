@@ -719,14 +719,6 @@ export type EnumEmploymentStatusFieldUpdateOperationsInput = {
   set?: $Enums.EmploymentStatus
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type EmploymentRecordCreateWithoutDepartmentInput = {
   id?: string
   contractType: $Enums.ContractType

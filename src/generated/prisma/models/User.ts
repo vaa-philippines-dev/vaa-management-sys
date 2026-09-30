@@ -326,6 +326,7 @@ export type UserWhereInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalListRelationFilter
   complianceReviewsPerformed?: Prisma.ComplianceReviewListRelationFilter
   finalPayoutsEndorsed?: Prisma.FinalPayoutListRelationFilter
+  staffRecords?: Prisma.StaffRecordListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -394,6 +395,7 @@ export type UserOrderByWithRelationInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalOrderByRelationAggregateInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewOrderByRelationAggregateInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutOrderByRelationAggregateInput
+  staffRecords?: Prisma.StaffRecordOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -465,6 +467,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalListRelationFilter
   complianceReviewsPerformed?: Prisma.ComplianceReviewListRelationFilter
   finalPayoutsEndorsed?: Prisma.FinalPayoutListRelationFilter
+  staffRecords?: Prisma.StaffRecordListRelationFilter
 }, "id" | "email" | "employeeId">
 
 export type UserOrderByWithAggregationInput = {
@@ -579,6 +582,7 @@ export type UserCreateInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -647,6 +651,7 @@ export type UserUncheckedCreateInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -715,6 +720,7 @@ export type UserUpdateInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -783,6 +789,7 @@ export type UserUncheckedUpdateInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -955,6 +962,22 @@ export type EnumUserTypeFieldUpdateOperationsInput = {
 
 export type EnumMessageColorFieldUpdateOperationsInput = {
   set?: $Enums.MessageColor
+}
+
+export type UserCreateNestedOneWithoutStaffRecordsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutStaffRecordsInput, Prisma.UserUncheckedCreateWithoutStaffRecordsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutStaffRecordsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutStaffRecordsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutStaffRecordsInput, Prisma.UserUncheckedCreateWithoutStaffRecordsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutStaffRecordsInput
+  upsert?: Prisma.UserUpsertWithoutStaffRecordsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutStaffRecordsInput, Prisma.UserUpdateWithoutStaffRecordsInput>, Prisma.UserUncheckedUpdateWithoutStaffRecordsInput>
 }
 
 export type UserCreateNestedOneWithoutProfileInput = {
@@ -1712,6 +1735,7 @@ export type UserCreateWithoutDepartmentHeadInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDepartmentHeadInput = {
@@ -1779,6 +1803,7 @@ export type UserUncheckedCreateWithoutDepartmentHeadInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDepartmentHeadInput = {
@@ -1862,6 +1887,7 @@ export type UserUpdateWithoutDepartmentHeadInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDepartmentHeadInput = {
@@ -1929,6 +1955,7 @@ export type UserUncheckedUpdateWithoutDepartmentHeadInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMembershipsInput = {
@@ -1996,6 +2023,7 @@ export type UserCreateWithoutMembershipsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMembershipsInput = {
@@ -2063,6 +2091,7 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMembershipsInput = {
@@ -2146,6 +2175,7 @@ export type UserUpdateWithoutMembershipsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMembershipsInput = {
@@ -2169,6 +2199,295 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
   vaProfile?: Prisma.VAProfileUncheckedUpdateOneWithoutUserNestedInput
   departmentHead?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutUserNestedInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutInitiatorNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
+  createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
+  assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
+  ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
+  vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
+  pinnedMessages?: Prisma.MessageUncheckedUpdateManyWithoutPinnedByUserNestedInput
+  channelParticipants?: Prisma.ChannelParticipantUncheckedUpdateManyWithoutUserNestedInput
+  ledTeams?: Prisma.TeamUncheckedUpdateManyWithoutLeaderNestedInput
+  tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
+  tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
+  clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
+  assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  preparationsInCharge?: Prisma.AssignmentPreparationUncheckedUpdateManyWithoutPersonInChargeNestedInput
+  preparationsShadowTrained?: Prisma.AssignmentPreparationUncheckedUpdateManyWithoutShadowTrainerNestedInput
+  resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
+  resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
+  replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
+  replacementApprovals?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
+  finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutStaffRecordsInput = {
+  id?: string
+  email: string
+  employeeId?: string | null
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  extName?: string | null
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  messageColor?: $Enums.MessageColor
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  isBot?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
+  vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
+  pinnedMessages?: Prisma.MessageCreateNestedManyWithoutPinnedByUserInput
+  channelParticipants?: Prisma.ChannelParticipantCreateNestedManyWithoutUserInput
+  ledTeams?: Prisma.TeamCreateNestedManyWithoutLeaderInput
+  tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
+  tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
+  clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
+  assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
+  preparationsInCharge?: Prisma.AssignmentPreparationCreateNestedManyWithoutPersonInChargeInput
+  preparationsShadowTrained?: Prisma.AssignmentPreparationCreateNestedManyWithoutShadowTrainerInput
+  resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
+  resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
+  replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
+  replacementApprovals?: Prisma.ReplacementRequestCreateNestedManyWithoutApprovedByInput
+  exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
+  complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
+  finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+}
+
+export type UserUncheckedCreateWithoutStaffRecordsInput = {
+  id?: string
+  email: string
+  employeeId?: string | null
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  extName?: string | null
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  messageColor?: $Enums.MessageColor
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  isBot?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileUncheckedCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipUncheckedCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
+  vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
+  pinnedMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPinnedByUserInput
+  channelParticipants?: Prisma.ChannelParticipantUncheckedCreateNestedManyWithoutUserInput
+  ledTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutLeaderInput
+  tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
+  tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
+  clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
+  assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  preparationsInCharge?: Prisma.AssignmentPreparationUncheckedCreateNestedManyWithoutPersonInChargeInput
+  preparationsShadowTrained?: Prisma.AssignmentPreparationUncheckedCreateNestedManyWithoutShadowTrainerInput
+  resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
+  resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
+  replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
+  replacementApprovals?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
+  complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
+  finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+}
+
+export type UserCreateOrConnectWithoutStaffRecordsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutStaffRecordsInput, Prisma.UserUncheckedCreateWithoutStaffRecordsInput>
+}
+
+export type UserUpsertWithoutStaffRecordsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutStaffRecordsInput, Prisma.UserUncheckedUpdateWithoutStaffRecordsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutStaffRecordsInput, Prisma.UserUncheckedCreateWithoutStaffRecordsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutStaffRecordsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutStaffRecordsInput, Prisma.UserUncheckedUpdateWithoutStaffRecordsInput>
+}
+
+export type UserUpdateWithoutStaffRecordsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  extName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumMessageColorFieldUpdateOperationsInput | $Enums.MessageColor
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  vaProfile?: Prisma.VAProfileUpdateOneWithoutUserNestedInput
+  departmentHead?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUpdateManyWithoutUserNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutUserNestedInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUpdateManyWithoutInitiatorNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
+  uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
+  createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
+  assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
+  ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
+  vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
+  pinnedMessages?: Prisma.MessageUpdateManyWithoutPinnedByUserNestedInput
+  channelParticipants?: Prisma.ChannelParticipantUpdateManyWithoutUserNestedInput
+  ledTeams?: Prisma.TeamUpdateManyWithoutLeaderNestedInput
+  tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
+  tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
+  clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
+  assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
+  preparationsInCharge?: Prisma.AssignmentPreparationUpdateManyWithoutPersonInChargeNestedInput
+  preparationsShadowTrained?: Prisma.AssignmentPreparationUpdateManyWithoutShadowTrainerNestedInput
+  resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
+  resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
+  replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
+  replacementApprovals?: Prisma.ReplacementRequestUpdateManyWithoutApprovedByNestedInput
+  exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
+  complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
+  finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutStaffRecordsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  extName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumMessageColorFieldUpdateOperationsInput | $Enums.MessageColor
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  vaProfile?: Prisma.VAProfileUncheckedUpdateOneWithoutUserNestedInput
+  departmentHead?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUncheckedUpdateManyWithoutUserNestedInput
   employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutUserNestedInput
   employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutInitiatorNestedInput
   roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
@@ -2280,6 +2599,7 @@ export type UserCreateWithoutProfileInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProfileInput = {
@@ -2347,6 +2667,7 @@ export type UserUncheckedCreateWithoutProfileInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProfileInput = {
@@ -2430,6 +2751,7 @@ export type UserUpdateWithoutProfileInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProfileInput = {
@@ -2497,6 +2819,7 @@ export type UserUncheckedUpdateWithoutProfileInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutEmploymentRecordsInput = {
@@ -2564,6 +2887,7 @@ export type UserCreateWithoutEmploymentRecordsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutEmploymentRecordsInput = {
@@ -2631,6 +2955,7 @@ export type UserUncheckedCreateWithoutEmploymentRecordsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutEmploymentRecordsInput = {
@@ -2703,6 +3028,7 @@ export type UserCreateWithoutEmploymentRecordsInitiatedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutEmploymentRecordsInitiatedInput = {
@@ -2770,6 +3096,7 @@ export type UserUncheckedCreateWithoutEmploymentRecordsInitiatedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutEmploymentRecordsInitiatedInput = {
@@ -2853,6 +3180,7 @@ export type UserUpdateWithoutEmploymentRecordsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmploymentRecordsInput = {
@@ -2920,6 +3248,7 @@ export type UserUncheckedUpdateWithoutEmploymentRecordsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutEmploymentRecordsInitiatedInput = {
@@ -2998,6 +3327,7 @@ export type UserUpdateWithoutEmploymentRecordsInitiatedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmploymentRecordsInitiatedInput = {
@@ -3065,6 +3395,7 @@ export type UserUncheckedUpdateWithoutEmploymentRecordsInitiatedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRoleAssignmentsInput = {
@@ -3132,6 +3463,7 @@ export type UserCreateWithoutRoleAssignmentsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRoleAssignmentsInput = {
@@ -3199,6 +3531,7 @@ export type UserUncheckedCreateWithoutRoleAssignmentsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRoleAssignmentsInput = {
@@ -3271,6 +3604,7 @@ export type UserCreateWithoutGrantedRoleAssignmentsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutGrantedRoleAssignmentsInput = {
@@ -3338,6 +3672,7 @@ export type UserUncheckedCreateWithoutGrantedRoleAssignmentsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutGrantedRoleAssignmentsInput = {
@@ -3421,6 +3756,7 @@ export type UserUpdateWithoutRoleAssignmentsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRoleAssignmentsInput = {
@@ -3488,6 +3824,7 @@ export type UserUncheckedUpdateWithoutRoleAssignmentsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutGrantedRoleAssignmentsInput = {
@@ -3566,6 +3903,7 @@ export type UserUpdateWithoutGrantedRoleAssignmentsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGrantedRoleAssignmentsInput = {
@@ -3633,6 +3971,7 @@ export type UserUncheckedUpdateWithoutGrantedRoleAssignmentsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutVaProfileInput = {
@@ -3700,6 +4039,7 @@ export type UserCreateWithoutVaProfileInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutVaProfileInput = {
@@ -3767,6 +4107,7 @@ export type UserUncheckedCreateWithoutVaProfileInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutVaProfileInput = {
@@ -3850,6 +4191,7 @@ export type UserUpdateWithoutVaProfileInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVaProfileInput = {
@@ -3917,6 +4259,7 @@ export type UserUncheckedUpdateWithoutVaProfileInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTmfAvailabilityUpdatesInput = {
@@ -3984,6 +4327,7 @@ export type UserCreateWithoutTmfAvailabilityUpdatesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTmfAvailabilityUpdatesInput = {
@@ -4051,6 +4395,7 @@ export type UserUncheckedCreateWithoutTmfAvailabilityUpdatesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTmfAvailabilityUpdatesInput = {
@@ -4134,6 +4479,7 @@ export type UserUpdateWithoutTmfAvailabilityUpdatesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTmfAvailabilityUpdatesInput = {
@@ -4201,6 +4547,7 @@ export type UserUncheckedUpdateWithoutTmfAvailabilityUpdatesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutVaHistoryEventsInput = {
@@ -4268,6 +4615,7 @@ export type UserCreateWithoutVaHistoryEventsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutVaHistoryEventsInput = {
@@ -4335,6 +4683,7 @@ export type UserUncheckedCreateWithoutVaHistoryEventsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutVaHistoryEventsInput = {
@@ -4407,6 +4756,7 @@ export type UserCreateWithoutVaHistoryChangesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutVaHistoryChangesInput = {
@@ -4474,6 +4824,7 @@ export type UserUncheckedCreateWithoutVaHistoryChangesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutVaHistoryChangesInput = {
@@ -4557,6 +4908,7 @@ export type UserUpdateWithoutVaHistoryEventsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVaHistoryEventsInput = {
@@ -4624,6 +4976,7 @@ export type UserUncheckedUpdateWithoutVaHistoryEventsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutVaHistoryChangesInput = {
@@ -4702,6 +5055,7 @@ export type UserUpdateWithoutVaHistoryChangesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVaHistoryChangesInput = {
@@ -4769,6 +5123,7 @@ export type UserUncheckedUpdateWithoutVaHistoryChangesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutUploadedDocumentsInput = {
@@ -4836,6 +5191,7 @@ export type UserCreateWithoutUploadedDocumentsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUploadedDocumentsInput = {
@@ -4903,6 +5259,7 @@ export type UserUncheckedCreateWithoutUploadedDocumentsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUploadedDocumentsInput = {
@@ -4986,6 +5343,7 @@ export type UserUpdateWithoutUploadedDocumentsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadedDocumentsInput = {
@@ -5053,6 +5411,7 @@ export type UserUncheckedUpdateWithoutUploadedDocumentsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLeaveApprovalStepAssignmentsInput = {
@@ -5120,6 +5479,7 @@ export type UserCreateWithoutLeaveApprovalStepAssignmentsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLeaveApprovalStepAssignmentsInput = {
@@ -5187,6 +5547,7 @@ export type UserUncheckedCreateWithoutLeaveApprovalStepAssignmentsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLeaveApprovalStepAssignmentsInput = {
@@ -5270,6 +5631,7 @@ export type UserUpdateWithoutLeaveApprovalStepAssignmentsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLeaveApprovalStepAssignmentsInput = {
@@ -5337,6 +5699,7 @@ export type UserUncheckedUpdateWithoutLeaveApprovalStepAssignmentsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLeaveRequestsInput = {
@@ -5404,6 +5767,7 @@ export type UserCreateWithoutLeaveRequestsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLeaveRequestsInput = {
@@ -5471,6 +5835,7 @@ export type UserUncheckedCreateWithoutLeaveRequestsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLeaveRequestsInput = {
@@ -5554,6 +5919,7 @@ export type UserUpdateWithoutLeaveRequestsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLeaveRequestsInput = {
@@ -5621,6 +5987,7 @@ export type UserUncheckedUpdateWithoutLeaveRequestsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLeaveApprovalActionsInput = {
@@ -5688,6 +6055,7 @@ export type UserCreateWithoutLeaveApprovalActionsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLeaveApprovalActionsInput = {
@@ -5755,6 +6123,7 @@ export type UserUncheckedCreateWithoutLeaveApprovalActionsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLeaveApprovalActionsInput = {
@@ -5838,6 +6207,7 @@ export type UserUpdateWithoutLeaveApprovalActionsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLeaveApprovalActionsInput = {
@@ -5905,6 +6275,7 @@ export type UserUncheckedUpdateWithoutLeaveApprovalActionsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutOnboardingInviteInput = {
@@ -5972,6 +6343,7 @@ export type UserCreateWithoutOnboardingInviteInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutOnboardingInviteInput = {
@@ -6039,6 +6411,7 @@ export type UserUncheckedCreateWithoutOnboardingInviteInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutOnboardingInviteInput = {
@@ -6111,6 +6484,7 @@ export type UserCreateWithoutOnboardingInvitesCreatedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutOnboardingInvitesCreatedInput = {
@@ -6178,6 +6552,7 @@ export type UserUncheckedCreateWithoutOnboardingInvitesCreatedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutOnboardingInvitesCreatedInput = {
@@ -6261,6 +6636,7 @@ export type UserUpdateWithoutOnboardingInviteInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOnboardingInviteInput = {
@@ -6328,6 +6704,7 @@ export type UserUncheckedUpdateWithoutOnboardingInviteInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutOnboardingInvitesCreatedInput = {
@@ -6406,6 +6783,7 @@ export type UserUpdateWithoutOnboardingInvitesCreatedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOnboardingInvitesCreatedInput = {
@@ -6473,6 +6851,7 @@ export type UserUncheckedUpdateWithoutOnboardingInvitesCreatedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutManagedClientsInput = {
@@ -6540,6 +6919,7 @@ export type UserCreateWithoutManagedClientsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutManagedClientsInput = {
@@ -6607,6 +6987,7 @@ export type UserUncheckedCreateWithoutManagedClientsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutManagedClientsInput = {
@@ -6690,6 +7071,7 @@ export type UserUpdateWithoutManagedClientsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutManagedClientsInput = {
@@ -6757,6 +7139,7 @@ export type UserUncheckedUpdateWithoutManagedClientsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAssignmentKpiChecksCompletedInput = {
@@ -6824,6 +7207,7 @@ export type UserCreateWithoutAssignmentKpiChecksCompletedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAssignmentKpiChecksCompletedInput = {
@@ -6891,6 +7275,7 @@ export type UserUncheckedCreateWithoutAssignmentKpiChecksCompletedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAssignmentKpiChecksCompletedInput = {
@@ -6974,6 +7359,7 @@ export type UserUpdateWithoutAssignmentKpiChecksCompletedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssignmentKpiChecksCompletedInput = {
@@ -7041,6 +7427,7 @@ export type UserUncheckedUpdateWithoutAssignmentKpiChecksCompletedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCreatedTicketsInput = {
@@ -7108,6 +7495,7 @@ export type UserCreateWithoutCreatedTicketsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreatedTicketsInput = {
@@ -7175,6 +7563,7 @@ export type UserUncheckedCreateWithoutCreatedTicketsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreatedTicketsInput = {
@@ -7247,6 +7636,7 @@ export type UserCreateWithoutAssignedTicketsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAssignedTicketsInput = {
@@ -7314,6 +7704,7 @@ export type UserUncheckedCreateWithoutAssignedTicketsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAssignedTicketsInput = {
@@ -7397,6 +7788,7 @@ export type UserUpdateWithoutCreatedTicketsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedTicketsInput = {
@@ -7464,6 +7856,7 @@ export type UserUncheckedUpdateWithoutCreatedTicketsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutAssignedTicketsInput = {
@@ -7542,6 +7935,7 @@ export type UserUpdateWithoutAssignedTicketsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssignedTicketsInput = {
@@ -7609,6 +8003,7 @@ export type UserUncheckedUpdateWithoutAssignedTicketsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTicketConversationsInput = {
@@ -7676,6 +8071,7 @@ export type UserCreateWithoutTicketConversationsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTicketConversationsInput = {
@@ -7743,6 +8139,7 @@ export type UserUncheckedCreateWithoutTicketConversationsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTicketConversationsInput = {
@@ -7826,6 +8223,7 @@ export type UserUpdateWithoutTicketConversationsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTicketConversationsInput = {
@@ -7893,6 +8291,7 @@ export type UserUncheckedUpdateWithoutTicketConversationsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTerminationsInitiatedInput = {
@@ -7960,6 +8359,7 @@ export type UserCreateWithoutTerminationsInitiatedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTerminationsInitiatedInput = {
@@ -8027,6 +8427,7 @@ export type UserUncheckedCreateWithoutTerminationsInitiatedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTerminationsInitiatedInput = {
@@ -8099,6 +8500,7 @@ export type UserCreateWithoutResignationTrainingNotesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutResignationTrainingNotesInput = {
@@ -8166,6 +8568,7 @@ export type UserUncheckedCreateWithoutResignationTrainingNotesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutResignationTrainingNotesInput = {
@@ -8249,6 +8652,7 @@ export type UserUpdateWithoutTerminationsInitiatedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTerminationsInitiatedInput = {
@@ -8316,6 +8720,7 @@ export type UserUncheckedUpdateWithoutTerminationsInitiatedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutResignationTrainingNotesInput = {
@@ -8394,6 +8799,7 @@ export type UserUpdateWithoutResignationTrainingNotesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutResignationTrainingNotesInput = {
@@ -8461,6 +8867,7 @@ export type UserUncheckedUpdateWithoutResignationTrainingNotesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutResignationLwdOverridesInput = {
@@ -8528,6 +8935,7 @@ export type UserCreateWithoutResignationLwdOverridesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutResignationLwdOverridesInput = {
@@ -8595,6 +9003,7 @@ export type UserUncheckedCreateWithoutResignationLwdOverridesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutResignationLwdOverridesInput = {
@@ -8678,6 +9087,7 @@ export type UserUpdateWithoutResignationLwdOverridesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutResignationLwdOverridesInput = {
@@ -8745,6 +9155,7 @@ export type UserUncheckedUpdateWithoutResignationLwdOverridesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutReplacementCandidaciesInput = {
@@ -8812,6 +9223,7 @@ export type UserCreateWithoutReplacementCandidaciesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReplacementCandidaciesInput = {
@@ -8879,6 +9291,7 @@ export type UserUncheckedCreateWithoutReplacementCandidaciesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReplacementCandidaciesInput = {
@@ -8951,6 +9364,7 @@ export type UserCreateWithoutReplacementApprovalsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReplacementApprovalsInput = {
@@ -9018,6 +9432,7 @@ export type UserUncheckedCreateWithoutReplacementApprovalsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReplacementApprovalsInput = {
@@ -9101,6 +9516,7 @@ export type UserUpdateWithoutReplacementCandidaciesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReplacementCandidaciesInput = {
@@ -9168,6 +9584,7 @@ export type UserUncheckedUpdateWithoutReplacementCandidaciesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutReplacementApprovalsInput = {
@@ -9246,6 +9663,7 @@ export type UserUpdateWithoutReplacementApprovalsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReplacementApprovalsInput = {
@@ -9313,6 +9731,7 @@ export type UserUncheckedUpdateWithoutReplacementApprovalsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutExitClearanceApprovalsInput = {
@@ -9380,6 +9799,7 @@ export type UserCreateWithoutExitClearanceApprovalsInput = {
   replacementApprovals?: Prisma.ReplacementRequestCreateNestedManyWithoutApprovedByInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutExitClearanceApprovalsInput = {
@@ -9447,6 +9867,7 @@ export type UserUncheckedCreateWithoutExitClearanceApprovalsInput = {
   replacementApprovals?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutApprovedByInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutExitClearanceApprovalsInput = {
@@ -9530,6 +9951,7 @@ export type UserUpdateWithoutExitClearanceApprovalsInput = {
   replacementApprovals?: Prisma.ReplacementRequestUpdateManyWithoutApprovedByNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutExitClearanceApprovalsInput = {
@@ -9597,6 +10019,7 @@ export type UserUncheckedUpdateWithoutExitClearanceApprovalsInput = {
   replacementApprovals?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutApprovedByNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutComplianceReviewsPerformedInput = {
@@ -9664,6 +10087,7 @@ export type UserCreateWithoutComplianceReviewsPerformedInput = {
   replacementApprovals?: Prisma.ReplacementRequestCreateNestedManyWithoutApprovedByInput
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutComplianceReviewsPerformedInput = {
@@ -9731,6 +10155,7 @@ export type UserUncheckedCreateWithoutComplianceReviewsPerformedInput = {
   replacementApprovals?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutApprovedByInput
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutComplianceReviewsPerformedInput = {
@@ -9814,6 +10239,7 @@ export type UserUpdateWithoutComplianceReviewsPerformedInput = {
   replacementApprovals?: Prisma.ReplacementRequestUpdateManyWithoutApprovedByNestedInput
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutComplianceReviewsPerformedInput = {
@@ -9881,6 +10307,7 @@ export type UserUncheckedUpdateWithoutComplianceReviewsPerformedInput = {
   replacementApprovals?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutApprovedByNestedInput
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutFinalPayoutsEndorsedInput = {
@@ -9948,6 +10375,7 @@ export type UserCreateWithoutFinalPayoutsEndorsedInput = {
   replacementApprovals?: Prisma.ReplacementRequestCreateNestedManyWithoutApprovedByInput
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutFinalPayoutsEndorsedInput = {
@@ -10015,6 +10443,7 @@ export type UserUncheckedCreateWithoutFinalPayoutsEndorsedInput = {
   replacementApprovals?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutApprovedByInput
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutFinalPayoutsEndorsedInput = {
@@ -10098,6 +10527,7 @@ export type UserUpdateWithoutFinalPayoutsEndorsedInput = {
   replacementApprovals?: Prisma.ReplacementRequestUpdateManyWithoutApprovedByNestedInput
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFinalPayoutsEndorsedInput = {
@@ -10165,6 +10595,7 @@ export type UserUncheckedUpdateWithoutFinalPayoutsEndorsedInput = {
   replacementApprovals?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutApprovedByNestedInput
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutClearancesClearedInput = {
@@ -10232,6 +10663,7 @@ export type UserCreateWithoutClearancesClearedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutClearancesClearedInput = {
@@ -10299,6 +10731,7 @@ export type UserUncheckedCreateWithoutClearancesClearedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutClearancesClearedInput = {
@@ -10382,6 +10815,7 @@ export type UserUpdateWithoutClearancesClearedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutClearancesClearedInput = {
@@ -10449,6 +10883,7 @@ export type UserUncheckedUpdateWithoutClearancesClearedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutChannelParticipantsInput = {
@@ -10516,6 +10951,7 @@ export type UserCreateWithoutChannelParticipantsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutChannelParticipantsInput = {
@@ -10583,6 +11019,7 @@ export type UserUncheckedCreateWithoutChannelParticipantsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutChannelParticipantsInput = {
@@ -10666,6 +11103,7 @@ export type UserUpdateWithoutChannelParticipantsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutChannelParticipantsInput = {
@@ -10733,6 +11171,7 @@ export type UserUncheckedUpdateWithoutChannelParticipantsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMessagesInput = {
@@ -10800,6 +11239,7 @@ export type UserCreateWithoutMessagesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMessagesInput = {
@@ -10867,6 +11307,7 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMessagesInput = {
@@ -10939,6 +11380,7 @@ export type UserCreateWithoutPinnedMessagesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPinnedMessagesInput = {
@@ -11006,6 +11448,7 @@ export type UserUncheckedCreateWithoutPinnedMessagesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPinnedMessagesInput = {
@@ -11089,6 +11532,7 @@ export type UserUpdateWithoutMessagesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMessagesInput = {
@@ -11156,6 +11600,7 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutPinnedMessagesInput = {
@@ -11234,6 +11679,7 @@ export type UserUpdateWithoutPinnedMessagesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPinnedMessagesInput = {
@@ -11301,6 +11747,7 @@ export type UserUncheckedUpdateWithoutPinnedMessagesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMessageMentionsInput = {
@@ -11368,6 +11815,7 @@ export type UserCreateWithoutMessageMentionsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMessageMentionsInput = {
@@ -11435,6 +11883,7 @@ export type UserUncheckedCreateWithoutMessageMentionsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMessageMentionsInput = {
@@ -11518,6 +11967,7 @@ export type UserUpdateWithoutMessageMentionsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMessageMentionsInput = {
@@ -11585,6 +12035,7 @@ export type UserUncheckedUpdateWithoutMessageMentionsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutChannelReadsInput = {
@@ -11652,6 +12103,7 @@ export type UserCreateWithoutChannelReadsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutChannelReadsInput = {
@@ -11719,6 +12171,7 @@ export type UserUncheckedCreateWithoutChannelReadsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutChannelReadsInput = {
@@ -11802,6 +12255,7 @@ export type UserUpdateWithoutChannelReadsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutChannelReadsInput = {
@@ -11869,6 +12323,7 @@ export type UserUncheckedUpdateWithoutChannelReadsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAuditLogsInput = {
@@ -11936,6 +12391,7 @@ export type UserCreateWithoutAuditLogsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAuditLogsInput = {
@@ -12003,6 +12459,7 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAuditLogsInput = {
@@ -12086,6 +12543,7 @@ export type UserUpdateWithoutAuditLogsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuditLogsInput = {
@@ -12153,6 +12611,7 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -12220,6 +12679,7 @@ export type UserCreateWithoutNotificationsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -12287,6 +12747,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -12370,6 +12831,7 @@ export type UserUpdateWithoutNotificationsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -12437,6 +12899,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSidebarFavoritesInput = {
@@ -12504,6 +12967,7 @@ export type UserCreateWithoutSidebarFavoritesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSidebarFavoritesInput = {
@@ -12571,6 +13035,7 @@ export type UserUncheckedCreateWithoutSidebarFavoritesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSidebarFavoritesInput = {
@@ -12654,6 +13119,7 @@ export type UserUpdateWithoutSidebarFavoritesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSidebarFavoritesInput = {
@@ -12721,6 +13187,7 @@ export type UserUncheckedUpdateWithoutSidebarFavoritesInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLedTeamsInput = {
@@ -12788,6 +13255,7 @@ export type UserCreateWithoutLedTeamsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLedTeamsInput = {
@@ -12855,6 +13323,7 @@ export type UserUncheckedCreateWithoutLedTeamsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLedTeamsInput = {
@@ -12927,6 +13396,7 @@ export type UserCreateWithoutTempLedTeams1Input = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTempLedTeams1Input = {
@@ -12994,6 +13464,7 @@ export type UserUncheckedCreateWithoutTempLedTeams1Input = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTempLedTeams1Input = {
@@ -13066,6 +13537,7 @@ export type UserCreateWithoutTempLedTeams2Input = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTempLedTeams2Input = {
@@ -13133,6 +13605,7 @@ export type UserUncheckedCreateWithoutTempLedTeams2Input = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTempLedTeams2Input = {
@@ -13216,6 +13689,7 @@ export type UserUpdateWithoutLedTeamsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLedTeamsInput = {
@@ -13283,6 +13757,7 @@ export type UserUncheckedUpdateWithoutLedTeamsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutTempLedTeams1Input = {
@@ -13361,6 +13836,7 @@ export type UserUpdateWithoutTempLedTeams1Input = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTempLedTeams1Input = {
@@ -13428,6 +13904,7 @@ export type UserUncheckedUpdateWithoutTempLedTeams1Input = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutTempLedTeams2Input = {
@@ -13506,6 +13983,7 @@ export type UserUpdateWithoutTempLedTeams2Input = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTempLedTeams2Input = {
@@ -13573,6 +14051,7 @@ export type UserUncheckedUpdateWithoutTempLedTeams2Input = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTeamMembershipsInput = {
@@ -13640,6 +14119,7 @@ export type UserCreateWithoutTeamMembershipsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTeamMembershipsInput = {
@@ -13707,6 +14187,7 @@ export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTeamMembershipsInput = {
@@ -13790,6 +14271,7 @@ export type UserUpdateWithoutTeamMembershipsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
@@ -13857,6 +14339,7 @@ export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAgentDecisionsInput = {
@@ -13924,6 +14407,7 @@ export type UserCreateWithoutAgentDecisionsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAgentDecisionsInput = {
@@ -13991,6 +14475,7 @@ export type UserUncheckedCreateWithoutAgentDecisionsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAgentDecisionsInput = {
@@ -14074,6 +14559,7 @@ export type UserUpdateWithoutAgentDecisionsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAgentDecisionsInput = {
@@ -14141,6 +14627,7 @@ export type UserUncheckedUpdateWithoutAgentDecisionsInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutProjectsOwnedInput = {
@@ -14208,6 +14695,7 @@ export type UserCreateWithoutProjectsOwnedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProjectsOwnedInput = {
@@ -14275,6 +14763,7 @@ export type UserUncheckedCreateWithoutProjectsOwnedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProjectsOwnedInput = {
@@ -14347,6 +14836,7 @@ export type UserCreateWithoutProjectsCreatedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProjectsCreatedInput = {
@@ -14414,6 +14904,7 @@ export type UserUncheckedCreateWithoutProjectsCreatedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProjectsCreatedInput = {
@@ -14497,6 +14988,7 @@ export type UserUpdateWithoutProjectsOwnedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProjectsOwnedInput = {
@@ -14564,6 +15056,7 @@ export type UserUncheckedUpdateWithoutProjectsOwnedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutProjectsCreatedInput = {
@@ -14642,6 +15135,7 @@ export type UserUpdateWithoutProjectsCreatedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProjectsCreatedInput = {
@@ -14709,6 +15203,7 @@ export type UserUncheckedUpdateWithoutProjectsCreatedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPreparationsInChargeInput = {
@@ -14776,6 +15271,7 @@ export type UserCreateWithoutPreparationsInChargeInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPreparationsInChargeInput = {
@@ -14843,6 +15339,7 @@ export type UserUncheckedCreateWithoutPreparationsInChargeInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPreparationsInChargeInput = {
@@ -14915,6 +15412,7 @@ export type UserCreateWithoutPreparationsShadowTrainedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPreparationsShadowTrainedInput = {
@@ -14982,6 +15480,7 @@ export type UserUncheckedCreateWithoutPreparationsShadowTrainedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPreparationsShadowTrainedInput = {
@@ -15065,6 +15564,7 @@ export type UserUpdateWithoutPreparationsInChargeInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPreparationsInChargeInput = {
@@ -15132,6 +15632,7 @@ export type UserUncheckedUpdateWithoutPreparationsInChargeInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutPreparationsShadowTrainedInput = {
@@ -15210,6 +15711,7 @@ export type UserUpdateWithoutPreparationsShadowTrainedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPreparationsShadowTrainedInput = {
@@ -15277,6 +15779,7 @@ export type UserUncheckedUpdateWithoutPreparationsShadowTrainedInput = {
   exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
   complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
   finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -15330,6 +15833,7 @@ export type UserCountOutputType = {
   exitClearanceApprovals: number
   complianceReviewsPerformed: number
   finalPayoutsEndorsed: number
+  staffRecords: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -15378,6 +15882,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   exitClearanceApprovals?: boolean | UserCountOutputTypeCountExitClearanceApprovalsArgs
   complianceReviewsPerformed?: boolean | UserCountOutputTypeCountComplianceReviewsPerformedArgs
   finalPayoutsEndorsed?: boolean | UserCountOutputTypeCountFinalPayoutsEndorsedArgs
+  staffRecords?: boolean | UserCountOutputTypeCountStaffRecordsArgs
 }
 
 /**
@@ -15705,6 +16210,13 @@ export type UserCountOutputTypeCountFinalPayoutsEndorsedArgs<ExtArgs extends run
   where?: Prisma.FinalPayoutWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountStaffRecordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.StaffRecordWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -15772,6 +16284,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   exitClearanceApprovals?: boolean | Prisma.User$exitClearanceApprovalsArgs<ExtArgs>
   complianceReviewsPerformed?: boolean | Prisma.User$complianceReviewsPerformedArgs<ExtArgs>
   finalPayoutsEndorsed?: boolean | Prisma.User$finalPayoutsEndorsedArgs<ExtArgs>
+  staffRecords?: boolean | Prisma.User$staffRecordsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -15885,6 +16398,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   exitClearanceApprovals?: boolean | Prisma.User$exitClearanceApprovalsArgs<ExtArgs>
   complianceReviewsPerformed?: boolean | Prisma.User$complianceReviewsPerformedArgs<ExtArgs>
   finalPayoutsEndorsed?: boolean | Prisma.User$finalPayoutsEndorsedArgs<ExtArgs>
+  staffRecords?: boolean | Prisma.User$staffRecordsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -15941,6 +16455,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     exitClearanceApprovals: Prisma.$ExitClearanceApprovalPayload<ExtArgs>[]
     complianceReviewsPerformed: Prisma.$ComplianceReviewPayload<ExtArgs>[]
     finalPayoutsEndorsed: Prisma.$FinalPayoutPayload<ExtArgs>[]
+    staffRecords: Prisma.$StaffRecordPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -16402,6 +16917,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   exitClearanceApprovals<T extends Prisma.User$exitClearanceApprovalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$exitClearanceApprovalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExitClearanceApprovalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   complianceReviewsPerformed<T extends Prisma.User$complianceReviewsPerformedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$complianceReviewsPerformedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ComplianceReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   finalPayoutsEndorsed<T extends Prisma.User$finalPayoutsEndorsedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$finalPayoutsEndorsedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FinalPayoutPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  staffRecords<T extends Prisma.User$staffRecordsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$staffRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StaffRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -17975,6 +18491,30 @@ export type User$finalPayoutsEndorsedArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.FinalPayoutScalarFieldEnum | Prisma.FinalPayoutScalarFieldEnum[]
+}
+
+/**
+ * User.staffRecords
+ */
+export type User$staffRecordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the StaffRecord
+   */
+  select?: Prisma.StaffRecordSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the StaffRecord
+   */
+  omit?: Prisma.StaffRecordOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StaffRecordInclude<ExtArgs> | null
+  where?: Prisma.StaffRecordWhereInput
+  orderBy?: Prisma.StaffRecordOrderByWithRelationInput | Prisma.StaffRecordOrderByWithRelationInput[]
+  cursor?: Prisma.StaffRecordWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.StaffRecordScalarFieldEnum | Prisma.StaffRecordScalarFieldEnum[]
 }
 
 /**
