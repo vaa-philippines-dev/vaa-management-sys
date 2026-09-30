@@ -5,7 +5,7 @@ import { requireRole, AGENT_MUTATOR_ROLES } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
 import { CACHE_TAGS } from '@/lib/cache'
 import { revalidateTag } from 'next/cache'
-import { getMutableDepartmentIds, assertClientInScope, assertVAProfileInScope } from '@/lib/scope'
+import { getMutateScope, assertClientInScope, assertVAProfileInScope } from '@/lib/scope'
 
 /**
  * Approves or rejects one AI Agent suggestion. This is the one place a human
@@ -23,10 +23,10 @@ export async function decideSuggestion(id: string, status: 'APPROVED' | 'REJECTE
 
   // Same attribution as the /matching list: client's department first, else
   // the VA's; a suggestion with neither is admin-only.
-  const deptIds = getMutableDepartmentIds(actor)
-  if (deptIds !== null) {
-    if (suggestion.clientId) await assertClientInScope(deptIds, suggestion.clientId)
-    else if (suggestion.vaProfileId) await assertVAProfileInScope(deptIds, suggestion.vaProfileId)
+  const scope = await getMutateScope(actor)
+  if (scope !== null) {
+    if (suggestion.clientId) await assertClientInScope(scope, suggestion.clientId)
+    else if (suggestion.vaProfileId) await assertVAProfileInScope(scope, suggestion.vaProfileId)
     else throw new Error('Forbidden: outside your department scope')
   }
   if (suggestion.status !== 'PENDING') throw new Error('This suggestion has already been decided.')

@@ -6,6 +6,7 @@ import {
   TEAM_MANAGE_ROLES,
 } from '@/lib/auth'
 import { redirect } from 'next/navigation'
+import { isTeamScoped } from '@/lib/scope'
 import { LEVEL_RECORD_NAMES } from '@/lib/departments'
 import { ProjectsBoard } from '@/components/projects/ProjectsBoard'
 import { FolderKanban } from 'lucide-react'
@@ -17,6 +18,9 @@ export default async function ProjectsPage() {
   const user = await getCurrentUser()
   if (!user) redirect('/login')
   if (user.userType === 'VIRTUAL_ASSISTANT') redirect('/dashboard')
+  // Department-level initiatives; a team-scoped Team Leader only sees their
+  // own teams, so they land on their TMF instead.
+  if (isTeamScoped(user)) redirect('/tmf')
 
   const unrestricted = isDepartmentUnrestricted(user)
   const managedIds = getManagedDepartmentIds(user)

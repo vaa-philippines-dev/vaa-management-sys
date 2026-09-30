@@ -1,7 +1,15 @@
 import { prisma } from '@/lib/prisma'
 import type { Prisma } from '@/src/generated/prisma/client'
 import { getCurrentUser, canMutate, VA_MUTATOR_ROLES, DEPARTMENT_SCOPED_ROLES } from '@/lib/auth'
-import { getViewableDepartmentIds, assignmentScopeWhere } from '@/lib/scope'
+import {
+  getViewScope,
+  getLedTeamScope,
+  isTeamScoped,
+  assignmentScopeWhere,
+  vaProfileScopeWhere,
+  scopeKey as scopeCacheKeyOf,
+  type Scope,
+} from '@/lib/scope'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
@@ -110,14 +118,18 @@ const hrgRoles = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 
 
 type ViewerScope =
   | { type: 'unrestricted' }
-  | { type: 'department'; departmentIds: string[] }
+  // A department-/team-restricted staff viewer. `scope` is lib/scope.ts's
+  // Scope (userIds set for a Team Leader); `teamIds` is the led teams for a
+  // team-scoped TL (null otherwise) and only narrows the filter dropdowns.
+  | { type: 'department'; scope: NonNullable<Scope>; teamIds: string[] | null }
   | { type: 'team'; teamIds: string[] }
   | { type: 'self'; userId: string }
 
 // VA-type users -> own team (or own record if on no team) — unless they also
 // hold a Dept/Ops Manager role, which has always taken precedence. Every other
 // viewer goes through lib/scope.ts: admins/HR/EXECUTIVE see everything, and
-// DM/OM/TL/STAFF only the departments they're an active member of.
+// DM/OM/STAFF only the departments they're an active member of, and a Team
+// Leader only the people on the teams they lead.
 async function getViewerScope(
   currentUser: NonNullable<Awaited<ReturnType<typeof getCurrentUser>>>
 ): Promise<ViewerScope> {
@@ -126,22 +138,24 @@ async function getViewerScope(
     if (teamIds.length > 0) return { type: 'team', teamIds }
     return { type: 'self', userId: currentUser.id }
   }
-  const ids = getViewableDepartmentIds(currentUser)
-  return ids === null ? { type: 'unrestricted' } : { type: 'department', departmentIds: ids }
+  const scope = await getViewScope(currentUser)
+  if (scope === null) return { type: 'unrestricted' }
+  const teamIds = isTeamScoped(currentUser) ? (await getLedTeamScope(currentUser.id)).teamIds : null
+  return { type: 'department', scope, teamIds }
 }
 
-// Department ids used to filter the per-row assignment/client include: a VA in
-// PPC and Amazon must only show PPC clients to a PPC manager. Team/self scopes
-// are VA viewers looking at teammates, which never had a client filter.
-function assignmentDeptIds(viewerScope: ViewerScope): string[] | null {
-  return viewerScope.type === 'department' ? viewerScope.departmentIds : null
+// Scope used to filter the per-row assignment/client include: a VA in PPC and
+// Amazon must only show PPC clients to a PPC manager. Team/self scopes are VA
+// viewers looking at teammates, which never had a client filter.
+function assignmentScope(viewerScope: ViewerScope): Scope {
+  return viewerScope.type === 'department' ? viewerScope.scope : null
 }
 
 // Shared by the row query and the scorecard counts below — extracted so the
 // two can't silently drift on what "in scope" means.
 function buildScopeWhere(viewerScope: ViewerScope): Prisma.VAProfileWhereInput {
   return viewerScope.type === 'department'
-    ? { user: { memberships: { some: { departmentId: { in: viewerScope.departmentIds }, endedAt: null } } } }
+    ? vaProfileScopeWhere(viewerScope.scope)
     : viewerScope.type === 'team'
       ? {
           user: {
@@ -162,7 +176,7 @@ function scopeKey(viewerScope: ViewerScope): string {
   return viewerScope.type === 'unrestricted'
     ? 'all'
     : viewerScope.type === 'department'
-      ? `dept:${viewerScope.departmentIds.slice().sort().join(',')}`
+      ? `dept:${scopeCacheKeyOf(viewerScope.scope)}`
       : viewerScope.type === 'team'
         ? `team:${viewerScope.teamIds.slice().sort().join(',')}`
         : `self:${viewerScope.userId}`
@@ -185,12 +199,12 @@ export default async function VAPage({
     ? await Promise.all([
         // quickAddVA() rejects out-of-scope departments server-side; this just
         // keeps the picker from offering them.
-        cached(`vas:add-va-departments:${viewerScope.type === 'department' ? [...viewerScope.departmentIds].sort().join(',') : 'all'}`, [CACHE_TAGS.departments], 600, () =>
+        cached(`vas:add-va-departments:${viewerScope.type === 'department' ? [...viewerScope.scope.departmentIds].sort().join(',') : 'all'}`, [CACHE_TAGS.departments], 600, () =>
           prisma.department.findMany({
             where: {
               status: 'ACTIVE',
               parentId: { not: null },
-              ...(viewerScope.type === 'department' && { id: { in: viewerScope.departmentIds } }),
+              ...(viewerScope.type === 'department' && { id: { in: viewerScope.scope.departmentIds } }),
             },
             orderBy: { sortOrder: 'asc' },
             select: { id: true, name: true },
@@ -343,9 +357,15 @@ function StatsSkeleton() {
 // manager picking "Amazon" would only ever get an empty list, and the option
 // list itself shouldn't enumerate other departments' teams.
 async function FilterWrapper({ scope }: { scope: ViewerScope }) {
-  const deptIds = scope.type === 'department' ? scope.departmentIds : null
-  const teamIds = scope.type === 'team' ? scope.teamIds : scope.type === 'self' ? [] : null
-  const key = deptIds ? `d:${[...deptIds].sort().join(',')}` : teamIds ? `t:${[...teamIds].sort().join(',')}` : 'all'
+  // A team-scoped Team Leader gets both: their led teams, and only the
+  // departments those teams belong to.
+  const deptIds = scope.type === 'department' ? scope.scope.departmentIds : null
+  const teamIds =
+    scope.type === 'team' ? scope.teamIds
+    : scope.type === 'self' ? []
+    : scope.type === 'department' ? scope.teamIds
+    : null
+  const key = [deptIds ? `d:${[...deptIds].sort().join(',')}` : '', teamIds ? `t:${[...teamIds].sort().join(',')}` : ''].filter(Boolean).join('|') || 'all'
   const [departments, teams] = await Promise.all([
     cached(`vas:departments:${key}`, [CACHE_TAGS.departments], 600, () =>
       prisma.department.findMany({
@@ -531,7 +551,7 @@ async function VATableSection({
     // Scoped by the assignment's client department, not the VA's — the
     // cache key already carries scopeCacheKey, which includes the ids.
     assignments: {
-      where: { status: 'ACTIVE', ...assignmentScopeWhere(assignmentDeptIds(viewerScope)) },
+      where: { status: 'ACTIVE', ...assignmentScopeWhere(assignmentScope(viewerScope)) },
       include: { client: true },
     },
   } satisfies Prisma.VAProfileInclude

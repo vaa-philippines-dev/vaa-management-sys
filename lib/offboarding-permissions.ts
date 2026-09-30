@@ -3,6 +3,7 @@
 // this pulls in prisma/auth and would otherwise break the client bundle.
 import { prisma } from '@/lib/prisma'
 import { isDepartmentUnrestricted, canMutate, getManagedDepartmentIds, hasModuleAccess, type getCurrentUser } from '@/lib/auth'
+import { getMutateScope, isDepartmentInScope, isUserInScope } from '@/lib/scope'
 import type { ExitClearanceDepartment } from '@/src/generated/prisma/enums'
 
 type CurrentUser = Awaited<ReturnType<typeof getCurrentUser>>
@@ -45,12 +46,16 @@ export async function canApproveClearanceDepartment(
       return hasModuleAccess(user, 'exit-clearance-training', 'approve')
     case 'SERVICE_DEPARTMENT': {
       if (!CLEARANCE_MANAGER_ROLES.includes(user.systemRole)) return false
-      const deptId = await vaPrimaryDepartmentId(vaUserId)
-      return deptId !== null && getManagedDepartmentIds(user).includes(deptId)
+      // The VA's own Service Department: lib/scope.ts decides, so a Team
+      // Leader only approves for people on the teams they lead.
+      const [deptId, scope] = await Promise.all([vaPrimaryDepartmentId(vaUserId), getMutateScope(user)])
+      return deptId !== null && isDepartmentInScope(scope, deptId) && isUserInScope(scope, vaUserId)
     }
     case 'ACCOUNTING':
     case 'CUSTOMER_SUCCESS': {
       if (!CLEARANCE_MANAGER_ROLES.includes(user.systemRole)) return false
+      // Approver standing here comes from membership in ACCT/CS itself, not
+      // from the VA being in the approver's scope — deliberately unchanged.
       const deptId = await departmentIdByAcronym(department === 'ACCOUNTING' ? 'ACCT' : 'CS')
       return deptId !== null && getManagedDepartmentIds(user).includes(deptId)
     }
@@ -73,7 +78,16 @@ export async function canInitiateEocOrClientInitiatedTermination(
   if (canMutate(user)) return true
   if (!CLEARANCE_MANAGER_ROLES.includes(user.systemRole)) return false
 
+  // Own Service Department path follows lib/scope.ts (a Team Leader: only
+  // their teams' people); the Customer Success path stays membership-based.
   const managed = getManagedDepartmentIds(user)
-  const [ownDeptId, csDeptId] = await Promise.all([vaPrimaryDepartmentId(vaUserId), departmentIdByAcronym('CS')])
-  return (ownDeptId !== null && managed.includes(ownDeptId)) || (csDeptId !== null && managed.includes(csDeptId))
+  const [ownDeptId, csDeptId, scope] = await Promise.all([
+    vaPrimaryDepartmentId(vaUserId),
+    departmentIdByAcronym('CS'),
+    getMutateScope(user),
+  ])
+  return (
+    (ownDeptId !== null && isDepartmentInScope(scope, ownDeptId) && isUserInScope(scope, vaUserId)) ||
+    (csDeptId !== null && managed.includes(csDeptId))
+  )
 }

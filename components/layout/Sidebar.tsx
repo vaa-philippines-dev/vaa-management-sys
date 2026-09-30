@@ -322,6 +322,11 @@ const tmfRoute = { label: 'Team Monitoring', href: '/tmf', icon: ClipboardList }
 // would just bounce them to the dashboard, so they're hidden for VA accounts.
 const MANAGER_ONLY_DEPARTMENT_HREFS = new Set(['/staff', '/va-preparation', '/va-availability', '/performance', '/projects'])
 
+// Department-wide pages hidden from a team-scoped Team Leader (TEAM_LEADER
+// SystemRole on a staff account — lib/scope.ts isTeamScoped): they only see
+// the teams they lead, and these pages are about the whole department.
+const TEAM_SCOPED_HIDDEN_HREFS = new Set(['/staff', '/projects'])
+
 // Rendered in the "Support" section at the very bottom of every sidebar.
 const supportRoutes = [
   { label: 'Tickets', href: '/tickets', icon: Ticket },
@@ -361,6 +366,7 @@ export function Sidebar({
   canManageLeave = false,
   isLedTeamLeader = false,
   canOpenTmf = false,
+  isTeamScoped = false,
 }: {
   role?: 'MANAGER' | 'VA'
   isAdmin?: boolean
@@ -369,9 +375,14 @@ export function Sidebar({
   canManageLeave?: boolean
   isLedTeamLeader?: boolean
   canOpenTmf?: boolean
+  isTeamScoped?: boolean
 }) {
   const pathname = usePathname()
+  // A team-scoped Team Leader's Dashboard link stays /dashboard: that page
+  // redirects them to /tmf (pointing it there directly would duplicate the
+  // Team Monitoring row below).
   const routes = role === 'VA' ? vaRoutes : managerRoutes
+  const showDeptRow = (href: string) => !(isTeamScoped && TEAM_SCOPED_HIDDEN_HREFS.has(href))
   // Clients/Assignments move into the Department section (below VA Masterlist)
   // once it's shown, so they aren't listed twice for the same viewer.
   const mainRoutes = showDepartmentSection
@@ -419,7 +430,7 @@ export function Sidebar({
   const allRoutes = [
     ...routes,
     ...(showDepartmentSection
-      ? departmentRoutes.filter((r) => role === 'MANAGER' || !MANAGER_ONLY_DEPARTMENT_HREFS.has(r.href))
+      ? departmentRoutes.filter((r) => (role === 'MANAGER' || !MANAGER_ONLY_DEPARTMENT_HREFS.has(r.href)) && showDeptRow(r.href))
       : []),
     ...(canOpenTmf ? [tmfRoute] : []),
     ...(isAdmin ? adminRoutes : []),
@@ -527,7 +538,7 @@ export function Sidebar({
                 atMax={atMax}
                 onChanged={setFavorites}
               />
-              {role === 'MANAGER' && (
+              {role === 'MANAGER' && showDeptRow('/staff') && (
                 <FavoritableRow
                   href="/staff"
                   label="Staff Masterlist"
@@ -623,6 +634,7 @@ export function Sidebar({
                 atMax={atMax}
                 onChanged={setFavorites}
               />
+              {showDeptRow('/projects') && (
               <FavoritableRow
                 href="/projects"
                 label="Projects"
@@ -633,6 +645,7 @@ export function Sidebar({
                 atMax={atMax}
                 onChanged={setFavorites}
               />
+              )}
                 </>
               )}
 

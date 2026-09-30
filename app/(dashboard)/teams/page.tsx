@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'
 import { TEAM_MANAGE_ROLES } from '@/lib/auth'
 import { TeamsBrowser } from '@/components/teams/TeamsBrowser'
+import { isTeamScoped, getLedTeamScope } from '@/lib/scope'
 
 export default async function TeamsPage() {
   const user = await getCurrentUser()
@@ -45,14 +46,22 @@ export default async function TeamsPage() {
     )
   }
 
+  // A team-scoped Team Leader (TEAM_LEADER SystemRole, staff account) sees
+  // only the teams they lead, not every team in their department.
+  const teamScoped = isTeamScoped(user)
+  const ledTeamIds = teamScoped ? (await getLedTeamScope(user.id)).teamIds : []
   const managedIds = getManagedDepartmentIds(user)
   const teams = await cached(
-    `teams:list:${isAdmin ? 'all' : managedIds.join(',')}`,
+    teamScoped
+      ? `teams:list:led:${user.id}:${[...ledTeamIds].sort().join(',')}`
+      : `teams:list:${isAdmin ? 'all' : managedIds.join(',')}`,
     [CACHE_TAGS.teams],
     60,
     () =>
       prisma.team.findMany({
-        where: isAdmin ? undefined : { departmentId: { in: managedIds } },
+        where: teamScoped
+          ? { id: { in: ledTeamIds } }
+          : isAdmin ? undefined : { departmentId: { in: managedIds } },
         include: { department: true, _count: { select: { memberships: { where: { endedAt: null } } } } },
         orderBy: { name: 'asc' },
       })
@@ -64,7 +73,7 @@ export default async function TeamsPage() {
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Teams</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Teams within your department{isAdmin ? 's' : ''}
+            {teamScoped ? 'Teams you lead' : <>Teams within your department{isAdmin ? 's' : ''}</>}
           </p>
         </div>
         {canCreate && (

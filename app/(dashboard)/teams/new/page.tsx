@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser, isDepartmentUnrestricted, getManagedDepartmentIds, TEAM_MANAGE_ROLES } from '@/lib/auth'
 import { redirect } from 'next/navigation'
+import { isTeamScoped } from '@/lib/scope'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -9,7 +10,9 @@ import { CreateTeamForm } from '@/components/teams/CreateTeamForm'
 
 export default async function NewTeamPage() {
   const user = await getCurrentUser()
-  if (!user || !TEAM_MANAGE_ROLES.includes(user.systemRole)) {
+  // TEAM_LEADER isn't in TEAM_MANAGE_ROLES; the isTeamScoped check keeps a
+  // team-scoped leader out even if that list ever widens.
+  if (!user || !TEAM_MANAGE_ROLES.includes(user.systemRole) || isTeamScoped(user)) {
     redirect('/teams')
   }
 

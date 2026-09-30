@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { KPI_MILESTONES } from '@/lib/kpi-checks'
+import { assignmentScopeWhere, type Scope } from '@/lib/scope'
 import {
   FEEDBACK_WINDOWS,
   type FeedbackCell,
@@ -35,15 +36,15 @@ function emptyCell(window: FeedbackWindow): FeedbackCell {
   }
 }
 
-// `departmentIds: null` means every department (admin/HR); an empty array
-// means nothing in scope and returns no rows.
-export async function getPerformanceRows(departmentIds: string[] | null): Promise<PerformanceRow[]> {
+// `scope` comes from getViewScope(): null is every department (admin/HR/
+// EXECUTIVE); a Team Leader's scope narrows to their teams' members.
+export async function getPerformanceRows(scope: Scope): Promise<PerformanceRow[]> {
   const assignments = await prisma.assignment.findMany({
     where: {
       // Cancelled engagements never ran, so there's nothing to monitor; a
       // completed one still carries its history and stays visible.
       status: { in: ['ACTIVE', 'COMPLETED'] },
-      ...(departmentIds === null ? {} : { client: { departmentId: { in: departmentIds } } }),
+      ...assignmentScopeWhere(scope),
     },
     select: {
       id: true,

@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import { assignmentScopeWhere, type Scope } from '@/lib/scope'
 import { CHECKLIST_FIELDS, type ChecklistKey, type PreparationRow } from '@/lib/va-preparation-fields'
 
 // Prisma reads for the DMF sheet's "VA Preparation" tab. Server-only —
@@ -99,12 +100,12 @@ function toRow(p: RawPreparation): PreparationRow {
   }
 }
 
-// `departmentIds: null` means "every department" (admin/HR); an empty array
-// means "no departments in scope" and correctly returns nothing rather than
-// falling back to everything.
-export async function getPreparations(departmentIds: string[] | null): Promise<PreparationRow[]> {
+// `scope` comes from getViewScope(): null is every department (admin/HR/
+// EXECUTIVE); an empty scope returns nothing rather than falling back to
+// everything; a Team Leader's scope narrows to their teams' members.
+export async function getPreparations(scope: Scope): Promise<PreparationRow[]> {
   const rows = await prisma.assignmentPreparation.findMany({
-    where: departmentIds === null ? {} : { assignment: { client: { departmentId: { in: departmentIds } } } },
+    where: scope === null ? {} : { assignment: assignmentScopeWhere(scope) },
     include: preparationInclude,
     orderBy: [{ targetStartDate: { sort: 'desc', nulls: 'last' } }, { createdAt: 'desc' }],
   })

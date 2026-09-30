@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { redirect } from 'next/navigation'
-import { getViewableDepartmentIds, clientScopeWhere } from '@/lib/scope'
+import { getViewScope, clientScopeWhere } from '@/lib/scope'
 import { NewTicketForm } from '@/components/tickets/NewTicketForm'
 
 export default async function NewTicketPage() {
@@ -12,6 +12,7 @@ export default async function NewTicketPage() {
   const user = await getCurrentUser()
   if (!user) redirect('/login')
 
+  const scope = user.userType === 'VIRTUAL_ASSISTANT' ? null : await getViewScope(user)
   const [departments, clients] = await Promise.all([
     prisma.department.findMany({
       where: { status: 'ACTIVE', parentId: { not: null } },
@@ -25,7 +26,7 @@ export default async function NewTicketPage() {
         isActive: true,
         ...(user.userType === 'VIRTUAL_ASSISTANT'
           ? { assignments: { some: { vaProfile: { userId: user.id } } } }
-          : clientScopeWhere(getViewableDepartmentIds(user))),
+          : clientScopeWhere(scope)),
       },
       select: { id: true, name: true },
       orderBy: { name: 'asc' },

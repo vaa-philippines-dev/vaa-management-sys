@@ -1,5 +1,5 @@
 import { getCurrentUser, getPrimaryDepartment } from '@/lib/auth'
-import { getViewableDepartmentIds } from '@/lib/scope'
+import { getViewScope, scopeDepartmentIds, isTeamScoped } from '@/lib/scope'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { prisma } from '@/lib/prisma'
 import { getFeaturedFavorite } from '@/lib/favorites'
@@ -76,15 +76,20 @@ export default async function DashboardPage({
   // the unrestricted read check (view-only by design, same precedent as
   // hasModuleAccess()'s EXECUTIVE-read carve-out in lib/auth.ts) so this
   // doesn't regress the all-department visibility it already has.
-  // Applies to every non-unrestricted role (Dept/Ops Manager, Team Leader, Staff).
-  const viewableIds = getViewableDepartmentIds(user)
+  // Applies to every non-unrestricted role (Dept/Ops Manager, Staff).
+  //
+  // A team-scoped Team Leader (TEAM_LEADER SystemRole, staff account) sees
+  // only the teams they lead; every card below is department-wide, so their
+  // dashboard is the TMF instead — with or without ?dept=.
+  if (isTeamScoped(user)) redirect('/tmf')
+  const viewableIds = scopeDepartmentIds(await getViewScope(user))
   const readUnrestricted = viewableIds === null
   const managedIds = viewableIds ?? []
   if (deptId && !readUnrestricted && !managedIds.includes(deptId)) {
     redirect('/dashboard')
   }
 
-  // A scoped manager (DEPT_MANAGER/OPERATIONS_MANAGER/TEAM_LEADER) landing on
+  // A scoped manager (DEPT_MANAGER/OPERATIONS_MANAGER/STAFF) landing on
   // bare /dashboard — e.g. via the sidebar link, which carries no ?dept= —
   // has no ambiguity to resolve like an unrestricted admin does (who gets
   // sent to /departments to pick one): they manage exactly their own

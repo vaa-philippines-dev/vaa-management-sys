@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
-import { getCurrentUser, isDepartmentUnrestricted, getManagedDepartmentIds } from '@/lib/auth'
+import { getCurrentUser } from '@/lib/auth'
+import { getViewScope, scopeDepartmentIds, scopeKey as toScopeKey } from '@/lib/scope'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -12,7 +13,9 @@ import { Users } from 'lucide-react'
 import { getHeadcountComposition } from '@/lib/headcount'
 import { HeadcountComposition } from '@/components/reports/HeadcountComposition'
 
-const REPORTS_VIEW_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'STAFF', 'HR']
+// Department-level analytics — Team Leaders are scoped to their own team and
+// don't get these (their team view lives in /tmf).
+const REPORTS_VIEW_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'OPERATIONS_MANAGER', 'STAFF', 'HR']
 
 export default async function HeadcountReportPage({
   searchParams,
@@ -30,12 +33,12 @@ export default async function HeadcountReportPage({
   const periodEnd = endOfMonth(refDate)
 
   // This report was unscoped: every role in REPORTS_VIEW_ROLES — Dept
-  // Manager and Team Leader included — saw every department's headcount.
+  // Manager included — saw every department's headcount.
   // Narrow it the same way the rest of the app does, admins and HR excepted.
-  const unrestricted = isDepartmentUnrestricted(currentUser) || currentUser.systemRole === 'EXECUTIVE'
-  const managedIds = getManagedDepartmentIds(currentUser)
-  const departmentScope = unrestricted ? {} : { departmentId: { in: managedIds } }
-  const scopeKey = unrestricted ? 'all' : managedIds.join(',')
+  const scope = await getViewScope(currentUser)
+  const deptIds = scopeDepartmentIds(scope)
+  const departmentScope = deptIds === null ? {} : { departmentId: { in: deptIds } }
+  const scopeKey = toScopeKey(scope)
 
   const [hires, terminations, activeCount, composition] = await Promise.all([
     cached(`reports:headcount:hires:${format(refDate, 'yyyy-MM')}:${scopeKey}`, [CACHE_TAGS.reports], 120, () =>
@@ -69,7 +72,7 @@ export default async function HeadcountReportPage({
     ),
     // Point-in-time composition, deliberately not month-scoped — see the
     // note in lib/headcount.ts about why there's no historical series.
-    getHeadcountComposition(unrestricted ? null : managedIds),
+    getHeadcountComposition(deptIds),
   ])
 
   type DeptBucket = { departmentId: string | null; departmentName: string; vaHires: number; staffHires: number; vaEocs: number; staffEocs: number; vaActive: number; staffActive: number }

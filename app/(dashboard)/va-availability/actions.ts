@@ -6,10 +6,9 @@ import { CACHE_TAGS } from '@/lib/cache'
 import {
   requireRole,
   getCurrentUser,
-  isDepartmentUnrestricted,
-  getManagedDepartmentIds,
   VA_MUTATOR_ROLES,
 } from '@/lib/auth'
+import { getMutateScope, isDepartmentInScope, isUserInScope } from '@/lib/scope'
 import { logAudit } from '@/lib/audit'
 import { AVAILABILITY_REVIEW_DAYS } from '@/lib/va-availability-fields'
 import type { Availability } from '@/src/generated/prisma/enums'
@@ -25,14 +24,18 @@ async function assertVAInScope(
 ) {
   const profile = await prisma.vAProfile.findUnique({
     where: { id: vaProfileId },
-    select: { user: { select: { memberships: { where: { endedAt: null, departmentId }, select: { id: true } } } } },
+    select: { userId: true, user: { select: { memberships: { where: { endedAt: null, departmentId }, select: { id: true } } } } },
   })
   if (!profile) throw new Error('VA not found')
   if (profile.user.memberships.length === 0) throw new Error('VA is not in this department')
-  if (!actor || isDepartmentUnrestricted(actor)) return
-
-  if (!getManagedDepartmentIds(actor).includes(departmentId)) {
+  if (!actor) return
+  const scope = await getMutateScope(actor)
+  if (!isDepartmentInScope(scope, departmentId)) {
     throw new Error('Forbidden: department not in your managed scope')
+  }
+  // A Team Leader may only touch the people on the teams they lead.
+  if (!isUserInScope(scope, profile.userId)) {
+    throw new Error('Forbidden: VA is not on a team you lead')
   }
 }
 

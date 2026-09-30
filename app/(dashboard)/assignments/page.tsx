@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
-import { getViewableDepartmentIds, assignmentScopeWhere } from '@/lib/scope'
+import { getViewScope, assignmentScopeWhere, scopeKey as toScopeKey } from '@/lib/scope'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -26,9 +26,9 @@ export default async function AssignmentsPage() {
   } else {
     // Staff see only assignments whose client sits in one of their departments —
     // a VA shared between PPC and Amazon must not surface Amazon work to PPC.
-    const deptIds = getViewableDepartmentIds(user)
-    where = assignmentScopeWhere(deptIds) as Record<string, unknown>
-    scopeKey = deptIds === null ? 'all' : `depts:${[...deptIds].sort().join(',')}`
+    const scope = await getViewScope(user)
+    where = assignmentScopeWhere(scope) as Record<string, unknown>
+    scopeKey = toScopeKey(scope)
   }
 
   // Cache key must carry every value the `where` closure depends on — a static

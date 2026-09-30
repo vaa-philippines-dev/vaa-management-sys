@@ -7,7 +7,8 @@ import { CACHE_TAGS } from '@/lib/cache'
 import { randomBytes } from 'node:crypto'
 import { requireRole, requireAdminMutator, requireAuth, VA_MUTATOR_ROLES, VA_SENSITIVE_INFO_EDIT_ROLES, OFFBOARDING_DELETE_ROLES, RESIGNATION_OVERRIDE_ROLES } from '@/lib/auth'
 import {
-  getMutableDepartmentIds,
+  getMutateScope,
+  isDepartmentInScope,
   assertVAProfileInScope,
   assertUserInScope,
   assertAssignmentInScope,
@@ -56,26 +57,26 @@ const ONBOARDING_INVITE_TTL_MS = 7 * 24 * 60 * 60 * 1000 // 7 days
 type Actor = Awaited<ReturnType<typeof requireAuth>>
 
 async function assertVAInActorScope(actor: Actor, vaProfileId: string) {
-  await assertVAProfileInScope(getMutableDepartmentIds(actor), vaProfileId)
+  await assertVAProfileInScope(await getMutateScope(actor), vaProfileId)
 }
 
 async function assertUserInActorScope(actor: Actor, userId: string) {
-  await assertUserInScope(getMutableDepartmentIds(actor), userId)
+  await assertUserInScope(await getMutateScope(actor), userId)
 }
 
 // An offboarding case resolves to its VA and — for a single-assignment case —
 // to that assignment's client department too, so a PPC manager can't work the
 // Amazon side of a VA who sits in both.
 async function assertTerminationInActorScope(actor: Actor, terminationId: string) {
-  const ids = getMutableDepartmentIds(actor)
-  if (ids === null) return
+  const scope = await getMutateScope(actor)
+  if (scope === null) return
   const t = await prisma.termination.findUnique({
     where: { id: terminationId },
     select: { vaProfileId: true, assignmentId: true },
   })
   if (!t) throw new Error('Offboarding case not found')
-  await assertVAProfileInScope(ids, t.vaProfileId)
-  if (t.assignmentId) await assertAssignmentInScope(ids, t.assignmentId)
+  await assertVAProfileInScope(scope, t.vaProfileId)
+  if (t.assignmentId) await assertAssignmentInScope(scope, t.assignmentId)
 }
 
 // Per VA_SENSITIVE_INFO_EDIT_ROLES: only these UserProfile fields (Complete
@@ -109,7 +110,7 @@ export async function quickAddVA(formData: FormData) {
 
   // A scoped actor must place the new VA in one of their own departments —
   // a department-less VA would also be invisible to them straight after.
-  assertDepartmentInScope(getMutableDepartmentIds(actor), departmentId)
+  assertDepartmentInScope(await getMutateScope(actor), departmentId)
 
   const existing = await prisma.user.findUnique({ where: { email } })
   if (existing) throw new Error('A user with this email already exists')
@@ -335,10 +336,10 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
   // Scoped actors: rows may only create VAs in, or overwrite VAs already in,
   // their own departments. Out-of-scope rows are skipped with a reason like
   // any other bad row rather than failing the whole import.
-  const scopeIds = getMutableDepartmentIds(actor)
-  const inScopeUserIds = scopeIds === null
+  const scope = await getMutateScope(actor)
+  const inScopeUserIds = scope === null
     ? null
-    : new Set((await prisma.user.findMany({ where: userScopeWhere(scopeIds), select: { id: true } })).map((u) => u.id))
+    : new Set((await prisma.user.findMany({ where: userScopeWhere(scope), select: { id: true } })).map((u) => u.id))
 
   // A VA can appear multiple times in the source file (department transfers,
   // re-engagements, service changes) — each row is a distinct employment
@@ -600,14 +601,14 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
     const departmentInput = (row.department || '').trim()
     const departmentId = departmentInput ? departmentIdByNormalizedName.get(normalizeDeptName(departmentInput)) ?? null : null
 
-    if (scopeIds !== null) {
+    if (scope !== null) {
       if (matchedUserId && !inScopeUserIds!.has(matchedUserId)) {
         result.skipped.push({ row: rowNum, reason: 'Existing VA is outside your department scope' })
         continue
       }
       // New VAs need an in-scope department; updates may leave it blank (no
       // membership change) but can't add one outside the actor's scope.
-      if ((!matchedUserId || departmentId) && !(departmentId && scopeIds.includes(departmentId))) {
+      if ((!matchedUserId || departmentId) && !(departmentId && isDepartmentInScope(scope, departmentId))) {
         result.skipped.push({ row: rowNum, reason: 'Department is missing or outside your department scope' })
         continue
       }
@@ -1328,7 +1329,7 @@ export async function terminateVA(formData: FormData) {
   // Ending one assignment is scoped by that client's department, not just the
   // VA's — a PPC manager can't end a shared VA's Amazon engagement.
   await assertVAInActorScope(actor, vaProfileId)
-  if (assignmentId) await assertAssignmentInScope(getMutableDepartmentIds(actor), assignmentId)
+  if (assignmentId) await assertAssignmentInScope(await getMutateScope(actor), assignmentId)
 
   const effective = effectiveDateInput ? new Date(effectiveDateInput) : new Date()
   if (Number.isNaN(effective.getTime())) throw new Error('Invalid effective date')
@@ -1667,7 +1668,7 @@ export async function initiateResignation(formData: FormData) {
   const reason = ((formData.get('reason') as string) || '').trim() || null
   if (!vaProfileId) throw new Error('Missing VA profile')
   await assertVAInActorScope(actor, vaProfileId)
-  if (assignmentId) await assertAssignmentInScope(getMutableDepartmentIds(actor), assignmentId)
+  if (assignmentId) await assertAssignmentInScope(await getMutateScope(actor), assignmentId)
 
   const { terminationId, ticketId } = await createResignationCase({
     actorId: actor.id,

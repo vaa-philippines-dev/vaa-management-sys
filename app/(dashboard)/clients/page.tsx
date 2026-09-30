@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import type { Prisma } from '@/src/generated/prisma/client'
 import { getCurrentUser, getPrimaryDepartment, CLIENT_MUTATOR_ROLES } from '@/lib/auth'
-import { getViewableDepartmentIds, getMutableDepartmentIds, clientScopeWhere } from '@/lib/scope'
+import { getViewScope, getMutateScope, clientScopeWhere, scopeDepartmentIds, scopeKey, type Scope } from '@/lib/scope'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { isTeamAffiliated } from '@/lib/teams'
 import { Card, CardContent } from '@/components/ui/card'
@@ -41,9 +41,9 @@ function statusTabWhere(tab: string): Prisma.ClientWhereInput {
 
 // VAs keep their self/team scoping. Every other role goes through the shared
 // department scope (lib/scope.ts): admins/HR/EXECUTIVE see all, everyone else
-// only their own department(s) — including TEAM_LEADER, which used to fall
-// through to "every client".
-async function resolveClientsWhere(user: Awaited<ReturnType<typeof getCurrentUser>>): Promise<Prisma.ClientWhereInput | undefined> {
+// only their own department(s). A TEAM_LEADER (non-VA) is narrower still:
+// only the clients someone on a team they lead actually works for.
+async function resolveClientsWhere(user: Awaited<ReturnType<typeof getCurrentUser>>, scope: Scope): Promise<Prisma.ClientWhereInput | undefined> {
   if (!user) return { id: { in: [] } }
 
   if (user.userType === 'VIRTUAL_ASSISTANT') {
@@ -56,14 +56,13 @@ async function resolveClientsWhere(user: Awaited<ReturnType<typeof getCurrentUse
     return { assignments: { some: { vaProfileId: user.vaProfile?.id ?? '' } } }
   }
 
-  const deptIds = getViewableDepartmentIds(user)
-  if (deptIds === null) return undefined
+  if (scope === null) return undefined
   // STAFF historically saw "clients I manage"; keep that alongside their
   // departments so a client they own under another department doesn't vanish.
   if (user.systemRole === 'STAFF') {
-    return { OR: [clientScopeWhere(deptIds), { managerId: user.id }] }
+    return { OR: [clientScopeWhere(scope), { managerId: user.id }] }
   }
-  return clientScopeWhere(deptIds)
+  return clientScopeWhere(scope)
 }
 
 export default async function ClientsPage({
@@ -76,7 +75,7 @@ export default async function ClientsPage({
   const canImport = CLIENT_MUTATOR_ROLES.includes(user.systemRole)
 
   // Only departments the viewer may create clients in (null = all).
-  const mutableDeptIds = getMutableDepartmentIds(user)
+  const mutableDeptIds = scopeDepartmentIds(await getMutateScope(user))
   const serviceDepartments = canImport
     ? await prisma.department.findMany({
         where: { level: 'SERVICE', status: 'ACTIVE', ...(mutableDeptIds === null ? {} : { id: { in: mutableDeptIds } }) },
@@ -91,7 +90,12 @@ export default async function ClientsPage({
     : DEFAULT_STATUS_TAB
   const q = typeof params.q === 'string' ? params.q : undefined
 
-  const scopeWhere = await resolveClientsWhere(user)
+  // VAs are scoped by resolveClientsWhere's own branch; scope only matters for staff.
+  const viewScope: Scope = user.userType === 'VIRTUAL_ASSISTANT' ? null : await getViewScope(user)
+  const scopeWhere = await resolveClientsWhere(user, viewScope)
+  // A team-scoped viewer only sees their own people's engagements on a client,
+  // not the rest of the department's.
+  const teamUserIds = viewScope?.userIds ?? null
   // AND, not spread: the STAFF scope and the search are both OR clauses and a
   // spread would let the search silently overwrite the scope.
   const where: Prisma.ClientWhereInput = {
@@ -105,13 +109,16 @@ export default async function ClientsPage({
       ] } : {},
     ],
   }
-  const cacheKey = user ? `clients:list:${user.id}:${statusTab}:${q ?? ''}:${JSON.stringify(scopeWhere)}` : `clients:list:${statusTab}:${q ?? ''}`
+  const cacheKey = `clients:list:${user.id}:${statusTab}:${q ?? ''}:${scopeKey(viewScope)}:${JSON.stringify(scopeWhere)}`
 
   const clients = await cached(cacheKey, [CACHE_TAGS.clients], 60, () =>
     prisma.client.findMany({
       where,
       include: {
-        assignments: { include: { vaProfile: { include: { user: true } } } },
+        assignments: {
+          ...(teamUserIds !== null && { where: { vaProfile: { userId: { in: teamUserIds } } } }),
+          include: { vaProfile: { include: { user: true } } },
+        },
         department: { select: { id: true, name: true, sortOrder: true } },
       },
       orderBy: { createdAt: 'desc' },

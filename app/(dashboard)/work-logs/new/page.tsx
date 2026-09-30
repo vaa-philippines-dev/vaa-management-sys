@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { redirect } from 'next/navigation'
-import { getMutableDepartmentIds, assignmentScopeWhere } from '@/lib/scope'
+import { getMutateScope, assignmentScopeWhere } from '@/lib/scope'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { WorkLogForm } from '@/components/work-logs/WorkLogForm'
@@ -24,7 +24,7 @@ export default async function NewWorkLogPage({
     where.vaProfileId = user.vaProfile?.id ?? ''
   } else {
     // Only offer assignments createWorkLog() will accept for this actor.
-    where = { ...where, ...assignmentScopeWhere(getMutableDepartmentIds(user)) }
+    where = { ...where, ...assignmentScopeWhere(await getMutateScope(user)) }
   }
 
   const assignments = await prisma.assignment.findMany({

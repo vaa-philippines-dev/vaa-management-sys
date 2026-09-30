@@ -8,7 +8,7 @@ import { requireRole, ASSIGNMENT_MUTATOR_ROLES } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
 import { notify } from '@/lib/notifications'
 import { computeKpiCheckpoints } from '@/lib/kpi-checks'
-import { getMutableDepartmentIds, assertClientInScope, assertAssignmentInScope } from '@/lib/scope'
+import { getMutateScope, assertClientInScope, assertAssignmentInScope, assertVAProfileInScope } from '@/lib/scope'
 
 export async function createAssignment(formData: FormData) {
   const actor = await requireRole(...ASSIGNMENT_MUTATOR_ROLES)
@@ -28,9 +28,13 @@ export async function createAssignment(formData: FormData) {
   // may also only staff it with a VA who actually belongs to that department —
   // otherwise PPC could pair its own client with an Amazon-only VA. Admins
   // (null scope) skip the membership check so existing cross-dept flows keep working.
-  const deptIds = getMutableDepartmentIds(actor)
-  await assertClientInScope(deptIds, clientId)
-  if (deptIds !== null) {
+  // A Team Leader may staff any client of their teams' departments (a new
+  // engagement has no team-member assignment yet, so the team-narrowed client
+  // scope would never admit it) — but only with a VA on a team they lead.
+  const scope = await getMutateScope(actor)
+  await assertClientInScope(scope && { departmentIds: scope.departmentIds, userIds: null }, clientId)
+  await assertVAProfileInScope(scope, vaProfileId)
+  if (scope !== null) {
     const client = await prisma.client.findUnique({ where: { id: clientId }, select: { departmentId: true } })
     const vaInDept = client?.departmentId
       ? await prisma.vAProfile.count({
@@ -108,7 +112,7 @@ export async function createAssignment(formData: FormData) {
 // so this only ever touches the assignment's own details.
 export async function updateAssignment(id: string, formData: FormData) {
   const actor = await requireRole(...ASSIGNMENT_MUTATOR_ROLES)
-  await assertAssignmentInScope(getMutableDepartmentIds(actor), id)
+  await assertAssignmentInScope(await getMutateScope(actor), id)
 
   const before = await prisma.assignment.findUnique({
     where: { id },
@@ -181,7 +185,7 @@ export async function completeKpiCheck(checkId: string) {
   // Scope follows the check's parent assignment (i.e. its client's department).
   const existing = await prisma.assignmentKpiCheck.findUnique({ where: { id: checkId }, select: { assignmentId: true } })
   if (!existing) throw new Error('KPI check not found')
-  await assertAssignmentInScope(getMutableDepartmentIds(actor), existing.assignmentId)
+  await assertAssignmentInScope(await getMutateScope(actor), existing.assignmentId)
 
   const check = await prisma.assignmentKpiCheck.update({
     where: { id: checkId },
@@ -204,7 +208,7 @@ export async function completeKpiCheck(checkId: string) {
 
 export async function updateAssignmentStatus(id: string, status: string) {
   const actor = await requireRole(...ASSIGNMENT_MUTATOR_ROLES)
-  await assertAssignmentInScope(getMutableDepartmentIds(actor), id)
+  await assertAssignmentInScope(await getMutateScope(actor), id)
 
   const before = await prisma.assignment.findUnique({ where: { id }, select: { status: true, source: true } })
 

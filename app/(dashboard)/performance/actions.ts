@@ -3,13 +3,8 @@
 import { prisma } from '@/lib/prisma'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { CACHE_TAGS } from '@/lib/cache'
-import {
-  requireRole,
-  getCurrentUser,
-  isDepartmentUnrestricted,
-  getManagedDepartmentIds,
-  ASSIGNMENT_MUTATOR_ROLES,
-} from '@/lib/auth'
+import { requireRole, getCurrentUser, ASSIGNMENT_MUTATOR_ROLES } from '@/lib/auth'
+import { getMutateScope, assertAssignmentInScope as assertInScope } from '@/lib/scope'
 import { logAudit } from '@/lib/audit'
 import type { FeedbackWindow, ClientResponseStatus } from '@/src/generated/prisma/enums'
 
@@ -17,17 +12,10 @@ async function assertAssignmentInScope(
   actor: Awaited<ReturnType<typeof getCurrentUser>>,
   assignmentId: string
 ) {
-  const assignment = await prisma.assignment.findUnique({
-    where: { id: assignmentId },
-    select: { client: { select: { departmentId: true } } },
-  })
-  if (!assignment) throw new Error('Assignment not found')
-  if (!actor || isDepartmentUnrestricted(actor)) return
-
-  const departmentId = assignment.client.departmentId
-  if (!departmentId || !getManagedDepartmentIds(actor).includes(departmentId)) {
-    throw new Error('Forbidden: department not in your managed scope')
-  }
+  const exists = await prisma.assignment.count({ where: { id: assignmentId } })
+  if (exists === 0) throw new Error('Assignment not found')
+  // Team Leaders only reach their own teams' members' engagements.
+  await assertInScope(await getMutateScope(actor), assignmentId)
 }
 
 function parseDate(value: FormDataEntryValue | null): Date | null {

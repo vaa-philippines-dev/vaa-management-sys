@@ -10,9 +10,8 @@ import {
   VA_MUTATOR_ROLES,
   TICKET_VIEW_ALL_ROLES,
   OFFBOARDING_DELETE_ROLES,
-  isDepartmentUnrestricted,
-  getManagedDepartmentIds,
 } from '@/lib/auth'
+import { getMutateScope, isDepartmentInScope, isUserInScope } from '@/lib/scope'
 import { canApproveClearanceDepartment } from '@/lib/offboarding-permissions'
 import type { ExitClearanceDepartment } from '@/src/generated/prisma/enums'
 
@@ -72,14 +71,16 @@ export default async function OffboardingDetailPage({
   // clearance approvers and the case's own initiator are handled by the
   // approvableDepartments / initiatedById checks below and are not narrowed
   // here, since their standing to act isn't department-membership-based.
-  const readUnrestricted = isDepartmentUnrestricted(user)
-  const managedIds = getManagedDepartmentIds(user)
+  const scope = await getMutateScope(user)
+  const readUnrestricted = scope === null
   // An assignment-level case also needs that assignment's client department
-  // in scope, so a shared VA's other-department case stays hidden.
+  // in scope, so a shared VA's other-department case stays hidden. A Team
+  // Leader additionally needs the VA to be on a team they lead.
   const assignmentDeptId = termination.assignment?.client.departmentId
   const inManagedDepartment =
-    termination.vaProfile.user.memberships.some((m) => managedIds.includes(m.departmentId)) &&
-    (!termination.assignment || (assignmentDeptId != null && managedIds.includes(assignmentDeptId)))
+    isUserInScope(scope, termination.vaProfile.userId) &&
+    termination.vaProfile.user.memberships.some((m) => isDepartmentInScope(scope, m.departmentId)) &&
+    (!termination.assignment || isDepartmentInScope(scope, assignmentDeptId))
 
   const canEdit =
     VA_MUTATOR_ROLES.includes(user.systemRole) && (readUnrestricted || inManagedDepartment)

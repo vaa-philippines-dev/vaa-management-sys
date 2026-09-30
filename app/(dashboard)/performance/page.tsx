@@ -1,9 +1,5 @@
-import {
-  getCurrentUser,
-  isDepartmentUnrestricted,
-  getManagedDepartmentIds,
-  ASSIGNMENT_MUTATOR_ROLES,
-} from '@/lib/auth'
+import { getCurrentUser, ASSIGNMENT_MUTATOR_ROLES } from '@/lib/auth'
+import { getViewScope } from '@/lib/scope'
 import { redirect } from 'next/navigation'
 import { getPerformanceRows } from '@/lib/performance'
 import { computePerformanceSummary } from '@/lib/performance-fields'
@@ -19,11 +15,11 @@ export default async function PerformancePage() {
   if (!user) redirect('/login')
   if (user.userType === 'VIRTUAL_ASSISTANT') redirect('/dashboard')
 
-  const unrestricted = isDepartmentUnrestricted(user)
-  const managedIds = getManagedDepartmentIds(user)
+  const scope = await getViewScope(user)
+  const unrestricted = scope === null
   const canMutate = ASSIGNMENT_MUTATOR_ROLES.includes(user.systemRole)
 
-  const rows = await getPerformanceRows(unrestricted ? null : managedIds)
+  const rows = await getPerformanceRows(scope)
   const summary = computePerformanceSummary(rows)
 
   return (
@@ -54,7 +50,7 @@ export default async function PerformancePage() {
       <PerformanceBoard
         rows={rows}
         canMutate={canMutate}
-        showDepartment={unrestricted || managedIds.length > 1}
+        showDepartment={unrestricted || scope.departmentIds.length > 1}
       />
     </div>
   )

@@ -1,9 +1,8 @@
 import {
   getCurrentUser,
-  isDepartmentUnrestricted,
-  getManagedDepartmentIds,
   VA_MUTATOR_ROLES,
 } from '@/lib/auth'
+import { getViewScope } from '@/lib/scope'
 import { redirect } from 'next/navigation'
 import { getAvailabilityRows } from '@/lib/va-availability'
 import { computeAvailabilitySummary } from '@/lib/va-availability-fields'
@@ -18,11 +17,17 @@ export default async function VAAvailabilityPage() {
   if (!user) redirect('/login')
   if (user.userType === 'VIRTUAL_ASSISTANT') redirect('/dashboard')
 
-  const unrestricted = isDepartmentUnrestricted(user)
-  const managedIds = getManagedDepartmentIds(user)
+  // lib/scope.ts: admins/HR/EXECUTIVE everything, DM/OM/Staff their
+  // departments, a Team Leader only the people on the teams they lead.
+  const scope = await getViewScope(user)
+  const unrestricted = scope === null
   const canMutate = VA_MUTATOR_ROLES.includes(user.systemRole)
 
-  const rows = await getAvailabilityRows({ departmentIds: unrestricted ? null : managedIds })
+  const rows = await getAvailabilityRows(
+    scope === null
+      ? { departmentIds: null }
+      : { departmentIds: scope.departmentIds, ...(scope.userIds !== null && { userIds: scope.userIds }) }
+  )
   const summary = computeAvailabilitySummary(rows)
 
   return (
@@ -51,7 +56,7 @@ export default async function VAAvailabilityPage() {
       <AvailabilityBoard
         rows={rows}
         canMutate={canMutate}
-        showDepartment={unrestricted || managedIds.length > 1}
+        showDepartment={unrestricted || scope.departmentIds.length > 1}
       />
     </div>
   )

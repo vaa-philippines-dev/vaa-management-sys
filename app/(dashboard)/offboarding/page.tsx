@@ -3,9 +3,8 @@ import {
   getCurrentUser,
   VA_MUTATOR_ROLES,
   TICKET_VIEW_ALL_ROLES,
-  isDepartmentUnrestricted,
-  getManagedDepartmentIds,
 } from '@/lib/auth'
+import { getMutateScope, vaProfileScopeWhere, assignmentScopeWhere } from '@/lib/scope'
 import { canApproveClearanceDepartment } from '@/lib/offboarding-permissions'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
@@ -36,21 +35,19 @@ export default async function OffboardingPage() {
   // Offboarding is an HR-owned workflow, but a Dept/Ops Manager or Team
   // Leader only owns their own department's people — VA_MUTATOR_ROLES alone
   // was showing every scoped manager every case in the company. Admins and
-  // HR stay unscoped (isDepartmentUnrestricted, the same split the rest of
-  // the app uses); everyone else in VA_MUTATOR_ROLES is narrowed to the
-  // departments they're actually a member of.
-  const readUnrestricted = isDepartmentUnrestricted(user)
-  const managedIds = getManagedDepartmentIds(user)
+  // HR stay unscoped (getMutateScope → null, i.e. isDepartmentUnrestricted);
+  // everyone else in VA_MUTATOR_ROLES is narrowed by lib/scope.ts — their
+  // departments, or for a Team Leader only the people on teams they lead.
+  const scope = await getMutateScope(user)
+  const readUnrestricted = scope === null
   // A case tied to one assignment belongs to that client's department, not
   // every department the VA is in — a PPC manager mustn't see a shared VA's
   // Amazon-client offboarding. Whole-VA cases keep the membership scope.
   const departmentScope: Prisma.TerminationWhereInput =
-    canViewAll && !readUnrestricted
+    canViewAll && scope !== null
       ? {
-          vaProfile: {
-            user: { memberships: { some: { departmentId: { in: managedIds }, endedAt: null } } },
-          },
-          OR: [{ assignmentId: null }, { assignment: { client: { departmentId: { in: managedIds } } } }],
+          vaProfile: vaProfileScopeWhere(scope),
+          OR: [{ assignmentId: null }, { assignment: assignmentScopeWhere(scope) }],
         }
       : {}
 

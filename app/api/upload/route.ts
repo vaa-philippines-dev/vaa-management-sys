@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { Readable } from 'stream'
 import { logAudit } from '@/lib/audit'
 import { requireAuth, VA_SENSITIVE_INFO_EDIT_ROLES } from '@/lib/auth'
-import { assertUserInScope, getMutableDepartmentIds } from '@/lib/scope'
+import { assertUserInScope, getMutateScope } from '@/lib/scope'
 import { getDriveAuth, getRootFolderId, findOrCreateFolder } from '@/lib/google/drive'
 
 const ALLOWED_MIME_TYPES = new Set([
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
       }
       try {
-        await assertUserInScope(getMutableDepartmentIds(user), profileId)
+        await assertUserInScope(await getMutateScope(user), profileId)
       } catch {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
       }

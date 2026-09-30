@@ -1,5 +1,7 @@
 import { prisma } from '@/lib/prisma'
-import { getCurrentUser, getManagedDepartmentIds } from '@/lib/auth'
+import { getCurrentUser } from '@/lib/auth'
+import type { Prisma } from '@/src/generated/prisma/client'
+import { getViewScope, userScopeWhere } from '@/lib/scope'
 import { redirect } from 'next/navigation'
 import { CelebrantsCalendar, type CelebrantEvent } from '@/components/celebrants/CelebrantsCalendar'
 
@@ -25,23 +27,29 @@ export default async function CelebrantsPage() {
   const isFullAdmin = FULL_ADMIN_ROLES.includes(user.systemRole)
   const isVA = user.userType === 'VIRTUAL_ASSISTANT'
 
-  let scopedDeptIds: string[] | undefined
+  // VA-type viewers: everyone in their own departments (unchanged). Other
+  // staff go through lib/scope.ts, so a Team Leader sees only the people on
+  // the teams they lead and a Dept/Ops Manager their departments.
+  let scopeWhere: Prisma.UserWhereInput = {}
   if (!isFullAdmin) {
-    scopedDeptIds = isVA
-      ? (user.memberships ?? []).filter((m) => !m.endedAt).map((m) => m.departmentId)
-      : getManagedDepartmentIds(user)
+    if (isVA) {
+      const deptIds = (user.memberships ?? []).filter((m) => !m.endedAt).map((m) => m.departmentId)
+      scopeWhere = { memberships: { some: { departmentId: { in: deptIds }, endedAt: null } } }
+    } else {
+      scopeWhere = userScopeWhere(await getViewScope(user))
+    }
   }
 
   const [birthdayUsers, anniversaryUsers] = await Promise.all([
     prisma.user.findMany({
       where: {
         profile: { birthDate: { not: null }, nonCelebrant: false, birthdayCelebrant: true },
-        ...(scopedDeptIds ? { memberships: { some: { departmentId: { in: scopedDeptIds }, endedAt: null } } } : {}),
+        ...scopeWhere,
       },
       include: { profile: true },
     }),
     prisma.user.findMany({
-      where: scopedDeptIds ? { memberships: { some: { departmentId: { in: scopedDeptIds }, endedAt: null } } } : undefined,
+      where: scopeWhere,
       include: {
         vaProfile: true,
         // Current staff-era record (isCurrent: true) is the authoritative "Staff Anniversary"

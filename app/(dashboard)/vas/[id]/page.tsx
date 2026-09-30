@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { getOwnTeamIds } from '@/lib/teams'
 import { getCurrentUser, VA_MUTATOR_ROLES, VA_SENSITIVE_INFO_EDIT_ROLES } from '@/lib/auth'
-import { getViewableDepartmentIds, isVAProfileInScope } from '@/lib/scope'
+import { getViewScope, isVAProfileInScope, isDepartmentInScope, isUserInScope, type Scope } from '@/lib/scope'
 import { canInitiateEocOrClientInitiatedTermination } from '@/lib/offboarding-permissions'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { listDriveFiles } from '@/lib/google/drive'
@@ -77,13 +77,13 @@ export default async function VADetailPage({
   if (!currentUser) redirect('/login')
   const isHRE = hrgRoles.includes(currentUser.systemRole)
 
-  // Staff viewers only reach VAs with an active membership in one of their
-  // departments (null = admins/HR/EXECUTIVE, everything). A VA-type viewer
+  // Staff viewers only reach VAs inside their lib/scope.ts Scope (null =
+  // admins/HR/EXECUTIVE, everything; a Team Leader only their teams' people). A VA-type viewer
   // reaches their own profile, or a teammate's — the same "own team" rule the
   // /vas roster applies to them — and then only that teammate's work in the
   // shared teams' departments.
   const isVAViewer = currentUser.userType === 'VIRTUAL_ASSISTANT'
-  let scopeIds = isVAViewer ? null : getViewableDepartmentIds(currentUser)
+  let scope: Scope = isVAViewer ? null : await getViewScope(currentUser)
   if (isVAViewer && currentUser.vaProfile?.id !== id) {
     const teamIds = await getOwnTeamIds(currentUser.id)
     const shared = teamIds.length
@@ -101,9 +101,9 @@ export default async function VADetailPage({
         })
       : []
     if (shared.length === 0) notFound()
-    scopeIds = [...new Set(shared.map((t) => t.departmentId))]
+    scope = { departmentIds: [...new Set(shared.map((t) => t.departmentId))], userIds: null }
   }
-  if (!isVAViewer && !(await isVAProfileInScope(scopeIds, id))) notFound()
+  if (!isVAViewer && !(await isVAProfileInScope(scope, id))) notFound()
 
   const va = await cached(`vas:detail:${id}`, [CACHE_TAGS.vas], 30, () =>
     prisma.vAProfile.findUnique({
@@ -134,9 +134,14 @@ export default async function VADetailPage({
   // manager viewing a PPC+Amazon VA must not see the Amazon clients. Filtered
   // in memory (same rule as assignmentScopeWhere) so the per-VA cache entry
   // above stays shared across viewers instead of forking per scope.
-  const assignments = scopeIds === null
+  // (For a Team Leader the viewed VA is already in scope.userIds — checked
+  // above — so the department test is what's left; isUserInScope is belt and
+  // braces for the same rule.)
+  const assignments = scope === null
     ? va.assignments
-    : va.assignments.filter((a) => a.client.departmentId != null && scopeIds.includes(a.client.departmentId))
+    : isUserInScope(scope, va.userId)
+      ? va.assignments.filter((a) => isDepartmentInScope(scope, a.client.departmentId))
+      : []
   const profile = va.user.profile
   const emp = va.user.employmentRecords?.[0]
   const activeMemberships = va.user.memberships ?? []

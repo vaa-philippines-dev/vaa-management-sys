@@ -90,6 +90,22 @@ function addToCounts(counts: AssignmentCounts, state: VAAssignmentState) {
   else counts.unavailable += 1
 }
 
+// Totals over a subset of teams (e.g. only the ones a Team Leader leads), so
+// the summary chips don't reveal the rest of the department. Each person is
+// counted once even if they sit on more than one of those teams.
+export function countTeamMembers(teams: TeamAssignmentSummary[]): AssignmentCounts {
+  const counts = emptyCounts()
+  const seen = new Set<string>()
+  for (const t of teams) {
+    for (const m of t.members) {
+      if (seen.has(m.userId)) continue
+      seen.add(m.userId)
+      addToCounts(counts, m.state)
+    }
+  }
+  return counts
+}
+
 export async function getDepartmentTeamAssignments(departmentId: string): Promise<DepartmentTeamAssignments> {
   const teams = await prisma.team.findMany({
     where: { departmentId, status: 'ACTIVE' },

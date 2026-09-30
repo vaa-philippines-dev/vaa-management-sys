@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
-import { getViewableDepartmentIds } from '@/lib/scope'
+import { getViewScope, clientScopeWhere } from '@/lib/scope'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -24,10 +24,14 @@ export default async function ClientDetailPage({
   }
 
   const { id } = await params
+  const scope = await getViewScope(currentUser)
+  // A team-scoped viewer only sees their own people's engagements.
+  const teamUserIds = scope?.userIds ?? null
   const client = await prisma.client.findUnique({
     where: { id },
     include: {
       assignments: {
+        ...(teamUserIds !== null && { where: { vaProfile: { userId: { in: teamUserIds } } } }),
         include: {
           vaProfile: { include: { user: true } },
           workLogs: true,
@@ -38,13 +42,13 @@ export default async function ClientDetailPage({
 
   if (!client) notFound()
 
-  // Same scope as the /clients list: own department(s), plus clients a STAFF
-  // user personally manages. 404 rather than 403 so ids can't be probed.
-  const deptIds = getViewableDepartmentIds(currentUser)
+  // Same scope as the /clients list: own department(s) (a Team Leader: only
+  // clients their team works for), plus clients a STAFF user personally
+  // manages. 404 rather than 403 so ids can't be probed.
   const inScope =
-    deptIds === null ||
-    (client.departmentId !== null && deptIds.includes(client.departmentId)) ||
-    (currentUser.systemRole === 'STAFF' && client.managerId === currentUser.id)
+    scope === null ||
+    (currentUser.systemRole === 'STAFF' && client.managerId === currentUser.id) ||
+    (await prisma.client.count({ where: { id: client.id, ...clientScopeWhere(scope) } })) > 0
   if (!inScope) notFound()
 
   return (

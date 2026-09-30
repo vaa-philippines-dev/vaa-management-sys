@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma'
 import type { Prisma } from '@/src/generated/prisma/client'
 import { getCurrentUser, AGENT_MUTATOR_ROLES } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
-import { getViewableDepartmentIds, clientScopeWhere, vaProfileScopeWhere } from '@/lib/scope'
+import { getViewScope, scopeDepartmentIds, scopeKey as toScopeKey, clientScopeWhere, vaProfileScopeWhere } from '@/lib/scope'
 import { redirect } from 'next/navigation'
 import { Card, CardContent } from '@/components/ui/card'
 import { Handshake } from 'lucide-react'
@@ -14,7 +14,8 @@ import type { SuggestionGroup } from '@/components/agent/SuggestionGroupCard'
 // Matches REPORTS_VIEW_ROLES in reports/page.tsx exactly — same nav section
 // ("On Going"), same visibility rule: every non-VA role can view, only
 // AGENT_MUTATOR_ROLES (lib/auth.ts) can actually decide on a suggestion.
-const AGENT_VIEW_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'STAFF', 'HR']
+// Department-level staffing suggestions — not for team-scoped Team Leaders.
+const AGENT_VIEW_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'OPERATIONS_MANAGER', 'STAFF', 'HR']
 
 const VALID_STATUSES = ['PENDING', 'APPROVED', 'REJECTED', 'ALL'] as const
 const VALID_KINDS: SuggestionForCard['kind'][] = [
@@ -76,15 +77,16 @@ export default async function MatchingPage({
   // A suggestion belongs to its client's department; client-less ones (e.g. a
   // VA-only flag) fall back to the VA's memberships. Rows with neither stay
   // admin-only, since there's no department to attribute them to.
-  const deptIds = getViewableDepartmentIds(currentUser)
-  const scopeKey = deptIds === null ? 'all' : [...deptIds].sort().join(',')
+  const scope = await getViewScope(currentUser)
+  const deptIds = scopeDepartmentIds(scope)
+  const scopeKey = toScopeKey(scope)
   const suggestionScope: Prisma.AgentSuggestionWhereInput =
-    deptIds === null
+    scope === null
       ? {}
       : {
           OR: [
-            { client: clientScopeWhere(deptIds) },
-            { clientId: null, vaProfile: vaProfileScopeWhere(deptIds) },
+            { client: clientScopeWhere(scope) },
+            { clientId: null, vaProfile: vaProfileScopeWhere(scope) },
           ],
         }
 

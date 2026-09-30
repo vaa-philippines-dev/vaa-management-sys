@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser, isDepartmentUnrestricted, getManagedDepartmentIds } from '@/lib/auth'
 import { getDepartmentStructure } from '@/lib/structure'
+import { getViewScope, isDepartmentInScope, isTeamScoped } from '@/lib/scope'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
@@ -32,7 +33,13 @@ export default async function DepartmentDetailPage({
   if (!department || department.status !== 'ACTIVE' || department.parentId === null) notFound()
 
   const readUnrestricted = isDepartmentUnrestricted(user) || user.systemRole === 'EXECUTIVE'
-  if (!readUnrestricted) {
+  // A team-scoped Team Leader (TEAM_LEADER SystemRole, staff account) may view
+  // the structure of their led teams' departments only. The page lists
+  // leadership, never the department's VAs, so nothing else needs narrowing.
+  const teamScoped = isTeamScoped(user)
+  if (teamScoped) {
+    if (!isDepartmentInScope(await getViewScope(user), id)) notFound()
+  } else if (!readUnrestricted) {
     if (user.userType === 'VIRTUAL_ASSISTANT') {
       const isMember = await prisma.departmentMembership.findFirst({
         where: { userId: user.id, departmentId: id, endedAt: null },
@@ -59,12 +66,16 @@ export default async function DepartmentDetailPage({
           </div>
           <p className="text-sm text-muted-foreground mt-1">Department structure and leadership</p>
         </div>
-        <Link href={`/dashboard?dept=${department.id}`}>
-          <Button variant="outline" size="sm" className="gap-1.5">
-            <LayoutDashboard className="h-3.5 w-3.5" />
-            Open dashboard
-          </Button>
-        </Link>
+        {/* The department dashboard is department-wide; a team-scoped leader is
+            redirected from it to /tmf, so don't offer it. */}
+        {!teamScoped && (
+          <Link href={`/dashboard?dept=${department.id}`}>
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <LayoutDashboard className="h-3.5 w-3.5" />
+              Open dashboard
+            </Button>
+          </Link>
+        )}
       </div>
 
       <Suspense fallback={<StructureSkeleton />}>

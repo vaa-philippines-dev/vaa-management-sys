@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
-import { getViewableDepartmentIds, assignmentScopeWhere } from '@/lib/scope'
+import { getViewScope, assignmentScopeWhere, scopeKey as toScopeKey } from '@/lib/scope'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -12,7 +12,9 @@ import { MonthlyReportControls } from '@/components/reports/MonthlyReportControl
 import { buttonVariants } from '@/components/ui/button'
 import { BarChart3, PieChart } from 'lucide-react'
 
-const REPORTS_VIEW_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'STAFF', 'HR']
+// Department-level analytics — Team Leaders are scoped to their own team and
+// don't get these (their team view lives in /tmf).
+const REPORTS_VIEW_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'OPERATIONS_MANAGER', 'STAFF', 'HR']
 
 export default async function ReportsPage({
   searchParams,
@@ -30,8 +32,8 @@ export default async function ReportsPage({
   const periodEnd = endOfMonth(refDate)
 
   // Department managers get their own departments' hours, not the company's.
-  const deptIds = getViewableDepartmentIds(currentUser)
-  const scopeKey = deptIds === null ? 'all' : [...deptIds].sort().join(',')
+  const scope = await getViewScope(currentUser)
+  const scopeKey = toScopeKey(scope)
 
   // The outer `where` is static but the nested workLogs filter closes over
   // periodStart/periodEnd, so the month must be in the key — otherwise loading
@@ -41,7 +43,7 @@ export default async function ReportsPage({
     prisma.assignment.findMany({
       where: {
         status: { in: ['ACTIVE', 'COMPLETED'] },
-        ...assignmentScopeWhere(deptIds),
+        ...assignmentScopeWhere(scope),
       },
       include: {
         client: true,

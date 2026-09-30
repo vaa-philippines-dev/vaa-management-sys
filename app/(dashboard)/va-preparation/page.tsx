@@ -1,9 +1,5 @@
-import {
-  getCurrentUser,
-  isDepartmentUnrestricted,
-  getManagedDepartmentIds,
-  ASSIGNMENT_MUTATOR_ROLES,
-} from '@/lib/auth'
+import { getCurrentUser, ASSIGNMENT_MUTATOR_ROLES } from '@/lib/auth'
+import { getViewScope, userScopeWhere, vaProfileScopeWhere } from '@/lib/scope'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { getPreparations } from '@/lib/va-preparation'
@@ -18,12 +14,12 @@ export default async function VAPreparationPage() {
   if (!user) redirect('/login')
   if (user.userType === 'VIRTUAL_ASSISTANT') redirect('/dashboard')
 
-  const unrestricted = isDepartmentUnrestricted(user)
-  const managedIds = getManagedDepartmentIds(user)
+  const scope = await getViewScope(user)
+  const unrestricted = scope === null
   const canMutate = ASSIGNMENT_MUTATOR_ROLES.includes(user.systemRole)
 
   const [preparations, staff, vas] = await Promise.all([
-    getPreparations(unrestricted ? null : managedIds),
+    getPreparations(scope),
     // Person In-Charge and Shadow Trainer are both internal people, which in
     // this business includes VAs acting as shadow trainers — so this picker
     // deliberately isn't filtered to non-VA users the way /projects' owner
@@ -31,19 +27,13 @@ export default async function VAPreparationPage() {
     prisma.user.findMany({
       where: {
         isActive: true,
-        ...(unrestricted
-          ? {}
-          : { memberships: { some: { departmentId: { in: managedIds }, endedAt: null } } }),
+        ...userScopeWhere(scope),
       },
       select: { id: true, firstName: true, lastName: true },
       orderBy: [{ firstName: 'asc' }, { lastName: 'asc' }],
     }),
     prisma.vAProfile.findMany({
-      where: {
-        ...(unrestricted
-          ? {}
-          : { user: { memberships: { some: { departmentId: { in: managedIds }, endedAt: null } } } }),
-      },
+      where: vaProfileScopeWhere(scope),
       select: { id: true, user: { select: { firstName: true, lastName: true } } },
       orderBy: { user: { firstName: 'asc' } },
     }),
@@ -65,7 +55,7 @@ export default async function VAPreparationPage() {
       <PreparationBoard
         preparations={preparations}
         canMutate={canMutate}
-        showDepartment={unrestricted || managedIds.length > 1}
+        showDepartment={unrestricted || scope.departmentIds.length > 1}
         people={staff.map((s) => ({ id: s.id, name: `${s.firstName} ${s.lastName}`.trim() }))}
         vaProfiles={vas.map((v) => ({
           id: v.id,

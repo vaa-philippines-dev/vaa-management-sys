@@ -7,7 +7,7 @@ import { redirect } from 'next/navigation'
 import { isServiceLevel, DepartmentValidationError } from '@/lib/departments'
 import { requireRole, CLIENT_MUTATOR_ROLES } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
-import { getMutableDepartmentIds, assertDepartmentInScope, assertClientInScope } from '@/lib/scope'
+import { getMutateScope, assertDepartmentInScope, assertClientInScope, isDepartmentInScope, clientScopeWhere } from '@/lib/scope'
 import { getIntakeFieldsForDepartment, INTAKE_FIELD_CATALOG, type IntakeFieldKey } from '@/lib/clients/intake-fields'
 import { CLIENT_STATUS_LABEL } from '@/lib/clients/display'
 
@@ -35,13 +35,13 @@ function buildFormDetails(formData: FormData): Record<string, string> | undefine
 // Existing clients: own department(s) only. STAFF may also edit a client they
 // personally manage, mirroring what /clients shows them.
 async function assertCanMutateClient(actor: Awaited<ReturnType<typeof requireRole>>, clientId: string) {
-  const ids = getMutableDepartmentIds(actor)
-  if (ids === null) return
+  const scope = await getMutateScope(actor)
+  if (scope === null) return
   if (actor.systemRole === 'STAFF') {
     const managed = await prisma.client.count({ where: { id: clientId, managerId: actor.id } })
     if (managed > 0) return
   }
-  await assertClientInScope(ids, clientId)
+  await assertClientInScope(scope, clientId)
 }
 
 function parseDateField(formData: FormData, key: string): Date | undefined {
@@ -77,7 +77,7 @@ export async function createClient(formData: FormData) {
 
   // Scoped users must file the client under one of their own departments
   // (a null department would create a client nobody scoped can see).
-  assertDepartmentInScope(getMutableDepartmentIds(actor), departmentId)
+  assertDepartmentInScope(await getMutateScope(actor), departmentId)
 
   const department = departmentId
     ? await prisma.department.findUnique({ where: { id: departmentId }, select: { level: true, name: true, shortName: true, acronym: true } })
@@ -238,7 +238,7 @@ export async function updateClient(id: string, formData: FormData) {
   if (!before) throw new Error('Client not found')
   // Moving a client (or clearing its department) must land in the actor's scope too.
   if ((departmentId || null) !== before.departmentId) {
-    assertDepartmentInScope(getMutableDepartmentIds(actor), departmentId)
+    assertDepartmentInScope(await getMutateScope(actor), departmentId)
   }
 
   await prisma.client.update({
@@ -432,8 +432,8 @@ export async function bulkImportClients(departmentId: string, rowsInput: ClientC
   if (!department) throw new Error('Department not found')
   // One department per import, so the whole import is rejected rather than
   // row-by-row; existing-client matching below is confined to it as well.
-  const mutableIds = getMutableDepartmentIds(actor)
-  if (mutableIds !== null && !mutableIds.includes(department.id)) {
+  const mutateScope = await getMutateScope(actor)
+  if (!isDepartmentInScope(mutateScope, department.id)) {
     throw new Error(`Forbidden: you can't import clients into ${department.name} — it's outside your department scope`)
   }
   if (department.level !== 'SERVICE') {
@@ -452,6 +452,11 @@ export async function bulkImportClients(departmentId: string, rowsInput: ClientC
     select: { id: true, name: true },
   })
   const existingIdByName = new Map(existingClients.map((c) => [c.name.trim().toLowerCase(), c.id]))
+  // A team-scoped Team Leader may only overwrite clients their team works for;
+  // a name match on any other client in the department is skipped, not updated.
+  const updatableIds = mutateScope?.userIds
+    ? new Set((await prisma.client.findMany({ where: { departmentId, ...clientScopeWhere(mutateScope) }, select: { id: true } })).map((c) => c.id))
+    : null
 
   const result: ClientCsvImportResult = { created: 0, updated: 0, skipped: [] }
 
@@ -513,6 +518,10 @@ export async function bulkImportClients(departmentId: string, rowsInput: ClientC
     const nameKey = name.toLowerCase()
     const existingId = existingIdByName.get(nameKey)
     if (existingId) {
+      if (updatableIds && !updatableIds.has(existingId)) {
+        result.skipped.push({ row: rowNum, reason: `"${name}" already exists and is outside your team's clients` })
+        return
+      }
       toUpdate.push({ rowNum, id: existingId, data })
       return
     }

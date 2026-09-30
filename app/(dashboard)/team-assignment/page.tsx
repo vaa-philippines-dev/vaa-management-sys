@@ -6,7 +6,8 @@ import {
   getPrimaryDepartment,
 } from '@/lib/auth'
 import { getLedTeamIds } from '@/lib/teams'
-import { getDepartmentTeamAssignments, type VAAssignmentState } from '@/lib/team-assignments'
+import { getDepartmentTeamAssignments, countTeamMembers, type VAAssignmentState } from '@/lib/team-assignments'
+import { isTeamScoped } from '@/lib/scope'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
@@ -27,11 +28,12 @@ export default async function TeamAssignmentPage({
   const readUnrestricted = isDepartmentUnrestricted(user) || user.systemRole === 'EXECUTIVE'
   const managedIds = getManagedDepartmentIds(user)
 
-  // Team Leaders (VA-type users in this schema) get access scoped to the
-  // team(s) they actually lead — other VA-type users are sent to /teams
-  // instead, same boundary app/resign uses for TL-only actions.
+  // Team Leaders get access scoped to the team(s) they actually lead — both
+  // VA-type leaders and TEAM_LEADER-SystemRole staff accounts (isTeamScoped).
+  // Anyone on that path who leads nothing is sent to /teams instead, same
+  // boundary app/resign uses for TL-only actions.
   let ledTeamIds: string[] | null = null
-  if (user.userType === 'VIRTUAL_ASSISTANT') {
+  if (user.userType === 'VIRTUAL_ASSISTANT' || isTeamScoped(user)) {
     ledTeamIds = await getLedTeamIds(user.id)
     if (ledTeamIds.length === 0) redirect('/teams')
   }
@@ -59,6 +61,14 @@ export default async function TeamAssignmentPage({
         select: { id: true, name: true },
       })
     )
+  } else if (ledTeamIds) {
+    // Only the departments of the teams they lead (one team → no switcher).
+    const ledDepts = await prisma.department.findMany({
+      where: { teams: { some: { id: { in: ledTeamIds } } } },
+      orderBy: { sortOrder: 'asc' },
+      select: { id: true, name: true },
+    })
+    if (ledDepts.length > 1) departments = ledDepts
   } else if (managedIds.length > 1) {
     departments = await prisma.department.findMany({
       where: { id: { in: managedIds } },
@@ -150,6 +160,10 @@ async function TeamAssignmentSection({
       .map((t) => ({ ...t, members: t.members.filter((m) => m.state === stateFilter) }))
       .filter((t) => t.members.length > 0)
   }
+  // Team-scoped viewers get totals over their own teams only, not the department's.
+  const totals = ledTeamIds
+    ? countTeamMembers(data.teams.filter((t) => ledTeamIds.includes(t.teamId)))
+    : data.totals
   const unassigned = ledTeamIds
     ? []
     : stateFilter
@@ -159,10 +173,10 @@ async function TeamAssignmentSection({
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap gap-4 rounded-lg border bg-card p-4">
-        <SummaryChip label="Total" value={data.totals.total} tone="neutral" />
-        <SummaryChip label="Active" value={data.totals.active} tone="success" />
-        <SummaryChip label="Idle" value={data.totals.idle} tone="info" />
-        <SummaryChip label="Unavailable" value={data.totals.unavailable} tone="warning" />
+        <SummaryChip label="Total" value={totals.total} tone="neutral" />
+        <SummaryChip label="Active" value={totals.active} tone="success" />
+        <SummaryChip label="Idle" value={totals.idle} tone="info" />
+        <SummaryChip label="Unavailable" value={totals.unavailable} tone="warning" />
       </div>
 
       {teams.length === 0 && unassigned.length === 0 ? (

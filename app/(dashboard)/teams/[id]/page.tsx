@@ -9,6 +9,7 @@ import { ArrowLeft, Crown, ShieldHalf, Users, UsersRound } from 'lucide-react'
 import { TeamDetailControls } from '@/components/teams/TeamDetailControls'
 import { TeamNameEditor } from '@/components/teams/TeamNameEditor'
 import { StructureCard } from '@/components/departments/StructureCard'
+import { isTeamScoped, getLedTeamScope } from '@/lib/scope'
 
 function initials(name: string) {
   const parts = name.trim().split(/\s+/)
@@ -78,6 +79,10 @@ export default async function TeamDetailPage({
         team.tempLeader2Id === user.id ||
         team.memberships.some((m) => m.userId === user.id)
       if (!affiliated) notFound()
+    } else if (isTeamScoped(user)) {
+      // TEAM_LEADER SystemRole on a staff account: only the teams they lead.
+      const { teamIds } = await getLedTeamScope(user.id)
+      if (!teamIds.includes(team.id)) notFound()
     } else {
       const managedIds = getManagedDepartmentIds(user)
       if (!managedIds.includes(team.departmentId)) notFound()

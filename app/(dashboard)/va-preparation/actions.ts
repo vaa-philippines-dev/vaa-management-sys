@@ -6,10 +6,9 @@ import { CACHE_TAGS } from '@/lib/cache'
 import {
   requireRole,
   getCurrentUser,
-  isDepartmentUnrestricted,
-  getManagedDepartmentIds,
   ASSIGNMENT_MUTATOR_ROLES,
 } from '@/lib/auth'
+import { getMutateScope, assertAssignmentInScope } from '@/lib/scope'
 import { logAudit } from '@/lib/audit'
 import { CHECKLIST_FIELDS } from '@/lib/va-preparation-fields'
 import type { PreparationStepStatus, PreparationClientStatus } from '@/src/generated/prisma/enums'
@@ -27,15 +26,11 @@ async function assertPreparationInScope(
 ) {
   const prep = await prisma.assignmentPreparation.findUnique({
     where: { id: preparationId },
-    select: { assignment: { select: { client: { select: { departmentId: true } } } } },
+    select: { assignmentId: true },
   })
   if (!prep) throw new Error('Preparation record not found')
-  if (!actor || isDepartmentUnrestricted(actor)) return
-
-  const departmentId = prep.assignment.client.departmentId
-  if (!departmentId || !getManagedDepartmentIds(actor).includes(departmentId)) {
-    throw new Error('Forbidden: department not in your managed scope')
-  }
+  // Team Leaders only reach their own teams' members' engagements.
+  await assertAssignmentInScope(await getMutateScope(actor), prep.assignmentId)
 }
 
 function parseDate(value: FormDataEntryValue | null): Date | null {

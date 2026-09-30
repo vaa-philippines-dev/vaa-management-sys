@@ -12,7 +12,7 @@ import { getCurrentUser, CLIENT_MUTATOR_ROLES, LEAVE_ADMIN_ROLES } from '@/lib/a
 import { getSidebarFavorites } from '@/lib/favorites'
 import { isTeamAffiliated, getLedTeamIds } from '@/lib/teams'
 import { prisma } from '@/lib/prisma'
-import { getMutableDepartmentIds } from '@/lib/scope'
+import { getMutateScope, scopeDepartmentIds, isTeamScoped } from '@/lib/scope'
 
 export default async function DashboardLayout({
   children,
@@ -46,10 +46,14 @@ export default async function DashboardLayout({
       !!user &&
       ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'HR', 'DEPT_MANAGER', 'OPERATIONS_MANAGER'].includes(user.systemRole))
 
+  // TEAM_LEADER SystemRole on a staff account: scoped to the teams they lead,
+  // so the sidebar drops department-wide pages (lib/scope.ts isTeamScoped).
+  const teamScoped = isTeamScoped(user)
+
   const canImportClients = user ? CLIENT_MUTATOR_ROLES.includes(user.systemRole) : false
   // Import targets are limited to departments the user may write to (null = all);
   // bulkImportClients() enforces the same rule server-side.
-  const importDeptIds = getMutableDepartmentIds(user)
+  const importDeptIds = scopeDepartmentIds(await getMutateScope(user))
   const serviceDepartments = canImportClients
     ? await prisma.department.findMany({
         where: { level: 'SERVICE', status: 'ACTIVE', ...(importDeptIds === null ? {} : { id: { in: importDeptIds } }) },
@@ -72,6 +76,7 @@ export default async function DashboardLayout({
                 canManageLeave={canManageLeave}
                 isLedTeamLeader={isLedTeamLeader}
                 canOpenTmf={canOpenTmf}
+                isTeamScoped={teamScoped}
               />
               <div className="flex flex-1 flex-col overflow-hidden">
                 <Navbar />

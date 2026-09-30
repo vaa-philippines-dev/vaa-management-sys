@@ -11,6 +11,7 @@ import {
   TEAM_MANAGE_ROLES,
 } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
+import { isTeamScoped } from '@/lib/scope'
 import type { ProjectStatus, ProjectPriority } from '@/src/generated/prisma/enums'
 
 // Projects are a department's own initiatives, so the same tier that owns
@@ -24,6 +25,9 @@ async function assertDepartmentManaged(
   actor: Awaited<ReturnType<typeof getCurrentUser>>,
   departmentId: string
 ) {
+  // TEAM_LEADER isn't in PROJECT_MUTATOR_ROLES today; this keeps a team-scoped
+  // leader out even if that list ever widens — projects are department-level.
+  if (isTeamScoped(actor)) throw new Error('Forbidden: projects are department-level')
   if (!actor || isDepartmentUnrestricted(actor)) return
   const managedIds = getManagedDepartmentIds(actor)
   if (!managedIds.includes(departmentId)) {

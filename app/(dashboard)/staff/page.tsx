@@ -9,6 +9,7 @@ import {
   titleCase,
 } from '@/lib/staff-fields'
 import { redirect } from 'next/navigation'
+import { isTeamScoped } from '@/lib/scope'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -75,6 +76,8 @@ export default async function StaffMasterlistPage({
   const currentUser = await getCurrentUser()
   if (!currentUser) redirect('/login')
   if (currentUser.userType === 'VIRTUAL_ASSISTANT') redirect('/dashboard')
+  // Company-wide staff directory; a Team Leader's view stops at their own team.
+  if (isTeamScoped(currentUser)) redirect('/tmf')
 
   const canEdit = STAFF_MUTATOR_ROLES.includes(currentUser.systemRole)
 
