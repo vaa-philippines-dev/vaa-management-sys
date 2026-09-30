@@ -193,9 +193,10 @@ export async function createVAOnboardingInvite(userId: string) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
   await assertUserInActorScope(actor, userId)
 
-  const user = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, systemRole: true } })
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, systemRole: true, userType: true } })
   if (!user) throw new Error('VA not found')
-  if (user.systemRole !== 'VA') throw new Error('Onboarding invites are only for VAs')
+  // Internal staff get the same onboarding link from their Staff 201 (/staff/[id]).
+  if (user.systemRole !== 'VA' && user.userType !== 'INTERNAL_STAFF') throw new Error('Onboarding invites are only for VAs and internal staff')
 
   const token = randomBytes(32).toString('base64url')
   const expiresAt = new Date(Date.now() + ONBOARDING_INVITE_TTL_MS)
@@ -1286,6 +1287,8 @@ export async function updateUserProfile(userId: string, formData: FormData) {
   revalidateTag(CACHE_TAGS.users, 'default')
   revalidatePath('/vas')
   revalidateTag(CACHE_TAGS.users, 'default')
+  // The same sections back the Staff 201.
+  revalidatePath('/staff', 'layout')
 }
 
 export { updateUserProfile as updateUserProfileAction }
@@ -2332,6 +2335,8 @@ export async function updateUserProfileFiles(
   revalidateTag(CACHE_TAGS.users, 'default')
   revalidatePath('/vas')
   revalidateTag(CACHE_TAGS.users, 'default')
+  // The same sections back the Staff 201.
+  revalidatePath('/staff', 'layout')
 }
 
 export type BulkDeleteVAsResult = {

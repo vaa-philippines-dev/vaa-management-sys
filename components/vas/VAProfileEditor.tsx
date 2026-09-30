@@ -29,7 +29,7 @@ import type { DriveFile } from '@/lib/google/drive'
 import { AddressFields } from '@/components/vas/AddressFields'
 import { OFFBOARDING_TYPE_OPTIONS as TERMINATION_TYPE_OPTIONS } from '@/lib/offboarding'
 
-type VAData = {
+export type VAData = {
   vaProfile: {
     id: string; status: string; engagementStatus: string | null; hybrid: boolean
     hourlyRate: number | null; baseRate: number | null
@@ -67,6 +67,10 @@ type VAData = {
   membership: { departmentName: string; positionTitle: string | null } | null
   employment: { contractType: string; employmentStatus: string; startDate: string; endDate: string | null } | null
 }
+
+// The part of VAData the personal/address/socials/201-files sections read —
+// all keyed on the User, so the Staff 201 (components/staff) reuses them.
+export type PersonData = Pick<VAData, 'user' | 'profile'>
 
 export function VAProfileEditor({
   data,
@@ -276,7 +280,7 @@ export function VAProfileEditor({
   )
 }
 
-function EditableSection({
+export function EditableSection({
   icon: Icon,
   label,
   children,
@@ -326,7 +330,7 @@ function EditableSection({
   )
 }
 
-function TableRow({ label, value, link }: { label: string; value: string | null | undefined; link?: boolean }) {
+export function TableRow({ label, value, link }: { label: string; value: string | null | undefined; link?: boolean }) {
   if (!value) return null
   return (
     <div className="flex items-center py-1.5 gap-4">
@@ -344,7 +348,7 @@ function TableRow({ label, value, link }: { label: string; value: string | null 
 
 // ── Forms (unchanged) ──
 
-function FI({ name, label, defaultValue, type, placeholder }: { name: string; label: string; defaultValue?: string | null; type?: string; placeholder?: string }) {
+export function FI({ name, label, defaultValue, type, placeholder }: { name: string; label: string; defaultValue?: string | null; type?: string; placeholder?: string }) {
   return (
     <div>
       <Label htmlFor={`fi-${name}`} className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">{label}</Label>
@@ -381,7 +385,7 @@ function FS({ name, label, defaultValue, options }: { name: string; label: strin
   )
 }
 
-function SaveForm({ action, onClose, className, children, toastLabel }: {
+export function SaveForm({ action, onClose, className, children, toastLabel }: {
   action: (formData: FormData) => Promise<void>
   onClose: () => void
   className?: string
@@ -414,7 +418,7 @@ function SaveForm({ action, onClose, className, children, toastLabel }: {
   )
 }
 
-function PersonalFormContent({ data, onClose }: { data: VAData; onClose: () => void }) {
+export function PersonalFormContent({ data, onClose }: { data: PersonData; onClose: () => void }) {
   return (
     <SaveForm action={(fd) => updateUserProfileAction(data.user.id, fd)} onClose={onClose} toastLabel="Personal info saved" className="flex flex-col gap-4">
       {(saving) => (<>
@@ -442,7 +446,7 @@ function PersonalFormContent({ data, onClose }: { data: VAData; onClose: () => v
   )
 }
 
-function AddressFormContent({ data, onClose }: { data: VAData; onClose: () => void }) {
+export function AddressFormContent({ data, onClose }: { data: PersonData; onClose: () => void }) {
   return (
     <SaveForm action={(fd) => updateUserProfileAction(data.user.id, fd)} onClose={onClose} toastLabel="Address saved" className="flex flex-col gap-4">
       {(saving) => (<>
@@ -511,7 +515,7 @@ function EmploymentFormContent({ data, onClose }: { data: VAData; onClose: () =>
   )
 }
 
-function SocialsFormContent({ data, onClose }: { data: VAData; onClose: () => void }) {
+export function SocialsFormContent({ data, onClose }: { data: PersonData; onClose: () => void }) {
   return (
     <SaveForm action={(fd) => updateUserProfileAction(data.user.id, fd)} onClose={onClose} toastLabel="Socials saved" className="flex flex-col gap-4">
       {(saving) => (<>
@@ -532,14 +536,14 @@ function SocialsFormContent({ data, onClose }: { data: VAData; onClose: () => vo
   )
 }
 
-function Files201Content({
+export function Files201Content({
   data,
   vaName,
   onJustUploaded,
   onClose,
   currentUserId,
 }: {
-  data: VAData
+  data: PersonData
   vaName: string
   onJustUploaded?: (field: string) => void
   onClose: () => void
@@ -692,7 +696,7 @@ function UploadRow({
   )
 }
 
-function DocBadge({ icon: Icon, label, url, highlighted }: { icon: React.ComponentType<{ className?: string }>; label: string; url: string | null; highlighted?: boolean }) {
+export function DocBadge({ icon: Icon, label, url, highlighted }: { icon: React.ComponentType<{ className?: string }>; label: string; url: string | null; highlighted?: boolean }) {
   const borderClass = highlighted ? 'border-success/40 ring-1 ring-success/30 bg-success/10' : ''
   return (
     <div className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-xs transition-all duration-300 ${borderClass}`}>
@@ -1132,7 +1136,7 @@ function TerminationCard({
   )
 }
 
-function StatBox({ label, value, icon: Icon }: { label: string; value: string | null | undefined; icon: React.ComponentType<{ className?: string }> }) {
+export function StatBox({ label, value, icon: Icon }: { label: string; value: string | null | undefined; icon: React.ComponentType<{ className?: string }> }) {
   return (
     <div className="rounded-lg border bg-muted/20 p-3">
       <div className="flex items-center gap-2 mb-1">

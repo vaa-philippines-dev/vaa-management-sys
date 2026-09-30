@@ -41,6 +41,10 @@ export const OFFBOARDING_DELETE_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'HR']
 // sit in VA_MUTATOR_ROLES) drop to view-only here; every other VA_MUTATOR_ROLES
 // section (address, socials, skills, status, offboarding) is unaffected.
 export const VA_SENSITIVE_INFO_EDIT_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'HR']
+// Staff Masterlist (/staff) edits, offboarding and VA demotion. Staff records
+// carry the sheet's own department text, not department ids, so there's no
+// department scope to hand to managers — this stays HR/admin-only.
+export const STAFF_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'HR']
 // 2026-08-19 HR meeting: HR must be able to override a Team-Leader-initiated
 // resignation, since VA_MUTATOR_ROLES otherwise treats every resignation
 // actor as equal. Used by logDiscussionOutcome() to let HR/admins re-log the
