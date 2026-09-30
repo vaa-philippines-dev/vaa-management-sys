@@ -15,12 +15,15 @@ export const TICKET_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN']
 // getManagedDepartmentIds() rather than seeing every department unscoped.
 // Previously copy-pasted locally in vas/page.tsx and clients/page.tsx.
 export const DEPARTMENT_SCOPED_ROLES = ['DEPT_MANAGER', 'OPERATIONS_MANAGER']
-// Team creation + membership composition (add/remove/transfer) — Dept Manager owns team composition.
+// Dept Manager and Operations Manager are the same permission tier — they differ
+// only in title and place in the hierarchy (see lib/structure.ts), never in what
+// they can do. Every role group in this file lists both or neither; keep it that way.
+//
+// Team creation + membership composition (add/remove/transfer).
 // HR also gets this, elevated to an unscoped (all-department) grant — see assertDepartmentManaged() in teams/actions.ts.
-export const TEAM_MANAGE_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'HR']
-// Team Leader + both Temp Leader slots — Operations Manager owns who leads, not who's on the roster.
-// HR is deliberately added here too (elevated beyond Dept Manager, who does NOT get this) per HR's expanded team-assignment mandate.
-export const TEAM_LEADER_ASSIGN_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'OPERATIONS_MANAGER', 'HR']
+export const TEAM_MANAGE_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'OPERATIONS_MANAGER', 'HR']
+// Team Leader + both Temp Leader slots.
+export const TEAM_LEADER_ASSIGN_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'OPERATIONS_MANAGER', 'HR']
 // AI Agent suggestions (VA matches, onboarding drafts, stalled-handoff flags):
 // deciding on one is a real staffing/onboarding call, owned by the same roles
 // that manage departments and staffing day-to-day. EXECUTIVE (e.g. the COO)
@@ -29,7 +32,7 @@ export const TEAM_LEADER_ASSIGN_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'OPERATI
 export const AGENT_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'OPERATIONS_MANAGER', 'HR']
 // Who can configure the Leave Approval Hierarchy (which roles/users approve whose
 // leave). Deciding the company's approval chain is an HR/admin policy call, not a
-// day-to-day manager one — same tier as TEAM_MANAGE_ROLES minus DEPT_MANAGER.
+// day-to-day manager one — same tier as TEAM_MANAGE_ROLES minus the Dept/Ops Managers.
 export const LEAVE_ADMIN_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'HR']
 // Deleting an offboarding case is destructive and permanent (unlike the rest of
 // VA_MUTATOR_ROLES's day-to-day workflow actions on it), so it's scoped tighter:

@@ -3,6 +3,7 @@ import { AlertTriangle, CheckCircle2 } from 'lucide-react'
 import { prisma } from '@/lib/prisma'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { getPreparationsMissingEffectivityDate } from '@/lib/va-preparation'
+import { CLIENT_STATUS_LABELS } from '@/lib/va-preparation-fields'
 import Link from 'next/link'
 
 // Mirrors the DMF sheet's "MISSING / INCOMPLETE / INCORRECT DATA" panel.
@@ -77,7 +78,7 @@ export async function DepartmentDataIssuesCard({ deptId }: { deptId: string }) {
                   key={p.id}
                   href="/va-preparation"
                   className="text-xs px-2 py-0.5 rounded-full bg-warning/10 text-warning border border-warning/20 hover:bg-warning/20"
-                  title={`${p.clientName} — ${p.clientStatus === 'PAUSED' ? 'Paused' : 'End of Work'} with no effectivity date`}
+                  title={`${p.clientName} — ${p.clientStatus ? CLIENT_STATUS_LABELS[p.clientStatus] : 'No status'} with no effectivity date`}
                 >
                   {p.name}
                 </Link>

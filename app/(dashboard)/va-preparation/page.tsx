@@ -1,8 +1,9 @@
 import { getCurrentUser, ASSIGNMENT_MUTATOR_ROLES } from '@/lib/auth'
-import { getViewScope, userScopeWhere, vaProfileScopeWhere } from '@/lib/scope'
+import { getViewScope, scopeDepartmentIds, userScopeWhere, vaProfileScopeWhere } from '@/lib/scope'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { getPreparations } from '@/lib/va-preparation'
+import { teamLeaderUserWhere } from '@/lib/teams'
 import { PreparationBoard } from '@/components/va-preparation/PreparationBoard'
 import { ClipboardList } from 'lucide-react'
 
@@ -18,26 +19,27 @@ export default async function VAPreparationPage() {
   const unrestricted = scope === null
   const canMutate = ASSIGNMENT_MUTATOR_ROLES.includes(user.systemRole)
 
-  const [preparations, staff, vas] = await Promise.all([
+  const [preparations, teamLeaders, vas] = await Promise.all([
     getPreparations(scope),
-    // Person In-Charge and Shadow Trainer are both internal people, which in
-    // this business includes VAs acting as shadow trainers — so this picker
-    // deliberately isn't filtered to non-VA users the way /projects' owner
-    // picker is.
+    // Person In-Charge: Team Leaders only (team leads/temp leads, most of
+    // whom are VA accounts, plus TEAM_LEADER-role users), within scope.
     prisma.user.findMany({
-      where: {
-        isActive: true,
-        ...userScopeWhere(scope),
-      },
+      where: { AND: [teamLeaderUserWhere(scopeDepartmentIds(scope)), userScopeWhere(scope)] },
       select: { id: true, firstName: true, lastName: true },
       orderBy: [{ firstName: 'asc' }, { lastName: 'asc' }],
     }),
+    // Every VA in scope, with whether they're active: Replacement for /
+    // Replaced by can name a VA who has since left, but Shadow trainer and
+    // VA buffers offer active VAs only.
     prisma.vAProfile.findMany({
-      where: vaProfileScopeWhere(scope),
-      select: { id: true, user: { select: { firstName: true, lastName: true } } },
-      orderBy: { user: { firstName: 'asc' } },
+      where: { AND: [{ user: { userType: 'VIRTUAL_ASSISTANT' } }, vaProfileScopeWhere(scope)] },
+      select: { id: true, userId: true, status: true, isActive: true, user: { select: { firstName: true, lastName: true, isActive: true } } },
+      orderBy: [{ user: { firstName: 'asc' } }, { user: { lastName: 'asc' } }],
     }),
   ])
+  // Same rule as ACTIVE_VA_PROFILE_WHERE (lib/active-va.ts), applied in memory
+  // to the list already loaded.
+  const activeVas = vas.filter((v) => v.status === 'ACTIVE' && v.isActive && v.user.isActive)
 
   return (
     <div data-wide-page className="space-y-6">
@@ -56,7 +58,9 @@ export default async function VAPreparationPage() {
         preparations={preparations}
         canMutate={canMutate}
         showDepartment={unrestricted || scope.departmentIds.length > 1}
-        people={staff.map((s) => ({ id: s.id, name: `${s.firstName} ${s.lastName}`.trim() }))}
+        teamLeaders={teamLeaders.map((s) => ({ id: s.id, name: `${s.firstName} ${s.lastName}`.trim() }))}
+        activeVaUsers={activeVas.map((v) => ({ id: v.userId, name: `${v.user.firstName} ${v.user.lastName}`.trim() }))}
+        activeVaProfiles={activeVas.map((v) => ({ id: v.id, name: `${v.user.firstName} ${v.user.lastName}`.trim() }))}
         vaProfiles={vas.map((v) => ({
           id: v.id,
           name: `${v.user.firstName} ${v.user.lastName}`.trim(),

@@ -26,6 +26,7 @@ import { DEPARTMENT_CHECKLISTS } from '@/lib/offboarding'
 import { addWorkingDays } from '@/lib/working-days'
 import { nextTerminationTicketNumber } from '@/lib/tickets'
 import { createResignationCase } from '@/lib/resignation-case'
+import { AVAILABILITY_STATUSES } from '@/lib/va-availability-fields'
 import type { Prisma } from '@/src/generated/prisma/client'
 import type {
   Proficiency,
@@ -302,7 +303,7 @@ export type VACsvImportResult = {
   skipped: { row: number; reason: string }[]
 }
 
-const CSV_AVAILABILITY_VALUES = ['AVAILABLE', 'PARTIALLY_ASSIGNED', 'FULLY_ASSIGNED', 'ON_LEAVE', 'UNAVAILABLE']
+const CSV_AVAILABILITY_VALUES: string[] = [...AVAILABILITY_STATUSES]
 const CSV_STATUS_VALUES = ['ACTIVE', 'PENDING', 'TRANSFERRED', 'RESIGNED', 'REMOVED', 'PROJECT_ENDED', 'CANCELLED', 'BLACKLISTED']
 const CSV_ENGAGEMENT_VALUES = ['EMPLOYED', 'ENGAGED', 'CONTRACTED', 'END_OF_CONTRACT', 'TRANSFERRED', 'RESIGNED', 'TERMINATED', 'BLACKLISTED']
 

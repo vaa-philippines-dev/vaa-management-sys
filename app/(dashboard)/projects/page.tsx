@@ -24,7 +24,7 @@ export default async function ProjectsPage() {
 
   const unrestricted = isDepartmentUnrestricted(user)
   const managedIds = getManagedDepartmentIds(user)
-  const canMutate = [...TEAM_MANAGE_ROLES, 'OPERATIONS_MANAGER'].includes(user.systemRole)
+  const canMutate = TEAM_MANAGE_ROLES.includes(user.systemRole)
 
   const [projects, departments, owners] = await Promise.all([
     prisma.project.findMany({

@@ -9,6 +9,7 @@ import { logAudit } from '@/lib/audit'
 import { notify } from '@/lib/notifications'
 import { computeKpiCheckpoints } from '@/lib/kpi-checks'
 import { getMutateScope, assertClientInScope, assertAssignmentInScope, assertVAProfileInScope } from '@/lib/scope'
+import { ACTIVE_VA_PROFILE_WHERE } from '@/lib/active-va'
 
 export async function createAssignment(formData: FormData) {
   const actor = await requireRole(...ASSIGNMENT_MUTATOR_ROLES)
@@ -46,6 +47,10 @@ export async function createAssignment(formData: FormData) {
       : 0
     if (vaInDept === 0) throw new Error("Forbidden: this VA isn't a member of the client's department")
   }
+
+  // Same rule as the form's VA picker — resigned/removed/etc. VAs can't be staffed.
+  const vaActive = await prisma.vAProfile.count({ where: { AND: [{ id: vaProfileId }, ACTIVE_VA_PROFILE_WHERE] } })
+  if (vaActive === 0) throw new Error('Only active VAs can be assigned')
 
   const assignment = await prisma.assignment.create({
     data: {

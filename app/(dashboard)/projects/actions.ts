@@ -15,11 +15,9 @@ import { isTeamScoped } from '@/lib/scope'
 import type { ProjectStatus, ProjectPriority } from '@/src/generated/prisma/enums'
 
 // Projects are a department's own initiatives, so the same tier that owns
-// department composition owns them — TEAM_MANAGE_ROLES (Dept Manager, HR,
-// admins). Ops Manager is deliberately included here even though it isn't in
-// TEAM_MANAGE_ROLES: unlike team *leadership*, a proposal is raised by
-// whoever runs the department day to day.
-const PROJECT_MUTATOR_ROLES = [...TEAM_MANAGE_ROLES, 'OPERATIONS_MANAGER'] as const
+// department composition owns them — TEAM_MANAGE_ROLES (Dept/Ops Manager, HR,
+// admins).
+const PROJECT_MUTATOR_ROLES = TEAM_MANAGE_ROLES
 
 async function assertDepartmentManaged(
   actor: Awaited<ReturnType<typeof getCurrentUser>>,

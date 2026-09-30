@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { assignmentScopeWhere, type Scope } from '@/lib/scope'
-import { CHECKLIST_FIELDS, type ChecklistKey, type PreparationRow } from '@/lib/va-preparation-fields'
+import { CHECKLIST_FIELDS, requiresEffectivityDate, type ChecklistKey, type PreparationRow } from '@/lib/va-preparation-fields'
 
 // Prisma reads for the DMF sheet's "VA Preparation" tab. Server-only —
 // anything the client board needs lives in lib/va-preparation-fields.ts.
@@ -38,6 +38,10 @@ const preparationInclude = {
   replacedBy: { select: { id: true, user: { select: { firstName: true, lastName: true } } } },
   personInCharge: { select: { id: true, firstName: true, lastName: true } },
   shadowTrainer: { select: { id: true, firstName: true, lastName: true } },
+  buffers: {
+    orderBy: { sortOrder: 'asc' },
+    select: { vaProfile: { select: { id: true, user: { select: { firstName: true, lastName: true } } } } },
+  },
 } as const
 
 type RawPreparation = Awaited<
@@ -66,6 +70,7 @@ function toRow(p: RawPreparation): PreparationRow {
     scheduleDays: p.scheduleDays,
     expertiseGroup: p.expertiseGroup,
     vaBuffers: p.vaBuffers,
+    buffers: p.buffers.map((b) => ({ vaProfileId: b.vaProfile.id, name: fullName(b.vaProfile.user) ?? 'Unknown VA' })),
     vaClientFileUrl: p.vaClientFileUrl,
     accountDocUrl: p.accountDocUrl,
     replacementForId: p.replacementFor?.id ?? null,
@@ -96,7 +101,7 @@ function toRow(p: RawPreparation): PreparationRow {
     replacedById: p.replacedBy?.id ?? null,
     replacedByName: fullName(p.replacedBy?.user),
 
-    missingEffectivityDate: p.clientStatus !== 'ACTIVE' && p.effectivityDate === null,
+    missingEffectivityDate: requiresEffectivityDate(p.clientStatus) && p.effectivityDate === null,
   }
 }
 
@@ -114,11 +119,11 @@ export async function getPreparations(scope: Scope): Promise<PreparationRow[]> {
 
 // The third rule of the dashboard's "Missing / Incomplete / Incorrect Data"
 // panel, which was stubbed until this module existed: rows parked as
-// Paused/End of Work with no effectivity date recorded against them.
+// Paused/End of Work/Cancelled with no effectivity date recorded against them.
 export async function getPreparationsMissingEffectivityDate(departmentId: string) {
   const rows = await prisma.assignmentPreparation.findMany({
     where: {
-      clientStatus: { in: ['PAUSED', 'END_OF_WORK'] },
+      clientStatus: { in: ['PAUSED', 'END_OF_WORK', 'CANCELLED'] },
       effectivityDate: null,
       assignment: { client: { departmentId } },
     },

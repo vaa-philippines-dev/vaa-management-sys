@@ -4,6 +4,7 @@ import { getCurrentUser, getPrimaryDepartment, CLIENT_MUTATOR_ROLES } from '@/li
 import { getViewScope, getMutateScope, clientScopeWhere, scopeDepartmentIds, scopeKey, type Scope } from '@/lib/scope'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { isTeamAffiliated } from '@/lib/teams'
+import { clientNiche } from '@/lib/clients/display'
 import { Card, CardContent } from '@/components/ui/card'
 import { Building2 } from 'lucide-react'
 import { ClientsBoard } from '@/components/clients/ClientsBoard'
@@ -120,6 +121,7 @@ export default async function ClientsPage({
           include: { vaProfile: { include: { user: true } } },
         },
         department: { select: { id: true, name: true, sortOrder: true } },
+        account: { select: { category: true } },
       },
       orderBy: { createdAt: 'desc' },
     })
@@ -155,7 +157,9 @@ export default async function ClientsPage({
           </CardContent>
         </Card>
       ) : (
-        <ClientsBoard clients={clients} />
+        <ClientsBoard
+          clients={clients.map((c) => ({ ...c, category: c.account?.category ?? null, niche: clientNiche(c) }))}
+        />
       )}
     </div>
   )

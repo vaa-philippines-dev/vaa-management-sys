@@ -34,6 +34,34 @@ export const CLIENT_STATUS_LABELS: Record<PreparationClientStatus, string> = {
   ACTIVE: 'Active',
   PAUSED: 'Paused',
   END_OF_WORK: 'End of Work',
+  CANCELLED: 'Cancelled',
+}
+
+// VA STATUS WITH CLIENT stays blank until VA Connect is Done, at which point
+// a still-blank status becomes Active, effective the VA Connect date (or
+// `fallbackDate` when no VA Connect date was entered). An explicitly chosen
+// status is never overwritten. Shared by the edit form's save action and
+// the DMF import so both apply the same rule.
+export function resolveClientStatus(input: {
+  clientStatus: PreparationClientStatus | null
+  effectivityDate: Date | null
+  vaConnectStatus: PreparationStepStatus
+  vaConnectDate: Date | null
+  fallbackDate: Date | null
+}): { clientStatus: PreparationClientStatus | null; effectivityDate: Date | null } {
+  if (input.clientStatus || input.vaConnectStatus !== 'DONE') {
+    return { clientStatus: input.clientStatus, effectivityDate: input.effectivityDate }
+  }
+  return {
+    clientStatus: 'ACTIVE',
+    effectivityDate: input.effectivityDate ?? input.vaConnectDate ?? input.fallbackDate,
+  }
+}
+
+// Everything but ACTIVE marks the VA as no longer working the account, so
+// each needs the date it took effect.
+export function requiresEffectivityDate(status: PreparationClientStatus | null): boolean {
+  return status !== null && status !== 'ACTIVE'
 }
 
 // The sheet's nine TRUE/FALSE onboarding columns, in its own left-to-right
@@ -77,7 +105,9 @@ export type PreparationRow = {
   scheduleType: string | null
   scheduleDays: string | null
   expertiseGroup: string | null
+  // Legacy DMF text for buffer names that matched no VA; see `buffers`.
   vaBuffers: string | null
+  buffers: { vaProfileId: string; name: string }[]
   vaClientFileUrl: string | null
   accountDocUrl: string | null
   replacementForId: string | null
@@ -101,14 +131,14 @@ export type PreparationRow = {
   checklist: Record<ChecklistKey, boolean>
   checklistDone: number
 
-  clientStatus: PreparationClientStatus
+  clientStatus: PreparationClientStatus | null
   effectivityDate: string | null
   statusReason: string | null
   replacementNote: string | null
   replacedById: string | null
   replacedByName: string | null
 
-  // The sheet's data-quality rule: a PAUSED or END_OF_WORK row with no
-  // EFFECTIVITY DATE is an incomplete record, not a finished one.
+  // The sheet's data-quality rule: a PAUSED / END_OF_WORK / CANCELLED row
+  // with no EFFECTIVITY DATE is an incomplete record, not a finished one.
   missingEffectivityDate: boolean
 }

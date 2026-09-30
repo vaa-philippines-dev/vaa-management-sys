@@ -10,6 +10,7 @@ import { TeamDetailControls } from '@/components/teams/TeamDetailControls'
 import { TeamNameEditor } from '@/components/teams/TeamNameEditor'
 import { StructureCard } from '@/components/departments/StructureCard'
 import { isTeamScoped, getLedTeamScope } from '@/lib/scope'
+import { getTeamCandidates } from '@/lib/teams'
 
 function initials(name: string) {
   const parts = name.trim().split(/\s+/)
@@ -26,6 +27,9 @@ const AVAILABILITY_TONE: Record<string, Tone> = {
   FULLY_ASSIGNED: 'warning',
   ON_LEAVE: 'neutral',
   UNAVAILABLE: 'destructive',
+  ON_HOLD_BY_VA: 'neutral',
+  ON_HOLD_BY_VAA: 'neutral',
+  RECOMMENDED: 'info',
 }
 
 const AVAILABILITY_LABEL: Record<string, string> = {
@@ -34,6 +38,9 @@ const AVAILABILITY_LABEL: Record<string, string> = {
   FULLY_ASSIGNED: 'Fully Assigned',
   ON_LEAVE: 'On Leave',
   UNAVAILABLE: 'Unavailable',
+  ON_HOLD_BY_VA: 'On hold by VA',
+  ON_HOLD_BY_VAA: 'On hold by VAA',
+  RECOMMENDED: 'Recommended',
 }
 
 function userName(user: { firstName: string; lastName: string }) {
@@ -99,18 +106,11 @@ export default async function TeamDetailPage({
     availabilityStatus: m.user.vaProfile?.availabilityStatus ?? null,
   }))
 
-  let candidates: { userId: string; name: string }[] = []
+  let candidates: { userId: string; name: string; isVA: boolean }[] = []
   let otherTeams: { id: string; name: string }[] = []
 
   if (canManageMembership) {
-    const memberIds = new Set(members.map((m) => m.userId))
-    const deptMembers = await prisma.departmentMembership.findMany({
-      where: { departmentId: team.departmentId, endedAt: null },
-      include: { user: true },
-    })
-    candidates = deptMembers
-      .filter((dm) => !memberIds.has(dm.userId))
-      .map((dm) => ({ userId: dm.userId, name: userName(dm.user) }))
+    candidates = await getTeamCandidates(team.departmentId, members.map((m) => m.userId))
 
     const managedIds = isAdmin ? undefined : getManagedDepartmentIds(user)
     otherTeams = await prisma.team.findMany({

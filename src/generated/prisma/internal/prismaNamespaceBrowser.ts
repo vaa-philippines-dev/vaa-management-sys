@@ -106,6 +106,7 @@ export const ModelName = {
   AgentRun: 'AgentRun',
   Project: 'Project',
   AssignmentPreparation: 'AssignmentPreparation',
+  AssignmentPreparationBuffer: 'AssignmentPreparationBuffer',
   AssignmentClientFeedback: 'AssignmentClientFeedback'
 } as const
 
@@ -1183,6 +1184,17 @@ export const AssignmentPreparationScalarFieldEnum = {
 } as const
 
 export type AssignmentPreparationScalarFieldEnum = (typeof AssignmentPreparationScalarFieldEnum)[keyof typeof AssignmentPreparationScalarFieldEnum]
+
+
+export const AssignmentPreparationBufferScalarFieldEnum = {
+  id: 'id',
+  preparationId: 'preparationId',
+  vaProfileId: 'vaProfileId',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt'
+} as const
+
+export type AssignmentPreparationBufferScalarFieldEnum = (typeof AssignmentPreparationBufferScalarFieldEnum)[keyof typeof AssignmentPreparationBufferScalarFieldEnum]
 
 
 export const AssignmentClientFeedbackScalarFieldEnum = {

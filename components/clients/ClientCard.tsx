@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { StatusIndicator } from '@/components/ui/status-indicator'
-import { CLIENT_PLATFORM_META, CLIENT_STATUS_LABEL, CLIENT_STATUS_TONE } from '@/lib/clients/display'
+import { CLIENT_PLATFORM_META, CLIENT_STATUS_LABEL, CLIENT_STATUS_TONE, clientCompanyName, clientDisplayName } from '@/lib/clients/display'
 
 export type ClientCardData = {
   id: string
@@ -12,6 +12,9 @@ export type ClientCardData = {
   onHold: boolean
   contactName: string | null
   industry: string | null
+  // Precomputed by the page — see clientNiche() in lib/clients/display.ts.
+  category: string | null
+  niche: string | null
   requiredSkills: string[]
   assignments: unknown[]
 }
@@ -22,7 +25,7 @@ export function ClientCard({ c }: { c: ClientCardData }) {
       <Card className="group cursor-pointer transition-all hover:shadow-md hover:-translate-y-0.5 py-3">
         <CardContent className="px-3 space-y-1.5">
           <div className="flex items-center justify-between gap-2">
-            <p className="text-sm font-semibold truncate">{c.name}</p>
+            <p className="text-sm font-semibold truncate">{clientDisplayName(c)}</p>
             <Badge
               variant="outline"
               className={`text-[10px] py-0 px-1.5 shrink-0 ${CLIENT_PLATFORM_META[c.platform]?.color ?? ''}`}
@@ -32,7 +35,7 @@ export function ClientCard({ c }: { c: ClientCardData }) {
           </div>
 
           <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
-            <span className="truncate">{c.contactName || c.industry || '—'}</span>
+            <span className="truncate">{clientCompanyName(c) || [c.category, c.niche].filter(Boolean).join(' · ') || '—'}</span>
             <div className="flex items-center gap-1.5 shrink-0">
               <StatusIndicator tone={c.onHold ? 'warning' : (CLIENT_STATUS_TONE[c.status] ?? 'neutral')}>
                 {c.onHold ? 'On Hold' : (CLIENT_STATUS_LABEL[c.status] ?? c.status)}

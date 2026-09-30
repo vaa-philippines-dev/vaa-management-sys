@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { updateClient } from '@/app/(dashboard)/clients/actions'
 import { CLIENT_STATUS_LABEL } from '@/lib/clients/display'
+import { TimezoneSelect } from '@/components/clients/ClientFormFields'
 
 const PLATFORMS = [
   { value: 'AMAZON', label: 'Amazon' },
@@ -130,10 +131,7 @@ export function ClientEditModal({
             <Label htmlFor="industry">Industry / Niche</Label>
             <Input id="industry" name="industry" defaultValue={client.industry ?? ''} className="h-9" />
           </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="timezone">Timezone</Label>
-            <Input id="timezone" name="timezone" defaultValue={client.timezone ?? ''} className="h-9" />
-          </div>
+          <TimezoneSelect defaultValue={client.timezone} />
         </div>
 
         <div className="grid gap-3 md:grid-cols-2">

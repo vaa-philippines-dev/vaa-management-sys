@@ -426,6 +426,9 @@ async function FilterWrapper({ scope }: { scope: ViewerScope }) {
             { value: 'FULLY_ASSIGNED', label: 'Fully' },
             { value: 'ON_LEAVE', label: 'Leave' },
             { value: 'UNAVAILABLE', label: 'Unavailable' },
+            { value: 'ON_HOLD_BY_VA', label: 'On hold by VA' },
+            { value: 'ON_HOLD_BY_VAA', label: 'On hold by VAA' },
+            { value: 'RECOMMENDED', label: 'Recommended' },
           ],
         },
         {

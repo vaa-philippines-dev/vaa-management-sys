@@ -24,7 +24,14 @@ const FORM_DETAIL_KEYS = [
 function buildFormDetails(formData: FormData): Record<string, string> | undefined {
   const details: Record<string, string> = {}
   for (const key of FORM_DETAIL_KEYS) {
-    const value = (formData.get(key) as string) || ''
+    // Marketplace is a multi-select: one entry per ticked box plus the
+    // free-text "Other", joined into the single string every reader expects.
+    const value = key === 'marketplace'
+      ? [...formData.getAll('marketplace'), formData.get('marketplaceOther')]
+          .map((v) => (typeof v === 'string' ? v.trim() : ''))
+          .filter(Boolean)
+          .join(', ')
+      : (formData.get(key) as string) || ''
     if (value.trim()) details[key] = value.trim()
   }
   const vaConnectionDate = formData.get('vaConnectionDate') as string

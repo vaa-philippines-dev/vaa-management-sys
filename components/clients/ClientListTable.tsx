@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { StatusIndicator } from '@/components/ui/status-indicator'
-import { CLIENT_PLATFORM_META, CLIENT_STATUS_LABEL, CLIENT_STATUS_TONE } from '@/lib/clients/display'
+import { CLIENT_PLATFORM_META, CLIENT_STATUS_LABEL, CLIENT_STATUS_TONE, clientCompanyName, clientDisplayName } from '@/lib/clients/display'
 import type { ClientCardData } from '@/components/clients/ClientCard'
 
 export function ClientListTable({ clients }: { clients: ClientCardData[] }) {
@@ -12,8 +12,8 @@ export function ClientListTable({ clients }: { clients: ClientCardData[] }) {
         <TableHeader>
           <TableRow className="bg-muted/30">
             <TableHead className="px-3 py-2">Name</TableHead>
-            <TableHead className="px-3 py-2 hidden sm:table-cell">Contact</TableHead>
-            <TableHead className="px-3 py-2 hidden md:table-cell">Industry</TableHead>
+            <TableHead className="px-3 py-2 hidden sm:table-cell">Company</TableHead>
+            <TableHead className="px-3 py-2 hidden md:table-cell">Category / Niche</TableHead>
             <TableHead className="px-3 py-2">Platform</TableHead>
             <TableHead className="px-3 py-2">Status</TableHead>
             <TableHead className="px-3 py-2 hidden lg:table-cell">Services</TableHead>
@@ -25,14 +25,21 @@ export function ClientListTable({ clients }: { clients: ClientCardData[] }) {
             <TableRow key={c.id} className="cursor-pointer">
               <TableCell className="px-3 py-2 font-medium">
                 <Link href={`/clients/${c.id}`} className="hover:text-primary transition-colors">
-                  {c.name}
+                  {clientDisplayName(c)}
                 </Link>
               </TableCell>
               <TableCell className="px-3 py-2 text-muted-foreground hidden sm:table-cell truncate max-w-[180px]">
-                {c.contactName || <span className="text-muted-foreground/50">—</span>}
+                {clientCompanyName(c) || <span className="text-muted-foreground/50">—</span>}
               </TableCell>
-              <TableCell className="px-3 py-2 text-muted-foreground hidden md:table-cell truncate max-w-[160px]">
-                {c.industry || <span className="text-muted-foreground/50">—</span>}
+              <TableCell className="px-3 py-2 text-muted-foreground hidden md:table-cell max-w-[200px]">
+                {c.category || c.niche ? (
+                  <div className="flex flex-col gap-0.5">
+                    {c.category && <span className="truncate">{c.category}</span>}
+                    {c.niche && <span className="truncate text-muted-foreground/70">{c.niche}</span>}
+                  </div>
+                ) : (
+                  <span className="text-muted-foreground/50">—</span>
+                )}
               </TableCell>
               <TableCell className="px-3 py-2">
                 <Badge variant="outline" className={`text-[10px] py-0 px-1.5 ${CLIENT_PLATFORM_META[c.platform]?.color ?? ''}`}>

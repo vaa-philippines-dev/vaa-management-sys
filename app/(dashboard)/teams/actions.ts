@@ -6,6 +6,7 @@ import { CACHE_TAGS } from '@/lib/cache'
 import { redirect } from 'next/navigation'
 import { requireRole, requireAdminMutator, isDepartmentUnrestricted, getManagedDepartmentIds, getCurrentUser, TEAM_MANAGE_ROLES, TEAM_LEADER_ASSIGN_ROLES } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
+import { getTeamCandidates } from '@/lib/teams'
 
 async function assertDepartmentManaged(actor: Awaited<ReturnType<typeof getCurrentUser>>, departmentId: string) {
   if (!actor || isDepartmentUnrestricted(actor)) return
@@ -37,20 +38,34 @@ async function getTeamDepartmentId(teamId: string): Promise<string> {
   return team.departmentId
 }
 
+// The Create Team form's member picker, reloaded whenever its department
+// changes — same candidate rule as the team page's own picker.
+export async function listTeamCandidates(departmentId: string) {
+  const actor = await requireRole(...TEAM_MANAGE_ROLES)
+  await assertDepartmentManaged(actor, departmentId)
+  return getTeamCandidates(departmentId)
+}
+
 export async function createTeam(formData: FormData) {
   const actor = await requireRole(...TEAM_MANAGE_ROLES)
 
   const departmentId = formData.get('departmentId') as string
   const name = (formData.get('name') as string)?.trim()
+  const memberIds = [...new Set(formData.getAll('memberIds').map((v) => String(v)).filter(Boolean))]
 
   if (!departmentId || !name) {
     throw new Error('Department and team name are required')
   }
 
   await assertDepartmentManaged(actor, departmentId)
+  if (memberIds.length > 0) await assertActiveDepartmentMembers(departmentId, memberIds)
 
   const team = await prisma.team.create({
-    data: { departmentId, name },
+    data: {
+      departmentId,
+      name,
+      memberships: { create: memberIds.map((userId) => ({ userId })) },
+    },
   })
 
   await logAudit({
@@ -58,7 +73,7 @@ export async function createTeam(formData: FormData) {
     action: 'CREATE',
     entityType: 'Team',
     entityId: team.id,
-    after: { name, departmentId },
+    after: { name, departmentId, memberIds },
     departmentId,
   })
 

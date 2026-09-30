@@ -4,6 +4,7 @@ import { computeKpiCheckpoints } from '@/lib/kpi-checks'
 import { fetchDmfTabRows, resolveDmfTabTitle, type RawDmfRow } from '@/lib/google/dmf-sheet'
 import { parseDmfDate, parseDmfBool, parseDmfNumber, rowLabel } from '@/lib/sync/dmf-parse'
 import { buildDmfIndexes, matchName, pickAssignment, normalizeName, type DmfIndexes } from '@/lib/sync/dmf-match'
+import { resolveClientStatus } from '@/lib/va-preparation-fields'
 import type {
   PreparationStartStatus,
   PreparationVaType,
@@ -23,7 +24,7 @@ import type {
 // FK requirement.
 const SYSTEM_ACTOR_EMAIL = 'dmf-sheet-import@system.internal'
 
-async function getSystemActorId(): Promise<string> {
+export async function getSystemActorId(): Promise<string> {
   const user = await prisma.user.upsert({
     where: { email: SYSTEM_ACTOR_EMAIL },
     update: {},
@@ -268,6 +269,35 @@ const CLIENT_STATUS_MAP: Record<string, PreparationClientStatus> = {
   active: 'ACTIVE',
   paused: 'PAUSED',
   'end of work': 'END_OF_WORK',
+  cancelled: 'CANCELLED',
+}
+
+// VA STATUS WITH CLIENT is the one enum here with no safe fallback: an
+// unrecognized cell ("Resigned", "Replaced" — both seen in the live sheets)
+// used to default to ACTIVE, reporting departed VAs as still working the
+// account. Blank or unrecognized now stays blank (null); only a blank cell
+// is then eligible for the VA-Connect-Done → Active rule.
+function mapClientStatus(
+  raw: string,
+  warnings: ImportIssue[],
+  label: string
+): { status: PreparationClientStatus | null; blank: boolean } {
+  const trimmed = (raw ?? '').trim()
+  if (!trimmed) return { status: null, blank: true }
+  const mapped = CLIENT_STATUS_MAP[trimmed.toLowerCase()]
+  if (mapped) return { status: mapped, blank: false }
+  warnings.push({ label, reason: `Unrecognized VA STATUS WITH CLIENT "${raw}" — left blank` })
+  return { status: null, blank: false }
+}
+
+// VA BUFFERS is free text — usually one name, occasionally several. Each
+// name that matches exactly one VA in the department becomes a buffer row;
+// the rest stay in the legacy text column rather than being guessed at.
+export function splitBufferNames(raw: string): string[] {
+  return raw
+    .split(/[,;/\n]|\s+&\s+|\s+and\s+/i)
+    .map((s) => s.trim())
+    .filter(Boolean)
 }
 
 function mapEnum<T extends string>(
@@ -348,7 +378,6 @@ export async function importVaPreparation(
       scheduleType: row['SCHEDULE TYPE'] || null,
       scheduleDays: row['SCHEDULE DAYS'] || null,
       expertiseGroup: row['EXPERTISE GROUP'] || null,
-      vaBuffers: row['VA BUFFERS'] || null,
       vaClientFileUrl: httpUrlOrNull(row['VA-CLIENT FILE LINK'] || ''),
       accountDocUrl: httpUrlOrNull(row['ACCOUNT DOC FILE'] || ''),
       replacementForId: replacementFor.id,
@@ -377,17 +406,49 @@ export async function importVaPreparation(
       weeklyReport: parseDmfBool(row['Weekly Report']),
       portfolio: parseDmfBool(row['Portfolio']),
 
-      clientStatus: mapEnum(CLIENT_STATUS_MAP, row['VA STATUS WITH CLIENT'], 'ACTIVE' as PreparationClientStatus, summary.warnings, label, 'VA STATUS WITH CLIENT'),
-      effectivityDate: parseDmfDate(row['EFFECTIVITY DATE']),
       statusReason: row['REASON'] || null,
       replacementNote: row['REPLACEMENT'] || null,
     }
 
+    const statusCell = mapClientStatus(row['VA STATUS WITH CLIENT'], summary.warnings, label)
+    const effectivityDate = parseDmfDate(row['EFFECTIVITY DATE'])
+    const status = statusCell.blank
+      ? resolveClientStatus({
+          clientStatus: null,
+          effectivityDate,
+          vaConnectStatus: data.vaConnectStatus,
+          vaConnectDate: data.vaConnectDate,
+          fallbackDate: null,
+        })
+      : { clientStatus: statusCell.status, effectivityDate }
+
+    const bufferIds: string[] = []
+    const unmatchedBuffers: string[] = []
+    for (const name of splitBufferNames(row['VA BUFFERS'] || '')) {
+      const match = matchName(indexes.vaByName, name)
+      if (!match.id) unmatchedBuffers.push(name)
+      else if (!bufferIds.includes(match.id)) bufferIds.push(match.id)
+    }
+
     summary.changed++
     if (apply) {
-      await prisma.assignmentPreparation.update({ where: { assignmentId }, data }).catch((e) => {
-        summary.warnings.push({ label, reason: `Write failed: ${e.message}` })
-      })
+      await prisma
+        .$transaction(async (tx) => {
+          const prep = await tx.assignmentPreparation.update({
+            where: { assignmentId },
+            data: { ...data, ...status, vaBuffers: unmatchedBuffers.join(', ') || null },
+            select: { id: true },
+          })
+          await tx.assignmentPreparationBuffer.deleteMany({ where: { preparationId: prep.id } })
+          if (bufferIds.length > 0) {
+            await tx.assignmentPreparationBuffer.createMany({
+              data: bufferIds.map((vaProfileId, sortOrder) => ({ preparationId: prep.id, vaProfileId, sortOrder })),
+            })
+          }
+        })
+        .catch((e) => {
+          summary.warnings.push({ label, reason: `Write failed: ${e.message}` })
+        })
     }
   }
 

@@ -1242,11 +1242,11 @@ export type EnumPreparationStepStatusFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumPreparationStepStatusFilter<$PrismaModel> | $Enums.PreparationStepStatus
 }
 
-export type EnumPreparationClientStatusFilter<$PrismaModel = never> = {
-  equals?: $Enums.PreparationClientStatus | Prisma.EnumPreparationClientStatusFieldRefInput<$PrismaModel>
-  in?: $Enums.PreparationClientStatus[] | Prisma.ListEnumPreparationClientStatusFieldRefInput<$PrismaModel>
-  notIn?: $Enums.PreparationClientStatus[] | Prisma.ListEnumPreparationClientStatusFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumPreparationClientStatusFilter<$PrismaModel> | $Enums.PreparationClientStatus
+export type EnumPreparationClientStatusNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreparationClientStatus | Prisma.EnumPreparationClientStatusFieldRefInput<$PrismaModel> | null
+  in?: $Enums.PreparationClientStatus[] | Prisma.ListEnumPreparationClientStatusFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.PreparationClientStatus[] | Prisma.ListEnumPreparationClientStatusFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumPreparationClientStatusNullableFilter<$PrismaModel> | $Enums.PreparationClientStatus | null
 }
 
 export type EnumPreparationStartStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -1279,14 +1279,14 @@ export type EnumPreparationStepStatusWithAggregatesFilter<$PrismaModel = never> 
   _max?: Prisma.NestedEnumPreparationStepStatusFilter<$PrismaModel>
 }
 
-export type EnumPreparationClientStatusWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.PreparationClientStatus | Prisma.EnumPreparationClientStatusFieldRefInput<$PrismaModel>
-  in?: $Enums.PreparationClientStatus[] | Prisma.ListEnumPreparationClientStatusFieldRefInput<$PrismaModel>
-  notIn?: $Enums.PreparationClientStatus[] | Prisma.ListEnumPreparationClientStatusFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumPreparationClientStatusWithAggregatesFilter<$PrismaModel> | $Enums.PreparationClientStatus
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumPreparationClientStatusFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumPreparationClientStatusFilter<$PrismaModel>
+export type EnumPreparationClientStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreparationClientStatus | Prisma.EnumPreparationClientStatusFieldRefInput<$PrismaModel> | null
+  in?: $Enums.PreparationClientStatus[] | Prisma.ListEnumPreparationClientStatusFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.PreparationClientStatus[] | Prisma.ListEnumPreparationClientStatusFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumPreparationClientStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.PreparationClientStatus | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPreparationClientStatusNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPreparationClientStatusNullableFilter<$PrismaModel>
 }
 
 export type EnumFeedbackWindowFilter<$PrismaModel = never> = {
@@ -2510,11 +2510,11 @@ export type NestedEnumPreparationStepStatusFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumPreparationStepStatusFilter<$PrismaModel> | $Enums.PreparationStepStatus
 }
 
-export type NestedEnumPreparationClientStatusFilter<$PrismaModel = never> = {
-  equals?: $Enums.PreparationClientStatus | Prisma.EnumPreparationClientStatusFieldRefInput<$PrismaModel>
-  in?: $Enums.PreparationClientStatus[] | Prisma.ListEnumPreparationClientStatusFieldRefInput<$PrismaModel>
-  notIn?: $Enums.PreparationClientStatus[] | Prisma.ListEnumPreparationClientStatusFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumPreparationClientStatusFilter<$PrismaModel> | $Enums.PreparationClientStatus
+export type NestedEnumPreparationClientStatusNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreparationClientStatus | Prisma.EnumPreparationClientStatusFieldRefInput<$PrismaModel> | null
+  in?: $Enums.PreparationClientStatus[] | Prisma.ListEnumPreparationClientStatusFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.PreparationClientStatus[] | Prisma.ListEnumPreparationClientStatusFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumPreparationClientStatusNullableFilter<$PrismaModel> | $Enums.PreparationClientStatus | null
 }
 
 export type NestedEnumPreparationStartStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -2547,14 +2547,14 @@ export type NestedEnumPreparationStepStatusWithAggregatesFilter<$PrismaModel = n
   _max?: Prisma.NestedEnumPreparationStepStatusFilter<$PrismaModel>
 }
 
-export type NestedEnumPreparationClientStatusWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.PreparationClientStatus | Prisma.EnumPreparationClientStatusFieldRefInput<$PrismaModel>
-  in?: $Enums.PreparationClientStatus[] | Prisma.ListEnumPreparationClientStatusFieldRefInput<$PrismaModel>
-  notIn?: $Enums.PreparationClientStatus[] | Prisma.ListEnumPreparationClientStatusFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumPreparationClientStatusWithAggregatesFilter<$PrismaModel> | $Enums.PreparationClientStatus
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumPreparationClientStatusFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumPreparationClientStatusFilter<$PrismaModel>
+export type NestedEnumPreparationClientStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreparationClientStatus | Prisma.EnumPreparationClientStatusFieldRefInput<$PrismaModel> | null
+  in?: $Enums.PreparationClientStatus[] | Prisma.ListEnumPreparationClientStatusFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.PreparationClientStatus[] | Prisma.ListEnumPreparationClientStatusFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumPreparationClientStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.PreparationClientStatus | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPreparationClientStatusNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPreparationClientStatusNullableFilter<$PrismaModel>
 }
 
 export type NestedEnumFeedbackWindowFilter<$PrismaModel = never> = {

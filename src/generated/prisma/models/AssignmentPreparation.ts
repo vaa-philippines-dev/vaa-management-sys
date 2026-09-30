@@ -391,7 +391,7 @@ export type AssignmentPreparationGroupByOutputType = {
   milestoneFolder: boolean
   weeklyReport: boolean
   portfolio: boolean
-  clientStatus: $Enums.PreparationClientStatus
+  clientStatus: $Enums.PreparationClientStatus | null
   effectivityDate: Date | null
   statusReason: string | null
   replacementNote: string | null
@@ -455,7 +455,7 @@ export type AssignmentPreparationWhereInput = {
   milestoneFolder?: Prisma.BoolFilter<"AssignmentPreparation"> | boolean
   weeklyReport?: Prisma.BoolFilter<"AssignmentPreparation"> | boolean
   portfolio?: Prisma.BoolFilter<"AssignmentPreparation"> | boolean
-  clientStatus?: Prisma.EnumPreparationClientStatusFilter<"AssignmentPreparation"> | $Enums.PreparationClientStatus
+  clientStatus?: Prisma.EnumPreparationClientStatusNullableFilter<"AssignmentPreparation"> | $Enums.PreparationClientStatus | null
   effectivityDate?: Prisma.DateTimeNullableFilter<"AssignmentPreparation"> | Date | string | null
   statusReason?: Prisma.StringNullableFilter<"AssignmentPreparation"> | string | null
   replacementNote?: Prisma.StringNullableFilter<"AssignmentPreparation"> | string | null
@@ -463,6 +463,7 @@ export type AssignmentPreparationWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"AssignmentPreparation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AssignmentPreparation"> | Date | string
   assignment?: Prisma.XOR<Prisma.AssignmentScalarRelationFilter, Prisma.AssignmentWhereInput>
+  buffers?: Prisma.AssignmentPreparationBufferListRelationFilter
   replacementFor?: Prisma.XOR<Prisma.VAProfileNullableScalarRelationFilter, Prisma.VAProfileWhereInput> | null
   personInCharge?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   shadowTrainer?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -503,7 +504,7 @@ export type AssignmentPreparationOrderByWithRelationInput = {
   milestoneFolder?: Prisma.SortOrder
   weeklyReport?: Prisma.SortOrder
   portfolio?: Prisma.SortOrder
-  clientStatus?: Prisma.SortOrder
+  clientStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   effectivityDate?: Prisma.SortOrderInput | Prisma.SortOrder
   statusReason?: Prisma.SortOrderInput | Prisma.SortOrder
   replacementNote?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -511,6 +512,7 @@ export type AssignmentPreparationOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   assignment?: Prisma.AssignmentOrderByWithRelationInput
+  buffers?: Prisma.AssignmentPreparationBufferOrderByRelationAggregateInput
   replacementFor?: Prisma.VAProfileOrderByWithRelationInput
   personInCharge?: Prisma.UserOrderByWithRelationInput
   shadowTrainer?: Prisma.UserOrderByWithRelationInput
@@ -554,7 +556,7 @@ export type AssignmentPreparationWhereUniqueInput = Prisma.AtLeast<{
   milestoneFolder?: Prisma.BoolFilter<"AssignmentPreparation"> | boolean
   weeklyReport?: Prisma.BoolFilter<"AssignmentPreparation"> | boolean
   portfolio?: Prisma.BoolFilter<"AssignmentPreparation"> | boolean
-  clientStatus?: Prisma.EnumPreparationClientStatusFilter<"AssignmentPreparation"> | $Enums.PreparationClientStatus
+  clientStatus?: Prisma.EnumPreparationClientStatusNullableFilter<"AssignmentPreparation"> | $Enums.PreparationClientStatus | null
   effectivityDate?: Prisma.DateTimeNullableFilter<"AssignmentPreparation"> | Date | string | null
   statusReason?: Prisma.StringNullableFilter<"AssignmentPreparation"> | string | null
   replacementNote?: Prisma.StringNullableFilter<"AssignmentPreparation"> | string | null
@@ -562,6 +564,7 @@ export type AssignmentPreparationWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"AssignmentPreparation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AssignmentPreparation"> | Date | string
   assignment?: Prisma.XOR<Prisma.AssignmentScalarRelationFilter, Prisma.AssignmentWhereInput>
+  buffers?: Prisma.AssignmentPreparationBufferListRelationFilter
   replacementFor?: Prisma.XOR<Prisma.VAProfileNullableScalarRelationFilter, Prisma.VAProfileWhereInput> | null
   personInCharge?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   shadowTrainer?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -602,7 +605,7 @@ export type AssignmentPreparationOrderByWithAggregationInput = {
   milestoneFolder?: Prisma.SortOrder
   weeklyReport?: Prisma.SortOrder
   portfolio?: Prisma.SortOrder
-  clientStatus?: Prisma.SortOrder
+  clientStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   effectivityDate?: Prisma.SortOrderInput | Prisma.SortOrder
   statusReason?: Prisma.SortOrderInput | Prisma.SortOrder
   replacementNote?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -651,7 +654,7 @@ export type AssignmentPreparationScalarWhereWithAggregatesInput = {
   milestoneFolder?: Prisma.BoolWithAggregatesFilter<"AssignmentPreparation"> | boolean
   weeklyReport?: Prisma.BoolWithAggregatesFilter<"AssignmentPreparation"> | boolean
   portfolio?: Prisma.BoolWithAggregatesFilter<"AssignmentPreparation"> | boolean
-  clientStatus?: Prisma.EnumPreparationClientStatusWithAggregatesFilter<"AssignmentPreparation"> | $Enums.PreparationClientStatus
+  clientStatus?: Prisma.EnumPreparationClientStatusNullableWithAggregatesFilter<"AssignmentPreparation"> | $Enums.PreparationClientStatus | null
   effectivityDate?: Prisma.DateTimeNullableWithAggregatesFilter<"AssignmentPreparation"> | Date | string | null
   statusReason?: Prisma.StringNullableWithAggregatesFilter<"AssignmentPreparation"> | string | null
   replacementNote?: Prisma.StringNullableWithAggregatesFilter<"AssignmentPreparation"> | string | null
@@ -690,13 +693,14 @@ export type AssignmentPreparationCreateInput = {
   milestoneFolder?: boolean
   weeklyReport?: boolean
   portfolio?: boolean
-  clientStatus?: $Enums.PreparationClientStatus
+  clientStatus?: $Enums.PreparationClientStatus | null
   effectivityDate?: Date | string | null
   statusReason?: string | null
   replacementNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   assignment: Prisma.AssignmentCreateNestedOneWithoutPreparationInput
+  buffers?: Prisma.AssignmentPreparationBufferCreateNestedManyWithoutPreparationInput
   replacementFor?: Prisma.VAProfileCreateNestedOneWithoutPreparationsReplacingInput
   personInCharge?: Prisma.UserCreateNestedOneWithoutPreparationsInChargeInput
   shadowTrainer?: Prisma.UserCreateNestedOneWithoutPreparationsShadowTrainedInput
@@ -737,13 +741,14 @@ export type AssignmentPreparationUncheckedCreateInput = {
   milestoneFolder?: boolean
   weeklyReport?: boolean
   portfolio?: boolean
-  clientStatus?: $Enums.PreparationClientStatus
+  clientStatus?: $Enums.PreparationClientStatus | null
   effectivityDate?: Date | string | null
   statusReason?: string | null
   replacementNote?: string | null
   replacedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  buffers?: Prisma.AssignmentPreparationBufferUncheckedCreateNestedManyWithoutPreparationInput
 }
 
 export type AssignmentPreparationUpdateInput = {
@@ -776,13 +781,14 @@ export type AssignmentPreparationUpdateInput = {
   milestoneFolder?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weeklyReport?: Prisma.BoolFieldUpdateOperationsInput | boolean
   portfolio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  clientStatus?: Prisma.EnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus
+  clientStatus?: Prisma.NullableEnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus | null
   effectivityDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignment?: Prisma.AssignmentUpdateOneRequiredWithoutPreparationNestedInput
+  buffers?: Prisma.AssignmentPreparationBufferUpdateManyWithoutPreparationNestedInput
   replacementFor?: Prisma.VAProfileUpdateOneWithoutPreparationsReplacingNestedInput
   personInCharge?: Prisma.UserUpdateOneWithoutPreparationsInChargeNestedInput
   shadowTrainer?: Prisma.UserUpdateOneWithoutPreparationsShadowTrainedNestedInput
@@ -823,13 +829,14 @@ export type AssignmentPreparationUncheckedUpdateInput = {
   milestoneFolder?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weeklyReport?: Prisma.BoolFieldUpdateOperationsInput | boolean
   portfolio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  clientStatus?: Prisma.EnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus
+  clientStatus?: Prisma.NullableEnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus | null
   effectivityDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buffers?: Prisma.AssignmentPreparationBufferUncheckedUpdateManyWithoutPreparationNestedInput
 }
 
 export type AssignmentPreparationCreateManyInput = {
@@ -866,7 +873,7 @@ export type AssignmentPreparationCreateManyInput = {
   milestoneFolder?: boolean
   weeklyReport?: boolean
   portfolio?: boolean
-  clientStatus?: $Enums.PreparationClientStatus
+  clientStatus?: $Enums.PreparationClientStatus | null
   effectivityDate?: Date | string | null
   statusReason?: string | null
   replacementNote?: string | null
@@ -905,7 +912,7 @@ export type AssignmentPreparationUpdateManyMutationInput = {
   milestoneFolder?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weeklyReport?: Prisma.BoolFieldUpdateOperationsInput | boolean
   portfolio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  clientStatus?: Prisma.EnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus
+  clientStatus?: Prisma.NullableEnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus | null
   effectivityDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -947,7 +954,7 @@ export type AssignmentPreparationUncheckedUpdateManyInput = {
   milestoneFolder?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weeklyReport?: Prisma.BoolFieldUpdateOperationsInput | boolean
   portfolio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  clientStatus?: Prisma.EnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus
+  clientStatus?: Prisma.NullableEnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus | null
   effectivityDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1098,6 +1105,11 @@ export type AssignmentPreparationMinOrderByAggregateInput = {
   replacedById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type AssignmentPreparationScalarRelationFilter = {
+  is?: Prisma.AssignmentPreparationWhereInput
+  isNot?: Prisma.AssignmentPreparationWhereInput
 }
 
 export type AssignmentPreparationCreateNestedManyWithoutPersonInChargeInput = {
@@ -1312,8 +1324,22 @@ export type EnumPreparationStepStatusFieldUpdateOperationsInput = {
   set?: $Enums.PreparationStepStatus
 }
 
-export type EnumPreparationClientStatusFieldUpdateOperationsInput = {
-  set?: $Enums.PreparationClientStatus
+export type NullableEnumPreparationClientStatusFieldUpdateOperationsInput = {
+  set?: $Enums.PreparationClientStatus | null
+}
+
+export type AssignmentPreparationCreateNestedOneWithoutBuffersInput = {
+  create?: Prisma.XOR<Prisma.AssignmentPreparationCreateWithoutBuffersInput, Prisma.AssignmentPreparationUncheckedCreateWithoutBuffersInput>
+  connectOrCreate?: Prisma.AssignmentPreparationCreateOrConnectWithoutBuffersInput
+  connect?: Prisma.AssignmentPreparationWhereUniqueInput
+}
+
+export type AssignmentPreparationUpdateOneRequiredWithoutBuffersNestedInput = {
+  create?: Prisma.XOR<Prisma.AssignmentPreparationCreateWithoutBuffersInput, Prisma.AssignmentPreparationUncheckedCreateWithoutBuffersInput>
+  connectOrCreate?: Prisma.AssignmentPreparationCreateOrConnectWithoutBuffersInput
+  upsert?: Prisma.AssignmentPreparationUpsertWithoutBuffersInput
+  connect?: Prisma.AssignmentPreparationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AssignmentPreparationUpdateToOneWithWhereWithoutBuffersInput, Prisma.AssignmentPreparationUpdateWithoutBuffersInput>, Prisma.AssignmentPreparationUncheckedUpdateWithoutBuffersInput>
 }
 
 export type AssignmentPreparationCreateWithoutPersonInChargeInput = {
@@ -1346,13 +1372,14 @@ export type AssignmentPreparationCreateWithoutPersonInChargeInput = {
   milestoneFolder?: boolean
   weeklyReport?: boolean
   portfolio?: boolean
-  clientStatus?: $Enums.PreparationClientStatus
+  clientStatus?: $Enums.PreparationClientStatus | null
   effectivityDate?: Date | string | null
   statusReason?: string | null
   replacementNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   assignment: Prisma.AssignmentCreateNestedOneWithoutPreparationInput
+  buffers?: Prisma.AssignmentPreparationBufferCreateNestedManyWithoutPreparationInput
   replacementFor?: Prisma.VAProfileCreateNestedOneWithoutPreparationsReplacingInput
   shadowTrainer?: Prisma.UserCreateNestedOneWithoutPreparationsShadowTrainedInput
   replacedBy?: Prisma.VAProfileCreateNestedOneWithoutPreparationsReplacedByInput
@@ -1391,13 +1418,14 @@ export type AssignmentPreparationUncheckedCreateWithoutPersonInChargeInput = {
   milestoneFolder?: boolean
   weeklyReport?: boolean
   portfolio?: boolean
-  clientStatus?: $Enums.PreparationClientStatus
+  clientStatus?: $Enums.PreparationClientStatus | null
   effectivityDate?: Date | string | null
   statusReason?: string | null
   replacementNote?: string | null
   replacedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  buffers?: Prisma.AssignmentPreparationBufferUncheckedCreateNestedManyWithoutPreparationInput
 }
 
 export type AssignmentPreparationCreateOrConnectWithoutPersonInChargeInput = {
@@ -1440,13 +1468,14 @@ export type AssignmentPreparationCreateWithoutShadowTrainerInput = {
   milestoneFolder?: boolean
   weeklyReport?: boolean
   portfolio?: boolean
-  clientStatus?: $Enums.PreparationClientStatus
+  clientStatus?: $Enums.PreparationClientStatus | null
   effectivityDate?: Date | string | null
   statusReason?: string | null
   replacementNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   assignment: Prisma.AssignmentCreateNestedOneWithoutPreparationInput
+  buffers?: Prisma.AssignmentPreparationBufferCreateNestedManyWithoutPreparationInput
   replacementFor?: Prisma.VAProfileCreateNestedOneWithoutPreparationsReplacingInput
   personInCharge?: Prisma.UserCreateNestedOneWithoutPreparationsInChargeInput
   replacedBy?: Prisma.VAProfileCreateNestedOneWithoutPreparationsReplacedByInput
@@ -1485,13 +1514,14 @@ export type AssignmentPreparationUncheckedCreateWithoutShadowTrainerInput = {
   milestoneFolder?: boolean
   weeklyReport?: boolean
   portfolio?: boolean
-  clientStatus?: $Enums.PreparationClientStatus
+  clientStatus?: $Enums.PreparationClientStatus | null
   effectivityDate?: Date | string | null
   statusReason?: string | null
   replacementNote?: string | null
   replacedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  buffers?: Prisma.AssignmentPreparationBufferUncheckedCreateNestedManyWithoutPreparationInput
 }
 
 export type AssignmentPreparationCreateOrConnectWithoutShadowTrainerInput = {
@@ -1557,7 +1587,7 @@ export type AssignmentPreparationScalarWhereInput = {
   milestoneFolder?: Prisma.BoolFilter<"AssignmentPreparation"> | boolean
   weeklyReport?: Prisma.BoolFilter<"AssignmentPreparation"> | boolean
   portfolio?: Prisma.BoolFilter<"AssignmentPreparation"> | boolean
-  clientStatus?: Prisma.EnumPreparationClientStatusFilter<"AssignmentPreparation"> | $Enums.PreparationClientStatus
+  clientStatus?: Prisma.EnumPreparationClientStatusNullableFilter<"AssignmentPreparation"> | $Enums.PreparationClientStatus | null
   effectivityDate?: Prisma.DateTimeNullableFilter<"AssignmentPreparation"> | Date | string | null
   statusReason?: Prisma.StringNullableFilter<"AssignmentPreparation"> | string | null
   replacementNote?: Prisma.StringNullableFilter<"AssignmentPreparation"> | string | null
@@ -1612,13 +1642,14 @@ export type AssignmentPreparationCreateWithoutReplacementForInput = {
   milestoneFolder?: boolean
   weeklyReport?: boolean
   portfolio?: boolean
-  clientStatus?: $Enums.PreparationClientStatus
+  clientStatus?: $Enums.PreparationClientStatus | null
   effectivityDate?: Date | string | null
   statusReason?: string | null
   replacementNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   assignment: Prisma.AssignmentCreateNestedOneWithoutPreparationInput
+  buffers?: Prisma.AssignmentPreparationBufferCreateNestedManyWithoutPreparationInput
   personInCharge?: Prisma.UserCreateNestedOneWithoutPreparationsInChargeInput
   shadowTrainer?: Prisma.UserCreateNestedOneWithoutPreparationsShadowTrainedInput
   replacedBy?: Prisma.VAProfileCreateNestedOneWithoutPreparationsReplacedByInput
@@ -1657,13 +1688,14 @@ export type AssignmentPreparationUncheckedCreateWithoutReplacementForInput = {
   milestoneFolder?: boolean
   weeklyReport?: boolean
   portfolio?: boolean
-  clientStatus?: $Enums.PreparationClientStatus
+  clientStatus?: $Enums.PreparationClientStatus | null
   effectivityDate?: Date | string | null
   statusReason?: string | null
   replacementNote?: string | null
   replacedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  buffers?: Prisma.AssignmentPreparationBufferUncheckedCreateNestedManyWithoutPreparationInput
 }
 
 export type AssignmentPreparationCreateOrConnectWithoutReplacementForInput = {
@@ -1706,13 +1738,14 @@ export type AssignmentPreparationCreateWithoutReplacedByInput = {
   milestoneFolder?: boolean
   weeklyReport?: boolean
   portfolio?: boolean
-  clientStatus?: $Enums.PreparationClientStatus
+  clientStatus?: $Enums.PreparationClientStatus | null
   effectivityDate?: Date | string | null
   statusReason?: string | null
   replacementNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   assignment: Prisma.AssignmentCreateNestedOneWithoutPreparationInput
+  buffers?: Prisma.AssignmentPreparationBufferCreateNestedManyWithoutPreparationInput
   replacementFor?: Prisma.VAProfileCreateNestedOneWithoutPreparationsReplacingInput
   personInCharge?: Prisma.UserCreateNestedOneWithoutPreparationsInChargeInput
   shadowTrainer?: Prisma.UserCreateNestedOneWithoutPreparationsShadowTrainedInput
@@ -1752,12 +1785,13 @@ export type AssignmentPreparationUncheckedCreateWithoutReplacedByInput = {
   milestoneFolder?: boolean
   weeklyReport?: boolean
   portfolio?: boolean
-  clientStatus?: $Enums.PreparationClientStatus
+  clientStatus?: $Enums.PreparationClientStatus | null
   effectivityDate?: Date | string | null
   statusReason?: string | null
   replacementNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  buffers?: Prisma.AssignmentPreparationBufferUncheckedCreateNestedManyWithoutPreparationInput
 }
 
 export type AssignmentPreparationCreateOrConnectWithoutReplacedByInput = {
@@ -1832,12 +1866,13 @@ export type AssignmentPreparationCreateWithoutAssignmentInput = {
   milestoneFolder?: boolean
   weeklyReport?: boolean
   portfolio?: boolean
-  clientStatus?: $Enums.PreparationClientStatus
+  clientStatus?: $Enums.PreparationClientStatus | null
   effectivityDate?: Date | string | null
   statusReason?: string | null
   replacementNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  buffers?: Prisma.AssignmentPreparationBufferCreateNestedManyWithoutPreparationInput
   replacementFor?: Prisma.VAProfileCreateNestedOneWithoutPreparationsReplacingInput
   personInCharge?: Prisma.UserCreateNestedOneWithoutPreparationsInChargeInput
   shadowTrainer?: Prisma.UserCreateNestedOneWithoutPreparationsShadowTrainedInput
@@ -1877,13 +1912,14 @@ export type AssignmentPreparationUncheckedCreateWithoutAssignmentInput = {
   milestoneFolder?: boolean
   weeklyReport?: boolean
   portfolio?: boolean
-  clientStatus?: $Enums.PreparationClientStatus
+  clientStatus?: $Enums.PreparationClientStatus | null
   effectivityDate?: Date | string | null
   statusReason?: string | null
   replacementNote?: string | null
   replacedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  buffers?: Prisma.AssignmentPreparationBufferUncheckedCreateNestedManyWithoutPreparationInput
 }
 
 export type AssignmentPreparationCreateOrConnectWithoutAssignmentInput = {
@@ -1932,12 +1968,13 @@ export type AssignmentPreparationUpdateWithoutAssignmentInput = {
   milestoneFolder?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weeklyReport?: Prisma.BoolFieldUpdateOperationsInput | boolean
   portfolio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  clientStatus?: Prisma.EnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus
+  clientStatus?: Prisma.NullableEnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus | null
   effectivityDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buffers?: Prisma.AssignmentPreparationBufferUpdateManyWithoutPreparationNestedInput
   replacementFor?: Prisma.VAProfileUpdateOneWithoutPreparationsReplacingNestedInput
   personInCharge?: Prisma.UserUpdateOneWithoutPreparationsInChargeNestedInput
   shadowTrainer?: Prisma.UserUpdateOneWithoutPreparationsShadowTrainedNestedInput
@@ -1977,7 +2014,196 @@ export type AssignmentPreparationUncheckedUpdateWithoutAssignmentInput = {
   milestoneFolder?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weeklyReport?: Prisma.BoolFieldUpdateOperationsInput | boolean
   portfolio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  clientStatus?: Prisma.EnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus
+  clientStatus?: Prisma.NullableEnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus | null
+  effectivityDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  replacementNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  replacedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buffers?: Prisma.AssignmentPreparationBufferUncheckedUpdateManyWithoutPreparationNestedInput
+}
+
+export type AssignmentPreparationCreateWithoutBuffersInput = {
+  id?: string
+  startStatus?: $Enums.PreparationStartStatus
+  targetStartDate?: Date | string | null
+  vaType?: $Enums.PreparationVaType
+  scheduleType?: string | null
+  scheduleDays?: string | null
+  expertiseGroup?: string | null
+  vaBuffers?: string | null
+  vaClientFileUrl?: string | null
+  accountDocUrl?: string | null
+  clientMeetingDate?: Date | string | null
+  clientMeetingStatus?: $Enums.PreparationStepStatus
+  preparationStartDate?: Date | string | null
+  preparationEndDate?: Date | string | null
+  preparationCallDate?: Date | string | null
+  preparationCallStatus?: $Enums.PreparationStepStatus
+  mockInterviewDate?: Date | string | null
+  mockInterviewStatus?: $Enums.PreparationStepStatus
+  vaConnectDate?: Date | string | null
+  vaConnectStatus?: $Enums.PreparationStepStatus
+  announcementEmail?: boolean
+  clientBriefingCall?: boolean
+  csBriefing?: boolean
+  vaaBackground?: boolean
+  emailSignature?: boolean
+  groupChat?: boolean
+  milestoneFolder?: boolean
+  weeklyReport?: boolean
+  portfolio?: boolean
+  clientStatus?: $Enums.PreparationClientStatus | null
+  effectivityDate?: Date | string | null
+  statusReason?: string | null
+  replacementNote?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  assignment: Prisma.AssignmentCreateNestedOneWithoutPreparationInput
+  replacementFor?: Prisma.VAProfileCreateNestedOneWithoutPreparationsReplacingInput
+  personInCharge?: Prisma.UserCreateNestedOneWithoutPreparationsInChargeInput
+  shadowTrainer?: Prisma.UserCreateNestedOneWithoutPreparationsShadowTrainedInput
+  replacedBy?: Prisma.VAProfileCreateNestedOneWithoutPreparationsReplacedByInput
+}
+
+export type AssignmentPreparationUncheckedCreateWithoutBuffersInput = {
+  id?: string
+  assignmentId: string
+  startStatus?: $Enums.PreparationStartStatus
+  targetStartDate?: Date | string | null
+  vaType?: $Enums.PreparationVaType
+  scheduleType?: string | null
+  scheduleDays?: string | null
+  expertiseGroup?: string | null
+  vaBuffers?: string | null
+  vaClientFileUrl?: string | null
+  accountDocUrl?: string | null
+  replacementForId?: string | null
+  personInChargeId?: string | null
+  shadowTrainerId?: string | null
+  clientMeetingDate?: Date | string | null
+  clientMeetingStatus?: $Enums.PreparationStepStatus
+  preparationStartDate?: Date | string | null
+  preparationEndDate?: Date | string | null
+  preparationCallDate?: Date | string | null
+  preparationCallStatus?: $Enums.PreparationStepStatus
+  mockInterviewDate?: Date | string | null
+  mockInterviewStatus?: $Enums.PreparationStepStatus
+  vaConnectDate?: Date | string | null
+  vaConnectStatus?: $Enums.PreparationStepStatus
+  announcementEmail?: boolean
+  clientBriefingCall?: boolean
+  csBriefing?: boolean
+  vaaBackground?: boolean
+  emailSignature?: boolean
+  groupChat?: boolean
+  milestoneFolder?: boolean
+  weeklyReport?: boolean
+  portfolio?: boolean
+  clientStatus?: $Enums.PreparationClientStatus | null
+  effectivityDate?: Date | string | null
+  statusReason?: string | null
+  replacementNote?: string | null
+  replacedById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type AssignmentPreparationCreateOrConnectWithoutBuffersInput = {
+  where: Prisma.AssignmentPreparationWhereUniqueInput
+  create: Prisma.XOR<Prisma.AssignmentPreparationCreateWithoutBuffersInput, Prisma.AssignmentPreparationUncheckedCreateWithoutBuffersInput>
+}
+
+export type AssignmentPreparationUpsertWithoutBuffersInput = {
+  update: Prisma.XOR<Prisma.AssignmentPreparationUpdateWithoutBuffersInput, Prisma.AssignmentPreparationUncheckedUpdateWithoutBuffersInput>
+  create: Prisma.XOR<Prisma.AssignmentPreparationCreateWithoutBuffersInput, Prisma.AssignmentPreparationUncheckedCreateWithoutBuffersInput>
+  where?: Prisma.AssignmentPreparationWhereInput
+}
+
+export type AssignmentPreparationUpdateToOneWithWhereWithoutBuffersInput = {
+  where?: Prisma.AssignmentPreparationWhereInput
+  data: Prisma.XOR<Prisma.AssignmentPreparationUpdateWithoutBuffersInput, Prisma.AssignmentPreparationUncheckedUpdateWithoutBuffersInput>
+}
+
+export type AssignmentPreparationUpdateWithoutBuffersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  startStatus?: Prisma.EnumPreparationStartStatusFieldUpdateOperationsInput | $Enums.PreparationStartStatus
+  targetStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vaType?: Prisma.EnumPreparationVaTypeFieldUpdateOperationsInput | $Enums.PreparationVaType
+  scheduleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduleDays?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expertiseGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaBuffers?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaClientFileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientMeetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clientMeetingStatus?: Prisma.EnumPreparationStepStatusFieldUpdateOperationsInput | $Enums.PreparationStepStatus
+  preparationStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preparationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preparationCallDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preparationCallStatus?: Prisma.EnumPreparationStepStatusFieldUpdateOperationsInput | $Enums.PreparationStepStatus
+  mockInterviewDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  mockInterviewStatus?: Prisma.EnumPreparationStepStatusFieldUpdateOperationsInput | $Enums.PreparationStepStatus
+  vaConnectDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vaConnectStatus?: Prisma.EnumPreparationStepStatusFieldUpdateOperationsInput | $Enums.PreparationStepStatus
+  announcementEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  clientBriefingCall?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  csBriefing?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  vaaBackground?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailSignature?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  groupChat?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  milestoneFolder?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  weeklyReport?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  portfolio?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  clientStatus?: Prisma.NullableEnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus | null
+  effectivityDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  replacementNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assignment?: Prisma.AssignmentUpdateOneRequiredWithoutPreparationNestedInput
+  replacementFor?: Prisma.VAProfileUpdateOneWithoutPreparationsReplacingNestedInput
+  personInCharge?: Prisma.UserUpdateOneWithoutPreparationsInChargeNestedInput
+  shadowTrainer?: Prisma.UserUpdateOneWithoutPreparationsShadowTrainedNestedInput
+  replacedBy?: Prisma.VAProfileUpdateOneWithoutPreparationsReplacedByNestedInput
+}
+
+export type AssignmentPreparationUncheckedUpdateWithoutBuffersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  assignmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  startStatus?: Prisma.EnumPreparationStartStatusFieldUpdateOperationsInput | $Enums.PreparationStartStatus
+  targetStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vaType?: Prisma.EnumPreparationVaTypeFieldUpdateOperationsInput | $Enums.PreparationVaType
+  scheduleType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduleDays?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expertiseGroup?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaBuffers?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vaClientFileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  replacementForId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personInChargeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  shadowTrainerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientMeetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clientMeetingStatus?: Prisma.EnumPreparationStepStatusFieldUpdateOperationsInput | $Enums.PreparationStepStatus
+  preparationStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preparationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preparationCallDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preparationCallStatus?: Prisma.EnumPreparationStepStatusFieldUpdateOperationsInput | $Enums.PreparationStepStatus
+  mockInterviewDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  mockInterviewStatus?: Prisma.EnumPreparationStepStatusFieldUpdateOperationsInput | $Enums.PreparationStepStatus
+  vaConnectDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  vaConnectStatus?: Prisma.EnumPreparationStepStatusFieldUpdateOperationsInput | $Enums.PreparationStepStatus
+  announcementEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  clientBriefingCall?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  csBriefing?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  vaaBackground?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailSignature?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  groupChat?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  milestoneFolder?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  weeklyReport?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  portfolio?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  clientStatus?: Prisma.NullableEnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus | null
   effectivityDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2019,7 +2245,7 @@ export type AssignmentPreparationCreateManyPersonInChargeInput = {
   milestoneFolder?: boolean
   weeklyReport?: boolean
   portfolio?: boolean
-  clientStatus?: $Enums.PreparationClientStatus
+  clientStatus?: $Enums.PreparationClientStatus | null
   effectivityDate?: Date | string | null
   statusReason?: string | null
   replacementNote?: string | null
@@ -2061,7 +2287,7 @@ export type AssignmentPreparationCreateManyShadowTrainerInput = {
   milestoneFolder?: boolean
   weeklyReport?: boolean
   portfolio?: boolean
-  clientStatus?: $Enums.PreparationClientStatus
+  clientStatus?: $Enums.PreparationClientStatus | null
   effectivityDate?: Date | string | null
   statusReason?: string | null
   replacementNote?: string | null
@@ -2100,13 +2326,14 @@ export type AssignmentPreparationUpdateWithoutPersonInChargeInput = {
   milestoneFolder?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weeklyReport?: Prisma.BoolFieldUpdateOperationsInput | boolean
   portfolio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  clientStatus?: Prisma.EnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus
+  clientStatus?: Prisma.NullableEnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus | null
   effectivityDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignment?: Prisma.AssignmentUpdateOneRequiredWithoutPreparationNestedInput
+  buffers?: Prisma.AssignmentPreparationBufferUpdateManyWithoutPreparationNestedInput
   replacementFor?: Prisma.VAProfileUpdateOneWithoutPreparationsReplacingNestedInput
   shadowTrainer?: Prisma.UserUpdateOneWithoutPreparationsShadowTrainedNestedInput
   replacedBy?: Prisma.VAProfileUpdateOneWithoutPreparationsReplacedByNestedInput
@@ -2145,13 +2372,14 @@ export type AssignmentPreparationUncheckedUpdateWithoutPersonInChargeInput = {
   milestoneFolder?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weeklyReport?: Prisma.BoolFieldUpdateOperationsInput | boolean
   portfolio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  clientStatus?: Prisma.EnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus
+  clientStatus?: Prisma.NullableEnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus | null
   effectivityDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buffers?: Prisma.AssignmentPreparationBufferUncheckedUpdateManyWithoutPreparationNestedInput
 }
 
 export type AssignmentPreparationUncheckedUpdateManyWithoutPersonInChargeInput = {
@@ -2187,7 +2415,7 @@ export type AssignmentPreparationUncheckedUpdateManyWithoutPersonInChargeInput =
   milestoneFolder?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weeklyReport?: Prisma.BoolFieldUpdateOperationsInput | boolean
   portfolio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  clientStatus?: Prisma.EnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus
+  clientStatus?: Prisma.NullableEnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus | null
   effectivityDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2226,13 +2454,14 @@ export type AssignmentPreparationUpdateWithoutShadowTrainerInput = {
   milestoneFolder?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weeklyReport?: Prisma.BoolFieldUpdateOperationsInput | boolean
   portfolio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  clientStatus?: Prisma.EnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus
+  clientStatus?: Prisma.NullableEnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus | null
   effectivityDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignment?: Prisma.AssignmentUpdateOneRequiredWithoutPreparationNestedInput
+  buffers?: Prisma.AssignmentPreparationBufferUpdateManyWithoutPreparationNestedInput
   replacementFor?: Prisma.VAProfileUpdateOneWithoutPreparationsReplacingNestedInput
   personInCharge?: Prisma.UserUpdateOneWithoutPreparationsInChargeNestedInput
   replacedBy?: Prisma.VAProfileUpdateOneWithoutPreparationsReplacedByNestedInput
@@ -2271,13 +2500,14 @@ export type AssignmentPreparationUncheckedUpdateWithoutShadowTrainerInput = {
   milestoneFolder?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weeklyReport?: Prisma.BoolFieldUpdateOperationsInput | boolean
   portfolio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  clientStatus?: Prisma.EnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus
+  clientStatus?: Prisma.NullableEnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus | null
   effectivityDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buffers?: Prisma.AssignmentPreparationBufferUncheckedUpdateManyWithoutPreparationNestedInput
 }
 
 export type AssignmentPreparationUncheckedUpdateManyWithoutShadowTrainerInput = {
@@ -2313,7 +2543,7 @@ export type AssignmentPreparationUncheckedUpdateManyWithoutShadowTrainerInput = 
   milestoneFolder?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weeklyReport?: Prisma.BoolFieldUpdateOperationsInput | boolean
   portfolio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  clientStatus?: Prisma.EnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus
+  clientStatus?: Prisma.NullableEnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus | null
   effectivityDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2355,7 +2585,7 @@ export type AssignmentPreparationCreateManyReplacementForInput = {
   milestoneFolder?: boolean
   weeklyReport?: boolean
   portfolio?: boolean
-  clientStatus?: $Enums.PreparationClientStatus
+  clientStatus?: $Enums.PreparationClientStatus | null
   effectivityDate?: Date | string | null
   statusReason?: string | null
   replacementNote?: string | null
@@ -2398,7 +2628,7 @@ export type AssignmentPreparationCreateManyReplacedByInput = {
   milestoneFolder?: boolean
   weeklyReport?: boolean
   portfolio?: boolean
-  clientStatus?: $Enums.PreparationClientStatus
+  clientStatus?: $Enums.PreparationClientStatus | null
   effectivityDate?: Date | string | null
   statusReason?: string | null
   replacementNote?: string | null
@@ -2436,13 +2666,14 @@ export type AssignmentPreparationUpdateWithoutReplacementForInput = {
   milestoneFolder?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weeklyReport?: Prisma.BoolFieldUpdateOperationsInput | boolean
   portfolio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  clientStatus?: Prisma.EnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus
+  clientStatus?: Prisma.NullableEnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus | null
   effectivityDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignment?: Prisma.AssignmentUpdateOneRequiredWithoutPreparationNestedInput
+  buffers?: Prisma.AssignmentPreparationBufferUpdateManyWithoutPreparationNestedInput
   personInCharge?: Prisma.UserUpdateOneWithoutPreparationsInChargeNestedInput
   shadowTrainer?: Prisma.UserUpdateOneWithoutPreparationsShadowTrainedNestedInput
   replacedBy?: Prisma.VAProfileUpdateOneWithoutPreparationsReplacedByNestedInput
@@ -2481,13 +2712,14 @@ export type AssignmentPreparationUncheckedUpdateWithoutReplacementForInput = {
   milestoneFolder?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weeklyReport?: Prisma.BoolFieldUpdateOperationsInput | boolean
   portfolio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  clientStatus?: Prisma.EnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus
+  clientStatus?: Prisma.NullableEnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus | null
   effectivityDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buffers?: Prisma.AssignmentPreparationBufferUncheckedUpdateManyWithoutPreparationNestedInput
 }
 
 export type AssignmentPreparationUncheckedUpdateManyWithoutReplacementForInput = {
@@ -2523,7 +2755,7 @@ export type AssignmentPreparationUncheckedUpdateManyWithoutReplacementForInput =
   milestoneFolder?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weeklyReport?: Prisma.BoolFieldUpdateOperationsInput | boolean
   portfolio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  clientStatus?: Prisma.EnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus
+  clientStatus?: Prisma.NullableEnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus | null
   effectivityDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2562,13 +2794,14 @@ export type AssignmentPreparationUpdateWithoutReplacedByInput = {
   milestoneFolder?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weeklyReport?: Prisma.BoolFieldUpdateOperationsInput | boolean
   portfolio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  clientStatus?: Prisma.EnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus
+  clientStatus?: Prisma.NullableEnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus | null
   effectivityDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignment?: Prisma.AssignmentUpdateOneRequiredWithoutPreparationNestedInput
+  buffers?: Prisma.AssignmentPreparationBufferUpdateManyWithoutPreparationNestedInput
   replacementFor?: Prisma.VAProfileUpdateOneWithoutPreparationsReplacingNestedInput
   personInCharge?: Prisma.UserUpdateOneWithoutPreparationsInChargeNestedInput
   shadowTrainer?: Prisma.UserUpdateOneWithoutPreparationsShadowTrainedNestedInput
@@ -2608,12 +2841,13 @@ export type AssignmentPreparationUncheckedUpdateWithoutReplacedByInput = {
   milestoneFolder?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weeklyReport?: Prisma.BoolFieldUpdateOperationsInput | boolean
   portfolio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  clientStatus?: Prisma.EnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus
+  clientStatus?: Prisma.NullableEnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus | null
   effectivityDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  buffers?: Prisma.AssignmentPreparationBufferUncheckedUpdateManyWithoutPreparationNestedInput
 }
 
 export type AssignmentPreparationUncheckedUpdateManyWithoutReplacedByInput = {
@@ -2650,7 +2884,7 @@ export type AssignmentPreparationUncheckedUpdateManyWithoutReplacedByInput = {
   milestoneFolder?: Prisma.BoolFieldUpdateOperationsInput | boolean
   weeklyReport?: Prisma.BoolFieldUpdateOperationsInput | boolean
   portfolio?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  clientStatus?: Prisma.EnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus
+  clientStatus?: Prisma.NullableEnumPreparationClientStatusFieldUpdateOperationsInput | $Enums.PreparationClientStatus | null
   effectivityDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   statusReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2658,6 +2892,35 @@ export type AssignmentPreparationUncheckedUpdateManyWithoutReplacedByInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type AssignmentPreparationCountOutputType
+ */
+
+export type AssignmentPreparationCountOutputType = {
+  buffers: number
+}
+
+export type AssignmentPreparationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  buffers?: boolean | AssignmentPreparationCountOutputTypeCountBuffersArgs
+}
+
+/**
+ * AssignmentPreparationCountOutputType without action
+ */
+export type AssignmentPreparationCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AssignmentPreparationCountOutputType
+   */
+  select?: Prisma.AssignmentPreparationCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * AssignmentPreparationCountOutputType without action
+ */
+export type AssignmentPreparationCountOutputTypeCountBuffersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AssignmentPreparationBufferWhereInput
+}
 
 
 export type AssignmentPreparationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -2702,10 +2965,12 @@ export type AssignmentPreparationSelect<ExtArgs extends runtime.Types.Extensions
   createdAt?: boolean
   updatedAt?: boolean
   assignment?: boolean | Prisma.AssignmentDefaultArgs<ExtArgs>
+  buffers?: boolean | Prisma.AssignmentPreparation$buffersArgs<ExtArgs>
   replacementFor?: boolean | Prisma.AssignmentPreparation$replacementForArgs<ExtArgs>
   personInCharge?: boolean | Prisma.AssignmentPreparation$personInChargeArgs<ExtArgs>
   shadowTrainer?: boolean | Prisma.AssignmentPreparation$shadowTrainerArgs<ExtArgs>
   replacedBy?: boolean | Prisma.AssignmentPreparation$replacedByArgs<ExtArgs>
+  _count?: boolean | Prisma.AssignmentPreparationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["assignmentPreparation"]>
 
 export type AssignmentPreparationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -2850,10 +3115,12 @@ export type AssignmentPreparationSelectScalar = {
 export type AssignmentPreparationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "assignmentId" | "startStatus" | "targetStartDate" | "vaType" | "scheduleType" | "scheduleDays" | "expertiseGroup" | "vaBuffers" | "vaClientFileUrl" | "accountDocUrl" | "replacementForId" | "personInChargeId" | "shadowTrainerId" | "clientMeetingDate" | "clientMeetingStatus" | "preparationStartDate" | "preparationEndDate" | "preparationCallDate" | "preparationCallStatus" | "mockInterviewDate" | "mockInterviewStatus" | "vaConnectDate" | "vaConnectStatus" | "announcementEmail" | "clientBriefingCall" | "csBriefing" | "vaaBackground" | "emailSignature" | "groupChat" | "milestoneFolder" | "weeklyReport" | "portfolio" | "clientStatus" | "effectivityDate" | "statusReason" | "replacementNote" | "replacedById" | "createdAt" | "updatedAt", ExtArgs["result"]["assignmentPreparation"]>
 export type AssignmentPreparationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   assignment?: boolean | Prisma.AssignmentDefaultArgs<ExtArgs>
+  buffers?: boolean | Prisma.AssignmentPreparation$buffersArgs<ExtArgs>
   replacementFor?: boolean | Prisma.AssignmentPreparation$replacementForArgs<ExtArgs>
   personInCharge?: boolean | Prisma.AssignmentPreparation$personInChargeArgs<ExtArgs>
   shadowTrainer?: boolean | Prisma.AssignmentPreparation$shadowTrainerArgs<ExtArgs>
   replacedBy?: boolean | Prisma.AssignmentPreparation$replacedByArgs<ExtArgs>
+  _count?: boolean | Prisma.AssignmentPreparationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AssignmentPreparationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   assignment?: boolean | Prisma.AssignmentDefaultArgs<ExtArgs>
@@ -2874,6 +3141,7 @@ export type $AssignmentPreparationPayload<ExtArgs extends runtime.Types.Extensio
   name: "AssignmentPreparation"
   objects: {
     assignment: Prisma.$AssignmentPayload<ExtArgs>
+    buffers: Prisma.$AssignmentPreparationBufferPayload<ExtArgs>[]
     replacementFor: Prisma.$VAProfilePayload<ExtArgs> | null
     personInCharge: Prisma.$UserPayload<ExtArgs> | null
     shadowTrainer: Prisma.$UserPayload<ExtArgs> | null
@@ -2913,7 +3181,7 @@ export type $AssignmentPreparationPayload<ExtArgs extends runtime.Types.Extensio
     milestoneFolder: boolean
     weeklyReport: boolean
     portfolio: boolean
-    clientStatus: $Enums.PreparationClientStatus
+    clientStatus: $Enums.PreparationClientStatus | null
     effectivityDate: Date | null
     statusReason: string | null
     replacementNote: string | null
@@ -3315,6 +3583,7 @@ readonly fields: AssignmentPreparationFieldRefs;
 export interface Prisma__AssignmentPreparationClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   assignment<T extends Prisma.AssignmentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AssignmentDefaultArgs<ExtArgs>>): Prisma.Prisma__AssignmentClient<runtime.Types.Result.GetResult<Prisma.$AssignmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  buffers<T extends Prisma.AssignmentPreparation$buffersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AssignmentPreparation$buffersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssignmentPreparationBufferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   replacementFor<T extends Prisma.AssignmentPreparation$replacementForArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AssignmentPreparation$replacementForArgs<ExtArgs>>): Prisma.Prisma__VAProfileClient<runtime.Types.Result.GetResult<Prisma.$VAProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   personInCharge<T extends Prisma.AssignmentPreparation$personInChargeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AssignmentPreparation$personInChargeArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   shadowTrainer<T extends Prisma.AssignmentPreparation$shadowTrainerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AssignmentPreparation$shadowTrainerArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -3786,6 +4055,30 @@ export type AssignmentPreparationDeleteManyArgs<ExtArgs extends runtime.Types.Ex
    * Limit how many AssignmentPreparations to delete.
    */
   limit?: number
+}
+
+/**
+ * AssignmentPreparation.buffers
+ */
+export type AssignmentPreparation$buffersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AssignmentPreparationBuffer
+   */
+  select?: Prisma.AssignmentPreparationBufferSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AssignmentPreparationBuffer
+   */
+  omit?: Prisma.AssignmentPreparationBufferOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AssignmentPreparationBufferInclude<ExtArgs> | null
+  where?: Prisma.AssignmentPreparationBufferWhereInput
+  orderBy?: Prisma.AssignmentPreparationBufferOrderByWithRelationInput | Prisma.AssignmentPreparationBufferOrderByWithRelationInput[]
+  cursor?: Prisma.AssignmentPreparationBufferWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AssignmentPreparationBufferScalarFieldEnum | Prisma.AssignmentPreparationBufferScalarFieldEnum[]
 }
 
 /**

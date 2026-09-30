@@ -23,6 +23,8 @@ import {
   XCircle,
   Check,
   ClipboardList,
+  Plus,
+  X,
 } from 'lucide-react'
 import {
   CHECKLIST_FIELDS,
@@ -51,6 +53,9 @@ function formatDate(iso: string | null) {
 function toDateInput(iso: string | null) {
   return iso ? iso.slice(0, 10) : ''
 }
+
+// Filter value for rows whose VA status with client is still blank.
+const NO_CLIENT_STATUS = 'NONE'
 
 const STATUS_VARIANT: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
   NOT_YET_STARTED: 'outline',
@@ -102,22 +107,42 @@ function ReadOnlyLink({ href }: { href: string | null }) {
   )
 }
 
+type PickerOption = { id: string; name: string }
+
+// A record can already point at someone who no longer qualifies for a
+// picker (a TL who stepped down, a VA who resigned). Keep them selectable,
+// marked, rather than silently blanking the field on the next save.
+function withCurrent(options: PickerOption[], id: string | null, name: string | null): PickerOption[] {
+  if (!id || options.some((o) => o.id === id)) return options
+  return [{ id, name: `${name ?? 'Unknown'} (current)` }, ...options]
+}
+
 export function PreparationBoard({
   preparations,
-  people,
+  teamLeaders,
+  activeVaUsers,
+  activeVaProfiles,
   vaProfiles,
   canMutate,
   showDepartment,
 }: {
   preparations: PreparationRow[]
-  people: { id: string; name: string }[]
-  vaProfiles: { id: string; name: string }[]
+  // Person in-charge
+  teamLeaders: PickerOption[]
+  // Shadow trainer (User ids)
+  activeVaUsers: PickerOption[]
+  // VA buffers (VAProfile ids)
+  activeVaProfiles: PickerOption[]
+  // Replacement for / Replaced by — every VA in scope, active or not
+  vaProfiles: PickerOption[]
   canMutate: boolean
   showDepartment: boolean
 }) {
   const router = useRouter()
   const [editing, setEditing] = useState<PreparationRow | null>(null)
   const [saving, setSaving] = useState(false)
+  // One entry per buffer dropdown; '' is an empty slot.
+  const [bufferSlots, setBufferSlots] = useState<string[]>([''])
   const [pipelineStatuses, setPipelineStatuses] = useState<Record<string, string>>({})
   const [checklistState, setChecklistState] = useState<Record<ChecklistKey, boolean>>(
     {} as Record<ChecklistKey, boolean>
@@ -131,7 +156,7 @@ export function PreparationBoard({
     const q = search.trim().toLowerCase()
     return preparations.filter((p) => {
       if (startFilter && p.startStatus !== startFilter) return false
-      if (clientStatusFilter && p.clientStatus !== clientStatusFilter) return false
+      if (clientStatusFilter && (p.clientStatus ?? NO_CLIENT_STATUS) !== clientStatusFilter) return false
       if (issuesOnly && !p.missingEffectivityDate) return false
       if (!q) return true
       return (
@@ -151,6 +176,7 @@ export function PreparationBoard({
       Object.fromEntries(PIPELINE_STEPS.map((step) => [step.key, prep[step.statusField] as string]))
     )
     setChecklistState({ ...prep.checklist })
+    setBufferSlots(prep.buffers.length > 0 ? prep.buffers.map((b) => b.vaProfileId) : [''])
   }
 
   const onSubmit = async (formData: FormData) => {
@@ -193,6 +219,7 @@ export function PreparationBoard({
           className="w-40"
         >
           <option value="">All VA statuses</option>
+          <option value={NO_CLIENT_STATUS}>Not set</option>
           {Object.entries(CLIENT_STATUS_LABELS).map(([value, label]) => (
             <option key={value} value={value}>
               {label}
@@ -338,10 +365,14 @@ export function PreparationBoard({
                   </TableCell>
                   <TableCell>
                     <div className="space-y-0.5">
-                      <Badge variant={p.clientStatus === 'ACTIVE' ? 'secondary' : 'outline'}>
-                        {CLIENT_STATUS_LABELS[p.clientStatus]}
-                      </Badge>
-                      {p.clientStatus !== 'ACTIVE' &&
+                      {p.clientStatus ? (
+                        <Badge variant={p.clientStatus === 'ACTIVE' ? 'secondary' : 'outline'}>
+                          {CLIENT_STATUS_LABELS[p.clientStatus]}
+                        </Badge>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">Not set</span>
+                      )}
+                      {p.clientStatus && p.clientStatus !== 'ACTIVE' &&
                         (p.missingEffectivityDate ? (
                           <div className="flex items-center gap-1 text-xs text-warning">
                             <AlertTriangle className="h-3 w-3" />
@@ -439,8 +470,65 @@ export function PreparationBoard({
                   <p className="text-sm py-2">{editing.expertiseGroup || <span className="text-muted-foreground">Not set</span>}</p>
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="vaBuffers">VA buffers</Label>
-                  <Input id="vaBuffers" name="vaBuffers" defaultValue={editing.vaBuffers ?? ''} />
+                  <Label htmlFor="buffer-0">VA buffers</Label>
+                  {(() => {
+                    // The engagement's own VA can't be their own buffer.
+                    const bufferOptions = editing.buffers.reduce(
+                      (opts, b) => withCurrent(opts, b.vaProfileId, b.name),
+                      activeVaProfiles.filter((v) => v.id !== editing.vaProfileId)
+                    )
+                    return bufferSlots.map((value, i) => (
+                      <div key={i} className="flex items-center gap-1.5">
+                        <Select
+                          id={`buffer-${i}`}
+                          name="bufferVaProfileIds"
+                          value={value}
+                          onChange={(e) =>
+                            setBufferSlots((prev) => prev.map((v, j) => (j === i ? e.target.value : v)))
+                          }
+                          className="w-full"
+                        >
+                          <option value="">{i === 0 ? 'None' : 'Select a VA'}</option>
+                          {bufferOptions
+                            .filter((o) => o.id === value || !bufferSlots.includes(o.id))
+                            .map((o) => (
+                              <option key={o.id} value={o.id}>
+                                {o.name}
+                              </option>
+                            ))}
+                        </Select>
+                        {bufferSlots.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            aria-label="Remove buffer"
+                            onClick={() => setBufferSlots((prev) => prev.filter((_, j) => j !== i))}
+                          >
+                            <X className="h-3.5 w-3.5" />
+                          </Button>
+                        )}
+                      </div>
+                    ))
+                  })()}
+                  <button
+                    type="button"
+                    onClick={() => setBufferSlots((prev) => [...prev, ''])}
+                    disabled={bufferSlots.some((v) => !v)}
+                    className="inline-flex items-center gap-1 text-xs text-primary hover:underline disabled:text-muted-foreground disabled:no-underline"
+                  >
+                    <Plus className="h-3 w-3" />
+                    Add another buffer
+                  </button>
+                  {editing.vaBuffers && (
+                    <label className="flex items-start gap-1.5 text-xs text-muted-foreground">
+                      <input type="checkbox" name="clearLegacyBuffers" className="mt-0.5 h-3.5 w-3.5" />
+                      <span>
+                        From the DMF sheet, no matching VA: <span className="font-medium">{editing.vaBuffers}</span>.
+                        Tick to clear.
+                      </span>
+                    </label>
+                  )}
                 </div>
               </div>
 
@@ -454,7 +542,7 @@ export function PreparationBoard({
                     className="w-full"
                   >
                     <option value="">Unassigned</option>
-                    {people.map((p) => (
+                    {withCurrent(teamLeaders, editing.personInChargeId, editing.personInChargeName).map((p) => (
                       <option key={p.id} value={p.id}>
                         {p.name}
                       </option>
@@ -470,7 +558,7 @@ export function PreparationBoard({
                     className="w-full"
                   >
                     <option value="">Unassigned</option>
-                    {people.map((p) => (
+                    {withCurrent(activeVaUsers, editing.shadowTrainerId, editing.shadowTrainerName).map((p) => (
                       <option key={p.id} value={p.id}>
                         {p.name}
                       </option>
@@ -653,15 +741,19 @@ export function PreparationBoard({
                   <Select
                     id="clientStatus"
                     name="clientStatus"
-                    defaultValue={editing.clientStatus}
+                    defaultValue={editing.clientStatus ?? ''}
                     className="w-full"
                   >
+                    <option value="">—</option>
                     {Object.entries(CLIENT_STATUS_LABELS).map(([v, l]) => (
                       <option key={v} value={v}>
                         {l}
                       </option>
                     ))}
                   </Select>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Left blank, it becomes Active once VA Connect is marked Done.
+                  </p>
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="effectivityDate">Effectivity date</Label>
@@ -672,7 +764,8 @@ export function PreparationBoard({
                     defaultValue={toDateInput(editing.effectivityDate)}
                   />
                   <p className="text-xs text-muted-foreground mt-1">
-                    Required once the status is Paused or End of Work.
+                    Required once the status is Paused, End of Work or Cancelled. Defaults to the VA
+                    Connect date when Active is filled in automatically.
                   </p>
                 </div>
               </div>

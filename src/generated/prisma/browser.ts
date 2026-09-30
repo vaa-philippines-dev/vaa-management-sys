@@ -293,6 +293,11 @@ export type Project = Prisma.ProjectModel
  */
 export type AssignmentPreparation = Prisma.AssignmentPreparationModel
 /**
+ * Model AssignmentPreparationBuffer
+ * 
+ */
+export type AssignmentPreparationBuffer = Prisma.AssignmentPreparationBufferModel
+/**
  * Model AssignmentClientFeedback
  * 
  */

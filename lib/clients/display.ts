@@ -2,6 +2,36 @@
 // page, card, table row, and detail page — previously duplicated verbatim
 // in three separate files.
 
+// Client.name is whatever the intake form called "Company Name" (on most
+// imported rows it's just the person's name again); the person is
+// contactName. Lists and pickers lead with the person, and only show the
+// company alongside when it's actually different.
+type ClientNameFields = { name: string; contactName: string | null }
+
+export function clientDisplayName(c: ClientNameFields): string {
+  return c.contactName?.trim() || c.name
+}
+
+export function clientCompanyName(c: ClientNameFields): string | null {
+  const company = c.name.trim()
+  if (!company || company.toLowerCase() === clientDisplayName(c).trim().toLowerCase()) return null
+  return company
+}
+
+export function clientOptionLabel(c: ClientNameFields): string {
+  const company = clientCompanyName(c)
+  return company ? `${clientDisplayName(c)} (${company})` : clientDisplayName(c)
+}
+
+// Category/Niche column: the CMS Account's Category (Seller/Agency/…) plus
+// whatever niche the intake captured — the Product Background/Niche answer,
+// else the edit form's "Industry / Niche" field.
+export function clientNiche(c: { industry: string | null; formDetails: unknown }): string | null {
+  const details = (c.formDetails ?? {}) as Record<string, unknown>
+  const niche = typeof details.productNiche === 'string' ? details.productNiche.trim() : ''
+  return niche || c.industry?.trim() || null
+}
+
 export const CLIENT_STATUS_LABEL: Record<string, string> = {
   ACTIVE: 'Active',
   PENDING: 'Pending',

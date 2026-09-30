@@ -50,6 +50,9 @@ const AVAILABILITY_LABEL: Record<string, string> = {
   FULLY_ASSIGNED: 'Fully assigned',
   ON_LEAVE: 'On leave',
   UNAVAILABLE: 'Unavailable',
+  ON_HOLD_BY_VA: 'On hold by VA',
+  ON_HOLD_BY_VAA: 'On hold by VAA',
+  RECOMMENDED: 'Recommended',
 }
 
 const HISTORY_EVENT_LABELS: Record<string, string> = {

@@ -90,7 +90,10 @@ export const Availability = {
   PARTIALLY_ASSIGNED: 'PARTIALLY_ASSIGNED',
   FULLY_ASSIGNED: 'FULLY_ASSIGNED',
   ON_LEAVE: 'ON_LEAVE',
-  UNAVAILABLE: 'UNAVAILABLE'
+  UNAVAILABLE: 'UNAVAILABLE',
+  ON_HOLD_BY_VA: 'ON_HOLD_BY_VA',
+  ON_HOLD_BY_VAA: 'ON_HOLD_BY_VAA',
+  RECOMMENDED: 'RECOMMENDED'
 } as const
 
 export type Availability = (typeof Availability)[keyof typeof Availability]
@@ -558,7 +561,8 @@ export type PreparationStepStatus = (typeof PreparationStepStatus)[keyof typeof 
 export const PreparationClientStatus = {
   ACTIVE: 'ACTIVE',
   PAUSED: 'PAUSED',
-  END_OF_WORK: 'END_OF_WORK'
+  END_OF_WORK: 'END_OF_WORK',
+  CANCELLED: 'CANCELLED'
 } as const
 
 export type PreparationClientStatus = (typeof PreparationClientStatus)[keyof typeof PreparationClientStatus]

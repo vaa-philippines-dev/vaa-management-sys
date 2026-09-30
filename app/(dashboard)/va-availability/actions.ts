@@ -10,8 +10,7 @@ import {
 } from '@/lib/auth'
 import { getMutateScope, isDepartmentInScope, isUserInScope } from '@/lib/scope'
 import { logAudit } from '@/lib/audit'
-import { AVAILABILITY_REVIEW_DAYS } from '@/lib/va-availability-fields'
-import type { Availability } from '@/src/generated/prisma/enums'
+import { AVAILABILITY_REVIEW_DAYS, isAvailability } from '@/lib/va-availability-fields'
 
 // The department is part of the key, not inferred from the VA: a VA in two
 // departments has two availability records, and a manager may only touch the
@@ -49,24 +48,29 @@ function parseDate(value: FormDataEntryValue | null): Date | null {
 // Everything else on this row (preferred/hybrid hours, recommendation,
 // contract & employment status, etc.) is sourced from assignments, HR
 // records, or — once built — each VA's Team Leader via TMF. The
-// departmental view only ever writes these three DMF columns: DMF CHANGE
-// AVAILABILITY, DMF REMARKS and DMF DATE CHANGED.
+// departmental view only ever writes these four DMF columns: DMF CHANGE
+// AVAILABILITY, DMF REMARKS, DMF DATE CHANGED and DMF UPDATE STATUS DATE.
 export async function updateAvailability(vaProfileId: string, departmentId: string, formData: FormData) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
   await assertVAInScope(actor, vaProfileId, departmentId)
 
   const before = await prisma.vADepartmentAvailability.findUnique({
     where: { vaProfileId_departmentId: { vaProfileId, departmentId } },
-    select: { availabilityStatus: true, remarks: true, changedAt: true },
+    select: { availabilityStatus: true, remarks: true, changedAt: true, reviewDueAt: true },
   })
 
-  const availabilityStatus = (formData.get('availabilityStatus') as Availability) || 'AVAILABLE'
+  const rawStatus = (formData.get('availabilityStatus') as string) || 'AVAILABLE'
+  if (!isAvailability(rawStatus)) throw new Error('Invalid availability status')
+  const availabilityStatus = rawStatus
   const availabilityRemarks = ((formData.get('availabilityRemarks') as string) ?? '').trim() || null
   const changedAt = parseDate(formData.get('availabilityChangedAt')) ?? new Date()
 
-  // DMF UPDATE STATUS DATE is auto — always a review window out from
-  // whatever DMF DATE CHANGED was just set to, never entered by hand.
-  const reviewDueAt = new Date(changedAt.getTime() + AVAILABILITY_REVIEW_DAYS * 86_400_000)
+  // DMF UPDATE STATUS DATE: entered by hand when the manager has a date in
+  // mind, otherwise a review window out from DMF DATE CHANGED.
+  const reviewDueAt =
+    parseDate(formData.get('availabilityReviewDueAt')) ??
+    new Date(changedAt.getTime() + AVAILABILITY_REVIEW_DAYS * 86_400_000)
+  if (reviewDueAt < changedAt) throw new Error('The update status due date cannot be before the date changed')
 
   const data = {
     availabilityStatus,
@@ -90,11 +94,13 @@ export async function updateAvailability(vaProfileId: string, departmentId: stri
       availabilityStatus: before?.availabilityStatus ?? null,
       availabilityRemarks: before?.remarks ?? null,
       availabilityChangedAt: before?.changedAt?.toISOString() ?? null,
+      availabilityReviewDueAt: before?.reviewDueAt?.toISOString() ?? null,
     },
     after: {
       availabilityStatus,
       availabilityRemarks,
       availabilityChangedAt: changedAt.toISOString(),
+      availabilityReviewDueAt: reviewDueAt.toISOString(),
     },
     metadata: { surface: 'va-availability' },
   })

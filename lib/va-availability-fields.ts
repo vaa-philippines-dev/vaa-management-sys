@@ -2,6 +2,37 @@
 // tab. No Prisma import, so the client board can import it — the queries live
 // in lib/va-availability.ts (same split as lib/leave-roles.ts vs lib/leave.ts).
 
+import type { Availability } from '@/src/generated/prisma/enums'
+
+// Every Availability value in "Change Availability" dropdown order — the one
+// list the DMF board, the TMF board and both write actions share, so a new
+// status can't reach one dropdown and be rejected by another's validation.
+export const AVAILABILITY_STATUSES = [
+  'AVAILABLE',
+  'PARTIALLY_ASSIGNED',
+  'FULLY_ASSIGNED',
+  'ON_LEAVE',
+  'UNAVAILABLE',
+  'ON_HOLD_BY_VA',
+  'ON_HOLD_BY_VAA',
+  'RECOMMENDED',
+] as const satisfies readonly Availability[]
+
+export const AVAILABILITY_STATUS_LABELS: Record<Availability, string> = {
+  AVAILABLE: 'Available',
+  PARTIALLY_ASSIGNED: 'Partially Assigned',
+  FULLY_ASSIGNED: 'Full',
+  ON_LEAVE: 'On Leave',
+  UNAVAILABLE: 'Unavailable',
+  ON_HOLD_BY_VA: 'On hold by VA',
+  ON_HOLD_BY_VAA: 'On hold by VAA',
+  RECOMMENDED: 'Recommended',
+}
+
+export function isAvailability(value: string): value is Availability {
+  return (AVAILABILITY_STATUSES as readonly string[]).includes(value)
+}
+
 // The sheet buckets a VA's week into full-time / part-time / minimum
 // part-time. 35h matches the schema's own full-time default; 20h is the
 // 5-day-week reading of the sheet's "<4hrs/day" label. These are the same

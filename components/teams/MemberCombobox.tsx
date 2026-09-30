@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom'
 import { cn } from '@/lib/utils'
 import { Search, UserPlus, X } from 'lucide-react'
 
-export type ComboboxOption = { userId: string; name: string }
+export type ComboboxOption = { userId: string; name: string; isVA?: boolean }
 
 function initials(name: string) {
   const parts = name.trim().split(/\s+/)
@@ -172,6 +172,9 @@ export function MemberCombobox({
                         {initials(option.name)}
                       </span>
                       <span className="font-medium">{option.name}</span>
+                      {option.isVA && (
+                        <span className="rounded border px-1 text-[10px] text-muted-foreground">VA</span>
+                      )}
                       <UserPlus className="ml-auto h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                     </button>
                   </li>

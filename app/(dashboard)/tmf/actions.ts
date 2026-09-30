@@ -4,10 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { requireAuth, isDepartmentUnrestricted } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
-import { AVAILABILITY_REVIEW_DAYS } from '@/lib/va-availability-fields'
-import type { Availability } from '@/src/generated/prisma/enums'
-
-const AVAILABILITY_VALUES: Availability[] = ['AVAILABLE', 'PARTIALLY_ASSIGNED', 'FULLY_ASSIGNED', 'ON_LEAVE', 'UNAVAILABLE']
+import { AVAILABILITY_REVIEW_DAYS, isAvailability } from '@/lib/va-availability-fields'
 
 // The TMF block belongs to the team's leadership. Leading the team is the
 // grant (most leaders are VA accounts, so no role check would do); admins/HR
@@ -53,8 +50,8 @@ export async function updateTmfAvailability(teamId: string, vaProfileId: string,
   const actor = await requireAuth()
   const departmentId = await resolveTmfTarget(actor, teamId, vaProfileId)
 
-  const rawStatus = formData.get('tmfAvailabilityStatus') as Availability
-  if (!AVAILABILITY_VALUES.includes(rawStatus)) throw new Error('Invalid availability')
+  const rawStatus = (formData.get('tmfAvailabilityStatus') as string) ?? ''
+  if (!isAvailability(rawStatus)) throw new Error('Invalid availability')
   const tmfRemarks = ((formData.get('tmfRemarks') as string) ?? '').trim() || null
   const tmfChangedAt = parseDate(formData.get('tmfChangedAt')) ?? new Date()
   const tmfReviewDueAt = new Date(tmfChangedAt.getTime() + AVAILABILITY_REVIEW_DAYS * 86_400_000)

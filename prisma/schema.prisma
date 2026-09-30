@@ -72,6 +72,11 @@ enum Availability {
   FULLY_ASSIGNED
   ON_LEAVE
   UNAVAILABLE
+  // DMF "Change Availability" options with no assignment-derived meaning:
+  // set by hand on /va-availability (and the TMF), never computed.
+  ON_HOLD_BY_VA
+  ON_HOLD_BY_VAA
+  RECOMMENDED
 }
 
 enum Proficiency {
@@ -719,6 +724,7 @@ model VAProfile {
 
   preparationsReplacing  AssignmentPreparation[] @relation("PreparationReplacementFor")
   preparationsReplacedBy AssignmentPreparation[] @relation("PreparationReplacedBy")
+  preparationBuffers     AssignmentPreparationBuffer[] @relation("PreparationBuffer")
 
   @@index([availabilityStatus])
   @@index([positionSkillId])
@@ -1974,13 +1980,16 @@ enum PreparationStepStatus {
   SKIPPED
 }
 
-// VA STATUS WITH CLIENT, the sheet's EOC/REPLACEMENT block. PAUSED and
-// END_OF_WORK are the two that require an EFFECTIVITY DATE — exactly the
-// pair the dashboard's "VA Preparation Missing EOC/Pause Dates" check wants.
+// VA STATUS WITH CLIENT, the sheet's EOC/REPLACEMENT block. Blank (null)
+// until VA Connect is marked Done, which fills it in as ACTIVE effective the
+// VA Connect date (see resolveClientStatus in lib/va-preparation-fields.ts).
+// Every status other than ACTIVE requires an EFFECTIVITY DATE — what the
+// dashboard's "VA Preparation Missing EOC/Pause Dates" check looks for.
 enum PreparationClientStatus {
   ACTIVE
   PAUSED
   END_OF_WORK
+  CANCELLED
 }
 
 model AssignmentPreparation {
@@ -1994,7 +2003,10 @@ model AssignmentPreparation {
   scheduleType    String?                @map("schedule_type")
   scheduleDays    String?                @map("schedule_days")
   expertiseGroup  String?                @map("expertise_group")
+  // Legacy free text from the DMF import, kept only for names that matched
+  // no VA. New buffers are picked from the VA list into `buffers` below.
   vaBuffers       String?                @map("va_buffers")
+  buffers         AssignmentPreparationBuffer[]
 
   vaClientFileUrl String? @map("va_client_file_url")
   accountDocUrl   String? @map("account_doc_url")
@@ -2030,7 +2042,7 @@ model AssignmentPreparation {
   weeklyReport       Boolean @default(false) @map("weekly_report")
   portfolio          Boolean @default(false) @map("portfolio")
 
-  clientStatus    PreparationClientStatus @default(ACTIVE) @map("client_status")
+  clientStatus    PreparationClientStatus? @map("client_status")
   effectivityDate DateTime?               @map("effectivity_date")
   statusReason    String?                 @map("status_reason")
   replacementNote String?                 @map("replacement_note")
@@ -2044,6 +2056,22 @@ model AssignmentPreparation {
   @@index([clientStatus])
   @@index([targetStartDate])
   @@map("assignment_preparations")
+}
+
+// VA BUFFERS: the VAs on standby for an engagement. Usually one, but the
+// editor lets a manager add more; sortOrder keeps them in the order picked.
+model AssignmentPreparationBuffer {
+  id            String                @id @default(cuid())
+  preparationId String                @map("preparation_id")
+  preparation   AssignmentPreparation @relation(fields: [preparationId], references: [id], onDelete: Cascade)
+  vaProfileId   String                @map("va_profile_id")
+  vaProfile     VAProfile             @relation("PreparationBuffer", fields: [vaProfileId], references: [id], onDelete: Cascade)
+  sortOrder     Int                   @default(0) @map("sort_order")
+  createdAt     DateTime              @default(now()) @map("created_at")
+
+  @@unique([preparationId, vaProfileId])
+  @@index([vaProfileId])
+  @@map("assignment_preparation_buffers")
 }
 
 // ── Client feedback (Performance Monitoring) ─────────────────────

@@ -15,19 +15,16 @@ import { Modal } from '@/components/ui/modal'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
 import { AlertTriangle, CheckCircle2, Pencil, Info } from 'lucide-react'
-import { ALERT_LABELS, type AvailabilityRow } from '@/lib/va-availability-fields'
+import {
+  ALERT_LABELS,
+  AVAILABILITY_STATUSES,
+  AVAILABILITY_STATUS_LABELS,
+  type AvailabilityRow,
+} from '@/lib/va-availability-fields'
 import { LEAVE_TYPE_LABELS, TMF_CHECKIN_LOOKAHEAD_DAYS, TMF_LEAVE_LOOKAHEAD_DAYS, type TmfData } from '@/lib/tmf-fields'
 import { updateTmfAvailability, confirmTmfAvailability } from '@/app/(dashboard)/tmf/actions'
 
-const AVAILABILITY_STATUSES = ['AVAILABLE', 'PARTIALLY_ASSIGNED', 'FULLY_ASSIGNED', 'ON_LEAVE', 'UNAVAILABLE'] as const
-
-const STATUS_LABELS: Record<string, string> = {
-  AVAILABLE: 'Available',
-  PARTIALLY_ASSIGNED: 'Partially Assigned',
-  FULLY_ASSIGNED: 'Full',
-  ON_LEAVE: 'On Leave',
-  UNAVAILABLE: 'Unavailable',
-}
+const STATUS_LABELS: Record<string, string> = AVAILABILITY_STATUS_LABELS
 
 type Tab = 'availability' | 'checkins' | 'engagements' | 'leave'
 

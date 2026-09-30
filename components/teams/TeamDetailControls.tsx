@@ -26,6 +26,9 @@ const AVAILABILITY_TONE: Record<string, Tone> = {
   FULLY_ASSIGNED: 'warning',
   ON_LEAVE: 'neutral',
   UNAVAILABLE: 'destructive',
+  ON_HOLD_BY_VA: 'neutral',
+  ON_HOLD_BY_VAA: 'neutral',
+  RECOMMENDED: 'info',
 }
 
 const AVAILABILITY_LABEL: Record<string, string> = {
@@ -34,6 +37,9 @@ const AVAILABILITY_LABEL: Record<string, string> = {
   FULLY_ASSIGNED: 'Fully Assigned',
   ON_LEAVE: 'On Leave',
   UNAVAILABLE: 'Unavailable',
+  ON_HOLD_BY_VA: 'On hold by VA',
+  ON_HOLD_BY_VAA: 'On hold by VAA',
+  RECOMMENDED: 'Recommended',
 }
 
 function initials(name: string) {
@@ -68,7 +74,7 @@ export function TeamDetailControls({
 }: {
   teamId: string
   members: TeamMemberRow[]
-  candidates: { userId: string; name: string }[]
+  candidates: { userId: string; name: string; isVA?: boolean }[]
   otherTeams: OtherTeamOption[]
   canManageMembership: boolean
   canAssignLeaders: boolean

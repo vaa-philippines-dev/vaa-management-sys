@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { createClient, type AccountAutofillOption, type CustomerAutofillMatch } from '@/app/(dashboard)/clients/actions'
 import { CustomerAccountAutofillSearch } from '@/components/clients/CustomerAccountAutofillSearch'
+import { MarketplacePicker, TimezoneSelect } from '@/components/clients/ClientFormFields'
 import { INTAKE_FIELD_CATALOG, getIntakeFieldsForDepartment, type IntakeFieldKey } from '@/lib/clients/intake-fields'
 import {
   REQUEST_TYPE_OPTIONS,
@@ -230,10 +231,7 @@ export function AddClientModal({
             <Label htmlFor="name">Company Name *</Label>
             <Input id="name" name="name" required ref={nameRef} className="h-9" />
           </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="timezone">Timezone</Label>
-            <Input id="timezone" name="timezone" className="h-9" />
-          </div>
+          <TimezoneSelect />
         </div>
 
         <SectionTitle>Company Information</SectionTitle>
@@ -280,10 +278,7 @@ export function AddClientModal({
             <Label htmlFor="productLinks">Product and Link/s</Label>
             <Textarea id="productLinks" name="productLinks" className="min-h-16 text-sm" placeholder="One per line" />
           </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="marketplace">Marketplace</Label>
-            <Textarea id="marketplace" name="marketplace" className="min-h-16 text-sm" />
-          </div>
+          <MarketplacePicker />
         </div>
 
         {departmentId && intakeKeys.length > 0 && (

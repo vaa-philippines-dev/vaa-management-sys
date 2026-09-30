@@ -16,26 +16,15 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Pencil, AlertTriangle, CheckCircle2, Star, CalendarRange, Info } from 'lucide-react'
 import {
   ALERT_LABELS,
+  AVAILABILITY_REVIEW_DAYS,
+  AVAILABILITY_STATUSES,
+  AVAILABILITY_STATUS_LABELS,
   WORK_PATTERN_LABELS,
   type AvailabilityRow,
 } from '@/lib/va-availability-fields'
 import { updateAvailability, confirmAvailability } from '@/app/(dashboard)/va-availability/actions'
 
-const AVAILABILITY_STATUSES = [
-  'AVAILABLE',
-  'PARTIALLY_ASSIGNED',
-  'FULLY_ASSIGNED',
-  'ON_LEAVE',
-  'UNAVAILABLE',
-] as const
-
-const STATUS_LABELS: Record<string, string> = {
-  AVAILABLE: 'Available',
-  PARTIALLY_ASSIGNED: 'Partially Assigned',
-  FULLY_ASSIGNED: 'Full',
-  ON_LEAVE: 'On Leave',
-  UNAVAILABLE: 'Unavailable',
-}
+const STATUS_LABELS: Record<string, string> = AVAILABILITY_STATUS_LABELS
 
 function formatDate(iso: string | null) {
   if (!iso) return '—'
@@ -265,6 +254,11 @@ export function AvailabilityBoard({
                   </TableCell>
                   <TableCell className="max-w-[12rem]">
                     <div className="text-xs">{formatDate(r.availabilityChangedAt)}</div>
+                    {r.availabilityReviewDueAt && (
+                      <div className="text-xs text-muted-foreground">
+                        Update due {formatDate(r.availabilityReviewDueAt)}
+                      </div>
+                    )}
                     {r.availabilityRemarks && (
                       <div className="text-xs text-muted-foreground truncate" title={r.availabilityRemarks}>
                         {r.availabilityRemarks}
@@ -369,7 +363,20 @@ export function AvailabilityBoard({
                 type="date"
                 defaultValue={toDateInput(editing.availabilityChangedAt) || todayInput()}
               />
-              <p className="text-xs text-muted-foreground mt-1">Review comes due 30 days from this date.</p>
+            </div>
+
+            <div>
+              <Label htmlFor="availabilityReviewDueAt">DMF update status due date</Label>
+              <Input
+                id="availabilityReviewDueAt"
+                name="availabilityReviewDueAt"
+                type="date"
+                defaultValue={toDateInput(editing.availabilityReviewDueAt)}
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                When this record should next be re-checked. Left blank, it&apos;s {AVAILABILITY_REVIEW_DAYS} days
+                after the date changed.
+              </p>
             </div>
 
             <div className="flex justify-end gap-2 pt-2">
