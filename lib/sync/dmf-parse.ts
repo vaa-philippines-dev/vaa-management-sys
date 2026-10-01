@@ -38,7 +38,8 @@ export function parseDmfDate(raw: string | undefined | null): Date | null {
   }
 
   // "YYYY Mon DD" e.g. "2020 Nov 30" — the Staff Masterlist's VAA HIRE DATE
-  // and START DATE columns.
+  // and START DATE columns, and the VA Masterlist's HIRE DATE / EOC TRANSFER
+  // DATE / STATUS DATE (scripts/import-masterlist.ts).
   const yyyyMonDd = trimmed.match(/^(\d{4})\s+([A-Za-z]{3,})\s+(\d{1,2})$/)
   if (yyyyMonDd) {
     const [, yyyy, monStr, dd] = yyyyMonDd
@@ -67,17 +68,6 @@ export function parseDmfDate(raw: string | undefined | null): Date | null {
     const month = MONTH_INDEX[monStr.slice(0, 3).toLowerCase()]
     if (month === undefined) return null
     const d = new Date(Date.UTC(Number(yyyy), month, 1))
-    return Number.isNaN(d.getTime()) ? null : d
-  }
-
-  // "YYYY Mon DD" e.g. "2026 Jun 01", "2026 Aug 7" — the VA Masterlist's
-  // HIRE DATE / EOC TRANSFER DATE / STATUS DATE (scripts/import-masterlist.ts).
-  const yyyyMonDd = trimmed.match(/^(\d{4})\s+([A-Za-z]{3,})\s+(\d{1,2})$/)
-  if (yyyyMonDd) {
-    const [, yyyy, monStr, dd] = yyyyMonDd
-    const month = MONTH_INDEX[monStr.slice(0, 3).toLowerCase()]
-    if (month === undefined) return null
-    const d = new Date(Date.UTC(Number(yyyy), month, Number(dd)))
     return Number.isNaN(d.getTime()) ? null : d
   }
 
