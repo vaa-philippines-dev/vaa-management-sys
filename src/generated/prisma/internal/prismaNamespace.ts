@@ -4923,6 +4923,7 @@ export const VAProfileScalarFieldEnum = {
   vaaPosition: 'vaaPosition',
   positionSkillId: 'positionSkillId',
   level: 'level',
+  expertiseGroupId: 'expertiseGroupId',
   availabilityStatus: 'availabilityStatus',
   recommendability: 'recommendability',
   totalCapacityHours: 'totalCapacityHours',

@@ -57,7 +57,7 @@ const AVAILABILITY_LABEL: Record<string, string> = {
 
 const HISTORY_EVENT_LABELS: Record<string, string> = {
   STATUS_CHANGE: 'Active Status',
-  ENGAGEMENT_CHANGE: 'Engagement Status',
+  ENGAGEMENT_CHANGE: 'Employment Status',
   UPSKILL: 'Upskill',
   RATE_CHANGE: 'Rate Change',
   PROMOTION: 'Promotion',
@@ -128,6 +128,7 @@ export default async function VADetailPage({
           orderBy: { startDate: 'desc' },
         },
         documents: { orderBy: { createdAt: 'desc' } },
+        expertiseGroup: { select: { id: true, name: true } },
       },
     })
   )
@@ -195,6 +196,13 @@ export default async function VADetailPage({
         ? 'expired'
         : 'pending'
 
+  // Distinct-client count over active assignments — same semantics as the
+  // /va-availability board's clientCount (a VA on two engagements with the
+  // same client is one client to a manager reading this).
+  const activeClientCount = new Set(
+    va.assignments.filter((a) => a.status === 'ACTIVE').map((a) => a.clientId)
+  ).size
+
   const editorData = {
     vaProfile: {
       id: va.id,
@@ -205,11 +213,15 @@ export default async function VADetailPage({
       baseRate: va.baseRate ? Number(va.baseRate) : null,
       vaaPosition: va.vaaPosition ?? null,
       level: va.level ?? null,
+      expertiseGroupId: va.expertiseGroupId ?? null,
+      expertiseGroupName: va.expertiseGroup?.name ?? null,
       currentHireDate: toDateString(va.currentHireDate)?.slice(0, 10) ?? null,
       availabilityStatus: va.availabilityStatus,
       preferredWorkHours: va.preferredWorkHours ? Number(va.preferredWorkHours) : null,
       availableSchedule: va.availableSchedule ?? null,
       notes: va.notes ?? null,
+      onHold: va.onHold,
+      availabilityRemarks: va.availabilityRemarks ?? null,
       contractLink: va.contractLink ?? null,
       folder201Link: va.folder201Link ?? null,
       file201Link: va.file201Link ?? null,
@@ -369,6 +381,8 @@ export default async function VADetailPage({
             canEdit={canEdit}
             canEditSensitive={canEditSensitive}
             canInitiateTypeAB={canInitiateTypeAB}
+            expertiseGroups={allDepartments.map((d) => ({ id: d.id, name: d.name }))}
+            activeClientCount={activeClientCount}
           />
 
           {/* History */}
@@ -429,14 +443,14 @@ export default async function VADetailPage({
             </CardContent>
           </Card>
 
-          {/* Assignments */}
+          {/* Client History */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-base">Assignments ({assignments.length})</CardTitle>
+              <CardTitle className="text-base">Client History ({assignments.length})</CardTitle>
             </CardHeader>
             <CardContent>
               {assignments.length === 0 ? (
-                <p className="text-sm text-muted-foreground py-4">No assignments.</p>
+                <p className="text-sm text-muted-foreground py-4">No client history yet.</p>
               ) : (
                 <div className="space-y-3">
                   {assignments.map((a) => (

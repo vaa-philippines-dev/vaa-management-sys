@@ -933,7 +933,8 @@ export async function updateVAProfile(vaProfileId: string, formData: FormData) {
   const allowedFields = [
     'vaaPosition', 'level', 'baseRate', 'hourlyRate', 'notes',
     'preferredWorkHours', 'availableSchedule', 'hybrid', 'availabilityStatus',
-    'status', 'engagementStatus', 'currentHireDate',
+    'availabilityRemarks', 'expertiseGroupId',
+    'status', 'engagementStatus', 'currentHireDate', 'onHold',
     'contractLink', 'folder201Link', 'file201Link', 'vaClientFileLink',
     'healthCheckFileLink', 'portfolioUrl', 'vaProfileLink', 'payoutSummaryLink', 'dept201FolderLink',
   ]
@@ -941,7 +942,7 @@ export async function updateVAProfile(vaProfileId: string, formData: FormData) {
   for (const field of allowedFields) {
     const value = formData.get(field)
     if (value !== null) {
-      if (field === 'hybrid') {
+      if (field === 'hybrid' || field === 'onHold') {
         data[field] = value === 'true'
       } else if (field === 'baseRate' || field === 'hourlyRate' || field === 'preferredWorkHours') {
         data[field] = value ? Number(value) : null

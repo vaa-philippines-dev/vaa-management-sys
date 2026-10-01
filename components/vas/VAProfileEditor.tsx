@@ -22,7 +22,7 @@ import {
   Wallet,
   User,
 } from 'lucide-react'
-import { updateUserProfileAction, updateEmployment, updateUserProfileFiles, changeVAStatus, terminateVA, initiateResignation } from '@/app/(dashboard)/vas/actions'
+import { updateUserProfileAction, updateEmployment, updateUserProfileFiles, updateVAProfile, changeVAStatus, terminateVA, initiateResignation } from '@/app/(dashboard)/vas/actions'
 import { Modal } from '@/components/ui/modal'
 import { format } from 'date-fns'
 import type { DriveFile } from '@/lib/google/drive'
@@ -34,9 +34,11 @@ export type VAData = {
     id: string; status: string; engagementStatus: string | null; hybrid: boolean
     hourlyRate: number | null; baseRate: number | null
     vaaPosition: string | null; level: string | null
+    expertiseGroupId: string | null; expertiseGroupName: string | null
     currentHireDate: string | null
     availabilityStatus: string; preferredWorkHours: number | null
     availableSchedule: string | null; notes: string | null
+    onHold: boolean; availabilityRemarks: string | null
     contractLink: string | null; folder201Link: string | null
     file201Link: string | null; vaClientFileLink: string | null
     healthCheckFileLink: string | null; portfolioUrl: string | null
@@ -82,6 +84,8 @@ export function VAProfileEditor({
   canEdit = false,
   canEditSensitive = false,
   canInitiateTypeAB = false,
+  expertiseGroups,
+  activeClientCount,
 }: {
   data: VAData
   skills: { id: string; name: string; proficiency: string | null }[]
@@ -97,6 +101,8 @@ export function VAProfileEditor({
   // FB-0002: whether this viewer may start a Type A (EOC) / Type B
   // (CLIENT_INITIATED) case for this specific VA — see TerminationCard below.
   canInitiateTypeAB?: boolean
+  expertiseGroups: { id: string; name: string }[]
+  activeClientCount: number
 }) {
   const vaName = `${data.user.firstName} ${data.user.lastName}`.trim()
   const [recentUpload, setRecentUpload] = useState<string | null>(null)
@@ -146,13 +152,16 @@ export function VAProfileEditor({
         <EditableSection
           icon={Briefcase}
           label="Employment & Payment"
-          renderEdit={(onClose) => <EmploymentFormContent data={data} onClose={onClose} />}
+          renderEdit={(onClose) => <EmploymentFormContent data={data} expertiseGroups={expertiseGroups} onClose={onClose} />}
           canEdit={canEditSensitive}
         >
           <TableRow label="Position" value={data.membership?.positionTitle || data.vaProfile.vaaPosition} />
+          <TableRow label="Expertise Group" value={data.vaProfile.expertiseGroupName} />
           <TableRow label="Status" value={data.employment?.employmentStatus?.replace(/_/g, ' ')} />
           <TableRow label="Base Rate" value={data.vaProfile.baseRate ? `₱${Number(data.vaProfile.baseRate).toLocaleString()}/hr` : null} />
           <TableRow label="Hourly Rate" value={data.vaProfile.hourlyRate ? `$${Number(data.vaProfile.hourlyRate).toFixed(2)}/hr` : null} />
+          <TableRow label="Preferred Work Hours" value={data.vaProfile.preferredWorkHours ? `${data.vaProfile.preferredWorkHours}h/wk` : null} />
+          <TableRow label="Available Schedule" value={data.vaProfile.availableSchedule} />
           <TableRow label="Birth Date" value={data.profile?.birthDate ? format(new Date(data.profile.birthDate), 'MMM dd, yyyy') + (data.profile.nonCelebrant ? ' (NC)' : '') : null} />
           <TableRow label="GCash" value={data.profile?.gcashNumber} />
           <TableRow label="Payoneer Email" value={data.profile?.payoneerAccount} />
@@ -212,7 +221,14 @@ export function VAProfileEditor({
       </div>
 
       <div className="space-y-4">
-        <StatusCard vaProfileId={data.vaProfile.id} status={data.vaProfile.status} engagementStatus={data.vaProfile.engagementStatus} canEdit={canEdit} />
+        <StatusCard
+          vaProfileId={data.vaProfile.id}
+          vaName={vaName}
+          status={data.vaProfile.status}
+          engagementStatus={data.vaProfile.engagementStatus}
+          onHold={data.vaProfile.onHold}
+          canEdit={canEdit}
+        />
 
         <TerminationCard
           vaProfileId={data.vaProfile.id}
@@ -228,14 +244,24 @@ export function VAProfileEditor({
             <StatBox label="Department" value={data.membership?.departmentName} icon={Building2} />
             <StatBox label="Contract" value={data.employment?.contractType?.replace(/_/g, ' ')} icon={Briefcase} />
             <StatBox
+              label="Preferred Hours"
+              value={data.vaProfile.preferredWorkHours ? `${data.vaProfile.preferredWorkHours}h/wk` : null}
+              icon={Wallet}
+            />
+            <StatBox
               label="Schedule"
-              value={data.vaProfile.availableSchedule ? `${data.vaProfile.preferredWorkHours || '-'}h/wk` : null}
+              value={data.vaProfile.availableSchedule}
               icon={Wallet}
             />
             <StatBox
               label="Availability"
               value={data.vaProfile.availabilityStatus?.replace(/_/g, ' ')}
               icon={User}
+            />
+            <StatBox
+              label="Current Clients"
+              value={String(activeClientCount)}
+              icon={Building2}
             />
           </div>
         </div>
@@ -275,6 +301,13 @@ export function VAProfileEditor({
           <div className="rounded-2xl border bg-muted/20 p-4 shadow-sm">
             <p className="text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wider">Notes</p>
             <p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-wrap">{data.vaProfile.notes}</p>
+          </div>
+        )}
+
+        {data.vaProfile.availabilityRemarks && (
+          <div className="rounded-2xl border bg-muted/20 p-4 shadow-sm">
+            <p className="text-xs font-medium text-muted-foreground mb-1.5 uppercase tracking-wider">Remarks</p>
+            <p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-wrap">{data.vaProfile.availabilityRemarks}</p>
           </div>
         )}
       </div>
@@ -387,6 +420,70 @@ function FS({ name, label, defaultValue, options }: { name: string; label: strin
   )
 }
 
+function FSel({ name, label, defaultValue, options }: { name: string; label: string; defaultValue?: string | null; options: { id: string; name: string }[] }) {
+  return (
+    <div>
+      <Label htmlFor={`fi-${name}`} className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">{label}</Label>
+      <select
+        id={`fi-${name}`}
+        name={name}
+        defaultValue={defaultValue ?? ''}
+        className="w-full h-8 text-xs rounded-md border bg-background px-2"
+      >
+        <option value="">None</option>
+        {options.map((opt) => (
+          <option key={opt.id} value={opt.id}>{opt.name}</option>
+        ))}
+      </select>
+    </div>
+  )
+}
+
+const SCHEDULE_PRESETS = ['Flexible', 'Part Time']
+const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+
+function AvailableScheduleField({ defaultValue }: { defaultValue: string | null }) {
+  const defaultDays = defaultValue ? defaultValue.split(',').map((d) => d.trim()).filter(Boolean) : []
+  const isPreset = defaultValue != null && SCHEDULE_PRESETS.includes(defaultValue)
+  const isCustom = defaultValue != null && !isPreset && defaultDays.every((d) => WEEKDAYS.includes(d))
+  const [mode, setMode] = useState<'Flexible' | 'Part Time' | 'Custom'>(
+    isPreset ? (defaultValue as 'Flexible' | 'Part Time') : isCustom ? 'Custom' : 'Flexible'
+  )
+  const [days, setDays] = useState<string[]>(isCustom ? defaultDays : [])
+
+  const toggleDay = (day: string) => {
+    setDays((prev) => (prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]))
+  }
+
+  const value = mode === 'Custom' ? days.join(',') : mode
+
+  return (
+    <div className="col-span-1 sm:col-span-2">
+      <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Available Schedule</Label>
+      <input type="hidden" name="availableSchedule" value={value} />
+      <select
+        value={mode}
+        onChange={(e) => setMode(e.target.value as 'Flexible' | 'Part Time' | 'Custom')}
+        className="w-full h-8 text-xs rounded-md border bg-background px-2"
+      >
+        <option value="Flexible">Flexible</option>
+        <option value="Part Time">Part Time</option>
+        <option value="Custom">Custom (select days)</option>
+      </select>
+      {mode === 'Custom' && (
+        <div className="flex flex-wrap gap-2 mt-2">
+          {WEEKDAYS.map((day) => (
+            <label key={day} className="flex items-center gap-1 text-xs cursor-pointer">
+              <input type="checkbox" checked={days.includes(day)} onChange={() => toggleDay(day)} className="rounded" />
+              {day}
+            </label>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export function SaveForm({ action, onClose, className, children, toastLabel }: {
   action: (formData: FormData) => Promise<void>
   onClose: () => void
@@ -482,16 +579,18 @@ export function AddressFormContent({ data, onClose }: { data: PersonData; onClos
   )
 }
 
-function EmploymentFormContent({ data, onClose }: { data: VAData; onClose: () => void }) {
+function EmploymentFormContent({ data, expertiseGroups, onClose }: { data: VAData; expertiseGroups: { id: string; name: string }[]; onClose: () => void }) {
   return (
     <SaveForm action={(fd) => updateEmployment(data.vaProfile.id, data.user.id, fd)} onClose={onClose} toastLabel="Employment & pay saved" className="flex flex-col gap-4">
       {(saving) => (<>
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
           <FI name="vaaPosition" label="VAA Position" defaultValue={data.vaProfile.vaaPosition} />
           <FI name="level" label="Level" defaultValue={data.vaProfile.level} />
+          <FSel name="expertiseGroupId" label="Expertise Group" defaultValue={data.vaProfile.expertiseGroupId} options={expertiseGroups} />
           <FI name="baseRate" label="Base Rate (PHP)" defaultValue={data.vaProfile.baseRate?.toString()} type="number" />
           <FI name="hourlyRate" label="Hourly Rate (USD)" defaultValue={data.vaProfile.hourlyRate?.toString()} type="number" />
           <FI name="preferredWorkHours" label="Preferred Hours (Weekly)" defaultValue={data.vaProfile.preferredWorkHours?.toString()} type="number" />
+          <AvailableScheduleField defaultValue={data.vaProfile.availableSchedule} />
           <FI name="currentHireDate" label="Hire Date" defaultValue={data.vaProfile.currentHireDate} type="date" />
           <FI name="birthDate" label="Birth Date" defaultValue={data.profile?.birthDate} type="date" />
           <div className="flex items-center gap-2 col-span-1 sm:col-span-2">
@@ -503,6 +602,7 @@ function EmploymentFormContent({ data, onClose }: { data: VAData; onClose: () =>
           <FI name="payoneerAccount" label="Payoneer Email" defaultValue={data.profile?.payoneerAccount} type="email" placeholder="email@example.com" />
           <FI name="payoneerId" label="Payoneer ID" defaultValue={data.profile?.payoneerId} />
           <FI name="notes" label="Notes" defaultValue={data.vaProfile.notes} />
+          <FI name="availabilityRemarks" label="Remarks" defaultValue={data.vaProfile.availabilityRemarks} />
         </div>
         <div className="flex justify-end gap-2 pt-2 border-t">
           <button type="button" onClick={onClose} className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors">
@@ -827,21 +927,31 @@ const ENGAGEMENT_STATUS_OPTIONS = [
 
 function StatusCard({
   vaProfileId,
+  vaName,
   status,
   engagementStatus,
+  onHold,
   canEdit,
 }: {
   vaProfileId: string
+  vaName: string
   status: string
   engagementStatus: string | null
+  onHold: boolean
   canEdit: boolean
 }) {
+  const router = useRouter()
   const [currentStatus, setCurrentStatus] = useState(status)
   const [currentEngagement, setCurrentEngagement] = useState(engagementStatus ?? '')
+  const [currentOnHold, setCurrentOnHold] = useState(onHold)
+  const [onHoldSaving, setOnHoldSaving] = useState(false)
   const [pending, setPending] = useState<{ field: 'status' | 'engagementStatus'; value: string } | null>(null)
   const [effectiveDate, setEffectiveDate] = useState('')
   const [reason, setReason] = useState('')
   const [saving, setSaving] = useState(false)
+  const [resignOpen, setResignOpen] = useState(false)
+  const [resignReason, setResignReason] = useState('')
+  const [resigning, setResigning] = useState(false)
 
   const openConfirm = (field: 'status' | 'engagementStatus', value: string) => {
     setPending({ field, value })
@@ -862,12 +972,44 @@ function StatusCard({
       )
       if (pending.field === 'status') setCurrentStatus(pending.value)
       else setCurrentEngagement(pending.value)
-      toast.success(pending.field === 'status' ? 'Active status updated' : 'Engagement status updated')
+      toast.success(pending.field === 'status' ? 'Active status updated' : 'Employment status updated')
       setPending(null)
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to update status')
     } finally {
       setSaving(false)
+    }
+  }
+
+  const handleToggleOnHold = async (checked: boolean) => {
+    setOnHoldSaving(true)
+    try {
+      const fd = new FormData()
+      fd.set('onHold', String(checked))
+      await updateVAProfile(vaProfileId, fd)
+      setCurrentOnHold(checked)
+      toast.success(checked ? 'Marked On Hold' : 'On Hold cleared')
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to update On Hold')
+    } finally {
+      setOnHoldSaving(false)
+    }
+  }
+
+  const handleResign = async () => {
+    setResigning(true)
+    try {
+      const fd = new FormData()
+      fd.set('vaProfileId', vaProfileId)
+      if (resignReason) fd.set('reason', resignReason)
+      const { terminationId } = await initiateResignation(fd)
+      toast.success('Resignation case started')
+      setResignOpen(false)
+      router.push(`/offboarding/${terminationId}`)
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to start resignation')
+    } finally {
+      setResigning(false)
     }
   }
 
@@ -888,11 +1030,22 @@ function StatusCard({
             ))}
           </select>
           {(currentStatus === 'RESIGNED' || currentStatus === 'REMOVED') && currentEngagement !== 'END_OF_CONTRACT' && (
-            <p className="text-[10px] text-warning mt-1">Usually only set when Engagement Status is End of Contract.</p>
+            <p className="text-[10px] text-warning mt-1">Usually only set when Employment Status is End of Contract.</p>
           )}
         </div>
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="onHoldToggle"
+            checked={currentOnHold}
+            disabled={!canEdit || onHoldSaving}
+            onChange={(e) => handleToggleOnHold(e.target.checked)}
+            className="rounded"
+          />
+          <Label htmlFor="onHoldToggle" className="text-xs cursor-pointer">On Hold</Label>
+        </div>
         <div>
-          <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Engagement Status</Label>
+          <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Employment Status</Label>
           <select
             value={currentEngagement}
             disabled={!canEdit}
@@ -905,12 +1058,21 @@ function StatusCard({
             ))}
           </select>
         </div>
+        {canEdit && (
+          <button
+            type="button"
+            onClick={() => { setResignReason(''); setResignOpen(true) }}
+            className="text-xs text-destructive hover:underline"
+          >
+            To Resign…
+          </button>
+        )}
       </div>
 
       <Modal
         open={!!pending}
         onOpenChange={(o) => !o && setPending(null)}
-        title={pending?.field === 'status' ? 'Change Active Status' : 'Change Engagement Status'}
+        title={pending?.field === 'status' ? 'Change Active Status' : 'Change Employment Status'}
         description="Choose the date this status change took effect."
         size="sm"
         footer={
@@ -933,6 +1095,29 @@ function StatusCard({
             <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Reason (optional)</Label>
             <Input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="e.g. Client contract ended" className="h-8 text-xs" />
           </div>
+        </div>
+      </Modal>
+
+      <Modal
+        open={resignOpen}
+        onOpenChange={setResignOpen}
+        title={`Start Resignation — ${vaName}`}
+        description="Starts a tracked resignation case (discussion → letter → replacement → exit survey → clearance → payout)."
+        size="sm"
+        footer={
+          <>
+            <button type="button" onClick={() => setResignOpen(false)} className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors">
+              Cancel
+            </button>
+            <Button type="button" size="sm" variant="destructive" className="text-xs h-8" disabled={resigning} onClick={handleResign}>
+              {resigning ? <><Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> Starting...</> : 'Start Resignation Case'}
+            </Button>
+          </>
+        }
+      >
+        <div>
+          <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Reason (optional)</Label>
+          <Input value={resignReason} onChange={(e) => setResignReason(e.target.value)} placeholder="e.g. Pursuing another opportunity" className="h-8 text-xs" />
         </div>
       </Modal>
     </div>

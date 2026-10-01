@@ -380,6 +380,7 @@ model Department {
   teams             Team[]                 @relation("DepartmentTeams")
   projects          Project[]              @relation("DepartmentProjects")
   vaAvailabilities  VADepartmentAvailability[]
+  vasWithExpertiseGroup VAProfile[]        @relation("VAExpertiseGroup")
 
   @@unique([name, parentId])
   @@unique([acronym, parentId])
@@ -667,6 +668,11 @@ model VAProfile {
   positionSkillId     String?           @map("position_skill_id")
   positionSkill       Skill?            @relation(fields: [positionSkillId], references: [id], onDelete: SetNull)
   level               String?
+  // The VA's functional specialization, e.g. "Sales" or "Bookkeeping" —
+  // reuses the Department tree rather than a separate free-text list, since
+  // departments already represent those functional groupings.
+  expertiseGroupId    String?           @map("expertise_group_id")
+  expertiseGroup      Department?       @relation("VAExpertiseGroup", fields: [expertiseGroupId], references: [id], onDelete: SetNull)
   availabilityStatus  Availability      @default(AVAILABLE) @map("availability_status")
   recommendability    String?           @map("recommendability")
   totalCapacityHours  Decimal?          @default(40) @map("total_capacity_hours")
@@ -728,6 +734,7 @@ model VAProfile {
 
   @@index([availabilityStatus])
   @@index([positionSkillId])
+  @@index([expertiseGroupId])
   @@index([currentHireDate])
   @@map("va_profiles")
 }
