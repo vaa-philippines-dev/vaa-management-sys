@@ -48,31 +48,78 @@ async function getListRootId(drive: ReturnType<typeof google.drive>): Promise<st
   }
 }
 
-export async function listDriveFiles(): Promise<DriveFile[]> {
+const FOLDER_MIME = 'application/vnd.google-apps.folder'
+
+function escapeDriveQuery(value: string): string {
+  return value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")
+}
+
+export type VADriveFiles = { folderUrl: string | null; files: DriveFile[] }
+
+// Lists the files in one VA's own "201 VA | {vaName}" folder tree (the same
+// folder the upload routes write into), one level of doc-type subfolders deep.
+// Read-only: never creates the folder. Matches every folder with that name,
+// since concurrent first uploads have produced duplicates.
+export async function listVADriveFiles(vaName: string): Promise<VADriveFiles> {
+  const empty: VADriveFiles = { folderUrl: null, files: [] }
   const auth = getAuth()
-  if (!auth) return []
+  if (!auth || !vaName.trim()) return empty
 
   const drive = google.drive({ version: 'v3', auth })
-  const parentId = await getListRootId(drive)
-  if (!parentId) return []
+  const rootId = await getListRootId(drive)
+  if (!rootId) return empty
 
-  const res = await drive.files.list({
-    q: `'${parentId}' in parents and trashed = false`,
-    fields: 'files(id, name, mimeType, webViewLink, size, createdTime)',
-    orderBy: 'name',
-    pageSize: 100,
+  const listOpts = {
     supportsAllDrives: true,
     includeItemsFromAllDrives: true,
-  })
+    pageSize: 200,
+  } as const
 
-  return (res.data.files || []).map((f) => ({
+  const vaFolders = await drive.files.list({
+    ...listOpts,
+    q: `'${rootId}' in parents and name = '${escapeDriveQuery(`201 VA | ${vaName.trim()}`)}' and mimeType = '${FOLDER_MIME}' and trashed = false`,
+    fields: 'files(id, webViewLink)',
+  })
+  const vaFolderList = vaFolders.data.files ?? []
+  if (vaFolderList.length === 0) return empty
+
+  const inAny = (ids: string[]) => ids.map((id) => `'${id}' in parents`).join(' or ')
+  const children = await drive.files.list({
+    ...listOpts,
+    q: `(${inAny(vaFolderList.map((f) => f.id!))}) and trashed = false`,
+    fields: 'files(id, name, mimeType, webViewLink, size, createdTime)',
+    orderBy: 'name',
+  })
+  const childList = children.data.files ?? []
+  const subfolders = childList.filter((f) => f.mimeType === FOLDER_MIME)
+  const subfolderName = new Map(subfolders.map((f) => [f.id!, f.name!]))
+
+  const nested = subfolders.length
+    ? (
+        await drive.files.list({
+          ...listOpts,
+          q: `(${inAny(subfolders.map((f) => f.id!))}) and mimeType != '${FOLDER_MIME}' and trashed = false`,
+          fields: 'files(id, name, mimeType, webViewLink, size, createdTime, parents)',
+          orderBy: 'name',
+        })
+      ).data.files ?? []
+    : []
+
+  const toDriveFile = (f: (typeof childList)[number], prefix?: string): DriveFile => ({
     id: f.id!,
-    name: f.name!,
+    name: prefix ? `${prefix} / ${f.name}` : f.name!,
     mimeType: f.mimeType!,
     webViewLink: f.webViewLink!,
     size: f.size || null,
     createdTime: f.createdTime || null,
-  }))
+  })
+
+  const files = [
+    ...childList.filter((f) => f.mimeType !== FOLDER_MIME).map((f) => toDriveFile(f)),
+    ...nested.map((f) => toDriveFile(f, subfolderName.get(f.parents?.find((p) => subfolderName.has(p)) ?? ''))),
+  ].sort((a, b) => a.name.localeCompare(b.name))
+
+  return { folderUrl: vaFolderList[0].webViewLink ?? null, files }
 }
 
 export async function createDriveFolder(title: string): Promise<string> {

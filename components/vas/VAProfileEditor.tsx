@@ -77,6 +77,7 @@ export function VAProfileEditor({
   assignments,
   documents,
   driveFiles,
+  driveFolderUrl,
   currentUserId,
   canEdit = false,
   canEditSensitive = false,
@@ -87,6 +88,7 @@ export function VAProfileEditor({
   assignments: { id: string; clientName: string; type: string; agreedHours: number; startDate: string; endDate: string | null; status: string }[]
   documents: { id: string; documentType: string; fileName: string; googleDriveUrl: string }[]
   driveFiles: DriveFile[]
+  driveFolderUrl: string | null
   currentUserId?: string
   canEdit?: boolean
   // Personal Information, Employment & Payment, and 201 Files are sensitive —
@@ -243,7 +245,7 @@ export function VAProfileEditor({
             <p className="text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wider flex items-center gap-1.5">
               <Upload className="h-3 w-3" /> Drive Files
               <a
-                href="https://drive.google.com"
+                href={driveFolderUrl ?? 'https://drive.google.com'}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline font-normal normal-case tracking-normal text-[10px] ml-auto"

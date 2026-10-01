@@ -4,7 +4,7 @@ import { getCurrentUser, VA_MUTATOR_ROLES, VA_SENSITIVE_INFO_EDIT_ROLES } from '
 import { getViewScope, isVAProfileInScope, isDepartmentInScope, isUserInScope, type Scope } from '@/lib/scope'
 import { canInitiateEocOrClientInitiatedTermination } from '@/lib/offboarding-permissions'
 import { cached, CACHE_TAGS } from '@/lib/cache'
-import { listDriveFiles } from '@/lib/google/drive'
+import { listVADriveFiles } from '@/lib/google/drive'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -176,7 +176,12 @@ export default async function VADetailPage({
     })
   )
 
-  const driveFiles = await listDriveFiles().catch(() => [])
+  // Only this VA's own 201 folder — it holds passport/PhilHealth scans, so it
+  // follows the same sensitive-info gate as those fields.
+  const vaDriveName = [va.user.firstName, va.user.lastName].filter(Boolean).join(' ')
+  const vaDrive = canViewSensitive
+    ? await listVADriveFiles(vaDriveName).catch(() => ({ folderUrl: null, files: [] }))
+    : { folderUrl: null, files: [] }
 
   const onboardingInvite = await prisma.vAOnboardingInvite.findUnique({
     where: { userId: va.user.id },
@@ -358,7 +363,8 @@ export default async function VADetailPage({
             skills={skillsData}
             assignments={assignmentData}
             documents={docData}
-            driveFiles={driveFiles}
+            driveFiles={vaDrive.files}
+            driveFolderUrl={vaDrive.folderUrl}
             currentUserId={currentUser.id}
             canEdit={canEdit}
             canEditSensitive={canEditSensitive}
