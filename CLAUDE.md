@@ -72,6 +72,10 @@ Tab → app mapping as it stands:
 | (TMF — Team Monitoring File) | `/tmf` (`lib/tmf.ts`). The Team Leader's file for one team: TMF availability (editable only by that team's leaders + admins/HR), client check-ins due, engagements, leave. Access is granted by *leading a team* (most leaders are VA accounts), not by SystemRole; Dept/Ops Managers get their departments' teams read-only. |
 | IDLE VAs, VA-Client Summary, VA Concerns, Pending Dept Requests, Trainings, Discrepancies | not ported |
 
+## Updating the VA Masterlist from HR's CSV
+
+`npx tsx --env-file=.env.local scripts/import-masterlist.ts --file <MASTERLIST.csv> --since YYYY-MM-DD` (add `--apply` to write; dry run by default). Takes the "VAA | VA MASTERLIST" tab export as-is (two-row header, `2026 Jun 01` dates). Only people with a hire/EOC/status date on or after `--since` are touched; for them it creates missing VAs, updates status/engagement/dates, moves the department membership on a transfer, and reconciles one `EmploymentRecord` per sheet row. Profile details are only filled where blank, so in-app edits survive. Re-running is safe. Dates written by the original July 2026 bulk import are local (UTC+8) midnight, so the script treats dates within 36h as equal instead of "fixing" or duplicating them. VAs with no email in the sheet get a `…@placeholder.vaa` login, same as the in-app importer.
+
 ## Populating the DMF data (VA Preparation, Performance Monitoring, VA Availability, Projects)
 
 `npm run import:dmf -- --department <Name>` (add `--apply` to write; without it, it's a dry run that only prints a report). Source: `lib/sync/dmf-import.ts`, matching in `lib/sync/dmf-match.ts`, date/bool/number parsing in `lib/sync/dmf-parse.ts`, the sheet reader in `lib/google/dmf-sheet.ts`. One-time backfill per department, not a recurring sync — once run, the app is the source of truth and the sheet becomes historical.
