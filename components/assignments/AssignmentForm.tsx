@@ -7,17 +7,30 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { createAssignment } from '@/app/(dashboard)/assignments/actions'
+import { SearchSelect, type SearchSelectOption } from '@/components/assignments/SearchSelect'
 
-type Client = { id: string; name: string; requiredSkills: string[] }
-type VA = { id: string; name: string; skills: string[] }
+type Client = {
+  id: string
+  name: string
+  company: string | null
+  platform: string | null
+  departmentId: string | null
+  departmentName: string
+  requiredSkills: string[]
+}
+type VA = { id: string; name: string; skills: string[]; departmentIds: string[] }
 
 export function AssignmentForm({
   clients,
   vas,
+  restrictVAsToClientDepartment,
   defaultClientId,
 }: {
   clients: Client[]
   vas: VA[]
+  // Scoped managers may only staff a client with a VA from that client's
+  // department (createAssignment enforces it); admins may cross departments.
+  restrictVAsToClientDepartment: boolean
   defaultClientId?: string
 }) {
   const [clientId, setClientId] = useState(defaultClientId ?? '')
@@ -26,16 +39,40 @@ export function AssignmentForm({
 
   const selectedClient = clients.find((c) => c.id === clientId)
 
-  const matchedVAs = useMemo(() => {
-    if (!selectedClient || selectedClient.requiredSkills.length === 0)
-      return vas.map((v) => ({ va: v, overlap: [] as string[] }))
+  const clientOptions = useMemo<SearchSelectOption[]>(
+    () =>
+      clients.map((c) => ({
+        id: c.id,
+        label: c.name,
+        description: [c.company, c.platform].filter(Boolean).join(' · ') || undefined,
+        tag: c.departmentName,
+        group: c.departmentName,
+        keywords: c.requiredSkills.join(' '),
+      })),
+    [clients]
+  )
+
+  // With a client picked, its department's VAs come first, then (admins only)
+  // everyone else; within each group, VAs with the most matching skills lead.
+  const vaOptions = useMemo<SearchSelectOption[]>(() => {
+    const required = selectedClient?.requiredSkills ?? []
+    const deptId = selectedClient?.departmentId ?? null
     return vas
-      .map((v) => ({
-        va: v,
-        overlap: v.skills.filter((s) => selectedClient.requiredSkills.includes(s)),
+      .filter((v) => !(restrictVAsToClientDepartment && deptId && !v.departmentIds.includes(deptId)))
+      .map((v) => {
+        const overlap = v.skills.filter((s) => required.includes(s))
+        const inDept = deptId ? v.departmentIds.includes(deptId) : true
+        return { v, overlap, inDept }
+      })
+      .sort((a, b) => Number(b.inDept) - Number(a.inDept) || b.overlap.length - a.overlap.length)
+      .map(({ v, overlap, inDept }) => ({
+        id: v.id,
+        label: v.name,
+        description: overlap.length > 0 ? `Matches: ${overlap.join(', ')}` : undefined,
+        group: selectedClient && deptId ? (inDept ? `In ${selectedClient.departmentName}` : 'Other departments') : undefined,
+        keywords: v.skills.join(' '),
       }))
-      .sort((a, b) => b.overlap.length - a.overlap.length)
-  }, [selectedClient, vas])
+  }, [selectedClient, vas, restrictVAsToClientDepartment])
 
   return (
     <Card>
@@ -44,22 +81,24 @@ export function AssignmentForm({
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="clientId">Client *</Label>
-              <select
+              <SearchSelect
                 id="clientId"
                 name="clientId"
+                options={clientOptions}
                 value={clientId}
-                onChange={(e) => setClientId(e.target.value)}
+                onValueChange={(id) => {
+                  setClientId(id)
+                  // Drop a picked VA the new client's department can't staff.
+                  const deptId = clients.find((c) => c.id === id)?.departmentId
+                  const va = vas.find((v) => v.id === vaProfileId)
+                  if (restrictVAsToClientDepartment && deptId && va && !va.departmentIds.includes(deptId)) {
+                    setVaProfileId('')
+                  }
+                }}
+                placeholder="Search clients…"
+                emptyText="No clients match"
                 required
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
-              >
-                <option value="">Select a client</option>
-                {clients.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                    {c.requiredSkills.length > 0 && ` (${c.requiredSkills.join(', ')})`}
-                  </option>
-                ))}
-              </select>
+              />
               {selectedClient && selectedClient.requiredSkills.length > 0 && (
                 <div className="flex flex-wrap gap-1 mt-1">
                   {selectedClient.requiredSkills.map((s) => (
@@ -70,22 +109,16 @@ export function AssignmentForm({
             </div>
             <div className="space-y-2">
               <Label htmlFor="vaProfileId">VA *</Label>
-              <select
+              <SearchSelect
                 id="vaProfileId"
                 name="vaProfileId"
+                options={vaOptions}
                 value={vaProfileId}
-                onChange={(e) => setVaProfileId(e.target.value)}
+                onValueChange={setVaProfileId}
+                placeholder="Search VAs…"
+                emptyText={selectedClient ? 'No eligible VAs in this department' : 'No VAs match'}
                 required
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
-              >
-                <option value="">Select a VA</option>
-                {matchedVAs.map(({ va, overlap }) => (
-                  <option key={va.id} value={va.id}>
-                    {va.name}
-                    {overlap.length > 0 && ` • matches: ${overlap.join(', ')}`}
-                  </option>
-                ))}
-              </select>
+              />
               {selectedClient && selectedClient.requiredSkills.length > 0 && (
                 <p className="text-xs text-muted-foreground">
                   VAs are ranked by skill match
