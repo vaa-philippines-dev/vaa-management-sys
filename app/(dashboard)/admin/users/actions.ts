@@ -95,6 +95,46 @@ export async function updateUserName(userId: string, firstName: string, lastName
   revalidateTag(CACHE_TAGS.users, 'default')
 }
 
+// The login email: sign-in matches the Google account's email against
+// User.email (app/(auth)/callback/route.ts), so this changes which Google
+// account can log in as this user. Returns the error instead of throwing so
+// the message survives production's Server Action error masking.
+type ActionResult = { error?: string }
+
+export async function updateUserEmail(userId: string, email: string): Promise<ActionResult> {
+  const admin = await getAdmin()
+
+  const cleanEmail = email.trim().toLowerCase()
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) return { error: 'Enter a valid email address' }
+  if (userId === admin.id) return { error: "You can't change your own login email — you'd be signed out. Ask another admin." }
+
+  const before = await prisma.user.findUnique({ where: { id: userId }, select: { email: true, firstName: true, lastName: true } })
+  if (!before) return { error: 'User not found' }
+  if (before.email.toLowerCase() === cleanEmail) return {}
+
+  const taken = await prisma.user.findFirst({
+    where: { email: { equals: cleanEmail, mode: 'insensitive' }, NOT: { id: userId } },
+    select: { firstName: true, lastName: true },
+  })
+  if (taken) return { error: `${cleanEmail} is already used by ${taken.firstName} ${taken.lastName}` }
+
+  await prisma.user.update({ where: { id: userId }, data: { email: cleanEmail } })
+
+  await logAudit({
+    actorId: admin.id,
+    action: 'UPDATE',
+    entityType: ENTITY_USER,
+    entityId: userId,
+    before: { email: before.email },
+    after: { email: cleanEmail },
+    metadata: { name: `${before.firstName} ${before.lastName}` },
+  })
+
+  revalidatePath('/admin/users')
+  revalidateTag(CACHE_TAGS.users, 'default')
+  return {}
+}
+
 export async function updateUserType(userId: string, userType: string) {
   const admin = await getAdmin()
   const before = await prisma.user.findUnique({ where: { id: userId }, select: { userType: true, email: true } })

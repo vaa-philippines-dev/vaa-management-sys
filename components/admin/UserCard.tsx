@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
@@ -11,6 +11,7 @@ import {
   removeDepartmentMembership,
   revokeTemporaryRole,
   updateUserNameByForm,
+  updateUserEmail,
   updateUserRoleByForm,
   updateUserTypeByForm,
   assignDeptByForm,
@@ -109,7 +110,25 @@ export function UserCard({
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [confirmText, setConfirmText] = useState('')
   const [deleting, setDeleting] = useState(false)
+  const [savingEmail, setSavingEmail] = useState(false)
   const router = useRouter()
+
+  const handleEmailSave = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const email = String(new FormData(e.currentTarget).get('email') ?? '')
+    if (email.trim().toLowerCase() === user.email.toLowerCase()) return
+    setSavingEmail(true)
+    try {
+      const res = await updateUserEmail(user.id, email)
+      if (res.error) toast.error(res.error)
+      else {
+        toast.success(`${user.firstName} now signs in with ${email.trim().toLowerCase()}`)
+        router.refresh()
+      }
+    } finally {
+      setSavingEmail(false)
+    }
+  }
 
   const handleDelete = async () => {
     setDeleting(true)
@@ -210,6 +229,27 @@ export function UserCard({
                 />
                 <Button type="submit" size="sm" variant="outline" className="text-xs h-7 px-2 shrink-0">Save</Button>
               </form>
+            </div>
+          )}
+          {canEdit && (
+            <div>
+              <label className="text-[11px] font-medium text-muted-foreground mb-1 block">Login Email</label>
+              <form key={`email-${user.id}-${user.email}`} onSubmit={handleEmailSave} className="flex gap-1.5">
+                <input
+                  name="email"
+                  type="email"
+                  defaultValue={user.email}
+                  placeholder="name@vaaphilippines.com"
+                  className="flex-1 px-2 py-1 text-xs border rounded-md bg-background h-7"
+                  required
+                />
+                <Button type="submit" size="sm" variant="outline" className="text-xs h-7 px-2 shrink-0" disabled={savingEmail}>
+                  {savingEmail ? <Loader2 className="h-3 w-3 animate-spin" /> : 'Save'}
+                </Button>
+              </form>
+              <p className="text-[10px] text-muted-foreground mt-1">
+                They&apos;ll sign in with the Google account for this address; the old one stops working.
+              </p>
             </div>
           )}
           <div className="grid gap-2.5 sm:grid-cols-2">
