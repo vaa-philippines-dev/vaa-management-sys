@@ -40,7 +40,8 @@ export type StaffEngagement = {
   position: string | null
   level: string | null
   workEmail: string | null
-  hireDate: string | null // yyyy-mm-dd
+  staffHireDate: string | null // yyyy-mm-dd — earliest start date across engagements
+  hireDate: string | null // VAA hire date; earlier than staffHireDate for staff upskilled from VA
   startDate: string | null
   eocDate: string | null
   generalStatus: string | null
@@ -139,6 +140,7 @@ export function StaffProfileEditor({
           <TableRow label="Subdepartment" value={engagement.subdepartment} />
           <TableRow label="Position" value={engagement.position} />
           <TableRow label="Level" value={engagement.level} />
+          <TableRow label="Staff Hire Date" value={fmt(engagement.staffHireDate)} />
           <TableRow label="VAA Hire Date" value={fmt(engagement.hireDate)} />
           <TableRow label="Start Date (this role)" value={fmt(engagement.startDate)} />
           <TableRow label="EOC Date" value={fmt(engagement.eocDate)} />
@@ -200,7 +202,7 @@ export function StaffProfileEditor({
             <StatBox label="Department" value={engagement.department} icon={Building2} />
             <StatBox label="Level" value={engagement.level} icon={Layers} />
             <StatBox label="Staff ID" value={engagement.staffId} icon={IdCard} />
-            <StatBox label="Tenure" value={engagement.tenure} icon={Wallet} />
+            <StatBox label="Staff Tenure" value={engagement.tenure} icon={Wallet} />
           </div>
         </div>
 

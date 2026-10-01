@@ -40,8 +40,25 @@ export type StaffPerson = {
   name: string
   latest: StaffRecordRow
   records: StaffRecordRow[] // newest first
+  // When they joined as staff: the earliest START DATE across engagements.
+  // Not the VAA hire date — staff upskilled from VA were hired at VAA years
+  // before they joined staff; direct recruits have the two (nearly) equal.
+  staffHireDate: Date | null
   // Earliest VAA hire date across engagements; the sheet repeats it per row.
-  hireDate: Date | null
+  vaaHireDate: Date | null
+}
+
+const DAY_MS = 24 * 60 * 60 * 1000
+
+// True when the VAA hire date is meaningfully earlier than the staff hire
+// date (e.g. upskilled from VA). Sheet dates within 36h are the same day —
+// the original import wrote some at local UTC+8 midnight.
+export const hiredBeforeStaff = (p: Pick<StaffPerson, 'staffHireDate' | 'vaaHireDate'>) =>
+  !!p.vaaHireDate && (!p.staffHireDate || p.staffHireDate.getTime() - p.vaaHireDate.getTime() > 1.5 * DAY_MS)
+
+const earliest = (dates: (Date | null)[]) => {
+  const ts = dates.filter((d): d is Date => !!d).map((d) => d.getTime())
+  return ts.length ? new Date(Math.min(...ts)) : null
 }
 
 const normName = (first: string, last: string | null) => `${first} ${last ?? ''}`.toLowerCase().replace(/\s+/g, ' ').trim()
@@ -60,13 +77,13 @@ function toPeople(records: StaffRecordRow[]): StaffPerson[] {
   return [...groups.values()].map((rs) => {
     rs.sort(byNewest)
     const latest = rs[0]
-    const hireDates = rs.map((r) => r.hireDate).filter((d): d is Date => !!d)
     return {
       id: latest.id,
       name: [latest.firstName, latest.lastName].filter(Boolean).join(' '),
       latest,
       records: rs,
-      hireDate: hireDates.length ? new Date(Math.min(...hireDates.map((d) => d.getTime()))) : null,
+      staffHireDate: earliest(rs.map((r) => r.startDate)),
+      vaaHireDate: earliest(rs.map((r) => r.hireDate)),
     }
   })
 }

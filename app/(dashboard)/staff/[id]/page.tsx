@@ -127,13 +127,14 @@ export default async function StaffDetailPage({ params }: { params: Promise<{ id
     position: latest.position,
     level: latest.level,
     workEmail: latest.workEmail,
-    hireDate: isoDay(person.hireDate),
+    staffHireDate: isoDay(person.staffHireDate),
+    hireDate: isoDay(person.vaaHireDate),
     startDate: isoDay(latest.startDate),
     eocDate: isoDay(latest.eocDate),
     generalStatus: latest.generalStatus,
     employmentStatus: latest.employmentStatus,
     remarks: latest.remarks,
-    tenure: tenure(person.hireDate, offboarded ? latest.eocDate : null),
+    tenure: tenure(person.staffHireDate, offboarded ? latest.eocDate : null),
   }
 
   return (

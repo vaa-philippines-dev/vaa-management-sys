@@ -70,7 +70,7 @@ export function AddStaffBtn({ departments }: { departments: string[] }) {
               <FI name="lastName" label="Last Name" />
               <div className="sm:col-span-2"><FI name="email" label="Login Email" type="email" placeholder="name@gmail.com" /></div>
               <FI name="workEmail" label="Work Email" type="email" />
-              <FI name="hireDate" label="Hire Date" type="date" />
+              <FI name="hireDate" label="Staff Hire Date" type="date" />
               <div>
                 <label htmlFor="add-staff-dept" className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Department</label>
                 <input id="add-staff-dept" name="department" list="staff-departments" className="w-full h-8 text-xs rounded-md border bg-background px-2" />

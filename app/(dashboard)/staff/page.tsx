@@ -1,5 +1,5 @@
 import { getCurrentUser, STAFF_MUTATOR_ROLES } from '@/lib/auth'
-import { getStaffPeople, type StaffPerson } from '@/lib/staff'
+import { getStaffPeople, hiredBeforeStaff, type StaffPerson } from '@/lib/staff'
 import {
   STAFF_STATUS_OPTIONS,
   STAFF_EMPLOYMENT_OPTIONS,
@@ -37,6 +37,7 @@ import {
 
 const PAGE_SIZE = 20
 
+// `hireDate` sorts by the staff hire date (StaffPerson.staffHireDate).
 type SortField = 'name' | 'position' | 'status' | 'employment' | 'hireDate' | 'eocDate'
 const SORT_FIELDS: SortField[] = ['name', 'position', 'status', 'employment', 'hireDate', 'eocDate']
 const DEFAULT_SORT = 'hireDate:desc'
@@ -125,7 +126,7 @@ export default async function StaffMasterlistPage({
       sortField === 'status' ? (staffStatusTier(a.latest.generalStatus) - staffStatusTier(b.latest.generalStatus) || (a.latest.generalStatus ?? '').localeCompare(b.latest.generalStatus ?? '')) * mult :
       sortField === 'employment' ? byNullable(a.latest.employmentStatus, b.latest.employmentStatus, str) :
       sortField === 'eocDate' ? byNullable(a.latest.eocDate, b.latest.eocDate, time) :
-      byNullable(a.hireDate, b.hireDate, time)
+      byNullable(a.staffHireDate, b.staffHireDate, time)
     return cmp || a.name.localeCompare(b.name)
   })
 
@@ -164,7 +165,7 @@ export default async function StaffMasterlistPage({
     const nextDir = sortField === field ? (sortDir === 'desc' ? 'asc' : 'desc') : dateField ? 'desc' : 'asc'
     return buildParams({ sort: `${field}:${nextDir}`, page: undefined })
   }
-  // `inverted` is for Yrs, which reuses the Hire Date sort with the arrow flipped.
+  // `inverted` is for Yrs, which reuses the Staff Hire Date sort with the arrow flipped.
   const sortIcon = (field: SortField, inverted = false) => {
     if (sortField !== field) return <ArrowUpDown className="h-3 w-3 text-muted-foreground/50" />
     return (sortDir === 'asc') !== inverted ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />
@@ -258,7 +259,7 @@ export default async function StaffMasterlistPage({
                   {sortHead('position', 'Position', 'hidden lg:table-cell')}
                   {sortHead('status', 'Status', 'hidden sm:table-cell')}
                   {sortHead('employment', 'Employment Status', 'hidden md:table-cell')}
-                  {sortHead('hireDate', 'Hire Date', 'hidden md:table-cell')}
+                  {sortHead('hireDate', 'Staff Hire Date', 'hidden md:table-cell')}
                   {sortHead('hireDate', 'Yrs', 'hidden xl:table-cell', true)}
                   {sortHead('eocDate', 'EOC Date', 'hidden md:table-cell')}
                   <TableHead className="px-3 py-2.5 hidden xl:table-cell">Remarks</TableHead>
@@ -313,9 +314,15 @@ export default async function StaffMasterlistPage({
                           <StatusIndicator tone={STAFF_EMPLOYMENT_TONE[l.employmentStatus] ?? 'neutral'}>{l.employmentStatus}</StatusIndicator>
                         ) : <Empty />}
                       </TableCell>
-                      <TableCell className="px-3 py-2.5 text-muted-foreground hidden md:table-cell">{formatDate(p.hireDate) ?? <Empty />}</TableCell>
+                      <TableCell className="px-3 py-2.5 text-muted-foreground hidden md:table-cell">
+                        {formatDate(p.staffHireDate) ?? <Empty />}
+                        {/* Upskilled from VA: their VAA hire date predates joining staff. */}
+                        {hiredBeforeStaff(p) && (
+                          <div className="text-[10px] text-muted-foreground/70 whitespace-nowrap">VAA hire {formatDate(p.vaaHireDate)}</div>
+                        )}
+                      </TableCell>
                       <TableCell className="px-3 py-2.5 text-muted-foreground hidden xl:table-cell">
-                        {formatYearsOfService(p.hireDate, offboarded ? l.eocDate : null) ?? <Empty />}
+                        {formatYearsOfService(p.staffHireDate, offboarded ? l.eocDate : null) ?? <Empty />}
                       </TableCell>
                       <TableCell className="px-3 py-2.5 text-muted-foreground hidden md:table-cell">{formatDate(l.eocDate) ?? <Empty />}</TableCell>
                       <TableCell className="px-3 py-2.5 text-muted-foreground hidden xl:table-cell max-w-[16rem] truncate" title={l.remarks ?? undefined}>
