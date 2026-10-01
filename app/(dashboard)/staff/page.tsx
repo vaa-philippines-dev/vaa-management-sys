@@ -295,7 +295,14 @@ export default async function StaffMasterlistPage({
                           </span>
                         ) : <Empty />}
                       </TableCell>
-                      <TableCell className="px-3 py-2.5 hidden lg:table-cell">{l.position ?? <Empty />}</TableCell>
+                      <TableCell className="px-3 py-2.5 hidden lg:table-cell">
+                        {l.position || l.level ? (
+                          <span className="flex items-center gap-1">
+                            {l.position ?? <Empty />}
+                            {l.level && <Badge variant="outline" className="text-[10px] py-0 px-1.5">{l.level}</Badge>}
+                          </span>
+                        ) : <Empty />}
+                      </TableCell>
                       <TableCell className="px-3 py-2.5 hidden sm:table-cell">
                         {l.generalStatus ? (
                           <StatusIndicator tone={STAFF_STATUS_TONE[l.generalStatus] ?? 'neutral'}>{titleCase(l.generalStatus)}</StatusIndicator>
