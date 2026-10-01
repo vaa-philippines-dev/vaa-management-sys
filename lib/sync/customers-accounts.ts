@@ -20,6 +20,21 @@ function toBool(value: unknown): boolean | null {
   return null
 }
 
+// The CMS sheets return every column for every row, so most of what lands in
+// `raw` is empty strings. An absent key and a key set to "" mean the same thing
+// to any reader of these mirrors, so keep only the ones carrying a value —
+// same treatment as lib/sync/va-connection-records.ts.
+function pruneRaw(row: RawSheetRow): RawSheetRow {
+  const pruned: Record<string, unknown> = {}
+  for (const [key, value] of Object.entries(row)) {
+    if (!key) continue
+    if (value === null || value === undefined) continue
+    if (typeof value === 'string' && value.trim() === '') continue
+    pruned[key] = value
+  }
+  return pruned as RawSheetRow
+}
+
 function toInt(value: unknown): number | null {
   if (value === null || value === undefined || value === '') return null
   const n = typeof value === 'number' ? value : Number(value)
@@ -34,11 +49,15 @@ export type CustomerLoadSummary = {
   skippedBlankId: number
 }
 
+// `updated_at` is listed here even though Prisma declares it @updatedAt: that
+// attribute is applied by the Prisma client, and these are raw INSERTs, so
+// nothing would populate a column that is NOT NULL with no database default.
 const CUSTOMER_COLUMNS = [
   'external_customer_id', 'name', 'status', 'status_date', 'assigned_specialist',
   'created_by_email', 'updated_by_email', 'notes', 'payment_date', 'no_payment_yet',
   'termination_count', 'reactivation_count', 'last_terminated_date', 'last_reactivated_date',
   'last_status_reason', 'status_history', 'cms_created_at', 'cms_updated_at', 'raw', 'last_synced_at',
+  'updated_at',
 ] as const
 
 type PreparedCustomer = {
@@ -84,11 +103,18 @@ function prepareCustomerRow(row: RawSheetRow, externalCustomerId: string, now: D
     statusHistory: toStr(row.StatusHistory),
     cmsCreatedAt: excelSerialToDate(row.CreatedAt),
     cmsUpdatedAt: excelSerialToDate(row.UpdatedAt),
-    raw: row,
+    raw: pruneRaw(row),
     lastSyncedAt: now,
   }
 }
 
+// Both upserts below guard their ON CONFLICT ... DO UPDATE with a WHERE that
+// compares every content column, so a row the CMS hasn't touched is left alone
+// rather than rewritten. Postgres updates are copy-on-write, so re-running a
+// load over thousands of unchanged rows otherwise churns the whole table into
+// dead tuples — space plain autovacuum reclaims into the table's free space map
+// but never hands back to the filesystem, which is what the Supabase size meter
+// reads. See scripts/db-maintenance.ts to reclaim what earlier runs left behind.
 async function upsertCustomerBatch(batch: PreparedCustomer[]): Promise<void> {
   if (batch.length === 0) return
 
@@ -101,7 +127,7 @@ async function upsertCustomerBatch(batch: PreparedCustomer[]): Promise<void> {
       row.createdByEmail, row.updatedByEmail, row.notes, row.paymentDate, row.noPaymentYet,
       row.terminationCount, row.reactivationCount, row.lastTerminatedDate, row.lastReactivatedDate,
       row.lastStatusReason, row.statusHistory, row.cmsCreatedAt, row.cmsUpdatedAt,
-      JSON.stringify(row.raw), row.lastSyncedAt,
+      JSON.stringify(row.raw), row.lastSyncedAt, row.lastSyncedAt,
     ]
     const base = params.length
     const placeholders = CUSTOMER_COLUMNS.map((col, i) => {
@@ -137,6 +163,45 @@ async function upsertCustomerBatch(batch: PreparedCustomer[]): Promise<void> {
       raw = EXCLUDED.raw,
       last_synced_at = EXCLUDED.last_synced_at,
       updated_at = now()
+    WHERE (
+      "customers".name,
+      "customers".status,
+      "customers".status_date,
+      "customers".assigned_specialist,
+      "customers".created_by_email,
+      "customers".updated_by_email,
+      "customers".notes,
+      "customers".payment_date,
+      "customers".no_payment_yet,
+      "customers".termination_count,
+      "customers".reactivation_count,
+      "customers".last_terminated_date,
+      "customers".last_reactivated_date,
+      "customers".last_status_reason,
+      "customers".status_history,
+      "customers".cms_created_at,
+      "customers".cms_updated_at,
+      "customers".raw
+    ) IS DISTINCT FROM (
+      EXCLUDED.name,
+      EXCLUDED.status,
+      EXCLUDED.status_date,
+      EXCLUDED.assigned_specialist,
+      EXCLUDED.created_by_email,
+      EXCLUDED.updated_by_email,
+      EXCLUDED.notes,
+      EXCLUDED.payment_date,
+      EXCLUDED.no_payment_yet,
+      EXCLUDED.termination_count,
+      EXCLUDED.reactivation_count,
+      EXCLUDED.last_terminated_date,
+      EXCLUDED.last_reactivated_date,
+      EXCLUDED.last_status_reason,
+      EXCLUDED.status_history,
+      EXCLUDED.cms_created_at,
+      EXCLUDED.cms_updated_at,
+      EXCLUDED.raw
+    )
   `
   await prisma.$executeRawUnsafe(sql, ...params)
 }
@@ -182,6 +247,7 @@ const ACCOUNT_COLUMNS = [
   'primary_role', 'primary_email', 'primary_is_focal', 'secondary_role', 'secondary_email', 'secondary_is_focal',
   'primary_linked_to_customer', 'termination_reason', 'seller_onboarding_link', 'contract_id',
   'created_by_email', 'updated_by_email', 'cms_created_at', 'cms_updated_at', 'raw', 'last_synced_at',
+  'updated_at',
 ] as const
 
 type PreparedAccount = {
@@ -258,7 +324,7 @@ function prepareAccountRow(row: RawSheetRow, externalAccountId: string, customer
     updatedByEmail: toStr(row.UpdatedBy),
     cmsCreatedAt: excelSerialToDate(row.CreatedAt),
     cmsUpdatedAt: excelSerialToDate(row.UpdatedAt),
-    raw: row,
+    raw: pruneRaw(row),
     lastSyncedAt: now,
   }
 }
@@ -278,7 +344,7 @@ async function upsertAccountBatch(batch: PreparedAccount[]): Promise<void> {
       row.primaryRole, row.primaryEmail, row.primaryIsFocal, row.secondaryRole, row.secondaryEmail, row.secondaryIsFocal,
       row.primaryLinkedToCustomer, row.terminationReason, row.sellerOnboardingLink, row.contractId,
       row.createdByEmail, row.updatedByEmail, row.cmsCreatedAt, row.cmsUpdatedAt,
-      JSON.stringify(row.raw), row.lastSyncedAt,
+      JSON.stringify(row.raw), row.lastSyncedAt, row.lastSyncedAt,
     ]
     const base = params.length
     const placeholders = ACCOUNT_COLUMNS.map((col, i) => {
@@ -329,6 +395,75 @@ async function upsertAccountBatch(batch: PreparedAccount[]): Promise<void> {
       raw = EXCLUDED.raw,
       last_synced_at = EXCLUDED.last_synced_at,
       updated_at = now()
+    WHERE (
+      "accounts".external_customer_id,
+      "accounts".customer_id,
+      "accounts".customer_name,
+      "accounts".account_name,
+      "accounts".primary_contact,
+      "accounts".secondary_contact,
+      "accounts".company_name,
+      "accounts".account_managers,
+      "accounts".invoice_contact_name,
+      "accounts".invoice_contact_role,
+      "accounts".invoice_contact_email,
+      "accounts".category,
+      "accounts".type,
+      "accounts".country_region,
+      "accounts".status,
+      "accounts".status_date,
+      "accounts".is_returning,
+      "accounts".notes,
+      "accounts".primary_role,
+      "accounts".primary_email,
+      "accounts".primary_is_focal,
+      "accounts".secondary_role,
+      "accounts".secondary_email,
+      "accounts".secondary_is_focal,
+      "accounts".primary_linked_to_customer,
+      "accounts".termination_reason,
+      "accounts".seller_onboarding_link,
+      "accounts".contract_id,
+      "accounts".created_by_email,
+      "accounts".updated_by_email,
+      "accounts".cms_created_at,
+      "accounts".cms_updated_at,
+      "accounts".raw
+    ) IS DISTINCT FROM (
+      EXCLUDED.external_customer_id,
+      EXCLUDED.customer_id,
+      EXCLUDED.customer_name,
+      EXCLUDED.account_name,
+      EXCLUDED.primary_contact,
+      EXCLUDED.secondary_contact,
+      EXCLUDED.company_name,
+      EXCLUDED.account_managers,
+      EXCLUDED.invoice_contact_name,
+      EXCLUDED.invoice_contact_role,
+      EXCLUDED.invoice_contact_email,
+      EXCLUDED.category,
+      EXCLUDED.type,
+      EXCLUDED.country_region,
+      EXCLUDED.status,
+      EXCLUDED.status_date,
+      EXCLUDED.is_returning,
+      EXCLUDED.notes,
+      EXCLUDED.primary_role,
+      EXCLUDED.primary_email,
+      EXCLUDED.primary_is_focal,
+      EXCLUDED.secondary_role,
+      EXCLUDED.secondary_email,
+      EXCLUDED.secondary_is_focal,
+      EXCLUDED.primary_linked_to_customer,
+      EXCLUDED.termination_reason,
+      EXCLUDED.seller_onboarding_link,
+      EXCLUDED.contract_id,
+      EXCLUDED.created_by_email,
+      EXCLUDED.updated_by_email,
+      EXCLUDED.cms_created_at,
+      EXCLUDED.cms_updated_at,
+      EXCLUDED.raw
+    )
   `
   await prisma.$executeRawUnsafe(sql, ...params)
 }

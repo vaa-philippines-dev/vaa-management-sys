@@ -5,6 +5,8 @@ import { fetchVAConnectionRows, type RawVAConnectionRow } from '@/lib/google/va-
 export type LoadSummary = {
   totalRows: number
   loaded: number
+  /** Rows the sheet actually changed this run — the rest were left untouched. */
+  changed: number
   skippedBlankId: number
   skippedDuplicate: number
 }
@@ -34,6 +36,21 @@ const COLUMNS = [
 function clean(value: string | undefined): string | null {
   const trimmed = value?.trim()
   return trimmed ? trimmed : null
+}
+
+// The sheet hands back every column for every row, so most of `raw` is empty
+// strings plus one blank-named column — 63% of the stored JSON by volume
+// (6.8 MB of 4.8k rows, vs 2.6 MB once pruned). An absent key and a key set to
+// "" mean the same thing to every reader of this mirror, so drop the latter.
+function pruneRaw(row: RawVAConnectionRow): RawVAConnectionRow {
+  const pruned: Record<string, unknown> = {}
+  for (const [key, value] of Object.entries(row)) {
+    if (!key) continue
+    if (typeof value === 'string' && value.trim() === '') continue
+    if (value === null || value === undefined) continue
+    pruned[key] = value
+  }
+  return pruned as RawVAConnectionRow
 }
 
 type PreparedRow = {
@@ -73,13 +90,13 @@ function prepareRow(row: RawVAConnectionRow, connectionId: string, now: Date): P
     startDate: clean(row.ActualStartDate),
     terminationDate: clean(row.TerminationDate),
     notes: clean(row.Notes),
-    raw: row,
+    raw: pruneRaw(row),
     lastSyncedAt: now,
   }
 }
 
-async function upsertBatch(batch: PreparedRow[]): Promise<void> {
-  if (batch.length === 0) return
+async function upsertBatch(batch: PreparedRow[]): Promise<number> {
+  if (batch.length === 0) return 0
 
   const valuesSql: string[] = []
   const params: unknown[] = []
@@ -138,8 +155,41 @@ async function upsertBatch(batch: PreparedRow[]): Promise<void> {
       notes = EXCLUDED.notes,
       raw = EXCLUDED.raw,
       last_synced_at = EXCLUDED.last_synced_at
+    WHERE (
+      "va_connection_records".status,
+      "va_connection_records".connection_type,
+      "va_connection_records".va_external_id,
+      "va_connection_records".va_name,
+      "va_connection_records".client_external_id,
+      "va_connection_records".client_name,
+      "va_connection_records".department,
+      "va_connection_records".service,
+      "va_connection_records".hours,
+      "va_connection_records".hours_type,
+      "va_connection_records".connection_date,
+      "va_connection_records".start_date,
+      "va_connection_records".termination_date,
+      "va_connection_records".notes,
+      "va_connection_records".raw
+    ) IS DISTINCT FROM (
+      EXCLUDED.status,
+      EXCLUDED.connection_type,
+      EXCLUDED.va_external_id,
+      EXCLUDED.va_name,
+      EXCLUDED.client_external_id,
+      EXCLUDED.client_name,
+      EXCLUDED.department,
+      EXCLUDED.service,
+      EXCLUDED.hours,
+      EXCLUDED.hours_type,
+      EXCLUDED.connection_date,
+      EXCLUDED.start_date,
+      EXCLUDED.termination_date,
+      EXCLUDED.notes,
+      EXCLUDED.raw
+    )
   `
-  await prisma.$executeRawUnsafe(sql, ...params)
+  return prisma.$executeRawUnsafe(sql, ...params)
 }
 
 // Mirrors every VAConnections sheet row as-is, regardless of whether its VA/Client
@@ -147,12 +197,22 @@ async function upsertBatch(batch: PreparedRow[]): Promise<void> {
 // is a separate, not-yet-built step. This just makes the sheet's data visible.
 // Batched as multi-row INSERT ... ON CONFLICT rather than per-row upserts — with
 // several thousand rows, one round trip per row was taking minutes.
+//
+// The ON CONFLICT ... DO UPDATE is guarded by a WHERE that compares every
+// content column, so a row whose sheet values haven't moved is left alone
+// instead of rewritten. Almost all of these connections are historical and
+// never change again: without the guard each nightly run replaced all ~4.8k
+// rows, and since Postgres updates are copy-on-write that churned ~8 MB of
+// dead tuples a day, holding the table at roughly twice its live size.
+// `lastSyncedAt` therefore means "when this row last changed in the sheet",
+// not "when the cron last ran" — the run itself is reported by this summary.
 export async function loadVAConnectionRecords(): Promise<LoadSummary> {
   const rows = await fetchVAConnectionRows()
 
   const summary: LoadSummary = {
     totalRows: rows.length,
     loaded: 0,
+    changed: 0,
     skippedBlankId: 0,
     skippedDuplicate: 0,
   }
@@ -160,6 +220,7 @@ export async function loadVAConnectionRecords(): Promise<LoadSummary> {
   const seen = new Set<string>()
   const now = new Date()
   let batch: PreparedRow[] = []
+  let changed = 0
 
   for (const row of rows) {
     const connectionId = row.ConnectionID?.trim()
@@ -177,11 +238,12 @@ export async function loadVAConnectionRecords(): Promise<LoadSummary> {
     summary.loaded++
 
     if (batch.length >= BATCH_SIZE) {
-      await upsertBatch(batch)
+      changed += await upsertBatch(batch)
       batch = []
     }
   }
-  await upsertBatch(batch)
+  changed += await upsertBatch(batch)
+  summary.changed = changed
 
   return summary
 }

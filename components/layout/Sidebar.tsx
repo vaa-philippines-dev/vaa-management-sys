@@ -269,7 +269,6 @@ function FavoritableRow({
 
 const managerRoutes = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { label: 'Inbox', href: '/inbox', icon: MessageSquare },
   { label: 'Client Request', href: '/clients', icon: BriefcaseBusiness },
   { label: 'Assignments', href: '/assignments', icon: Briefcase },
 ]
@@ -279,6 +278,7 @@ const managerRoutes = [
 // this whole section is operational/back-office tooling, not day-to-day
 // manager navigation.
 const onGoingRoutes = [
+  { label: 'Inbox', href: '/inbox', icon: MessageSquare },
   { label: 'Matching', href: '/matching', icon: Handshake },
   { label: 'Work Logs', href: '/work-logs', icon: ListTodo },
   { label: 'Services', href: '/skills', icon: UserCog },
@@ -337,7 +337,6 @@ const supportRoutes = [
 
 const vaRoutes = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { label: 'Inbox', href: '/inbox', icon: MessageSquare },
   { label: 'My Work Logs', href: '/work-logs', icon: Clock },
   { label: 'My Assignments', href: '/assignments', icon: Briefcase },
 ]

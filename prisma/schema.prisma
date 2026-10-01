@@ -1528,10 +1528,16 @@ model ExternalSyncMapping {
 }
 
 // Raw mirror of the manager's VAConnections sheet — "load" phase only.
-// Every row that has a ConnectionID gets stored here as-is on each sync run,
+// Every row that has a ConnectionID gets stored here on each sync run,
 // regardless of whether it resolves to a real VAProfile/Client. Turning a row
 // into an actual Assignment (the "connect" phase) is deliberately separate
 // and not wired in yet.
+//
+// Two storage notes, both in lib/sync/va-connection-records.ts: `raw` holds the
+// sheet row with empty-valued columns stripped (they carry no more meaning than
+// an absent key, and keeping them tripled the column), and a run only rewrites
+// rows whose values actually moved — so `lastSyncedAt` is when this row last
+// CHANGED in the sheet, not when the cron last ran.
 model VAConnectionRecord {
   id               String   @id @default(cuid())
   connectionId     String   @unique @map("connection_id")

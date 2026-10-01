@@ -46,7 +46,7 @@ type Shortcut = {
 
 const SHORTCUTS: Shortcut[] = [
   { label: 'Dashboard', description: 'Overview of activity and stats', href: '/dashboard', icon: LayoutDashboard },
-  { label: 'Inbox', description: 'Messages and department channels', href: '/inbox', icon: MessageSquare },
+  { label: 'Inbox', description: 'Messages and department channels', href: '/inbox', icon: MessageSquare, adminOnly: true },
   { label: 'VA Masterlist', description: 'Browse and manage virtual assistants', href: '/vas', icon: Users, keywords: 'va roster masterlist team' },
   { label: 'Staff Masterlist', description: 'Internal staff roster', href: '/staff', icon: Contact, keywords: 'staff employees internal roster masterlist' },
   { label: 'Offboarding', description: 'Termination and resignation cases', href: '/offboarding', icon: UserMinus, keywords: 'termination resignation exit offboard' },
@@ -76,7 +76,6 @@ const SHORTCUTS: Shortcut[] = [
 
 const VA_SHORTCUTS: Shortcut[] = [
   { label: 'Dashboard', description: 'Overview of activity and stats', href: '/dashboard', icon: LayoutDashboard },
-  { label: 'Inbox', description: 'Messages and department channels', href: '/inbox', icon: MessageSquare },
   { label: 'My Work Logs', description: 'Hours you have logged', href: '/work-logs', icon: Clock, keywords: 'hours timesheet' },
   { label: 'My Assignments', description: 'Clients you are assigned to', href: '/assignments', icon: Briefcase },
   { label: 'Tickets', description: 'Support tickets and conversations', href: '/tickets', icon: Ticket },

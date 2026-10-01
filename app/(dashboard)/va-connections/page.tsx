@@ -72,8 +72,23 @@ export default async function VAConnectionsPage({
   }
 
   const [records, totalCount, statusGroups, lastSynced] = await Promise.all([
+    // Explicit select, not the whole row: `raw` holds the untouched sheet
+    // record (~1.4 KB/row) and nothing below renders it. Fetching it anyway
+    // cost ~8 MB of egress per "View All" load against 4.8k mirrored rows.
     prisma.vAConnectionRecord.findMany({
       where,
+      select: {
+        id: true,
+        connectionId: true,
+        status: true,
+        connectionType: true,
+        vaName: true,
+        clientName: true,
+        hours: true,
+        hoursType: true,
+        startDate: true,
+        connectionDate: true,
+      },
       orderBy: SORT_OPTIONS[sortKey].orderBy,
       ...(viewAll ? {} : { skip: (page - 1) * pageSize!, take: pageSize }),
     }),
@@ -100,7 +115,7 @@ export default async function VAConnectionsPage({
         <h2 className="text-lg font-bold tracking-tight">VA Connections</h2>
         <p className="text-xs text-muted-foreground">
           Mirrored from the manager&apos;s VAConnections sheet · {totalCount} record{totalCount !== 1 ? 's' : ''}
-          {lastSynced && ` · last loaded ${new Date(lastSynced.lastSyncedAt).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}`}
+          {lastSynced && ` · newest sheet change ${new Date(lastSynced.lastSyncedAt).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}`}
         </p>
       </div>
 

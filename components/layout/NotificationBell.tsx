@@ -3,16 +3,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Bell, Briefcase, Clock, MessageSquare, Reply, MoreHorizontal, Circle, CircleDot, UserMinus, CalendarCheck, CalendarX } from 'lucide-react'
-import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import { createClient, waitForRealtimeAuth } from '@/lib/supabase/client'
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu'
-import { MentionToast } from './MentionToast'
 import {
   getMyNotifications,
   markAllNotificationsRead,
@@ -20,17 +17,6 @@ import {
   markNotificationRead,
   markNotificationUnread,
 } from '@/app/(dashboard)/notifications/actions'
-
-// Supabase Realtime sends timestamp columns as raw Postgres text with no
-// timezone marker, unlike Prisma which always includes the "Z" suffix.
-// new Date(...) treats an unmarked string as local time instead of UTC, so
-// without this the notification's time would render correctly only for
-// whichever timezone happens to match the raw string's numbers.
-function toUtcIso(value: string | null): string | null {
-  if (!value) return value
-  if (/[zZ]|[+-]\d{2}:?\d{2}$/.test(value)) return value
-  return `${value.replace(' ', 'T')}Z`
-}
 
 type Notification = {
   id: string
@@ -64,91 +50,29 @@ const TYPE_ICON: Record<Notification['type'], React.ComponentType<{ className?: 
   LEAVE_REQUEST_DECIDED: CalendarX,
 }
 
-export function NotificationBell({
-  userId,
-  currentUserMessageColor,
-}: {
-  userId: string
-  currentUserMessageColor: 'BLUE' | 'RED' | 'GREEN' | 'YELLOW' | 'BLACK'
-}) {
+export function NotificationBell() {
   const [open, setOpen] = useState(false)
   const [notifications, setNotifications] = useState<Notification[]>([])
   const containerRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
 
-  useEffect(() => {
+  // Notifications are fetched on mount and again whenever the panel is opened.
+  // This used to hold an open Supabase Realtime subscription on `notifications`
+  // per signed-in tab, which meant a concurrent Realtime connection for every
+  // session all day for a feed users glance at a few times. Refetching on open
+  // costs one query per click instead, and is what the badge and list actually
+  // need — see also lib/supabase/client.ts, which no longer wires Realtime at all.
+  const refresh = useCallback(() => {
     getMyNotifications().then((data) => setNotifications(data))
   }, [])
 
   useEffect(() => {
-    let cancelled = false
-    const supabase = createClient()
-    let channel: ReturnType<typeof supabase.channel> | null = null
+    refresh()
+  }, [refresh])
 
-    waitForRealtimeAuth().then(() => {
-      if (cancelled) return
-      channel = supabase
-        .channel(`notifications-${userId}`)
-        .on(
-          'postgres_changes',
-          { event: 'INSERT', schema: 'public', table: 'notifications', filter: `recipient_id=eq.${userId}` },
-          (payload) => {
-            // Supabase Realtime delivers payload.new with raw snake_case
-            // Postgres column names, not the camelCased shape Prisma/our
-            // Notification type expects — map explicitly instead of casting.
-            const raw = payload.new as Record<string, unknown>
-            const row: Notification = {
-              id: raw.id as string,
-              type: raw.type as Notification['type'],
-              title: raw.title as string,
-              message: raw.message as string,
-              read: raw.read as boolean,
-              createdAt: toUtcIso(raw.created_at as string) as string,
-              entityType: raw.entity_type as string | null,
-              entityId: raw.entity_id as string | null,
-              messageId: raw.message_id as string | null,
-              mentionerName: raw.mentioner_name as string | null,
-              mentionerAvatarUrl: raw.mentioner_avatar_url as string | null,
-              departmentName: raw.department_name as string | null,
-            }
-            setNotifications((prev) => [row, ...prev].slice(0, 20))
-
-            const isChatNotification =
-              (row.type === 'NEW_MESSAGE' || row.type === 'MESSAGE_REPLY') &&
-              row.entityType === 'Channel' &&
-              row.entityId
-
-            if (isChatNotification && row.messageId) {
-              toast.custom((t) => (
-                <MentionToast
-                  notification={row}
-                  currentUserColor={currentUserMessageColor}
-                  onNavigate={() => {
-                    router.push(`/inbox?channel=${row.entityId}`)
-                    toast.dismiss(t)
-                  }}
-                  onDismiss={() => toast.dismiss(t)}
-                />
-              ))
-            } else {
-              toast(row.title, {
-                description: row.message,
-                action: isChatNotification
-                  ? { label: 'View', onClick: () => router.push(`/inbox?channel=${row.entityId}`) }
-                  : undefined,
-              })
-            }
-          }
-        )
-        .subscribe()
-    })
-
-    return () => {
-      cancelled = true
-      if (channel) supabase.removeChannel(channel)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- router from useRouter() is referentially stable, only userId should re-subscribe
-  }, [userId])
+  useEffect(() => {
+    if (open) refresh()
+  }, [open, refresh])
 
   useEffect(() => {
     if (!open) return

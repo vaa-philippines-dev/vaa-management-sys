@@ -32,7 +32,6 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
-import { ChannelRealtimeProvider } from '@/components/layout/ChannelRealtimeProvider'
 import { MentionAutocomplete } from './MentionAutocomplete'
 import { InboxSettingsModal, type MessageColorValue } from './InboxSettingsModal'
 import { UserProfilePanel, type ProfilePanelUser } from './UserProfilePanel'
@@ -655,7 +654,6 @@ function ChannelThread({
   const [draft, setDraft] = useState('')
   const [mentionQuery, setMentionQuery] = useState<string | null>(null)
   const [mentionActiveIndex, setMentionActiveIndex] = useState(0)
-  const [typingUsers, setTypingUsers] = useState<Map<string, string>>(new Map())
   const [composerMode, setComposerMode] = useState<ComposerMode>(null)
   const [forwardMessageId, setForwardMessageId] = useState<string | null>(null)
   const [highlightedId, setHighlightedId] = useState<string | null>(null)
@@ -669,9 +667,6 @@ function ChannelThread({
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const topSentinelRef = useRef<HTMLDivElement>(null)
   const lastMessageIdRef = useRef<string | null>(null)
-  const typingBroadcastRef = useRef<((userId: string, firstName: string) => void) | null>(null)
-  const typingTimeoutsRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map())
-  const lastTypingSentRef = useRef(0)
 
   useEffect(() => {
     let cancelled = false
@@ -770,104 +765,6 @@ function ChannelThread({
     return members.filter((m) => `${m.firstName} ${m.lastName}`.toLowerCase().includes(mentionQuery.toLowerCase())).slice(0, 6)
   }, [members, mentionQuery])
 
-  const handleRealtimeMessage = (row: {
-    id: string
-    channel_id: string
-    sender_id: string
-    body: string
-    created_at: string
-    parent_id: string | null
-    pinned: boolean
-    forwarded_from_body: string | null
-    forwarded_from_sender_name: string | null
-  }) => {
-    setMessages((prev) => {
-      if (prev.some((m) => m.id === row.id)) return prev
-
-      let sender: MessageWithSender['sender']
-      if (row.sender_id === currentUser.id) {
-        sender = {
-          id: currentUser.id,
-          firstName: currentUser.firstName,
-          lastName: currentUser.lastName,
-          messageColor,
-          avatarUrl: currentUser.avatarUrl,
-        }
-      } else {
-        const knownSender = prev.find((m) => m.sender.id === row.sender_id)?.sender
-        const member = members.find((m) => m.id === row.sender_id)
-        sender = knownSender ?? (member
-          ? {
-              id: row.sender_id,
-              firstName: member.firstName,
-              lastName: member.lastName,
-              messageColor: 'BLUE' as const,
-              avatarUrl: member.avatarUrl,
-            }
-          : { id: row.sender_id, firstName: 'Unknown', lastName: '', messageColor: 'BLUE' as const, avatarUrl: null })
-      }
-
-      const parent = row.parent_id ? prev.find((m) => m.id === row.parent_id) : undefined
-
-      return [
-        ...prev.filter((m) => !(m.pending && m.sender.id === row.sender_id && m.body === row.body)),
-        {
-          id: row.id,
-          channelId: row.channel_id,
-          body: row.body,
-          createdAt: row.created_at,
-          parentId: row.parent_id,
-          pinned: row.pinned,
-          forwardedFromBody: row.forwarded_from_body,
-          forwardedFromSenderName: row.forwarded_from_sender_name,
-          parent: parent
-            ? { id: parent.id, body: parent.body, deletedAt: parent.deletedAt ?? null, sender: parent.sender }
-            : undefined,
-          sender,
-        },
-      ]
-    })
-    setTypingUsers((prev) => {
-      if (!prev.has(row.sender_id)) return prev
-      const next = new Map(prev)
-      next.delete(row.sender_id)
-      return next
-    })
-  }
-
-  const handleRealtimeMessageUpdate = (row: {
-    id: string
-    body: string
-    edited_at: string | null
-    deleted_at: string | null
-    pinned: boolean
-  }) => {
-    setMessages((prev) =>
-      prev.map((m) =>
-        m.id === row.id
-          ? { ...m, body: row.body, editedAt: row.edited_at, deletedAt: row.deleted_at, pinned: row.pinned }
-          : m
-      )
-    )
-  }
-
-  const handleTyping = ({ userId, firstName }: { userId: string; firstName: string }) => {
-    if (userId === currentUser.id) return
-    setTypingUsers((prev) => new Map(prev).set(userId, firstName))
-    const timeouts = typingTimeoutsRef.current
-    clearTimeout(timeouts.get(userId))
-    timeouts.set(
-      userId,
-      setTimeout(() => {
-        setTypingUsers((prev) => {
-          const next = new Map(prev)
-          next.delete(userId)
-          return next
-        })
-      }, 3000)
-    )
-  }
-
   const insertMention = (member: Member) => {
     const atIndex = draft.lastIndexOf('@')
     const before = draft.slice(0, atIndex)
@@ -879,12 +776,6 @@ function ChannelThread({
 
   const handleDraftChange = (value: string) => {
     setDraft(value)
-
-    const now = Date.now()
-    if (now - lastTypingSentRef.current > 1500 && value.trim()) {
-      lastTypingSentRef.current = now
-      typingBroadcastRef.current?.(currentUser.id, currentUser.firstName)
-    }
 
     const atIndex = value.lastIndexOf('@')
     if (atIndex === -1) {
@@ -1015,24 +906,8 @@ function ChannelThread({
     setTimeout(() => setHighlightedId((cur) => (cur === messageId ? null : cur)), 1500)
   }
 
-  const typingLabel = useMemo(() => {
-    const names = [...typingUsers.values()]
-    if (names.length === 0) return null
-    if (names.length === 1) return `${names[0]} is typing...`
-    if (names.length === 2) return `${names[0]} and ${names[1]} are typing...`
-    return `${names.length} people are typing...`
-  }, [typingUsers])
-
   return (
     <>
-      <ChannelRealtimeProvider
-        channelId={channelId}
-        onMessage={handleRealtimeMessage}
-        onMessageUpdate={handleRealtimeMessageUpdate}
-        onTyping={handleTyping}
-        typingRef={typingBroadcastRef}
-      />
-
       <div className="flex items-center gap-1.5 border-b px-4 py-2.5">
         {channel.kind === 'DIRECT' ? (
           <div className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted text-[10px] font-semibold">
@@ -1303,7 +1178,6 @@ function ChannelThread({
       )}
       </div>
 
-      <div className="h-5 px-4 text-[11px] text-muted-foreground italic">{typingLabel}</div>
 
       {composerMode && (
         <div className="flex items-center justify-between border-t bg-muted/40 px-3 py-1.5 text-[11px]">

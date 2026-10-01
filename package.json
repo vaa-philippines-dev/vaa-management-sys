@@ -14,6 +14,7 @@
     "db:studio": "npx prisma studio",
     "import:dmf": "tsx --env-file=.env.local scripts/import-dmf.ts",
     "import:staff": "tsx --env-file=.env.local scripts/import-staff-masterlist.ts",
+    "db:maintenance": "tsx scripts/db-maintenance.ts",
     "postinstall": "npx prisma generate"
   },
   "dependencies": {

@@ -15,23 +15,44 @@ export async function GET(req: NextRequest) {
   const dayStart = startOfDay(today)
   const dayEnd = endOfDay(today)
 
+  // Narrow in SQL, not in JS: a VA with no capacity target can never produce a
+  // notification (the `dailyTarget` guard below drops it), and neither can one
+  // whose department has no head to notify. Selecting explicit fields rather
+  // than `include`-ing whole rows matters too — this runs nightly over the
+  // entire active roster, and the unfiltered version pulled every column of
+  // each VAProfile, User, DepartmentMembership, Department and head User.
   const vas = await prisma.vAProfile.findMany({
     where: {
       status: 'ACTIVE',
       isActive: true,
       availabilityStatus: { not: 'ON_LEAVE' },
-      user: { userType: 'VIRTUAL_ASSISTANT', isActive: true },
-    },
-    include: {
+      totalCapacityHours: { not: null, gt: 0 },
       user: {
-        include: {
+        userType: 'VIRTUAL_ASSISTANT',
+        isActive: true,
+        memberships: { some: { endedAt: null, department: { headId: { not: null } } } },
+      },
+    },
+    select: {
+      id: true,
+      totalCapacityHours: true,
+      user: {
+        select: {
+          firstName: true,
+          lastName: true,
           memberships: {
             where: { endedAt: null },
-            include: { department: { include: { head: true } } },
+            select: {
+              isPrimary: true,
+              department: { select: { headId: true } },
+            },
           },
         },
       },
-      workLogs: { where: { workDate: { gte: dayStart, lte: dayEnd } } },
+      workLogs: {
+        where: { workDate: { gte: dayStart, lte: dayEnd } },
+        select: { hours: true },
+      },
     },
   })
 
@@ -45,12 +66,12 @@ export async function GET(req: NextRequest) {
     if (loggedToday >= dailyTarget) continue
 
     const primaryMembership = va.user.memberships.find((m) => m.isPrimary) ?? va.user.memberships[0]
-    const head = primaryMembership?.department?.head
-    if (!head) continue
+    const headId = primaryMembership?.department?.headId
+    if (!headId) continue
 
     const vaName = `${va.user.firstName} ${va.user.lastName}`.trim()
     notifications.push({
-      recipientId: head.id,
+      recipientId: headId,
       type: 'HOURS_SHORTFALL',
       title: 'VA behind on daily hours',
       message: `${vaName} has logged ${loggedToday.toFixed(1)}h of a ${dailyTarget.toFixed(1)}h daily target today.`,

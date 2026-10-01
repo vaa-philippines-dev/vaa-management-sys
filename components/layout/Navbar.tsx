@@ -61,7 +61,7 @@ export async function Navbar() {
         )}
       </div>
       <div className="flex items-center gap-3">
-        {user && <NotificationBell userId={user.id} currentUserMessageColor={user.messageColor} />}
+        {user && <NotificationBell />}
         <ThemeToggle />
         {user && (
           <ProfileCard
