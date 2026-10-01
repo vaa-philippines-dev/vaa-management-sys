@@ -110,15 +110,14 @@ export async function updatePreparation(preparationId: string, formData: FormDat
   }
 
   const data = {
-    // startStatus/targetStartDate/vaType/expertiseGroup/vaClientFileUrl/
-    // accountDocUrl are deliberately NOT writable here — the sheet's own
-    // column coding marks these "fixed/fetched", not DM/OM-editable (unlike
-    // e.g. scheduleType/scheduleDays/vaBuffers, which are genuinely orange/
-    // editable there). They're only ever populated by the DMF import; a
-    // manager can view but not retype them, same as VA NAME/TEAM/PRIMARY
-    // ACCOUNT already are.
-    scheduleType: text(formData, 'scheduleType'),
-    scheduleDays: text(formData, 'scheduleDays'),
+    // startStatus/targetStartDate/vaType/scheduleType/scheduleDays/
+    // expertiseGroup/vaClientFileUrl/accountDocUrl are deliberately NOT
+    // writable here — the sheet's own column coding marks these "fixed/
+    // fetched", not DM/OM-editable (unlike e.g. vaBuffers, which is
+    // genuinely orange/editable there). They're only ever populated by the
+    // DMF import; a manager can view but not retype them, same as VA NAME/
+    // TEAM/PRIMARY ACCOUNT already are.
+    //
     // vaBuffers (legacy text) is only ever cleared here, once a manager
     // dismisses it — buffers are picked from the VA list instead.
     vaBuffers: formData.get('clearLegacyBuffers') ? null : before.vaBuffers,

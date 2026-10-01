@@ -440,24 +440,22 @@ export function PreparationBoard({
                 </div>
               </div>
 
+              {/* Schedule type / Schedule days are fixed/fetched per the
+                  sheet's own column coding, not DM/OM-editable — same as
+                  Department status / VA type / Target start date above.
+                  Only ever populated by the DMF import. */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <Label htmlFor="scheduleType">Schedule type</Label>
-                  <Input
-                    id="scheduleType"
-                    name="scheduleType"
-                    placeholder="Flexible / Fixed"
-                    defaultValue={editing.scheduleType ?? ''}
-                  />
+                  <Label className="text-muted-foreground">Schedule type</Label>
+                  <p className="text-sm py-2">
+                    {editing.scheduleType || <span className="text-muted-foreground">Not set</span>}
+                  </p>
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="scheduleDays">Schedule days</Label>
-                  <Input
-                    id="scheduleDays"
-                    name="scheduleDays"
-                    placeholder="Mon - Fri"
-                    defaultValue={editing.scheduleDays ?? ''}
-                  />
+                  <Label className="text-muted-foreground">Schedule days</Label>
+                  <p className="text-sm py-2">
+                    {editing.scheduleDays || <span className="text-muted-foreground">Not set</span>}
+                  </p>
                 </div>
               </div>
 
