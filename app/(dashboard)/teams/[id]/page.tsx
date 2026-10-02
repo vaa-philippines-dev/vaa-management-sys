@@ -11,6 +11,7 @@ import { TeamNameEditor } from '@/components/teams/TeamNameEditor'
 import { StructureCard } from '@/components/departments/StructureCard'
 import { isTeamScoped, getLedTeamScope } from '@/lib/scope'
 import { getTeamCandidates } from '@/lib/teams'
+import { isEndedVAStatus, ENDED_VA_STATUS_LABEL } from '@/lib/active-va'
 
 function initials(name: string) {
   const parts = name.trim().split(/\s+/)
@@ -36,7 +37,7 @@ const AVAILABILITY_LABEL: Record<string, string> = {
   AVAILABLE: 'Available',
   PARTIALLY_ASSIGNED: 'Partially Assigned',
   FULLY_ASSIGNED: 'Fully Assigned',
-  ON_LEAVE: 'On Leave',
+  ON_LEAVE: 'On hold by VA',
   UNAVAILABLE: 'Unavailable',
   ON_HOLD_BY_VA: 'On hold by VA',
   ON_HOLD_BY_VAA: 'On hold by VAA',
@@ -104,6 +105,7 @@ export default async function TeamDetailPage({
     userId: m.userId,
     name: userName(m.user),
     availabilityStatus: m.user.vaProfile?.availabilityStatus ?? null,
+    vaStatus: m.user.vaProfile?.status ?? null,
   }))
 
   let candidates: { userId: string; name: string; isVA: boolean }[] = []
@@ -116,6 +118,7 @@ export default async function TeamDetailPage({
     otherTeams = await prisma.team.findMany({
       where: {
         id: { not: team.id },
+        status: 'ACTIVE',
         ...(managedIds ? { departmentId: { in: managedIds } } : {}),
       },
       select: { id: true, name: true },
@@ -196,9 +199,13 @@ export default async function TeamDetailPage({
                       {m.userId === team.leaderId ? 'Leader' : 'Temp Leader'}
                     </Badge>
                   )}
-                  <StatusIndicator tone={AVAILABILITY_TONE[m.availabilityStatus ?? ''] ?? 'neutral'}>
-                    {AVAILABILITY_LABEL[m.availabilityStatus ?? ''] ?? m.availabilityStatus ?? 'Unknown'}
-                  </StatusIndicator>
+                  {isEndedVAStatus(m.vaStatus) ? (
+                    <StatusIndicator tone="destructive">{ENDED_VA_STATUS_LABEL[m.vaStatus!] ?? m.vaStatus}</StatusIndicator>
+                  ) : (
+                    <StatusIndicator tone={AVAILABILITY_TONE[m.availabilityStatus ?? ''] ?? 'neutral'}>
+                      {AVAILABILITY_LABEL[m.availabilityStatus ?? ''] ?? m.availabilityStatus ?? 'Unknown'}
+                    </StatusIndicator>
+                  )}
                 </div>
               ))}
             </div>

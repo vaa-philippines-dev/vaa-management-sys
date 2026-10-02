@@ -20,6 +20,7 @@ export default async function TeamsPage() {
   if (isVA) {
     const affiliatedTeams = await prisma.team.findMany({
       where: {
+        status: 'ACTIVE',
         OR: [
           { leaderId: user.id },
           { tempLeader1Id: user.id },
@@ -59,9 +60,11 @@ export default async function TeamsPage() {
     60,
     () =>
       prisma.team.findMany({
+        // Archived teams (e.g. Amazon's old Team 03/07, folded into the
+        // others) stay reachable from Admin > Teams, not here.
         where: teamScoped
-          ? { id: { in: ledTeamIds } }
-          : isAdmin ? undefined : { departmentId: { in: managedIds } },
+          ? { id: { in: ledTeamIds }, status: 'ACTIVE' }
+          : isAdmin ? { status: 'ACTIVE' } : { departmentId: { in: managedIds }, status: 'ACTIVE' },
         include: { department: true, _count: { select: { memberships: { where: { endedAt: null } } } } },
         orderBy: { name: 'asc' },
       })

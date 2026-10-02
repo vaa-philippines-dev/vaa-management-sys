@@ -48,6 +48,8 @@ export type KpiCell = {
   // Checked in after its own due date — the signal that surfaces a check-in
   // done late instead of just quietly landing in the "done" pile.
   late: boolean
+  // KPI call notes — what was discussed on the check-in call.
+  notes: string | null
 }
 
 export type PerformanceRow = {

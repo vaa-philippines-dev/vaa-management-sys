@@ -42,7 +42,7 @@ function LeaderChip({ person, icon: Icon }: { person: PersonRef | null; icon: Re
   )
 }
 
-export function MemberRow({ member }: { member: TeamMemberAssignmentRow }) {
+export function MemberRow({ member, action }: { member: TeamMemberAssignmentRow; action?: React.ReactNode }) {
   return (
     <div className="flex items-center gap-3 px-4 py-2.5">
       <div className="min-w-0 flex-1">
@@ -84,6 +84,7 @@ export function MemberRow({ member }: { member: TeamMemberAssignmentRow }) {
       <StatusIndicator tone={STATE_TONE[member.state]} className="w-24 shrink-0">
         {STATE_LABEL[member.state]}
       </StatusIndicator>
+      {action}
     </div>
   )
 }

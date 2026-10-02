@@ -10,6 +10,7 @@ import { MemberCombobox } from '@/components/teams/MemberCombobox'
 import { toast } from 'sonner'
 import { Loader2, Crown, ShieldHalf, ArrowRightLeft, UserMinus, Users } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { isEndedVAStatus, ENDED_VA_STATUS_LABEL } from '@/lib/active-va'
 import {
   setTeamLeader,
   setTempLeader,
@@ -35,7 +36,7 @@ const AVAILABILITY_LABEL: Record<string, string> = {
   AVAILABLE: 'Available',
   PARTIALLY_ASSIGNED: 'Partially Assigned',
   FULLY_ASSIGNED: 'Fully Assigned',
-  ON_LEAVE: 'On Leave',
+  ON_LEAVE: 'On hold by VA',
   UNAVAILABLE: 'Unavailable',
   ON_HOLD_BY_VA: 'On hold by VA',
   ON_HOLD_BY_VAA: 'On hold by VAA',
@@ -54,7 +55,9 @@ export type TeamMemberRow = {
   userId: string
   name: string
   availabilityStatus: string | null
+  vaStatus: string | null
 }
+
 
 export type OtherTeamOption = {
   id: string
@@ -238,12 +241,19 @@ export function TeamDetailControls({
                       {m.userId === leaderId ? 'Leader' : 'Temp Leader'}
                     </Badge>
                   )}
-                  <StatusIndicator
-                    tone={AVAILABILITY_TONE[m.availabilityStatus ?? ''] ?? 'neutral'}
-                    className="shrink-0"
-                  >
-                    {AVAILABILITY_LABEL[m.availabilityStatus ?? ''] ?? m.availabilityStatus ?? 'Unknown'}
-                  </StatusIndicator>
+                  {/* Left VAs whose membership was never ended: flag them for removal. */}
+                  {isEndedVAStatus(m.vaStatus) ? (
+                    <StatusIndicator tone="destructive" className="shrink-0">
+                      {ENDED_VA_STATUS_LABEL[m.vaStatus!] ?? m.vaStatus}
+                    </StatusIndicator>
+                  ) : (
+                    <StatusIndicator
+                      tone={AVAILABILITY_TONE[m.availabilityStatus ?? ''] ?? 'neutral'}
+                      className="shrink-0"
+                    >
+                      {AVAILABILITY_LABEL[m.availabilityStatus ?? ''] ?? m.availabilityStatus ?? 'Unknown'}
+                    </StatusIndicator>
+                  )}
                 </div>
               ))}
             </div>

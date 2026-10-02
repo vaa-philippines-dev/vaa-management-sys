@@ -111,12 +111,13 @@ export async function setKpiCheckCompleted(checkId: string, formData: FormData) 
 
   const check = await prisma.assignmentKpiCheck.findUnique({
     where: { id: checkId },
-    select: { assignmentId: true, milestone: true, dueDate: true, completed: true, completedAt: true },
+    select: { assignmentId: true, milestone: true, dueDate: true, completed: true, completedAt: true, notes: true },
   })
   if (!check) return { error: 'Checkpoint not found' }
   await assertAssignmentInScope(actor, check.assignmentId)
 
   const completed = formData.get('completed') === 'on'
+  const notes = ((formData.get('notes') as string) ?? '').trim() || null
   let completedAt: Date | null = null
   if (completed) {
     completedAt = parseDate(formData.get('completedAt')) ?? new Date()
@@ -131,6 +132,7 @@ export async function setKpiCheckCompleted(checkId: string, formData: FormData) 
       completed,
       completedAt,
       completedById: completed ? actor.id : null,
+      notes,
     },
   })
 
@@ -141,8 +143,8 @@ export async function setKpiCheckCompleted(checkId: string, formData: FormData) 
     action: 'UPDATE',
     entityType: 'AssignmentKpiCheck',
     entityId: checkId,
-    before: { completed: check.completed, completedAt: check.completedAt },
-    after: { completed, completedAt, milestone: check.milestone, assignmentId: check.assignmentId, late },
+    before: { completed: check.completed, completedAt: check.completedAt, notes: check.notes },
+    after: { completed, completedAt, notes, milestone: check.milestone, assignmentId: check.assignmentId, late },
   })
 
   revalidatePerformance()

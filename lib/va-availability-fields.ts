@@ -7,11 +7,13 @@ import type { Availability } from '@/src/generated/prisma/enums'
 // Every Availability value in "Change Availability" dropdown order — the one
 // list the DMF board, the TMF board and both write actions share, so a new
 // status can't reach one dropdown and be rejected by another's validation.
+// ON_LEAVE is retired: the DMF calls it "On hold by VA" (a VA who asked not to
+// be recommended for a while), and phase ZZA moved every row over. It stays
+// in the enum and in the labels below only so a stray old value still reads.
 export const AVAILABILITY_STATUSES = [
   'AVAILABLE',
   'PARTIALLY_ASSIGNED',
   'FULLY_ASSIGNED',
-  'ON_LEAVE',
   'UNAVAILABLE',
   'ON_HOLD_BY_VA',
   'ON_HOLD_BY_VAA',
@@ -22,12 +24,16 @@ export const AVAILABILITY_STATUS_LABELS: Record<Availability, string> = {
   AVAILABLE: 'Available',
   PARTIALLY_ASSIGNED: 'Partially Assigned',
   FULLY_ASSIGNED: 'Full',
-  ON_LEAVE: 'On Leave',
+  ON_LEAVE: 'On hold by VA',
   UNAVAILABLE: 'Unavailable',
   ON_HOLD_BY_VA: 'On hold by VA',
   ON_HOLD_BY_VAA: 'On hold by VAA',
   RECOMMENDED: 'Recommended',
 }
+
+// On hold either way — not to be recommended or counted as bench capacity,
+// same as leave used to be.
+export const ON_HOLD_AVAILABILITY: Availability[] = ['ON_LEAVE', 'ON_HOLD_BY_VA', 'ON_HOLD_BY_VAA']
 
 export function isAvailability(value: string): value is Availability {
   return (AVAILABILITY_STATUSES as readonly string[]).includes(value)
@@ -152,7 +158,7 @@ export type AvailabilitySummary = {
   total: number
   available: number
   fullyAssigned: number
-  onLeave: number
+  onHold: number
   totalAvailableHours: number
   needsReview: number
   recommended: number
@@ -167,13 +173,13 @@ export function computeAvailabilitySummary(rows: AvailabilityRow[]): Availabilit
       acc.total++
       if (r.availabilityStatus === 'AVAILABLE') acc.available++
       if (r.availabilityStatus === 'FULLY_ASSIGNED') acc.fullyAssigned++
-      if (r.availabilityStatus === 'ON_LEAVE') acc.onLeave++
+      if ((ON_HOLD_AVAILABILITY as string[]).includes(r.availabilityStatus)) acc.onHold++
       acc.totalAvailableHours += r.availableHours
       if (r.alert !== 'NONE') acc.needsReview++
       if (r.isRecommended) acc.recommended++
       return acc
     },
-    { total: 0, available: 0, fullyAssigned: 0, onLeave: 0, totalAvailableHours: 0, needsReview: 0, recommended: 0 }
+    { total: 0, available: 0, fullyAssigned: 0, onHold: 0, totalAvailableHours: 0, needsReview: 0, recommended: 0 }
   )
 }
 

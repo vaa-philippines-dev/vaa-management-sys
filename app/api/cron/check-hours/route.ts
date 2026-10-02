@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { notifyMany } from '@/lib/notifications'
+import { ON_HOLD_AVAILABILITY } from '@/lib/va-availability-fields'
 import { startOfDay, endOfDay } from 'date-fns'
 
 const WORKDAYS_PER_WEEK = 5
@@ -25,7 +26,7 @@ export async function GET(req: NextRequest) {
     where: {
       status: 'ACTIVE',
       isActive: true,
-      availabilityStatus: { not: 'ON_LEAVE' },
+      availabilityStatus: { notIn: ON_HOLD_AVAILABILITY },
       totalCapacityHours: { not: null, gt: 0 },
       user: {
         userType: 'VIRTUAL_ASSISTANT',

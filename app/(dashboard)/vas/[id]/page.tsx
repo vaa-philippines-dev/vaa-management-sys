@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { getOwnTeamIds } from '@/lib/teams'
-import { getCurrentUser, VA_MUTATOR_ROLES, VA_SENSITIVE_INFO_EDIT_ROLES } from '@/lib/auth'
+import { getCurrentUser, VA_MUTATOR_ROLES, VA_SENSITIVE_INFO_EDIT_ROLES, TEAM_MANAGE_ROLES, isDepartmentUnrestricted, getManagedDepartmentIds } from '@/lib/auth'
 import { getViewScope, isVAProfileInScope, isDepartmentInScope, isUserInScope, type Scope } from '@/lib/scope'
 import { canInitiateEocOrClientInitiatedTermination } from '@/lib/offboarding-permissions'
 import { cached, CACHE_TAGS } from '@/lib/cache'
@@ -17,6 +17,7 @@ import { TransferVAModal } from '@/components/vas/TransferVAModal'
 import { AddSkillCard } from '@/components/vas/AddSkillCard'
 import { VADetailPanel } from '@/components/vas/VADetailPanel'
 import { OnboardingInviteControl } from '@/components/vas/OnboardingInviteControl'
+import { VATeamCard, type VATeamRow } from '@/components/vas/VATeamCard'
 
 const hrgRoles = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'EXECUTIVE', 'HR']
 
@@ -48,7 +49,7 @@ const AVAILABILITY_LABEL: Record<string, string> = {
   AVAILABLE: 'Available',
   PARTIALLY_ASSIGNED: 'Partially assigned',
   FULLY_ASSIGNED: 'Fully assigned',
-  ON_LEAVE: 'On leave',
+  ON_LEAVE: 'On hold by VA',
   UNAVAILABLE: 'Unavailable',
   ON_HOLD_BY_VA: 'On hold by VA',
   ON_HOLD_BY_VAA: 'On hold by VAA',
@@ -202,6 +203,38 @@ export default async function VADetailPage({
   const activeClientCount = new Set(
     va.assignments.filter((a) => a.status === 'ACTIVE').map((a) => a.clientId)
   ).size
+
+  // Team field: the VA's team in each of their departments, editable by
+  // team-composing roles for the departments they manage (same rule as
+  // teams/actions.ts). Not cached — it has to reflect a change right away.
+  const memberDeptIds = [...new Set(activeMemberships.map((m) => m.departmentId))]
+  const canManageTeams = TEAM_MANAGE_ROLES.includes(currentUser.systemRole)
+  const managedDeptIds = isDepartmentUnrestricted(currentUser) ? null : getManagedDepartmentIds(currentUser)
+  const [currentTeams, teamOptions] = await Promise.all([
+    prisma.teamMembership.findMany({
+      where: { userId: va.user.id, endedAt: null, team: { departmentId: { in: memberDeptIds } } },
+      select: { team: { select: { id: true, name: true, departmentId: true } } },
+      orderBy: { startedAt: 'asc' },
+    }),
+    canManageTeams
+      ? prisma.team.findMany({
+          where: { departmentId: { in: memberDeptIds }, status: 'ACTIVE' },
+          select: { id: true, name: true, departmentId: true },
+          orderBy: { name: 'asc' },
+        })
+      : Promise.resolve([]),
+  ])
+  const teamRows: VATeamRow[] = memberDeptIds.map((departmentId) => {
+    const team = currentTeams.find((t) => t.team.departmentId === departmentId)?.team ?? null
+    const editable = canManageTeams && (managedDeptIds === null || managedDeptIds.includes(departmentId))
+    return {
+      departmentId,
+      departmentName: activeMemberships.find((m) => m.departmentId === departmentId)!.department.name,
+      teamId: team?.id ?? null,
+      teamName: team?.name ?? null,
+      options: editable ? teamOptions.filter((t) => t.departmentId === departmentId) : null,
+    }
+  })
 
   const editorData = {
     vaProfile: {
@@ -384,6 +417,8 @@ export default async function VADetailPage({
             expertiseGroups={allDepartments.map((d) => ({ id: d.id, name: d.name }))}
             activeClientCount={activeClientCount}
           />
+
+          <VATeamCard userId={va.user.id} rows={teamRows} />
 
           {/* History */}
           <Card>

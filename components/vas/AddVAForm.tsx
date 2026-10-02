@@ -21,14 +21,19 @@ export function AddVAModal({
   onClose,
   departments = [],
   positionSkills = [],
+  teams = [],
 }: {
   open: boolean
   onClose: () => void
   departments?: { id: string; name: string }[]
   positionSkills?: { id: string; name: string }[]
+  // Active teams in `departments`; empty when the viewer can't manage teams.
+  teams?: { id: string; name: string; departmentId: string }[]
 }) {
   const router = useRouter()
   const [submitting, setSubmitting] = useState(false)
+  const [departmentId, setDepartmentId] = useState('')
+  const departmentTeams = teams.filter((t) => t.departmentId === departmentId)
   const [, startTransition] = useTransition()
   const [inviteLink, setInviteLink] = useState<{ url: string; name: string } | null>(null)
   const [copied, setCopied] = useState(false)
@@ -36,6 +41,7 @@ export function AddVAModal({
   const handleClose = () => {
     setInviteLink(null)
     setCopied(false)
+    setDepartmentId('')
     onClose()
   }
 
@@ -58,6 +64,7 @@ export function AddVAModal({
       fd.set('email', email)
       if (data.departmentId) fd.set('departmentId', data.departmentId as string)
       if (data.positionSkillId) fd.set('positionSkillId', data.positionSkillId as string)
+      if (data.teamId) fd.set('teamId', data.teamId as string)
       if (data.hireDate) fd.set('hireDate', data.hireDate as string)
       userId = (await quickAddVA(fd)).userId
     } catch (e: any) {
@@ -71,6 +78,7 @@ export function AddVAModal({
     // an invite-link failure only downgrades to a warning, not a hard error.
     toast.success(`${name} added`)
     form.reset()
+    setDepartmentId('')
     startTransition(() => router.refresh())
 
     try {
@@ -139,7 +147,12 @@ export function AddVAModal({
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Department</Label>
-                <select name="departmentId" className="w-full h-9 text-sm rounded-md border bg-background px-2">
+                <select
+                  name="departmentId"
+                  value={departmentId}
+                  onChange={(e) => setDepartmentId(e.target.value)}
+                  className="w-full h-9 text-sm rounded-md border bg-background px-2"
+                >
                   <option value="">— None —</option>
                   {departments.map((d) => (
                     <option key={d.id} value={d.id}>{d.name}</option>
@@ -156,6 +169,24 @@ export function AddVAModal({
                 </select>
               </div>
             </div>
+            {teams.length > 0 && (
+              <div>
+                <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Team</Label>
+                <select
+                  name="teamId"
+                  key={departmentId}
+                  disabled={!departmentId || departmentTeams.length === 0}
+                  className="w-full h-9 text-sm rounded-md border bg-background px-2 disabled:opacity-50"
+                >
+                  <option value="">
+                    {!departmentId ? 'Pick a department first' : departmentTeams.length === 0 ? 'No teams in this department' : '— No team yet —'}
+                  </option>
+                  {departmentTeams.map((t) => (
+                    <option key={t.id} value={t.id}>{t.name}</option>
+                  ))}
+                </select>
+              </div>
+            )}
             <div>
               <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Hire Date</Label>
               <Input name="hireDate" type="date" defaultValue={todayInputValue()} className="h-9 text-sm" />

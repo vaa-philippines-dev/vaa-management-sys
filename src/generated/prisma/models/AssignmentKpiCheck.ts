@@ -32,6 +32,7 @@ export type AssignmentKpiCheckMinAggregateOutputType = {
   completed: boolean | null
   completedAt: Date | null
   completedById: string | null
+  notes: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -44,6 +45,7 @@ export type AssignmentKpiCheckMaxAggregateOutputType = {
   completed: boolean | null
   completedAt: Date | null
   completedById: string | null
+  notes: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -56,6 +58,7 @@ export type AssignmentKpiCheckCountAggregateOutputType = {
   completed: number
   completedAt: number
   completedById: number
+  notes: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -70,6 +73,7 @@ export type AssignmentKpiCheckMinAggregateInputType = {
   completed?: true
   completedAt?: true
   completedById?: true
+  notes?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -82,6 +86,7 @@ export type AssignmentKpiCheckMaxAggregateInputType = {
   completed?: true
   completedAt?: true
   completedById?: true
+  notes?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -94,6 +99,7 @@ export type AssignmentKpiCheckCountAggregateInputType = {
   completed?: true
   completedAt?: true
   completedById?: true
+  notes?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -179,6 +185,7 @@ export type AssignmentKpiCheckGroupByOutputType = {
   completed: boolean
   completedAt: Date | null
   completedById: string | null
+  notes: string | null
   createdAt: Date
   updatedAt: Date
   _count: AssignmentKpiCheckCountAggregateOutputType | null
@@ -212,6 +219,7 @@ export type AssignmentKpiCheckWhereInput = {
   completed?: Prisma.BoolFilter<"AssignmentKpiCheck"> | boolean
   completedAt?: Prisma.DateTimeNullableFilter<"AssignmentKpiCheck"> | Date | string | null
   completedById?: Prisma.StringNullableFilter<"AssignmentKpiCheck"> | string | null
+  notes?: Prisma.StringNullableFilter<"AssignmentKpiCheck"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AssignmentKpiCheck"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AssignmentKpiCheck"> | Date | string
   assignment?: Prisma.XOR<Prisma.AssignmentScalarRelationFilter, Prisma.AssignmentWhereInput>
@@ -226,6 +234,7 @@ export type AssignmentKpiCheckOrderByWithRelationInput = {
   completed?: Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   completedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   assignment?: Prisma.AssignmentOrderByWithRelationInput
@@ -244,6 +253,7 @@ export type AssignmentKpiCheckWhereUniqueInput = Prisma.AtLeast<{
   completed?: Prisma.BoolFilter<"AssignmentKpiCheck"> | boolean
   completedAt?: Prisma.DateTimeNullableFilter<"AssignmentKpiCheck"> | Date | string | null
   completedById?: Prisma.StringNullableFilter<"AssignmentKpiCheck"> | string | null
+  notes?: Prisma.StringNullableFilter<"AssignmentKpiCheck"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AssignmentKpiCheck"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AssignmentKpiCheck"> | Date | string
   assignment?: Prisma.XOR<Prisma.AssignmentScalarRelationFilter, Prisma.AssignmentWhereInput>
@@ -258,6 +268,7 @@ export type AssignmentKpiCheckOrderByWithAggregationInput = {
   completed?: Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   completedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.AssignmentKpiCheckCountOrderByAggregateInput
@@ -276,6 +287,7 @@ export type AssignmentKpiCheckScalarWhereWithAggregatesInput = {
   completed?: Prisma.BoolWithAggregatesFilter<"AssignmentKpiCheck"> | boolean
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"AssignmentKpiCheck"> | Date | string | null
   completedById?: Prisma.StringNullableWithAggregatesFilter<"AssignmentKpiCheck"> | string | null
+  notes?: Prisma.StringNullableWithAggregatesFilter<"AssignmentKpiCheck"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"AssignmentKpiCheck"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"AssignmentKpiCheck"> | Date | string
 }
@@ -286,6 +298,7 @@ export type AssignmentKpiCheckCreateInput = {
   dueDate: Date | string
   completed?: boolean
   completedAt?: Date | string | null
+  notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   assignment: Prisma.AssignmentCreateNestedOneWithoutKpiChecksInput
@@ -300,6 +313,7 @@ export type AssignmentKpiCheckUncheckedCreateInput = {
   completed?: boolean
   completedAt?: Date | string | null
   completedById?: string | null
+  notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -310,6 +324,7 @@ export type AssignmentKpiCheckUpdateInput = {
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignment?: Prisma.AssignmentUpdateOneRequiredWithoutKpiChecksNestedInput
@@ -324,6 +339,7 @@ export type AssignmentKpiCheckUncheckedUpdateInput = {
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -336,6 +352,7 @@ export type AssignmentKpiCheckCreateManyInput = {
   completed?: boolean
   completedAt?: Date | string | null
   completedById?: string | null
+  notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -346,6 +363,7 @@ export type AssignmentKpiCheckUpdateManyMutationInput = {
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -358,6 +376,7 @@ export type AssignmentKpiCheckUncheckedUpdateManyInput = {
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -385,6 +404,7 @@ export type AssignmentKpiCheckCountOrderByAggregateInput = {
   completed?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   completedById?: Prisma.SortOrder
+  notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -397,6 +417,7 @@ export type AssignmentKpiCheckMaxOrderByAggregateInput = {
   completed?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   completedById?: Prisma.SortOrder
+  notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -409,6 +430,7 @@ export type AssignmentKpiCheckMinOrderByAggregateInput = {
   completed?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   completedById?: Prisma.SortOrder
+  notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -507,6 +529,7 @@ export type AssignmentKpiCheckCreateWithoutCompletedByInput = {
   dueDate: Date | string
   completed?: boolean
   completedAt?: Date | string | null
+  notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   assignment: Prisma.AssignmentCreateNestedOneWithoutKpiChecksInput
@@ -519,6 +542,7 @@ export type AssignmentKpiCheckUncheckedCreateWithoutCompletedByInput = {
   dueDate: Date | string
   completed?: boolean
   completedAt?: Date | string | null
+  notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -560,6 +584,7 @@ export type AssignmentKpiCheckScalarWhereInput = {
   completed?: Prisma.BoolFilter<"AssignmentKpiCheck"> | boolean
   completedAt?: Prisma.DateTimeNullableFilter<"AssignmentKpiCheck"> | Date | string | null
   completedById?: Prisma.StringNullableFilter<"AssignmentKpiCheck"> | string | null
+  notes?: Prisma.StringNullableFilter<"AssignmentKpiCheck"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AssignmentKpiCheck"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AssignmentKpiCheck"> | Date | string
 }
@@ -570,6 +595,7 @@ export type AssignmentKpiCheckCreateWithoutAssignmentInput = {
   dueDate: Date | string
   completed?: boolean
   completedAt?: Date | string | null
+  notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   completedBy?: Prisma.UserCreateNestedOneWithoutAssignmentKpiChecksCompletedInput
@@ -582,6 +608,7 @@ export type AssignmentKpiCheckUncheckedCreateWithoutAssignmentInput = {
   completed?: boolean
   completedAt?: Date | string | null
   completedById?: string | null
+  notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -619,6 +646,7 @@ export type AssignmentKpiCheckCreateManyCompletedByInput = {
   dueDate: Date | string
   completed?: boolean
   completedAt?: Date | string | null
+  notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -629,6 +657,7 @@ export type AssignmentKpiCheckUpdateWithoutCompletedByInput = {
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignment?: Prisma.AssignmentUpdateOneRequiredWithoutKpiChecksNestedInput
@@ -641,6 +670,7 @@ export type AssignmentKpiCheckUncheckedUpdateWithoutCompletedByInput = {
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -652,6 +682,7 @@ export type AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByInput = {
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -663,6 +694,7 @@ export type AssignmentKpiCheckCreateManyAssignmentInput = {
   completed?: boolean
   completedAt?: Date | string | null
   completedById?: string | null
+  notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -673,6 +705,7 @@ export type AssignmentKpiCheckUpdateWithoutAssignmentInput = {
   dueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   completedBy?: Prisma.UserUpdateOneWithoutAssignmentKpiChecksCompletedNestedInput
@@ -685,6 +718,7 @@ export type AssignmentKpiCheckUncheckedUpdateWithoutAssignmentInput = {
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -696,6 +730,7 @@ export type AssignmentKpiCheckUncheckedUpdateManyWithoutAssignmentInput = {
   completed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -710,6 +745,7 @@ export type AssignmentKpiCheckSelect<ExtArgs extends runtime.Types.Extensions.In
   completed?: boolean
   completedAt?: boolean
   completedById?: boolean
+  notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   assignment?: boolean | Prisma.AssignmentDefaultArgs<ExtArgs>
@@ -724,6 +760,7 @@ export type AssignmentKpiCheckSelectCreateManyAndReturn<ExtArgs extends runtime.
   completed?: boolean
   completedAt?: boolean
   completedById?: boolean
+  notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   assignment?: boolean | Prisma.AssignmentDefaultArgs<ExtArgs>
@@ -738,6 +775,7 @@ export type AssignmentKpiCheckSelectUpdateManyAndReturn<ExtArgs extends runtime.
   completed?: boolean
   completedAt?: boolean
   completedById?: boolean
+  notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   assignment?: boolean | Prisma.AssignmentDefaultArgs<ExtArgs>
@@ -752,11 +790,12 @@ export type AssignmentKpiCheckSelectScalar = {
   completed?: boolean
   completedAt?: boolean
   completedById?: boolean
+  notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type AssignmentKpiCheckOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "assignmentId" | "milestone" | "dueDate" | "completed" | "completedAt" | "completedById" | "createdAt" | "updatedAt", ExtArgs["result"]["assignmentKpiCheck"]>
+export type AssignmentKpiCheckOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "assignmentId" | "milestone" | "dueDate" | "completed" | "completedAt" | "completedById" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["assignmentKpiCheck"]>
 export type AssignmentKpiCheckInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   assignment?: boolean | Prisma.AssignmentDefaultArgs<ExtArgs>
   completedBy?: boolean | Prisma.AssignmentKpiCheck$completedByArgs<ExtArgs>
@@ -784,6 +823,7 @@ export type $AssignmentKpiCheckPayload<ExtArgs extends runtime.Types.Extensions.
     completed: boolean
     completedAt: Date | null
     completedById: string | null
+    notes: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["assignmentKpiCheck"]>
@@ -1218,6 +1258,7 @@ export interface AssignmentKpiCheckFieldRefs {
   readonly completed: Prisma.FieldRef<"AssignmentKpiCheck", 'Boolean'>
   readonly completedAt: Prisma.FieldRef<"AssignmentKpiCheck", 'DateTime'>
   readonly completedById: Prisma.FieldRef<"AssignmentKpiCheck", 'String'>
+  readonly notes: Prisma.FieldRef<"AssignmentKpiCheck", 'String'>
   readonly createdAt: Prisma.FieldRef<"AssignmentKpiCheck", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"AssignmentKpiCheck", 'DateTime'>
 }

@@ -319,3 +319,52 @@ export async function deleteTeam(teamId: string) {
   revalidatePath('/admin/teams')
   revalidateTag(CACHE_TAGS.teams, 'default')
 }
+
+// The VA profile's Team field: put one person on `teamId` within a department
+// (null = no team there), ending whatever team they were on in that
+// department. Leader slots on a team they leave are cleared, since every
+// leader must be an active member (see setTeamLeader()).
+export async function setVATeam(userId: string, departmentId: string, teamId: string | null) {
+  const actor = await requireRole(...TEAM_MANAGE_ROLES)
+  await assertDepartmentManaged(actor, departmentId)
+  await assertActiveDepartmentMembers(departmentId, [userId])
+
+  if (teamId) {
+    const team = await prisma.team.findUnique({ where: { id: teamId }, select: { departmentId: true, status: true } })
+    if (!team || team.departmentId !== departmentId || team.status !== 'ACTIVE') {
+      throw new Error('Pick an active team in this department')
+    }
+  }
+
+  const current = await prisma.teamMembership.findMany({
+    where: { userId, endedAt: null, team: { departmentId } },
+    select: { id: true, teamId: true },
+  })
+  const keep = teamId ? current.find((m) => m.teamId === teamId) : undefined
+  const leaving = current.filter((m) => m !== keep)
+  if (leaving.length === 0 && (keep || !teamId)) return
+  const leftTeamIds = [...new Set(leaving.map((m) => m.teamId))].filter((id) => id !== teamId)
+
+  await prisma.$transaction(async (tx) => {
+    await tx.teamMembership.updateMany({ where: { id: { in: leaving.map((m) => m.id) } }, data: { endedAt: new Date() } })
+    if (teamId && !keep) await tx.teamMembership.create({ data: { teamId, userId } })
+    if (leftTeamIds.length > 0) {
+      await tx.team.updateMany({ where: { id: { in: leftTeamIds }, leaderId: userId }, data: { leaderId: null } })
+      await tx.team.updateMany({ where: { id: { in: leftTeamIds }, tempLeader1Id: userId }, data: { tempLeader1Id: null } })
+      await tx.team.updateMany({ where: { id: { in: leftTeamIds }, tempLeader2Id: userId }, data: { tempLeader2Id: null } })
+    }
+  })
+
+  await logAudit({
+    actorId: actor.id,
+    action: leftTeamIds.length > 0 ? 'TRANSFER' : 'MEMBER_ADD',
+    entityType: 'TeamMembership',
+    entityId: teamId ?? leftTeamIds[0],
+    metadata: { userId, fromTeamIds: leftTeamIds, toTeamId: teamId, via: 'vas:profile' },
+    departmentId,
+  })
+
+  for (const id of [...leftTeamIds, ...(teamId ? [teamId] : [])]) revalidatePath(`/teams/${id}`)
+  revalidateTag(CACHE_TAGS.teams, 'default')
+  revalidateTag(CACHE_TAGS.vas, 'default')
+}

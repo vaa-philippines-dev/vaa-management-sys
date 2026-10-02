@@ -1087,6 +1087,8 @@ model AssignmentKpiCheck {
   completedAt  DateTime?    @map("completed_at")
   completedById String?     @map("completed_by_id")
   completedBy  User?        @relation("AssignmentKpiCheckCompletedBy", fields: [completedById], references: [id], onDelete: SetNull)
+  // What was discussed on the KPI call (FB-0008).
+  notes        String?
   createdAt    DateTime     @default(now()) @map("created_at")
   updatedAt    DateTime     @updatedAt @map("updated_at")
 

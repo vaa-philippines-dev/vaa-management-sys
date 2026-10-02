@@ -5,7 +5,7 @@ import { revalidatePath, revalidateTag } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { CACHE_TAGS } from '@/lib/cache'
 import { randomBytes } from 'node:crypto'
-import { requireRole, requireAdminMutator, requireAuth, VA_MUTATOR_ROLES, VA_SENSITIVE_INFO_EDIT_ROLES, OFFBOARDING_DELETE_ROLES, RESIGNATION_OVERRIDE_ROLES } from '@/lib/auth'
+import { requireRole, requireAdminMutator, requireAuth, VA_MUTATOR_ROLES, VA_SENSITIVE_INFO_EDIT_ROLES, OFFBOARDING_DELETE_ROLES, RESIGNATION_OVERRIDE_ROLES, TEAM_MANAGE_ROLES } from '@/lib/auth'
 import {
   getMutateScope,
   isDepartmentInScope,
@@ -108,10 +108,21 @@ export async function quickAddVA(formData: FormData) {
   const email = emailInput || `${firstName.toLowerCase()}-va@placeholder.vaa`
   const departmentId = ((formData.get('departmentId') as string) ?? '').trim() || null
   const positionSkillId = ((formData.get('positionSkillId') as string) ?? '').trim() || null
+  const teamId = ((formData.get('teamId') as string) ?? '').trim() || null
 
   // A scoped actor must place the new VA in one of their own departments —
   // a department-less VA would also be invisible to them straight after.
   assertDepartmentInScope(await getMutateScope(actor), departmentId)
+
+  // Optional team: same rule as teams/actions.ts — only team-composing roles,
+  // and the team must belong to the department the VA is joining.
+  if (teamId) {
+    if (!TEAM_MANAGE_ROLES.includes(actor.systemRole)) throw new Error('Forbidden: you cannot assign teams')
+    const team = await prisma.team.findUnique({ where: { id: teamId }, select: { departmentId: true, status: true } })
+    if (!team || team.status !== 'ACTIVE' || team.departmentId !== departmentId) {
+      throw new Error("Pick a team from the VA's department")
+    }
+  }
 
   const existing = await prisma.user.findUnique({ where: { email } })
   if (existing) throw new Error('A user with this email already exists')
@@ -133,6 +144,7 @@ export async function quickAddVA(formData: FormData) {
         isActive: true,
         vaProfile: { create: { hourlyRate: null, positionSkillId, currentHireDate: hireDate } },
         ...(departmentId ? { memberships: { create: { departmentId, isPrimary: true } } } : {}),
+        ...(teamId ? { teamMemberships: { create: { teamId } } } : {}),
       },
     })
   })
@@ -142,7 +154,7 @@ export async function quickAddVA(formData: FormData) {
     action: 'CREATE',
     entityType: 'User',
     entityId: user.id,
-    after: { email, employeeId: user.employeeId, firstName, lastName, departmentId, positionSkillId, hireDate },
+    after: { email, employeeId: user.employeeId, firstName, lastName, departmentId, positionSkillId, teamId, hireDate },
     metadata: { viaForm: 'vas:quick-add' },
   })
 
@@ -182,6 +194,7 @@ export async function quickAddVA(formData: FormData) {
   revalidatePath('/vas')
   revalidateTag(CACHE_TAGS.vas, 'default')
   revalidateTag(CACHE_TAGS.users, 'default')
+  if (teamId) revalidateTag(CACHE_TAGS.teams, 'default')
 
   return { userId: user.id, employeeId: user.employeeId }
 }
@@ -311,6 +324,12 @@ function normalizeEnum(value: string | undefined, allowed: string[]): string | n
   if (!value) return null
   const normalized = value.trim().toUpperCase().replace(/[\s-]+/g, '_')
   return allowed.includes(normalized) ? normalized : null
+}
+
+// Older exports still say "On Leave", which is now "On hold by VA".
+function normalizeAvailability(value: string | undefined): string | null {
+  const v = normalizeEnum(value, [...CSV_AVAILABILITY_VALUES, 'ON_LEAVE'])
+  return v === 'ON_LEAVE' ? 'ON_HOLD_BY_VA' : v
 }
 
 // A malformed date cell (typo, wrong format, stray text) would otherwise
@@ -654,7 +673,7 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
         ? skillIdByNormalizedText.get((row.vaaPosition || '').trim().toLowerCase()) ?? null
         : null,
       level: (row.level || '').trim() || null,
-      availabilityStatus: normalizeEnum(row.availabilityStatus, CSV_AVAILABILITY_VALUES),
+      availabilityStatus: normalizeAvailability(row.availabilityStatus),
       recommendability: (row.recommendability || '').trim() || null,
       status: statusInput,
       onHold,

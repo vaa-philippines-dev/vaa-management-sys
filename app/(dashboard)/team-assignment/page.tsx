@@ -4,6 +4,7 @@ import {
   isDepartmentUnrestricted,
   getManagedDepartmentIds,
   getPrimaryDepartment,
+  TEAM_MANAGE_ROLES,
 } from '@/lib/auth'
 import { getLedTeamIds } from '@/lib/teams'
 import { getDepartmentTeamAssignments, countTeamMembers, type VAAssignmentState } from '@/lib/team-assignments'
@@ -127,6 +128,7 @@ export default async function TeamAssignmentPage({
             teamFilter={teamFilter}
             stateFilter={stateFilter}
             ledTeamIds={ledTeamIds}
+            canManageTeams={TEAM_MANAGE_ROLES.includes(user.systemRole) && (isDepartmentUnrestricted(user) || managedIds.includes(department.id))}
           />
         </Suspense>
       )}
@@ -139,11 +141,13 @@ async function TeamAssignmentSection({
   teamFilter,
   stateFilter,
   ledTeamIds,
+  canManageTeams,
 }: {
   departmentId: string
   teamFilter?: string
   stateFilter?: VAAssignmentState
   ledTeamIds: string[] | null
+  canManageTeams: boolean
 }) {
   const data = await cached(
     `team-assignment:${departmentId}`,
@@ -188,7 +192,12 @@ async function TeamAssignmentSection({
           {teams.map((team) => (
             <TeamAssignmentCard key={team.teamId} team={team} />
           ))}
-          {!ledTeamIds && unassigned.length > 0 && <UnassignedVAsCard members={unassigned} />}
+          {!ledTeamIds && unassigned.length > 0 && (
+            <UnassignedVAsCard
+              members={unassigned}
+              teams={canManageTeams ? data.teams.map((t) => ({ id: t.teamId, name: t.teamName })) : []}
+            />
+          )}
         </>
       )}
     </div>

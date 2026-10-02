@@ -6,6 +6,7 @@ import {
   computeAlert,
   type AvailabilityRow,
 } from '@/lib/va-availability-fields'
+import { ENDED_VA_STATUSES } from '@/lib/active-va'
 
 // Prisma reads for the DMF sheet's "VA Availability" tab (and the TMF's copy
 // of it on /tmf). Server-only — anything the client board needs lives in
@@ -25,11 +26,12 @@ export type AvailabilityScope = {
 
 // Rows are built from active DepartmentMemberships rather than VAProfiles, so
 // a VA in two departments yields two rows — each with that department's own
-// DMF/TMF block and that department's own clients.
+// DMF/TMF block and that department's own clients. VAs who have left
+// (ENDED_VA_STATUSES) are dropped even though their membership is still open.
 export async function getAvailabilityRows(scope: AvailabilityScope): Promise<AvailabilityRow[]> {
   const where: Prisma.DepartmentMembershipWhereInput = {
     endedAt: null,
-    user: { vaProfile: { isNot: null } },
+    user: { vaProfile: { is: { status: { notIn: ENDED_VA_STATUSES } } } },
     ...(scope.departmentIds !== null && { departmentId: { in: scope.departmentIds } }),
     ...(scope.userIds && { userId: { in: scope.userIds } }),
   }

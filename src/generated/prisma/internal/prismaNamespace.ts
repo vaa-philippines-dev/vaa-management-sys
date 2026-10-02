@@ -5200,6 +5200,7 @@ export const AssignmentKpiCheckScalarFieldEnum = {
   completed: 'completed',
   completedAt: 'completedAt',
   completedById: 'completedById',
+  notes: 'notes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

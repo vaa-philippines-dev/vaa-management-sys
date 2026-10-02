@@ -222,9 +222,11 @@ export function PerformanceBoard({
                               : c.overdue
                                 ? ' · overdue'
                                 : ''
-                          }`}
+                          }${c.notes ? `
+
+${c.notes}` : ''}`}
                           aria-label={`${KPI_MILESTONE_LABELS[c.milestone]} check-in`}
-                          className={`h-6 w-7 rounded text-[10px] font-semibold border transition-colors disabled:cursor-default ${
+                          className={`relative h-6 w-7 rounded text-[10px] font-semibold border transition-colors disabled:cursor-default ${
                             c.completed
                               ? c.late
                                 ? 'bg-destructive/15 text-destructive border-destructive/30'
@@ -235,6 +237,9 @@ export function PerformanceBoard({
                           }`}
                         >
                           {c.milestone}
+                          {c.notes && (
+                            <span className="absolute -top-0.5 -right-0.5 h-1.5 w-1.5 rounded-full bg-primary" aria-hidden />
+                          )}
                         </button>
                       ))}
                     </div>
@@ -420,6 +425,17 @@ export function PerformanceBoard({
               <p className="text-xs text-muted-foreground mt-1">
                 Pick the day the check-in actually happened — it doesn&apos;t have to be today.
               </p>
+            </div>
+
+            <div>
+              <Label htmlFor="kpiNotes">KPI call notes</Label>
+              <Textarea
+                id="kpiNotes"
+                name="notes"
+                rows={4}
+                defaultValue={editingKpi.check.notes ?? ''}
+                placeholder="What was discussed on the call, concerns raised, follow-ups…"
+              />
             </div>
 
             {kpiCompletedChecked && kpiDayDiff !== null && (

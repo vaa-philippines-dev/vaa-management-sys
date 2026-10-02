@@ -1,5 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import type { PersonRef } from '@/lib/structure'
+import { ON_HOLD_AVAILABILITY } from '@/lib/va-availability-fields'
+import { NOT_ENDED_VA_USER_WHERE } from '@/lib/active-va'
 
 // Per-team active/idle/unavailable VA counts + VA-to-client assignment grid,
 // for the DM/OM-facing "Team Assignment" view. Thin, prisma-direct, analogous
@@ -11,9 +13,9 @@ export type VAAssignmentState = 'ACTIVE' | 'IDLE' | 'UNAVAILABLE'
 // not endDate — consistent with dashboard/page.tsx and vas/page.tsx, which
 // already filter this way).
 // UNAVAILABLE: no active assignment, and either the VA profile itself isn't
-// ACTIVE or its (manually maintained) availabilityStatus says on leave/
+// ACTIVE or its (manually maintained) availabilityStatus says on hold/
 // unavailable.
-// IDLE: no active assignment, VA profile active, not on leave/unavailable —
+// IDLE: no active assignment, VA profile active, not on hold/unavailable —
 // genuine bench capacity. total = active + idle + unavailable always
 // reconciles.
 export function classifyAssignmentState(input: {
@@ -22,7 +24,11 @@ export function classifyAssignmentState(input: {
   activeAssignmentCount: number
 }): VAAssignmentState {
   if (input.activeAssignmentCount > 0) return 'ACTIVE'
-  if (input.vaStatus !== 'ACTIVE' || input.availabilityStatus === 'ON_LEAVE' || input.availabilityStatus === 'UNAVAILABLE') {
+  if (
+    input.vaStatus !== 'ACTIVE' ||
+    input.availabilityStatus === 'UNAVAILABLE' ||
+    (ON_HOLD_AVAILABILITY as (string | null)[]).includes(input.availabilityStatus)
+  ) {
     return 'UNAVAILABLE'
   }
   return 'IDLE'
@@ -118,8 +124,10 @@ export async function getDepartmentTeamAssignments(departmentId: string): Promis
       leader: { select: PERSON_SELECT },
       tempLeader1: { select: PERSON_SELECT },
       tempLeader2: { select: PERSON_SELECT },
+      // A resigned/removed VA's team membership is often never closed out —
+      // they're not part of the team's capacity any more.
       memberships: {
-        where: { endedAt: null },
+        where: { endedAt: null, user: NOT_ENDED_VA_USER_WHERE },
         select: {
           userId: true,
           user: {
@@ -247,6 +255,7 @@ export async function getDepartmentTeamAssignments(departmentId: string): Promis
     where: {
       userType: 'VIRTUAL_ASSISTANT',
       memberships: { some: { departmentId, endedAt: null } },
+      ...NOT_ENDED_VA_USER_WHERE,
     },
     select: {
       id: true,

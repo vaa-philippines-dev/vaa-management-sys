@@ -78,7 +78,7 @@ export async function getPerformanceRows(scope: Scope): Promise<PerformanceRow[]
           shadowTrainer: { select: { firstName: true, lastName: true } },
         },
       },
-      kpiChecks: { select: { id: true, milestone: true, dueDate: true, completed: true, completedAt: true } },
+      kpiChecks: { select: { id: true, milestone: true, dueDate: true, completed: true, completedAt: true, notes: true } },
       clientFeedback: true,
     },
     orderBy: { startDate: 'desc' },
@@ -103,6 +103,7 @@ export async function getPerformanceRows(scope: Scope): Promise<PerformanceRow[]
           completedAt: iso(c.completedAt),
           overdue: !c.completed && c.dueDate < now,
           late: c.completed && c.completedAt !== null && c.completedAt > c.dueDate,
+          notes: c.notes,
         },
       ]
     })

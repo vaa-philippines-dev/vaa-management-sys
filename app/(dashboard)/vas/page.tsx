@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import type { Prisma } from '@/src/generated/prisma/client'
-import { getCurrentUser, canMutate, VA_MUTATOR_ROLES, DEPARTMENT_SCOPED_ROLES } from '@/lib/auth'
+import { getCurrentUser, canMutate, VA_MUTATOR_ROLES, DEPARTMENT_SCOPED_ROLES, TEAM_MANAGE_ROLES } from '@/lib/auth'
 import {
   getViewScope,
   getLedTeamScope,
@@ -21,6 +21,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table'
 import { StatusIndicator } from '@/components/ui/status-indicator'
 import { getOwnTeamIds } from '@/lib/teams'
+import { ON_HOLD_AVAILABILITY } from '@/lib/va-availability-fields'
 import { QuickAddVABtn } from '@/components/vas/QuickAddVABtn'
 import { VABulkSelectToggle } from '@/components/vas/VABulkSelectToggle'
 import { VARowCheckbox } from '@/components/vas/VARowCheckbox'
@@ -195,7 +196,7 @@ export default async function VAPage({
   const canAddVA = VA_MUTATOR_ROLES.includes(currentUser.systemRole)
   const viewerScope = await getViewerScope(currentUser)
 
-  const [addVaDepartments, addVaSkills] = canAddVA
+  const [addVaDepartments, addVaSkills, addVaTeams] = canAddVA
     ? await Promise.all([
         // quickAddVA() rejects out-of-scope departments server-side; this just
         // keeps the picker from offering them.
@@ -211,8 +212,21 @@ export default async function VAPage({
           })
         ),
         prisma.skill.findMany({ where: { isActive: true }, orderBy: { name: 'asc' }, select: { id: true, name: true } }),
+        // The Add VA form's Team picker — only for roles that may compose
+        // teams (quickAddVA() checks the same, plus that the team is in the
+        // chosen department).
+        TEAM_MANAGE_ROLES.includes(currentUser.systemRole)
+          ? prisma.team.findMany({
+              where: {
+                status: 'ACTIVE',
+                ...(viewerScope.type === 'department' && { departmentId: { in: viewerScope.scope.departmentIds } }),
+              },
+              orderBy: { name: 'asc' },
+              select: { id: true, name: true, departmentId: true },
+            })
+          : Promise.resolve([]),
       ])
-    : [[], []]
+    : [[], [], []]
 
   const params = await searchParams
   const q = typeof params.q === 'string' ? params.q : undefined
@@ -248,7 +262,7 @@ export default async function VAPage({
               )}
             </div>
           }
-          extraActions={<QuickAddVABtn departments={addVaDepartments} positionSkills={addVaSkills} />}
+          extraActions={<QuickAddVABtn departments={addVaDepartments} positionSkills={addVaSkills} teams={addVaTeams} />}
         >
           <div className="rounded-lg border bg-card p-2.5">
             <Suspense fallback={<Skeleton className="h-8 w-full rounded-md" />}>
@@ -266,7 +280,7 @@ export default async function VAPage({
                 <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-info/10 text-info border-info/20">HR View</Badge>
               )}
             </div>
-            {canAddVA && <QuickAddVABtn departments={addVaDepartments} positionSkills={addVaSkills} />}
+            {canAddVA && <QuickAddVABtn departments={addVaDepartments} positionSkills={addVaSkills} teams={addVaTeams} />}
           </div>
 
           <div className="rounded-lg border bg-card p-2.5">
@@ -300,13 +314,13 @@ async function VAStatsCards({ viewerScope }: { viewerScope: ViewerScope }) {
         prisma.vAProfile.count({ where: { user: { userType: 'VIRTUAL_ASSISTANT' }, ...scopeAnd } }),
         prisma.vAProfile.count({ where: { user: { userType: 'VIRTUAL_ASSISTANT' }, status: 'ACTIVE', ...scopeAnd } }),
         // Same IDLE definition as lib/team-assignments.ts's classifyAssignmentState()
-        // — active profile, not on leave/unavailable, zero active assignments —
+        // — active profile, not on hold/unavailable, zero active assignments —
         // encoded as a where clause instead of fetch-then-classify.
         prisma.vAProfile.count({
           where: {
             user: { userType: 'VIRTUAL_ASSISTANT' },
             status: 'ACTIVE',
-            availabilityStatus: { notIn: ['ON_LEAVE', 'UNAVAILABLE'] },
+            availabilityStatus: { notIn: [...ON_HOLD_AVAILABILITY, 'UNAVAILABLE'] },
             assignments: { none: { status: 'ACTIVE' } },
             ...scopeAnd,
           },
@@ -424,7 +438,6 @@ async function FilterWrapper({ scope }: { scope: ViewerScope }) {
             { value: 'AVAILABLE', label: 'Available' },
             { value: 'PARTIALLY_ASSIGNED', label: 'Partially' },
             { value: 'FULLY_ASSIGNED', label: 'Fully' },
-            { value: 'ON_LEAVE', label: 'Leave' },
             { value: 'UNAVAILABLE', label: 'Unavailable' },
             { value: 'ON_HOLD_BY_VA', label: 'On hold by VA' },
             { value: 'ON_HOLD_BY_VAA', label: 'On hold by VAA' },
