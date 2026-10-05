@@ -22,7 +22,8 @@ export type HeadcountBucket = { label: string; value: number; hint?: string }
 
 export type HeadcountComposition = {
   asOf: string
-  totalVAs: number
+  // Same figure as the VA Masterlist's Active scorecard.
+  activeVAs: number
   engagement: HeadcountBucket[]
   activePattern: HeadcountBucket[]
   idle: HeadcountBucket[]
@@ -39,10 +40,16 @@ export async function getHeadcountComposition(
   departmentIds: string[] | null
 ): Promise<HeadcountComposition> {
   const profiles = await prisma.vAProfile.findMany({
-    where:
-      departmentIds === null
-        ? {}
-        : { user: { memberships: { some: { departmentId: { in: departmentIds }, endedAt: null } } } },
+    // VA accounts only, like the Masterlist: ~40 staff accounts also carry a
+    // VAProfile and would otherwise be counted as VAs here.
+    where: {
+      AND: [
+        { user: { userType: 'VIRTUAL_ASSISTANT' } },
+        departmentIds === null
+          ? {}
+          : { user: { memberships: { some: { departmentId: { in: departmentIds }, endedAt: null } } } },
+      ],
+    },
     select: {
       status: true,
       onHold: true,
@@ -140,7 +147,7 @@ export async function getHeadcountComposition(
 
   return {
     asOf: now.toISOString(),
-    totalVAs: profiles.length,
+    activeVAs: profiles.filter((p) => p.status === 'ACTIVE').length,
     engagement: [
       { label: 'Active (with client)', value: active },
       { label: 'Idle (no client)', value: idle },

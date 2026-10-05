@@ -22,7 +22,7 @@ export function HeadcountComposition({ composition }: { composition: Composition
             Workforce Composition
           </CardTitle>
           <p className="text-xs text-muted-foreground">
-            {composition.totalVAs} VA records &middot; as of {asOf}, not the selected month
+            {composition.activeVAs} active VAs &middot; as of {asOf}, not the selected month
           </p>
         </div>
       </CardHeader>

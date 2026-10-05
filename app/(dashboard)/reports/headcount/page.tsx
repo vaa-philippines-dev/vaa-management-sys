@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
-import { getViewScope, scopeDepartmentIds, scopeKey as toScopeKey } from '@/lib/scope'
+import { getViewScope, scopeDepartmentIds, scopeKey as toScopeKey, vaProfileScopeWhere } from '@/lib/scope'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -11,10 +11,15 @@ import Link from 'next/link'
 import { HeadcountReportControls } from '@/components/reports/HeadcountReportControls'
 import { Users } from 'lucide-react'
 import { getHeadcountComposition } from '@/lib/headcount'
+import { getStaffPeople } from '@/lib/staff'
 import { HeadcountComposition } from '@/components/reports/HeadcountComposition'
 
 // Department-level analytics — Team Leaders are scoped to their own team and
 // don't get these (their team view lives in /tmf).
+// Staff Masterlist statuses for someone who has left: its "Resigned /
+// Removed" scorecard, plus the sheet's few INACTIVE rows.
+const STAFF_OFFBOARDED = ['RESIGNED', 'REMOVED', 'INACTIVE']
+
 const REPORTS_VIEW_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'OPERATIONS_MANAGER', 'STAFF', 'HR']
 
 export default async function HeadcountReportPage({
@@ -40,36 +45,91 @@ export default async function HeadcountReportPage({
   const departmentScope = deptIds === null ? {} : { departmentId: { in: deptIds } }
   const scopeKey = toScopeKey(scope)
 
-  const [hires, terminations, activeCount, composition] = await Promise.all([
-    cached(`reports:headcount:hires:${format(refDate, 'yyyy-MM')}:${scopeKey}`, [CACHE_TAGS.reports], 120, () =>
+  const monthKey = format(refDate, 'yyyy-MM')
+
+  // VAs and staff come from different sources. VA movement is the dated
+  // EmploymentRecords (the VA Masterlist import reconciles one per sheet
+  // row); staff are the Staff Masterlist's StaffRecords, which is where HR
+  // keeps them — only ~50 staff accounts have an EmploymentRecord at all.
+  const [vaHires, vaEocs, activeVAs, staff, composition] = await Promise.all([
+    cached(`reports:headcount:hires:v2:${monthKey}:${scopeKey}`, [CACHE_TAGS.reports], 120, () =>
       prisma.employmentRecord.findMany({
-        where: { startDate: { gte: periodStart, lte: periodEnd }, ...departmentScope },
-        include: {
-          user: { select: { firstName: true, lastName: true, userType: true } },
-          department: { select: { id: true, name: true } },
-        },
-        orderBy: { startDate: 'asc' },
+        where: { startDate: { gte: periodStart, lte: periodEnd }, user: { userType: 'VIRTUAL_ASSISTANT' }, ...departmentScope },
+        select: { departmentId: true, department: { select: { name: true } } },
       })
     ),
-    cached(`reports:headcount:eocs:${format(refDate, 'yyyy-MM')}:${scopeKey}`, [CACHE_TAGS.reports], 120, () =>
+    cached(`reports:headcount:eocs:v2:${monthKey}:${scopeKey}`, [CACHE_TAGS.reports], 120, () =>
       prisma.employmentRecord.findMany({
-        where: { endDate: { gte: periodStart, lte: periodEnd }, ...departmentScope },
-        include: {
-          user: { select: { firstName: true, lastName: true, userType: true } },
-          department: { select: { id: true, name: true } },
-        },
-        orderBy: { endDate: 'asc' },
+        where: { endDate: { gte: periodStart, lte: periodEnd }, user: { userType: 'VIRTUAL_ASSISTANT' }, ...departmentScope },
+        select: { departmentId: true, department: { select: { name: true } } },
       })
     ),
-    cached(`reports:headcount:active:${scopeKey}`, [CACHE_TAGS.reports], 120, () =>
-      prisma.employmentRecord.findMany({
-        where: { isCurrent: true, ...departmentScope },
-        include: {
-          user: { select: { userType: true } },
-          department: { select: { id: true, name: true } },
+    // Active headcount is the VA Masterlist's Active scorecard rule, not
+    // EmploymentRecord: `isCurrent` marks a person's latest record, not that
+    // they still work here, so it counted every resigned/removed VA ever
+    // imported (~2,000). Bucketed under the Masterlist's Department column
+    // (primary membership), falling back to one inside the viewer's scope.
+    cached(`reports:headcount:active:v2:${scopeKey}`, [CACHE_TAGS.reports, CACHE_TAGS.vas], 120, async () => {
+      const vas = await prisma.vAProfile.findMany({
+        where: { AND: [{ status: 'ACTIVE', user: { userType: 'VIRTUAL_ASSISTANT' } }, vaProfileScopeWhere(scope)] },
+        select: {
+          userId: true,
+          user: {
+            select: {
+              memberships: {
+                where: { endedAt: null },
+                select: { isPrimary: true, department: { select: { id: true, name: true } } },
+              },
+            },
+          },
         },
       })
-    ),
+      return vas.map((v) => {
+        const mems = v.user.memberships.filter((m) => deptIds === null || deptIds.includes(m.department.id))
+        const mem = mems.find((m) => m.isPrimary) ?? mems[0]
+        return { userId: v.userId, departmentId: mem?.department.id ?? null, departmentName: mem?.department.name ?? 'No Department' }
+      })
+    }),
+    // Staff mutations revalidate CACHE_TAGS.vas, hence that tag.
+    cached(`reports:headcount:staff:${monthKey}:${scopeKey}`, [CACHE_TAGS.reports, CACHE_TAGS.vas], 120, async () => {
+      const [people, departments] = await Promise.all([
+        getStaffPeople(),
+        prisma.department.findMany({ select: { id: true, name: true } }),
+      ])
+      const deptByName = new Map(departments.map((d) => [d.name.toLowerCase(), d]))
+      // A staff department is free text from the sheet; it joins a Department
+      // row by name where one exists, and only those count for a
+      // department-scoped viewer.
+      const place = (userId: string | null, department: string | null) => {
+        const dept = department ? deptByName.get(department.toLowerCase()) : undefined
+        return { userId, departmentId: dept?.id ?? null, departmentName: dept?.name ?? department ?? 'No Department' }
+      }
+      const inScope = (p: { departmentId: string | null }) =>
+        deptIds === null || (p.departmentId !== null && deptIds.includes(p.departmentId))
+      const inPeriod = (d: Date | null) => !!d && d >= periodStart && d <= periodEnd
+      return {
+        // The Staff Masterlist's Active scorecard: latest record is ACTIVE.
+        active: people
+          .filter((p) => p.latest.generalStatus === 'ACTIVE')
+          .map((p) => place(p.latest.userId, p.latest.department))
+          .filter(inScope),
+        // A hire is the person's first staff engagement; a promotion or
+        // transfer adds a record but isn't a new hire.
+        hires: people
+          .filter((p) => inPeriod(p.staffHireDate))
+          .map((p) => {
+            const first = p.records.find((r) => r.startDate?.getTime() === p.staffHireDate?.getTime())
+            return place(p.latest.userId, first?.department ?? p.latest.department)
+          })
+          .filter(inScope),
+        // An EOC is someone who has left (latest record offboarded), dated by
+        // its EOC date. Earlier records closed by a promotion/transfer don't.
+        eocs: people
+          .filter((p) => STAFF_OFFBOARDED.includes(p.latest.generalStatus ?? '') && inPeriod(p.latest.eocDate ?? p.latest.statusDate))
+          .map((p) => place(p.latest.userId, p.latest.department))
+          .filter(inScope),
+      }
+    }),
     // Point-in-time composition, deliberately not month-scoped — see the
     // note in lib/headcount.ts about why there's no historical series.
     getHeadcountComposition(deptIds),
@@ -77,31 +137,29 @@ export default async function HeadcountReportPage({
 
   type DeptBucket = { departmentId: string | null; departmentName: string; vaHires: number; staffHires: number; vaEocs: number; staffEocs: number; vaActive: number; staffActive: number }
   const buckets = new Map<string, DeptBucket>()
-  const bucketKey = (id: string | null) => id ?? '__none__'
+  // Staff departments that match no Department row are keyed by name.
+  const bucketKey = (id: string | null, name: string) => id ?? `name:${name}`
 
   const getBucket = (id: string | null, name: string) => {
-    const key = bucketKey(id)
+    const key = bucketKey(id, name)
     if (!buckets.has(key)) {
       buckets.set(key, { departmentId: id, departmentName: name, vaHires: 0, staffHires: 0, vaEocs: 0, staffEocs: 0, vaActive: 0, staffActive: 0 })
     }
     return buckets.get(key)!
   }
 
-  for (const h of hires) {
-    const b = getBucket(h.departmentId, h.department?.name ?? 'No Department')
-    if (h.user.userType === 'VIRTUAL_ASSISTANT') b.vaHires++
-    else b.staffHires++
-  }
-  for (const t of terminations) {
-    const b = getBucket(t.departmentId, t.department?.name ?? 'No Department')
-    if (t.user.userType === 'VIRTUAL_ASSISTANT') b.vaEocs++
-    else b.staffEocs++
-  }
-  for (const a of activeCount) {
-    const b = getBucket(a.departmentId, a.department?.name ?? 'No Department')
-    if (a.user.userType === 'VIRTUAL_ASSISTANT') b.vaActive++
-    else b.staffActive++
-  }
+  for (const h of vaHires) getBucket(h.departmentId, h.department?.name ?? 'No Department').vaHires++
+  for (const t of vaEocs) getBucket(t.departmentId, t.department?.name ?? 'No Department').vaEocs++
+  for (const v of activeVAs) getBucket(v.departmentId, v.departmentName).vaActive++
+  for (const st of staff.hires) getBucket(st.departmentId, st.departmentName).staffHires++
+  for (const st of staff.eocs) getBucket(st.departmentId, st.departmentName).staffEocs++
+  for (const st of staff.active) getBucket(st.departmentId, st.departmentName).staffActive++
+
+  // Staff who are also VAs (Team Leaders) sit on both masterlists; the
+  // headline counts each person once.
+  const activeVAUserIds = new Set(activeVAs.map((v) => v.userId))
+  const onBothLists = staff.active.filter((st) => st.userId && activeVAUserIds.has(st.userId)).length
+  const activePeople = activeVAs.length + staff.active.length - onBothLists
 
   const rows = Array.from(buckets.values()).sort((a, b) => a.departmentName.localeCompare(b.departmentName))
 
@@ -138,8 +196,13 @@ export default async function HeadcountReportPage({
             <CardTitle className="text-sm font-medium text-muted-foreground">Active Headcount</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">{totals.vaActive + totals.staffActive}</p>
-            <p className="text-xs text-muted-foreground mt-1">{totals.vaActive} VA · {totals.staffActive} Staff</p>
+            <p className="text-2xl font-bold">{activePeople}</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              <Link href="/vas?status=ACTIVE" className="hover:text-foreground hover:underline">{totals.vaActive} VA</Link>
+              {' · '}
+              <Link href="/staff?status=ACTIVE" className="hover:text-foreground hover:underline">{totals.staffActive} Staff</Link>
+              {onBothLists > 0 && <span title="Staff who are also VAs (Team Leaders), counted once in the total"> · {onBothLists} on both</span>}
+            </p>
           </CardContent>
         </Card>
         <Card>
@@ -188,7 +251,7 @@ export default async function HeadcountReportPage({
               </TableHeader>
               <TableBody>
                 {rows.map((r) => (
-                  <TableRow key={bucketKey(r.departmentId)} className="border-b">
+                  <TableRow key={bucketKey(r.departmentId, r.departmentName)} className="border-b">
                     <TableCell className="py-3 font-medium">{r.departmentName}</TableCell>
                     <TableCell className="text-right text-sm">
                       {r.vaActive + r.staffActive}
