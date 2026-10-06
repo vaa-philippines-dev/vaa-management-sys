@@ -344,12 +344,12 @@ async function VAStatsCards({ viewerScope }: { viewerScope: ViewerScope }) {
 
   return (
     <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-6 fade-in-stagger">
-      <StatCard icon={Users} label="Total VAs" value={total} />
       <StatCard icon={UserCog} label="Active" value={active} href="/vas?status=ACTIVE" />
       <StatCard icon={Clock} label="Idle / Bench" value={idle} />
       <StatCard icon={PauseCircle} label="On Hold" value={onHold} />
       <StatCard icon={UserMinus} label="EOC (Ending)" value={eoc} href="/vas?emp=END_OF_CONTRACT" />
       <StatCard icon={UserX} label="Resigned / Removed" value={offboarded} />
+      <StatCard icon={Users} label="Total VAs" value={total} />
     </div>
   )
 }
