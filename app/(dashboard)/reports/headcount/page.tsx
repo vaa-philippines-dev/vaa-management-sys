@@ -180,7 +180,7 @@ export default async function HeadcountReportPage({
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-2xl font-bold tracking-tight">Headcount Report</h2>
+            <h2 className="text-2xl font-bold tracking-tight">Headcount</h2>
             <Link href="/reports" className="text-xs text-muted-foreground hover:text-foreground hover:underline">
               ← Hours Report
             </Link>

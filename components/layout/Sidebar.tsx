@@ -283,7 +283,7 @@ const onGoingRoutes = [
   { label: 'Work Logs', href: '/work-logs', icon: ListTodo },
   { label: 'Services', href: '/skills', icon: UserCog },
   { label: 'Monthly Report', href: '/reports', icon: BarChart3 },
-  { label: 'Headcount Report', href: '/reports/headcount', icon: PieChart },
+  { label: 'Headcount', href: '/reports/headcount', icon: PieChart },
 ]
 
 // Rendered in the "HR" section of the manager sidebar. Offboarding moved
@@ -437,8 +437,14 @@ export function Sidebar({
     ...(role === 'MANAGER' && isAdmin ? onGoingRoutes : []),
     ...supportRoutes,
   ]
+  // A parent link (/reports, /leave) lights up for its sub-pages, but not when
+  // the sub-page has its own row (/reports/headcount, /leave/approvals) — that
+  // row is the active one, otherwise both highlight together.
+  const isUnder = (href: string) => pathname === href || pathname.startsWith(href + '/')
   const isRouteActive = (href: string) =>
-    href === '/dashboard' ? pathname === '/dashboard' : pathname === href || pathname.startsWith(href + '/')
+    href === '/dashboard'
+      ? pathname === '/dashboard'
+      : isUnder(href) && !allRoutes.some((r) => r.href.startsWith(href + '/') && isUnder(r.href))
   const isFavorited = (href: string) => favorites.some((f) => f.href === href)
   // Suppress the highlight on the main/admin-tree copy of a row once it's also shown in
   // the Favorites list above, so only one row is highlighted at a time.
