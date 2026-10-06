@@ -181,12 +181,12 @@ export default async function StaffMasterlistPage({
   return (
     <div data-wide-page className="space-y-3">
       <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-6 fade-in-stagger">
-        <StatCard icon={Users} label="Total Staff" value={stats.total} href="/staff?status=ALL" />
         <StatCard icon={UserCog} label="Active" value={stats.active} href="/staff?status=ACTIVE" />
         <StatCard icon={UsersRound} label="Also VA (Team Leaders)" value={stats.alsoVA} />
         <StatCard icon={PauseCircle} label="On Hold" value={stats.onHold} href="/staff?status=ON%20HOLD" />
         <StatCard icon={UserMinus} label="EOC" value={stats.eoc} href="/staff?status=ALL&emp=END%20OF%20CONTRACT" />
         <StatCard icon={UserX} label="Resigned / Removed" value={stats.offboarded} />
+        <StatCard icon={Users} label="Total Staff" value={stats.total} href="/staff?status=ALL" />
       </div>
 
       <div className="flex items-center justify-between">
