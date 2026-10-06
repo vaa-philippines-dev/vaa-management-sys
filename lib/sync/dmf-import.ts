@@ -63,6 +63,7 @@ export type ImportSummary = {
   unmatched: ImportIssue[]
   ambiguous: ImportIssue[]
   wouldCreate: ImportIssue[] // dry-run only: a new Assignment would be created here
+  joined: ImportIssue[] // hybrid VAs added to this department (see joinDepartment)
   warnings: ImportIssue[]
 }
 
@@ -77,6 +78,7 @@ function emptySummary(tab: string): ImportSummary {
     unmatched: [],
     ambiguous: [],
     wouldCreate: [],
+    joined: [],
     warnings: [],
   }
 }
@@ -149,9 +151,17 @@ async function resolveOrCreateAssignment(
   const cached = mappingCache.get(recordNo)
   if (cached) return { assignmentId: cached }
 
-  const va = matchName(indexes.vaByName, vaName)
+  let va = matchName(indexes.vaByName, vaName)
   if (va.ambiguous) return { assignmentId: null, reason: `VA name "${vaName}" matches more than one VA in this department` }
-  if (!va.id) return { assignmentId: null, reason: `No VA in this department named "${vaName}"` }
+  // Not a member here: a hybrid set up under another department. Matched
+  // only when the name is unique across the whole app.
+  let hybrid = false
+  if (!va.id) {
+    va = matchName(indexes.vaByNameAnyDepartment, vaName)
+    if (va.ambiguous) return { assignmentId: null, reason: `No VA in this department named "${vaName}", and more than one elsewhere` }
+    if (!va.id) return { assignmentId: null, reason: `No VA named "${vaName}" in the app` }
+    hybrid = true
+  }
 
   const client = matchName(indexes.clientByName, clientName)
   if (client.ambiguous) return { assignmentId: null, reason: `Client name "${clientName}" matches more than one client in this department` }
@@ -167,6 +177,17 @@ async function resolveOrCreateAssignment(
     }
   }
 
+  // A created Assignment's status follows VA STATUS WITH CLIENT; blank or
+  // unrecognized is ACTIVE.
+  const prepStatus = creation ? CLIENT_STATUS_MAP[creation.clientStatusRaw.trim().toLowerCase()] : undefined
+  const status: AssignmentStatus = prepStatus ? PREP_TO_ASSIGNMENT_STATUS[prepStatus] : 'ACTIVE'
+  // A hybrid with live work here becomes a (secondary) member, so this
+  // department's rosters list them. Past engagements don't.
+  const joinIfHybrid = () =>
+    hybrid && creation && (status === 'ACTIVE' || status === 'PAUSED')
+      ? joinDepartment(departmentId, va.id!, vaName, indexes, apply, summary)
+      : Promise.resolve()
+
   if (!assignmentId && creation) {
     const agreedHours = parseDmfNumber(creation.agreedHoursRaw)
     if (!targetDate || agreedHours == null) {
@@ -176,12 +197,11 @@ async function resolveOrCreateAssignment(
       }
     }
 
-    const prepStatus = CLIENT_STATUS_MAP[creation.clientStatusRaw.trim().toLowerCase()]
-    const status = prepStatus ? PREP_TO_ASSIGNMENT_STATUS[prepStatus] : 'ACTIVE'
     const endDate = status === 'ACTIVE' ? null : parseDmfDate(creation.effectivityDateRaw)
 
     if (!apply) {
       // Dry run: report what would happen without a real id to cache.
+      await joinIfHybrid()
       summary.created++
       return {
         assignmentId: null,
@@ -207,6 +227,7 @@ async function resolveOrCreateAssignment(
     })
     const newAssignmentId = createdAssignment.id
     assignmentId = newAssignmentId
+    summary.created++
 
     // Mirrors what the app's own createAssignment() Server Action seeds on
     // every new Assignment — an empty AssignmentPreparation row and the 7
@@ -249,7 +270,7 @@ async function resolveOrCreateAssignment(
     }
   }
 
-  if (creation) summary.created++
+  await joinIfHybrid()
 
   if (apply) {
     const externalId = dmfMappingKey(departmentId, recordNo)
@@ -261,6 +282,45 @@ async function resolveOrCreateAssignment(
   }
   mappingCache.set(recordNo, assignmentId)
   return { assignmentId }
+}
+
+// Adds a hybrid VA to this department as a non-primary member — how the app
+// already models a VA in several departments — and to this run's name index,
+// so their later rows (buffers, VA Availability) match too. Their primary
+// department is untouched.
+async function joinDepartment(
+  departmentId: string,
+  vaProfileId: string,
+  vaName: string,
+  indexes: DmfIndexes,
+  apply: boolean,
+  summary: ImportSummary
+) {
+  const key = normalizeName(vaName)
+  if (indexes.vaByName.get(key)?.includes(vaProfileId)) return
+  indexes.vaByName.set(key, [...(indexes.vaByName.get(key) ?? []), vaProfileId])
+
+  const account = indexes.vaAccounts.get(vaProfileId)
+  summary.joined.push({ label: vaName, reason: `member of ${account?.departments}; added to this department` })
+  if (!apply || !account) return
+
+  const existing = await prisma.departmentMembership.findFirst({
+    where: { userId: account.userId, departmentId, endedAt: null },
+    select: { id: true },
+  })
+  if (existing) return
+  const membership = await prisma.departmentMembership.create({
+    data: { userId: account.userId, departmentId, isPrimary: false },
+  })
+  await logAudit({
+    actorId: await getSystemActorId(),
+    action: 'CREATE',
+    entityType: 'DepartmentMembership',
+    entityId: membership.id,
+    after: { userId: account.userId, departmentId, isPrimary: false },
+    metadata: { source: 'dmf-import', reason: 'hybrid VA with an active client in this department' },
+    departmentId,
+  })
 }
 
 // This department's mappings only, keyed by bare RECORD NO.

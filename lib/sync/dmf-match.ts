@@ -45,10 +45,15 @@ export type DmfIndexes = {
   // bare first name; only useful where that first name is unique in-dept
   clientByName: NameIndex // Client.id, scoped to the department
   assignmentsByVaAndClient: Map<string, { id: string; startDate: Date }[]>
+  // Every VA account in any department, for hybrids: a VA set up under one
+  // department who also works another department's clients. Only a name
+  // unique across the whole app is matched this way.
+  vaByNameAnyDepartment: NameIndex
+  vaAccounts: Map<string, { userId: string; departments: string }> // by VAProfile.id
 }
 
 export async function buildDmfIndexes(departmentId: string): Promise<DmfIndexes> {
-  const [vas, memberships, clients, assignments] = await Promise.all([
+  const [vas, memberships, clients, assignments, allVas] = await Promise.all([
     prisma.vAProfile.findMany({
       where: { user: { memberships: { some: { departmentId, endedAt: null } }, userType: 'VIRTUAL_ASSISTANT' } },
       select: { id: true, user: { select: { firstName: true, lastName: true } } },
@@ -64,6 +69,20 @@ export async function buildDmfIndexes(departmentId: string): Promise<DmfIndexes>
     prisma.assignment.findMany({
       where: { client: { departmentId } },
       select: { id: true, startDate: true, vaProfileId: true, clientId: true },
+    }),
+    prisma.vAProfile.findMany({
+      where: { user: { userType: 'VIRTUAL_ASSISTANT' } },
+      select: {
+        id: true,
+        userId: true,
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            memberships: { where: { endedAt: null }, select: { department: { select: { name: true } } } },
+          },
+        },
+      },
     }),
   ])
 
@@ -89,7 +108,14 @@ export async function buildDmfIndexes(departmentId: string): Promise<DmfIndexes>
     else assignmentsByVaAndClient.set(key, [entry])
   }
 
-  return { vaByName, staffByFullName, staffByFirstName, clientByName, assignmentsByVaAndClient }
+  const vaByNameAnyDepartment: NameIndex = new Map()
+  const vaAccounts = new Map<string, { userId: string; departments: string }>()
+  for (const v of allVas) {
+    addToIndex(vaByNameAnyDepartment, normalizeName(`${v.user.firstName} ${v.user.lastName}`), v.id)
+    vaAccounts.set(v.id, { userId: v.userId, departments: v.user.memberships.map((m) => m.department.name).join(', ') || 'no department' })
+  }
+
+  return { vaByName, staffByFullName, staffByFirstName, clientByName, assignmentsByVaAndClient, vaByNameAnyDepartment, vaAccounts }
 }
 
 // A VA can have re-engaged with the same client (a real, if rare, case),

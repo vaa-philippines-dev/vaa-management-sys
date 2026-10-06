@@ -38,6 +38,11 @@ function printSummary(s: ImportSummary) {
     for (const i of s.wouldCreate.slice(0, LIMIT)) console.log(`    - ${i.label}: ${i.reason}`)
     if (s.wouldCreate.length > LIMIT) console.log(`    ...and ${s.wouldCreate.length - LIMIT} more`)
   }
+  if (s.joined.length) {
+    console.log(`  hybrid VAs added to this department (${s.joined.length}):`)
+    for (const i of s.joined.slice(0, LIMIT)) console.log(`    - ${i.label}: ${i.reason}`)
+    if (s.joined.length > LIMIT) console.log(`    ...and ${s.joined.length - LIMIT} more`)
+  }
   if (s.unmatched.length) {
     console.log(`  unmatched (${s.unmatched.length}):`)
     for (const i of s.unmatched.slice(0, LIMIT)) console.log(`    - ${i.label}: ${i.reason}`)
