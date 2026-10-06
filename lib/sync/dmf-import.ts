@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { logAudit } from '@/lib/audit'
 import { computeKpiCheckpoints } from '@/lib/kpi-checks'
-import { fetchDmfTabRows, resolveDmfTabTitle, type RawDmfRow } from '@/lib/google/dmf-sheet'
+import { fetchDmfTabRows, fetchDmfTabValues, resolveDmfTabTitle, zipDmfRows, type RawDmfRow } from '@/lib/google/dmf-sheet'
 import { parseDmfDate, parseDmfBool, parseDmfNumber, rowLabel } from '@/lib/sync/dmf-parse'
 import { buildDmfIndexes, matchName, pickAssignment, normalizeName, type DmfIndexes } from '@/lib/sync/dmf-match'
 import { resolveClientStatus } from '@/lib/va-preparation-fields'
@@ -566,10 +566,6 @@ export async function importVaPreparation(
 
 // ── Performance Monitoring ─────────────────────────────────────────
 
-// The sheet mislabels its M6 check column "KPI M4 CHECK" — confirmed
-// against the live header row; there is no separate M4 milestone at all
-// (the fixed set is D4/W1/W2/M1/M2/M3/M6), so this is read by the position
-// it actually occupies, not the name printed on it.
 const KPI_CHECK_COLUMNS: Record<KpiMilestone, string> = {
   D4: 'KPI D4 CHECK',
   W1: 'KPI W1 CHECK',
@@ -577,7 +573,57 @@ const KPI_CHECK_COLUMNS: Record<KpiMilestone, string> = {
   M1: 'KPI M1 CHECK',
   M2: 'KPI M2 CHECK',
   M3: 'KPI M3 CHECK',
-  M6: 'KPI M4 CHECK',
+  M6: 'KPI M6 CHECK',
+}
+
+// The departments' Performance Monitoring tabs have drifted apart, so the
+// header is rewritten into Amazon's naming before rows are zipped:
+//  - Amazon's M6 check column was labelled "KPI M4 CHECK" until it was
+//    renamed (there is no M4 milestone);
+//  - Walmart and Creatives name each check-in's due-date column ("FIRST
+//    WEEK CALL") and leave its tick box under a Sheets placeholder
+//    ("Column 5") one or two columns to the right — Creatives' first two
+//    calls are its own "First 20H Call" / "First Week Call", in D4/W1's place;
+//  - Creatives drops the W2/M6 prefix from its two feedback blocks, which
+//    repeat the same six names, so the first block is W2 and the second M6.
+const KPI_DUE_COLUMNS: Record<KpiMilestone, string[]> = {
+  D4: ['KPI D4', 'KPI CHECK (4TH DAY)', 'FIRST 20H CALL (PROJECT BASED ONLY)'],
+  W1: ['KPI W1', 'FIRST WEEK CALL', 'FIRST WEEK CALL (FIXED HOURS ONLY)'],
+  W2: ['KPI W2', 'SECOND WEEK CALL'],
+  M1: ['KPI M1', 'FIRST MONTH CALL'],
+  M2: ['KPI M2', 'SECOND MONTH CALL'],
+  M3: ['KPI M3', 'THIRD MONTH CALL'],
+  M6: ['KPI M6', 'SIXTH MONTH CALL'],
+}
+const FEEDBACK_COLUMNS = ['CLIENT FEEDBACK', 'PERFORMANCE EMAIL SENT DATE', 'CLIENT RESPONSE STATUS', 'FEEDBACK RECEIVED DATE', 'FEEDBACK', 'FEEDBACK TO VA']
+
+export function canonicalPerformanceHeader(header: string[], rows: string[][]): string[] {
+  const out = header.map((h) => (h ?? '').trim())
+  const upper = out.map((h) => h.toUpperCase())
+  const isTickColumn = (i: number) => {
+    const values = rows.map((r) => (r[i] ?? '').trim().toUpperCase()).filter(Boolean)
+    return values.length > 0 && values.every((v) => v === 'TRUE' || v === 'FALSE')
+  }
+
+  if (!upper.includes('KPI M6 CHECK')) {
+    const legacy = upper.indexOf('KPI M4 CHECK')
+    if (legacy >= 0) out[legacy] = 'KPI M6 CHECK'
+  }
+  for (const [milestone, dueNames] of Object.entries(KPI_DUE_COLUMNS) as [KpiMilestone, string[]][]) {
+    const checkName = KPI_CHECK_COLUMNS[milestone]
+    if (out.includes(checkName)) continue
+    const due = upper.findIndex((h) => dueNames.includes(h))
+    if (due < 0) continue
+    const tick = [due + 1, due + 2].find(isTickColumn)
+    if (tick !== undefined) out[tick] = checkName
+  }
+  for (const field of FEEDBACK_COLUMNS) {
+    if (out.includes(`W2 ${field}`)) continue
+    const at = upper.flatMap((h, i) => (h === field ? [i] : []))
+    if (at[0] !== undefined) out[at[0]] = `W2 ${field}`
+    if (at[1] !== undefined) out[at[1]] = `M6 ${field}`
+  }
+  return out
 }
 
 const RESPONSE_STATUS_MAP: Record<string, ClientResponseStatus> = {
@@ -648,7 +694,8 @@ export async function importPerformanceMonitoring(
   records: Set<string> | null = null
 ): Promise<ImportSummary> {
   const summary = emptySummary('Performance Monitoring')
-  const allRows = await fetchDmfTabRows(sheetId, 'Performance Monitoring', 3)
+  const { header, rows: values } = await fetchDmfTabValues(sheetId, 'Performance Monitoring', 3)
+  const allRows = zipDmfRows(canonicalPerformanceHeader(header, values), values)
   const rows = records ? allRows.filter((r) => records.has(recordNoOf(r))) : allRows
   summary.totalRows = rows.length
 

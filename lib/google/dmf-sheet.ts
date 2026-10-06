@@ -77,6 +77,18 @@ export async function fetchDmfTabRows(
   headerRow = 1,
   fallbackColumnNames: Record<number, string> = {}
 ): Promise<RawDmfRow[]> {
+  const { header, rows } = await fetchDmfTabValues(sheetId, tabName, headerRow)
+  return zipDmfRows(header, rows, fallbackColumnNames)
+}
+
+// The raw grid: the header row and the data rows below it, for callers that
+// have to interpret columns by position (a tab whose headers repeat or are
+// Sheets' "Column 4" placeholders) before zipping them into records.
+export async function fetchDmfTabValues(
+  sheetId: string,
+  tabName: string,
+  headerRow = 1
+): Promise<{ header: string[]; rows: string[][] }> {
   const auth = getAuth()
   if (!auth) {
     throw new Error('Google credentials not configured (GOOGLE_SERVICE_ACCOUNT_EMAIL / GOOGLE_PRIVATE_KEY)')
@@ -89,10 +101,11 @@ export async function fetchDmfTabRows(
     valueRenderOption: 'FORMATTED_VALUE',
   })
 
-  const values = res.data.values || []
-  const header = values[headerRow - 1] || []
-  const dataRows = values.slice(headerRow)
+  const values = (res.data.values || []).map((row) => row.map((cell) => (cell ?? '').toString()))
+  return { header: values[headerRow - 1] || [], rows: values.slice(headerRow) }
+}
 
+export function zipDmfRows(header: string[], dataRows: string[][], fallbackColumnNames: Record<number, string> = {}): RawDmfRow[] {
   return dataRows
     .map((row) => {
       const record: RawDmfRow = {}
