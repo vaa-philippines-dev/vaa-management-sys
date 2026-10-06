@@ -59,7 +59,7 @@ const SHORTCUTS: Shortcut[] = [
   { label: 'Services', description: 'Manage department services and skills', href: '/skills', icon: UserCog, keywords: 'skills services', adminOnly: true },
   { label: 'Tickets', description: 'Support tickets and conversations', href: '/tickets', icon: Ticket },
   { label: 'Monthly Report', description: 'Monthly utilization and hours report', href: '/reports', icon: BarChart3, keywords: 'report monthly utilization', adminOnly: true },
-  { label: 'Headcount Report', description: 'Time-sensitive headcount breakdown', href: '/reports/headcount', icon: PieChart, keywords: 'time sensitive reports headcount' },
+  { label: 'Headcount', description: 'Time-sensitive headcount breakdown', href: '/reports/headcount', icon: PieChart, keywords: 'time sensitive reports headcount' },
   { label: 'Departments', description: 'Department structure', href: '/departments', icon: Landmark },
   { label: 'Admin Panel', description: 'Administrative overview', href: '/admin', icon: Shield, adminOnly: true },
   { label: 'Users (Admin)', description: 'Add, edit, or deactivate users', href: '/admin/users', icon: UserPlus, adminOnly: true, keywords: 'manage users' },

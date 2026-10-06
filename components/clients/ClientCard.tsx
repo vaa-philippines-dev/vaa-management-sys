@@ -17,6 +17,8 @@ export type ClientCardData = {
   niche: string | null
   requiredSkills: string[]
   assignments: unknown[]
+  // When the request was added to the app, preformatted by the page (Manila time).
+  dateAdded: string
 }
 
 export function ClientCard({ c }: { c: ClientCardData }) {
@@ -54,9 +56,10 @@ export function ClientCard({ c }: { c: ClientCardData }) {
             </div>
           )}
 
-          <p className="text-[10px] text-muted-foreground/70">
-            {c.assignments.length} assignment{c.assignments.length === 1 ? '' : 's'}
-          </p>
+          <div className="flex items-center justify-between gap-2 text-[10px] text-muted-foreground/70">
+            <span>{c.assignments.length} assignment{c.assignments.length === 1 ? '' : 's'}</span>
+            <span>Added {c.dateAdded}</span>
+          </div>
         </CardContent>
       </Card>
     </Link>

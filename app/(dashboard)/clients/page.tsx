@@ -25,6 +25,8 @@ const STATUS_TAB_OPTIONS = [
   { value: 'ALL', label: 'All' },
 ]
 
+const dateAddedFormat = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Manila', month: 'short', day: 'numeric', year: 'numeric' })
+
 function statusTabWhere(tab: string): Prisma.ClientWhereInput {
   switch (tab) {
     case 'ACTIVE':
@@ -158,7 +160,13 @@ export default async function ClientsPage({
         </Card>
       ) : (
         <ClientsBoard
-          clients={clients.map((c) => ({ ...c, category: c.account?.category ?? null, niche: clientNiche(c) }))}
+          clients={clients.map((c) => ({
+            ...c,
+            category: c.account?.category ?? null,
+            niche: clientNiche(c),
+            // new Date(): the cached() result comes back JSON-serialized, so this is a string.
+            dateAdded: dateAddedFormat.format(new Date(c.createdAt)),
+          }))}
         />
       )}
     </div>

@@ -17,6 +17,7 @@ export function ClientListTable({ clients }: { clients: ClientCardData[] }) {
             <TableHead className="px-3 py-2">Platform</TableHead>
             <TableHead className="px-3 py-2">Status</TableHead>
             <TableHead className="px-3 py-2 hidden lg:table-cell">Services</TableHead>
+            <TableHead className="px-3 py-2 hidden sm:table-cell whitespace-nowrap">Date Added</TableHead>
             <TableHead className="px-3 py-2 text-right">Assignments</TableHead>
           </TableRow>
         </TableHeader>
@@ -64,6 +65,9 @@ export function ClientListTable({ clients }: { clients: ClientCardData[] }) {
                 ) : (
                   <span className="text-muted-foreground/50">—</span>
                 )}
+              </TableCell>
+              <TableCell className="px-3 py-2 text-muted-foreground hidden sm:table-cell whitespace-nowrap">
+                {c.dateAdded}
               </TableCell>
               <TableCell className="px-3 py-2 text-right text-muted-foreground">
                 {c.assignments.length}
