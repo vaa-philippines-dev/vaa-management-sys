@@ -26,7 +26,7 @@ import path from 'node:path'
 import { prisma } from '@/lib/prisma'
 import { logAudit } from '@/lib/audit'
 import { DMF_SHEETS, fetchDmfTabRows } from '@/lib/google/dmf-sheet'
-import { DMF_SOURCE, getSystemActorId, splitBufferNames } from '@/lib/sync/dmf-import'
+import { DMF_SOURCE, dmfMappingKey, getSystemActorId, splitBufferNames } from '@/lib/sync/dmf-import'
 import { buildDmfIndexes, matchName } from '@/lib/sync/dmf-match'
 import { resolveClientStatus } from '@/lib/va-preparation-fields'
 import type { PreparationClientStatus } from '@/src/generated/prisma/enums'
@@ -46,7 +46,8 @@ async function main() {
     where: { source: DMF_SOURCE, entityType: 'ASSIGNMENT' },
     select: { externalId: true, internalId: true },
   })
-  const assignmentByRecordNo = new Map(mappings.map((m) => [m.externalId, m.internalId]))
+  // Keyed "<departmentId>:<RECORD NO>" (dmfMappingKey).
+  const assignmentByKey = new Map(mappings.map((m) => [m.externalId, m.internalId]))
 
   const preparations = await prisma.assignmentPreparation.findMany({
     select: {
@@ -75,10 +76,12 @@ async function main() {
   const sheetStatus = new Map<string, string>()
   for (const [departmentName, sheetId] of Object.entries(DMF_SHEETS)) {
     if (!sheetId) continue
+    const department = await prisma.department.findFirst({ where: { name: departmentName }, select: { id: true } })
+    if (!department) continue
     const rows = await fetchDmfTabRows(sheetId, 'VA Preparation', 3)
     let used = 0
     for (const row of rows) {
-      const assignmentId = assignmentByRecordNo.get(row['RECORD NO'] ?? '')
+      const assignmentId = assignmentByKey.get(dmfMappingKey(department.id, row['RECORD NO'] ?? ''))
       const prep = assignmentId ? prepByAssignment.get(assignmentId) : undefined
       if (!prep || prep.assignment.client.department?.name !== departmentName) continue
       if (!sheetStatus.has(prep.assignmentId)) {

@@ -12,13 +12,19 @@
 //   npx tsx --env-file=.env.local scripts/import-dmf.ts --department Amazon           (dry run)
 //   npx tsx --env-file=.env.local scripts/import-dmf.ts --department Amazon --apply   (writes)
 //
+// --records 260,279 limits it to those RECORD NOs (VA Preparation and
+// Performance Monitoring only); --all prints every listed row instead of
+// the first 30 per section.
+//
 // Always run without --apply first and read the report. Re-running with
 // --apply is safe (every write is an upsert or an update, matched rows are
 // cached, Projects are deduped by name+date) but the report is where a bad
 // name match gets caught before it touches the database.
 import { prisma } from '@/lib/prisma'
-import { DMF_SHEETS } from '@/lib/google/dmf-sheet'
+import { DMF_AVAILABILITY_TABS, DMF_SHEETS } from '@/lib/google/dmf-sheet'
 import { runDmfImport, type ImportSummary } from '@/lib/sync/dmf-import'
+
+const LIMIT = process.argv.includes('--all') ? Infinity : 30
 
 function printSummary(s: ImportSummary) {
   console.log(`\n=== ${s.tab} ===`)
@@ -29,13 +35,13 @@ function printSummary(s: ImportSummary) {
   if (s.unchanged) console.log(`  already imported: ${s.unchanged}`)
   if (s.wouldCreate.length) {
     console.log(`  would create (${s.wouldCreate.length}):`)
-    for (const i of s.wouldCreate.slice(0, 30)) console.log(`    - ${i.label}: ${i.reason}`)
-    if (s.wouldCreate.length > 30) console.log(`    ...and ${s.wouldCreate.length - 30} more`)
+    for (const i of s.wouldCreate.slice(0, LIMIT)) console.log(`    - ${i.label}: ${i.reason}`)
+    if (s.wouldCreate.length > LIMIT) console.log(`    ...and ${s.wouldCreate.length - LIMIT} more`)
   }
   if (s.unmatched.length) {
     console.log(`  unmatched (${s.unmatched.length}):`)
-    for (const i of s.unmatched.slice(0, 30)) console.log(`    - ${i.label}: ${i.reason}`)
-    if (s.unmatched.length > 30) console.log(`    ...and ${s.unmatched.length - 30} more`)
+    for (const i of s.unmatched.slice(0, LIMIT)) console.log(`    - ${i.label}: ${i.reason}`)
+    if (s.unmatched.length > LIMIT) console.log(`    ...and ${s.unmatched.length - LIMIT} more`)
   }
   if (s.ambiguous.length) {
     console.log(`  ambiguous (${s.ambiguous.length}):`)
@@ -43,8 +49,8 @@ function printSummary(s: ImportSummary) {
   }
   if (s.warnings.length) {
     console.log(`  warnings (${s.warnings.length}):`)
-    for (const i of s.warnings.slice(0, 30)) console.log(`    - ${i.label}: ${i.reason}`)
-    if (s.warnings.length > 30) console.log(`    ...and ${s.warnings.length - 30} more`)
+    for (const i of s.warnings.slice(0, LIMIT)) console.log(`    - ${i.label}: ${i.reason}`)
+    if (s.warnings.length > LIMIT) console.log(`    ...and ${s.warnings.length - LIMIT} more`)
   }
 }
 
@@ -53,6 +59,8 @@ async function main() {
   const apply = args.includes('--apply')
   const deptIndex = args.indexOf('--department')
   const departmentName = deptIndex >= 0 ? args[deptIndex + 1] : null
+  const recordsIndex = args.indexOf('--records')
+  const records = recordsIndex >= 0 ? new Set(args[recordsIndex + 1].split(',').map((r) => r.trim()).filter(Boolean)) : null
 
   if (!departmentName) {
     console.error('Usage: npx tsx scripts/import-dmf.ts --department <name> [--apply]')
@@ -75,7 +83,11 @@ async function main() {
 
   console.log(`${apply ? 'APPLYING' : 'DRY RUN'} — importing DMF sheet for ${departmentName} (department ${department.id})`)
 
-  const summaries = await runDmfImport(sheetId, department.id, apply)
+  if (records) console.log(`Only RECORD NO ${[...records].join(', ')}`)
+  const summaries = await runDmfImport(sheetId, department.id, apply, {
+    records,
+    availabilityTab: DMF_AVAILABILITY_TABS[departmentName],
+  })
   summaries.forEach(printSummary)
 
   if (!apply) {

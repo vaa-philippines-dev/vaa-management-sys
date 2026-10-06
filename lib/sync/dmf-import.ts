@@ -91,10 +91,32 @@ export type AssignmentCreationInput = {
   effectivityDateRaw: string
 }
 
-const CLIENT_STATUS_TO_ASSIGNMENT_STATUS: Record<string, AssignmentStatus> = {
-  active: 'ACTIVE',
-  paused: 'PAUSED',
-  'end of work': 'COMPLETED',
+// RECORD NO is only unique within one department's sheet — every DMF
+// numbers its own rows — so mappings and created Assignments are keyed by
+// department too. Keyed by RECORD NO alone, PPC's import attached 9 of its
+// rows to Amazon assignments that happened to share the number;
+// scripts/dmf-scope-record-keys.ts moved the existing keys over.
+export function dmfMappingKey(departmentId: string, recordNo: string): string {
+  return `${departmentId}:${recordNo}`
+}
+
+export function dmfAssignmentExternalId(departmentId: string, recordNo: string): string {
+  return `DMF-${departmentId}-${recordNo}`
+}
+
+// Social Media's Performance Monitoring tab renamed RECORD NO to
+// PREPARATION ID; same values, same role.
+function recordNoOf(row: RawDmfRow): string {
+  return row['RECORD NO'] || row['PREPARATION ID'] || ''
+}
+
+// A created Assignment's status follows VA STATUS WITH CLIENT. Anything that
+// isn't Active or Paused means the VA no longer works the account.
+const PREP_TO_ASSIGNMENT_STATUS: Record<PreparationClientStatus, AssignmentStatus> = {
+  ACTIVE: 'ACTIVE',
+  PAUSED: 'PAUSED',
+  END_OF_WORK: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
 }
 
 // ── Shared: resolve a sheet row's Assignment ──────────────────────
@@ -113,6 +135,7 @@ const CLIENT_STATUS_TO_ASSIGNMENT_STATUS: Record<string, AssignmentStatus> = {
 // column in either tab distinguishes ongoing work from a one-off project,
 // so this is a documented assumption, not a read.
 async function resolveOrCreateAssignment(
+  departmentId: string,
   recordNo: string,
   vaName: string,
   clientName: string,
@@ -153,8 +176,8 @@ async function resolveOrCreateAssignment(
       }
     }
 
-    const statusKey = creation.clientStatusRaw.trim().toLowerCase()
-    const status = CLIENT_STATUS_TO_ASSIGNMENT_STATUS[statusKey] ?? 'ACTIVE'
+    const prepStatus = CLIENT_STATUS_MAP[creation.clientStatusRaw.trim().toLowerCase()]
+    const status = prepStatus ? PREP_TO_ASSIGNMENT_STATUS[prepStatus] : 'ACTIVE'
     const endDate = status === 'ACTIVE' ? null : parseDmfDate(creation.effectivityDateRaw)
 
     if (!apply) {
@@ -163,7 +186,7 @@ async function resolveOrCreateAssignment(
       return {
         assignmentId: null,
         wouldCreate: true,
-        reason: `Would create a new Assignment (${agreedHours}h, starting ${targetDate.toISOString().slice(0, 10)})`,
+        reason: `Would create a new ${status} Assignment (${agreedHours}h, starting ${targetDate.toISOString().slice(0, 10)})`,
       }
     }
 
@@ -176,7 +199,7 @@ async function resolveOrCreateAssignment(
         endDate,
         skillRequirements: creation.expertiseGroup ? [creation.expertiseGroup] : [],
         source: 'DMF_SYNC',
-        externalId: `DMF-${recordNo}`,
+        externalId: dmfAssignmentExternalId(departmentId, recordNo),
         syncedAt: new Date(),
         vaProfileId: va.id,
         clientId: client.id,
@@ -229,9 +252,10 @@ async function resolveOrCreateAssignment(
   if (creation) summary.created++
 
   if (apply) {
+    const externalId = dmfMappingKey(departmentId, recordNo)
     await prisma.externalSyncMapping.upsert({
-      where: { source_entityType_externalId: { source: DMF_SOURCE, entityType: 'ASSIGNMENT', externalId: recordNo } },
-      create: { source: DMF_SOURCE, entityType: 'ASSIGNMENT', externalId: recordNo, internalId: assignmentId },
+      where: { source_entityType_externalId: { source: DMF_SOURCE, entityType: 'ASSIGNMENT', externalId } },
+      create: { source: DMF_SOURCE, entityType: 'ASSIGNMENT', externalId, internalId: assignmentId },
       update: { internalId: assignmentId },
     })
   }
@@ -239,20 +263,32 @@ async function resolveOrCreateAssignment(
   return { assignmentId }
 }
 
-async function loadMappingCache(): Promise<Map<string, string>> {
+// This department's mappings only, keyed by bare RECORD NO.
+async function loadMappingCache(departmentId: string): Promise<Map<string, string>> {
+  const prefix = dmfMappingKey(departmentId, '')
   const rows = await prisma.externalSyncMapping.findMany({
-    where: { source: DMF_SOURCE, entityType: 'ASSIGNMENT' },
+    where: { source: DMF_SOURCE, entityType: 'ASSIGNMENT', externalId: { startsWith: prefix } },
     select: { externalId: true, internalId: true },
   })
-  return new Map(rows.map((r) => [r.externalId, r.internalId]))
+  return new Map(rows.map((r) => [r.externalId.slice(prefix.length), r.internalId]))
 }
 
 // ── VA Preparation ─────────────────────────────────────────────────
 
+// Every value seen across the seven department sheets. The pipeline stages
+// before a VA starts (On Hold … For Recommendation) have no enum of their
+// own; they are all "not yet started".
 const START_STATUS_MAP: Record<string, PreparationStartStatus> = {
   'not yet started': 'NOT_YET_STARTED',
+  'on hold': 'NOT_YET_STARTED',
+  'va connected': 'NOT_YET_STARTED',
+  'ready to connect': 'NOT_YET_STARTED',
+  'for preparation': 'NOT_YET_STARTED',
+  'va for approval': 'NOT_YET_STARTED',
+  'for recommendation': 'NOT_YET_STARTED',
   'started on-time': 'STARTED_ON_TIME',
   delayed: 'DELAYED',
+  'delayed start': 'DELAYED',
   cancelled: 'CANCELLED',
 }
 const VA_TYPE_MAP: Record<string, PreparationVaType> = {
@@ -264,19 +300,29 @@ const STEP_STATUS_MAP: Record<string, PreparationStepStatus> = {
   done: 'DONE',
   skipped: 'SKIPPED',
   scheduled: 'SCHEDULED',
+  pending: 'PENDING',
 }
+// Every value seen across the seven department sheets. Resigned, Replaced,
+// Inactive, TOC, AWOL and Transferred all mean the VA no longer works the
+// account, which is END_OF_WORK (the effectivity date says when).
 const CLIENT_STATUS_MAP: Record<string, PreparationClientStatus> = {
   active: 'ACTIVE',
   paused: 'PAUSED',
   'end of work': 'END_OF_WORK',
+  resigned: 'END_OF_WORK',
+  replaced: 'END_OF_WORK',
+  inactive: 'END_OF_WORK',
+  toc: 'END_OF_WORK',
+  awol: 'END_OF_WORK',
+  transferred: 'END_OF_WORK',
   cancelled: 'CANCELLED',
+  cancel: 'CANCELLED',
 }
 
 // VA STATUS WITH CLIENT is the one enum here with no safe fallback: an
-// unrecognized cell ("Resigned", "Replaced" — both seen in the live sheets)
-// used to default to ACTIVE, reporting departed VAs as still working the
-// account. Blank or unrecognized now stays blank (null); only a blank cell
-// is then eligible for the VA-Connect-Done → Active rule.
+// unrecognized cell used to default to ACTIVE, reporting departed VAs as
+// still working the account. Blank or unrecognized now stays blank (null);
+// only a blank cell is then eligible for the VA-Connect-Done → Active rule.
 function mapClientStatus(
   raw: string,
   warnings: ImportIssue[],
@@ -326,14 +372,16 @@ export async function importVaPreparation(
   departmentId: string,
   indexes: DmfIndexes,
   mappingCache: Map<string, string>,
-  apply: boolean
+  apply: boolean,
+  records: Set<string> | null = null
 ): Promise<ImportSummary> {
   const summary = emptySummary('VA Preparation')
-  const rows = await fetchDmfTabRows(sheetId, 'VA Preparation', 3)
+  const allRows = await fetchDmfTabRows(sheetId, 'VA Preparation', 3)
+  const rows = records ? allRows.filter((r) => records.has(recordNoOf(r))) : allRows
   summary.totalRows = rows.length
 
   for (const row of rows) {
-    const recordNo = row['RECORD NO']
+    const recordNo = recordNoOf(row)
     const label = rowLabel(row)
     if (!recordNo) {
       summary.warnings.push({ label, reason: 'No RECORD NO — row skipped' })
@@ -342,6 +390,7 @@ export async function importVaPreparation(
 
     const targetDate = parseDmfDate(row['ACTUAL START DATE']) ?? parseDmfDate(row['TARGET START DATE'])
     const { assignmentId, reason, wouldCreate } = await resolveOrCreateAssignment(
+      departmentId,
       recordNo,
       row['VA NAME'],
       row['PRIMARY ACCOUNT'],
@@ -535,14 +584,16 @@ export async function importPerformanceMonitoring(
   departmentId: string,
   indexes: DmfIndexes,
   mappingCache: Map<string, string>,
-  apply: boolean
+  apply: boolean,
+  records: Set<string> | null = null
 ): Promise<ImportSummary> {
   const summary = emptySummary('Performance Monitoring')
-  const rows = await fetchDmfTabRows(sheetId, 'Performance Monitoring', 3)
+  const allRows = await fetchDmfTabRows(sheetId, 'Performance Monitoring', 3)
+  const rows = records ? allRows.filter((r) => records.has(recordNoOf(r))) : allRows
   summary.totalRows = rows.length
 
   for (const row of rows) {
-    const recordNo = row['RECORD NO']
+    const recordNo = recordNoOf(row)
     const label = rowLabel(row)
     if (!recordNo) {
       summary.warnings.push({ label, reason: 'No RECORD NO — row skipped' })
@@ -555,6 +606,7 @@ export async function importPerformanceMonitoring(
     // Performance Monitoring ever runs before VA Preparation (they share
     // RECORD NO, and runDmfImport() always runs VA Preparation first).
     const { assignmentId, reason } = await resolveOrCreateAssignment(
+      departmentId,
       recordNo,
       row['VA NAME'],
       row['PRIMARY ACCOUNT'],
@@ -609,10 +661,11 @@ export async function importVaAvailability(
   sheetId: string,
   departmentId: string,
   indexes: DmfIndexes,
-  apply: boolean
+  apply: boolean,
+  tabName = 'VA Availability'
 ): Promise<ImportSummary> {
-  const summary = emptySummary('VA Availability')
-  const rows = await fetchDmfTabRows(sheetId, 'VA Availability', 3)
+  const summary = emptySummary(tabName)
+  const rows = await fetchDmfTabRows(sheetId, tabName, 3)
   summary.totalRows = rows.length
 
   for (const row of rows) {
@@ -639,9 +692,12 @@ export async function importVaAvailability(
     // Everything else is this department's record of the VA (its DMF block)
     // and the Team Leader's (TMF block) — written to VADepartmentAvailability
     // so importing PPC's sheet can't overwrite Amazon's remarks for a VA in both.
+    // Creatives' "VA Availability V2" splits PREFERRED WORK HOURS into daily
+    // and weekly columns (daily is the same figure) and has no HYBRID HOURS
+    // column at all, so hybrid hours are left as they are there.
     const profileData = {
-      preferredWorkHours: parseDmfNumber(row['PREFERRED WORK HOURS']),
-      hybridHours: parseDmfNumber(row['HYBRID HOURS']),
+      preferredWorkHours: parseDmfNumber(row['PREFERRED WORK HOURS'] ?? row['IN DAILY HOURS']),
+      ...('HYBRID HOURS' in row && { hybridHours: parseDmfNumber(row['HYBRID HOURS']) }),
     }
     const deptData = {
       isRecommended: parseDmfBool(row['RECOMMENDED']),
@@ -755,12 +811,23 @@ export async function importProjects(sheetId: string, departmentId: string, appl
 
 // ── Runner ─────────────────────────────────────────────────────────
 
-export async function runDmfImport(sheetId: string, departmentId: string, apply: boolean) {
-  const [indexes, mappingCache] = await Promise.all([buildDmfIndexes(departmentId), loadMappingCache()])
+export type DmfImportOptions = {
+  // Only these RECORD NOs, and only the two tabs keyed by them (VA
+  // Preparation, Performance Monitoring) — for re-importing a few rows
+  // without touching the rest of the department.
+  records?: Set<string> | null
+  availabilityTab?: string
+}
 
-  const preparation = await importVaPreparation(sheetId, departmentId, indexes, mappingCache, apply)
-  const performance = await importPerformanceMonitoring(sheetId, departmentId, indexes, mappingCache, apply)
-  const availability = await importVaAvailability(sheetId, departmentId, indexes, apply)
+export async function runDmfImport(sheetId: string, departmentId: string, apply: boolean, options: DmfImportOptions = {}) {
+  const records = options.records ?? null
+  const [indexes, mappingCache] = await Promise.all([buildDmfIndexes(departmentId), loadMappingCache(departmentId)])
+
+  const preparation = await importVaPreparation(sheetId, departmentId, indexes, mappingCache, apply, records)
+  const performance = await importPerformanceMonitoring(sheetId, departmentId, indexes, mappingCache, apply, records)
+  if (records) return [preparation, performance]
+
+  const availability = await importVaAvailability(sheetId, departmentId, indexes, apply, options.availabilityTab)
   const projects = await importProjects(sheetId, departmentId, apply)
 
   return [preparation, performance, availability, projects]

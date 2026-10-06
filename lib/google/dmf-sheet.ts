@@ -11,6 +11,18 @@ import { google } from 'googleapis'
 export const DMF_SHEETS: Record<string, string | undefined> = {
   Amazon: process.env.GOOGLE_DEPT_MONITORING_SHEET_ID,
   PPC: process.env.GOOGLE_DEPT_MONITORING_SHEET_ID_PPC,
+  'Social Media': process.env.GOOGLE_DEPT_MONITORING_SHEET_ID_SOCIAL_MEDIA,
+  Walmart: process.env.GOOGLE_DEPT_MONITORING_SHEET_ID_WALMART,
+  Wholesale: process.env.GOOGLE_DEPT_MONITORING_SHEET_ID_WHOLESALE,
+  'Executive Assistant': process.env.GOOGLE_DEPT_MONITORING_SHEET_ID_EXECUTIVE_ASSISTANT,
+  Creatives: process.env.GOOGLE_DEPT_MONITORING_SHEET_ID_CREATIVES,
+}
+
+// Departments whose availability tab isn't the template's "VA Availability".
+// Creatives keeps the old tab (every VA ever in the department) beside the
+// "V2" its managers actually maintain.
+export const DMF_AVAILABILITY_TABS: Record<string, string> = {
+  Creatives: 'VA Availability V2',
 }
 
 function getAuth() {
