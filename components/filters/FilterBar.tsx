@@ -21,12 +21,17 @@ type FilterBarProps = {
   filters: FilterConfig[]
   searchPlaceholder?: string
   searchKey?: string
+  // Set when several FilterBars share one page (the Masterlist's Staff and VA
+  // tables): the URL params this bar owns, so its Clear button and "has
+  // filters" check leave the other table's params alone.
+  paramKeys?: string[]
 }
 
 export function FilterBar({
   filters,
   searchPlaceholder = 'Search...',
   searchKey = 'q',
+  paramKeys,
 }: FilterBarProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -47,11 +52,18 @@ export function FilterBar({
   )
 
   const clearAll = useCallback(() => {
-    router.replace('', { scroll: false })
+    if (searchRef.current) searchRef.current.value = ''
+    if (!paramKeys) {
+      router.replace('', { scroll: false })
+      return
+    }
+    const params = new URLSearchParams(searchParams.toString())
+    for (const k of paramKeys) params.delete(k)
+    router.replace(`?${params.toString()}`, { scroll: false })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [searchParams, paramKeys])
 
-  const hasFilters = searchParams.toString().length > 0
+  const hasFilters = paramKeys ? paramKeys.some((k) => searchParams.has(k)) : searchParams.toString().length > 0
 
   return (
     <div className="flex flex-wrap gap-2 items-center">

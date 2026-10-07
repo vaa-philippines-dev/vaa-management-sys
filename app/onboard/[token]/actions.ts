@@ -73,7 +73,7 @@ export async function completeOnboarding(token: string, formData: FormData) {
 
   const va = await prisma.vAProfile.findUnique({ where: { userId: invite.userId }, select: { id: true } })
   if (va) revalidatePath(`/vas/${va.id}`)
-  revalidatePath('/vas')
+  revalidatePath('/masterlist')
   revalidateTag(CACHE_TAGS.users, 'default')
   revalidateTag(CACHE_TAGS.vas, 'default')
 

@@ -225,7 +225,7 @@ async function ManagerStats({ deptId }: { deptId: string | null }) {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 fade-in-stagger">
       <StatCard icon={Building2} label="Active Clients" value={clientCount} href="/clients" />
-      <StatCard icon={Users} label="Active VAs" value={vaCount} href="/vas" />
+      <StatCard icon={Users} label="Active VAs" value={vaCount} href="/masterlist?status=ACTIVE#va" />
       <StatCard icon={Briefcase} label="Active Assignments" value={activeAssignments.length} href="/assignments" />
       <StatCard icon={Clock} label="Hours this Month" value={totalMonthHours.toFixed(1)} href="/reports" />
     </div>
@@ -303,7 +303,7 @@ function QuickActionsPanel({ isDevMode }: { isDevMode: boolean }) {
     <Card>
       <CardHeader className="pb-3"><CardTitle className="text-base">Quick Actions</CardTitle></CardHeader>
       <CardContent className="grid gap-2 md:grid-cols-3">
-        {isDevMode && <><QuickAction href="/clients/new" icon={Plus} label="Add Client" /><QuickAction href="/vas" icon={Plus} label="Add VA" /><QuickAction href="/assignments/new" icon={Briefcase} label="New Assignment" /></>}
+        {isDevMode && <><QuickAction href="/clients/new" icon={Plus} label="Add Client" /><QuickAction href="/masterlist#va" icon={Plus} label="Add VA" /><QuickAction href="/assignments/new" icon={Briefcase} label="New Assignment" /></>}
         <QuickAction href="/work-logs/new" icon={Clock} label="Log Hours" />
         <QuickAction href="/reports" icon={BarChart3} label="Monthly Report" />
         <QuickAction href="/skills" icon={Users} label="Manage Services" />

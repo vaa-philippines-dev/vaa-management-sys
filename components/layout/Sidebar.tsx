@@ -29,7 +29,6 @@ import {
   BriefcaseBusiness,
   Database,
   IdCard,
-  Contact,
   Bot,
   Handshake,
   ListChecks,
@@ -295,12 +294,11 @@ const hrRoutes = [
   { label: 'Leave Approvals', href: '/leave/approvals', icon: CalendarCheck },
 ]
 
-// Rendered below VA Masterlist inside the "Department" section. Kept out of
+// Rendered below Masterlist inside the "Department" section. Kept out of
 // managerRoutes' render loop (below) whenever the Department section is
 // shown, so Clients/Assignments appear once, not duplicated in both places.
 const departmentRoutes = [
-  { label: 'VA Masterlist', href: '/vas', icon: Users },
-  { label: 'Staff Masterlist', href: '/staff', icon: Contact },
+  { label: 'Masterlist', href: '/masterlist', icon: Users },
   { label: 'Client Request', href: '/clients', icon: BriefcaseBusiness },
   { label: 'Assignments', href: '/assignments', icon: Briefcase },
   { label: 'Teams', href: '/teams', icon: UsersRound },
@@ -320,12 +318,12 @@ const tmfRoute = { label: 'Team Monitoring', href: '/tmf', icon: ClipboardList }
 // DMF board pages that redirect VA accounts away (they're manager views). A VA
 // team leader sees the Department section for Teams/Team Assignment, but these
 // would just bounce them to the dashboard, so they're hidden for VA accounts.
-const MANAGER_ONLY_DEPARTMENT_HREFS = new Set(['/staff', '/va-preparation', '/va-availability', '/performance', '/projects'])
+const MANAGER_ONLY_DEPARTMENT_HREFS = new Set(['/va-preparation', '/va-availability', '/performance', '/projects'])
 
 // Department-wide pages hidden from a team-scoped Team Leader (TEAM_LEADER
 // SystemRole on a staff account — lib/scope.ts isTeamScoped): they only see
 // the teams they lead, and these pages are about the whole department.
-const TEAM_SCOPED_HIDDEN_HREFS = new Set(['/staff', '/projects'])
+const TEAM_SCOPED_HIDDEN_HREFS = new Set(['/projects'])
 
 // Rendered in the "Support" section at the very bottom of every sidebar.
 const supportRoutes = [
@@ -382,7 +380,7 @@ export function Sidebar({
   // Team Monitoring row below).
   const routes = role === 'VA' ? vaRoutes : managerRoutes
   const showDeptRow = (href: string) => !(isTeamScoped && TEAM_SCOPED_HIDDEN_HREFS.has(href))
-  // Clients/Assignments move into the Department section (below VA Masterlist)
+  // Clients/Assignments move into the Department section (below Masterlist)
   // once it's shown, so they aren't listed twice for the same viewer.
   const mainRoutes = showDepartmentSection
     ? routes.filter((r) => r.href !== '/clients' && r.href !== '/assignments')
@@ -533,28 +531,17 @@ export function Sidebar({
           {showDepartmentSection && (
             <>
               <p className="px-2 pt-3.5 pb-1 text-[10.5px] tracking-wide text-sidebar-foreground/60">Department</p>
+              {/* Staff and VA profiles (/staff/[id], /vas/[id]) light this row too. */}
               <FavoritableRow
-                href="/vas"
-                label="VA Masterlist"
+                href="/masterlist"
+                label="Masterlist"
                 icon={Users}
-                isActive={isMainRowActive('/vas', isRouteActive('/vas'))}
+                isActive={isMainRowActive('/masterlist', isRouteActive('/masterlist') || isUnder('/vas') || isUnder('/staff'))}
                 canFavorite={canFavorite}
-                favorite={favorites.find((f) => f.href === '/vas')}
+                favorite={favorites.find((f) => f.href === '/masterlist')}
                 atMax={atMax}
                 onChanged={setFavorites}
               />
-              {role === 'MANAGER' && showDeptRow('/staff') && (
-                <FavoritableRow
-                  href="/staff"
-                  label="Staff Masterlist"
-                  icon={Contact}
-                  isActive={isMainRowActive('/staff', isRouteActive('/staff'))}
-                  canFavorite={canFavorite}
-                  favorite={favorites.find((f) => f.href === '/staff')}
-                  atMax={atMax}
-                  onChanged={setFavorites}
-                />
-              )}
               <FavoritableRow
                 href="/clients"
                 label="Client Request"

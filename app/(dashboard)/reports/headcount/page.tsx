@@ -198,9 +198,9 @@ export default async function HeadcountReportPage({
           <CardContent>
             <p className="text-2xl font-bold">{activePeople}</p>
             <p className="text-xs text-muted-foreground mt-1">
-              <Link href="/vas?status=ACTIVE" className="hover:text-foreground hover:underline">{totals.vaActive} VA</Link>
+              <Link href="/masterlist?status=ACTIVE#va" className="hover:text-foreground hover:underline">{totals.vaActive} VA</Link>
               {' · '}
-              <Link href="/staff?status=ACTIVE" className="hover:text-foreground hover:underline">{totals.staffActive} Staff</Link>
+              <Link href="/masterlist?sstatus=ACTIVE#staff" className="hover:text-foreground hover:underline">{totals.staffActive} Staff</Link>
               {onBothLists > 0 && <span title="Staff who are also VAs (Team Leaders), counted once in the total"> · {onBothLists} on both</span>}
             </p>
           </CardContent>

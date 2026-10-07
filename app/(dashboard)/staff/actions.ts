@@ -24,6 +24,7 @@ const dateValue = (fd: FormData, key: string) => {
 }
 
 function revalidateStaff() {
+  revalidatePath('/masterlist')
   revalidatePath('/staff', 'layout')
   revalidatePath('/vas', 'layout')
   revalidateTag(CACHE_TAGS.vas, 'default')

@@ -1,0 +1,827 @@
+import { prisma } from '@/lib/prisma'
+import type { Prisma } from '@/src/generated/prisma/client'
+import { getCurrentUser, canMutate, VA_MUTATOR_ROLES, DEPARTMENT_SCOPED_ROLES, TEAM_MANAGE_ROLES } from '@/lib/auth'
+import {
+  getViewScope,
+  getLedTeamScope,
+  isTeamScoped,
+  assignmentScopeWhere,
+  vaProfileScopeWhere,
+  scopeKey as scopeCacheKeyOf,
+  type Scope,
+} from '@/lib/scope'
+import { cached, CACHE_TAGS } from '@/lib/cache'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { FilterBar } from '@/components/filters/FilterBar'
+import { Suspense } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table'
+import { StatusIndicator } from '@/components/ui/status-indicator'
+import { getOwnTeamIds } from '@/lib/teams'
+import { QuickAddVABtn } from '@/components/vas/QuickAddVABtn'
+import { VABulkSelectToggle } from '@/components/vas/VABulkSelectToggle'
+import { VARowCheckbox } from '@/components/vas/VARowCheckbox'
+import { VASelectAllCheckbox } from '@/components/vas/VASelectAllCheckbox'
+import { Pagination } from '@/components/ui/pagination'
+import { differenceInMonths } from 'date-fns'
+import {
+  Users,
+  UserCog,
+  Clock,
+  Pencil,
+  Eye,
+  LayoutList,
+  ArrowUp,
+  ArrowDown,
+  ArrowUpDown,
+} from 'lucide-react'
+
+const PAGE_SIZE = 20
+
+type SortField = 'name' | 'position' | 'status' | 'engagement' | 'hireDate' | 'eocDate'
+const DEFAULT_SORT: `${SortField}:${'asc' | 'desc'}` = 'hireDate:desc'
+const DEFAULT_STATUS = 'ACTIVE'
+const SORT_FIELDS: SortField[] = ['name', 'position', 'status', 'engagement', 'hireDate', 'eocDate']
+
+function parseSort(raw: string | undefined): { field: SortField; dir: 'asc' | 'desc' } {
+  const [field, dir] = (raw || DEFAULT_SORT).split(':')
+  return {
+    field: SORT_FIELDS.includes(field as SortField) ? (field as SortField) : 'hireDate',
+    dir: dir === 'asc' ? 'asc' : 'desc',
+  }
+}
+
+type Tone = 'success' | 'warning' | 'destructive' | 'info' | 'neutral'
+
+function formatDate(date: Date) {
+  const d = date instanceof Date ? date : new Date(date)
+  if (isNaN(d.getTime())) return null
+  return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(d)
+}
+
+// Derived from currentHireDate, not stored — a strict monotonic inverse of
+// it, so it reuses the Hire Date sort rather than needing its own SortField.
+function formatYearsOfService(hireDate: Date | null): string | null {
+  if (!hireDate) return null
+  const months = differenceInMonths(new Date(), hireDate)
+  if (months < 0) return null
+  const years = Math.floor(months / 12)
+  const remMonths = months % 12
+  if (years === 0) return `${remMonths}m`
+  if (remMonths === 0) return `${years}y`
+  return `${years}y ${remMonths}m`
+}
+
+const STATUS_TONE: Record<string, Tone> = {
+  ACTIVE: 'success',
+  PENDING: 'warning',
+  TRANSFERRED: 'info',
+  RESIGNED: 'destructive',
+  REMOVED: 'destructive',
+  PROJECT_ENDED: 'neutral',
+  CANCELLED: 'destructive',
+  BLACKLISTED: 'destructive',
+  UNIDENTIFIED: 'neutral',
+}
+
+const STATUS_LABEL: Record<string, string> = {
+  ACTIVE: 'Active',
+  PENDING: 'Pending',
+  TRANSFERRED: 'Transferred',
+  RESIGNED: 'Resigned',
+  REMOVED: 'Removed',
+  PROJECT_ENDED: 'Project Ended',
+  CANCELLED: 'Cancelled',
+  BLACKLISTED: 'Blacklisted',
+  UNIDENTIFIED: 'Unidentified',
+}
+
+const EMPLOYMENT_TONE: Record<string, Tone> = {
+  EMPLOYED: 'success',
+  ENGAGED: 'info',
+  CONTRACTED: 'info',
+  END_OF_CONTRACT: 'warning',
+  TRANSFERRED: 'warning',
+  RESIGNED: 'destructive',
+  TERMINATED: 'destructive',
+  BLACKLISTED: 'neutral',
+}
+
+const hrgRoles = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'EXECUTIVE', 'HR']
+
+export type ViewerScope =
+  | { type: 'unrestricted' }
+  // A department-/team-restricted staff viewer. `scope` is lib/scope.ts's
+  // Scope (userIds set for a Team Leader); `teamIds` is the led teams for a
+  // team-scoped TL (null otherwise) and only narrows the filter dropdowns.
+  | { type: 'department'; scope: NonNullable<Scope>; teamIds: string[] | null }
+  | { type: 'team'; teamIds: string[] }
+  | { type: 'self'; userId: string }
+
+// VA-type users -> own team (or own record if on no team) — unless they also
+// hold a Dept/Ops Manager role, which has always taken precedence. Every other
+// viewer goes through lib/scope.ts: admins/HR/EXECUTIVE see everything, and
+// DM/OM/STAFF only the departments they're an active member of, and a Team
+// Leader only the people on the teams they lead.
+export async function getViewerScope(
+  currentUser: NonNullable<Awaited<ReturnType<typeof getCurrentUser>>>
+): Promise<ViewerScope> {
+  if (currentUser.userType === 'VIRTUAL_ASSISTANT' && !DEPARTMENT_SCOPED_ROLES.includes(currentUser.systemRole)) {
+    const teamIds = await getOwnTeamIds(currentUser.id)
+    if (teamIds.length > 0) return { type: 'team', teamIds }
+    return { type: 'self', userId: currentUser.id }
+  }
+  const scope = await getViewScope(currentUser)
+  if (scope === null) return { type: 'unrestricted' }
+  const teamIds = isTeamScoped(currentUser) ? (await getLedTeamScope(currentUser.id)).teamIds : null
+  return { type: 'department', scope, teamIds }
+}
+
+// Scope used to filter the per-row assignment/client include: a VA in PPC and
+// Amazon must only show PPC clients to a PPC manager. Team/self scopes are VA
+// viewers looking at teammates, which never had a client filter.
+function assignmentScope(viewerScope: ViewerScope): Scope {
+  return viewerScope.type === 'department' ? viewerScope.scope : null
+}
+
+// Shared by the row query and the scorecard counts below — extracted so the
+// two can't silently drift on what "in scope" means.
+export function buildScopeWhere(viewerScope: ViewerScope): Prisma.VAProfileWhereInput {
+  return viewerScope.type === 'department'
+    ? vaProfileScopeWhere(viewerScope.scope)
+    : viewerScope.type === 'team'
+      ? {
+          user: {
+            OR: [
+              { ledTeams: { some: { id: { in: viewerScope.teamIds } } } },
+              { tempLedTeams1: { some: { id: { in: viewerScope.teamIds } } } },
+              { tempLedTeams2: { some: { id: { in: viewerScope.teamIds } } } },
+              { teamMemberships: { some: { teamId: { in: viewerScope.teamIds }, endedAt: null } } },
+            ],
+          },
+        }
+      : viewerScope.type === 'self'
+        ? { userId: viewerScope.userId }
+        : {}
+}
+
+export function scopeKey(viewerScope: ViewerScope): string {
+  return viewerScope.type === 'unrestricted'
+    ? 'all'
+    : viewerScope.type === 'department'
+      ? `dept:${scopeCacheKeyOf(viewerScope.scope)}`
+      : viewerScope.type === 'team'
+        ? `team:${viewerScope.teamIds.slice().sort().join(',')}`
+        : `self:${viewerScope.userId}`
+}
+
+// URL params the VA table owns on /masterlist — unprefixed, as on the old
+// /vas page, so existing ?status=…&dept=… links keep working. The Staff
+// table's are s-prefixed (StaffSection.tsx).
+export const VA_PARAM_KEYS = ['q', 'dept', 'team', 'avail', 'emp', 'status', 'sort', 'view', 'page']
+
+// The Masterlist's VA table: the old VA Masterlist page minus its scorecards
+// (the Masterlist's combined row replaces them). `keep` is the Staff table's
+// query string, carried through this table's sort/page links.
+export async function VASection({
+  currentUser,
+  viewerScope,
+  params,
+  keep,
+}: {
+  currentUser: NonNullable<Awaited<ReturnType<typeof getCurrentUser>>>
+  viewerScope: ViewerScope
+  params: Record<string, string | string[] | undefined>
+  keep: string
+}) {
+  const isHRE = hrgRoles.includes(currentUser.systemRole)
+  const isAdmin = canMutate(currentUser)
+  const canAddVA = VA_MUTATOR_ROLES.includes(currentUser.systemRole)
+
+  const [addVaDepartments, addVaSkills, addVaTeams] = canAddVA
+    ? await Promise.all([
+        // quickAddVA() rejects out-of-scope departments server-side; this just
+        // keeps the picker from offering them.
+        cached(`vas:add-va-departments:${viewerScope.type === 'department' ? [...viewerScope.scope.departmentIds].sort().join(',') : 'all'}`, [CACHE_TAGS.departments], 600, () =>
+          prisma.department.findMany({
+            where: {
+              status: 'ACTIVE',
+              parentId: { not: null },
+              ...(viewerScope.type === 'department' && { id: { in: viewerScope.scope.departmentIds } }),
+            },
+            orderBy: { sortOrder: 'asc' },
+            select: { id: true, name: true },
+          })
+        ),
+        prisma.skill.findMany({ where: { isActive: true }, orderBy: { name: 'asc' }, select: { id: true, name: true } }),
+        // The Add VA form's Team picker — only for roles that may compose
+        // teams (quickAddVA() checks the same, plus that the team is in the
+        // chosen department).
+        TEAM_MANAGE_ROLES.includes(currentUser.systemRole)
+          ? prisma.team.findMany({
+              where: {
+                status: 'ACTIVE',
+                ...(viewerScope.type === 'department' && { departmentId: { in: viewerScope.scope.departmentIds } }),
+              },
+              orderBy: { name: 'asc' },
+              select: { id: true, name: true, departmentId: true },
+            })
+          : Promise.resolve([]),
+      ])
+    : [[], [], []]
+
+  const q = typeof params.q === 'string' ? params.q : undefined
+  const dept = typeof params.dept === 'string' ? params.dept : undefined
+  const team = typeof params.team === 'string' ? params.team : undefined
+  const avail = typeof params.avail === 'string' ? params.avail : undefined
+  const empStatus = typeof params.emp === 'string' ? params.emp : undefined
+  const statusParam = typeof params.status === 'string' ? params.status : DEFAULT_STATUS
+  const status = statusParam === 'ALL' ? undefined : statusParam
+  const sort = typeof params.sort === 'string' ? params.sort : DEFAULT_SORT
+  const viewAll = params.view === 'all'
+  const page = Math.max(1, parseInt(typeof params.page === 'string' ? params.page : '1', 10) || 1)
+
+  const tableSection = (
+    <Suspense key={`${q}-${dept}-${team}-${avail}-${empStatus}-${status}-${sort}-${viewAll}-${page}`} fallback={<TableSkeleton />}>
+      <VATableSection q={q} dept={dept} team={team} avail={avail} empStatus={empStatus} status={status} sort={sort} isHRE={isHRE} isAdmin={isAdmin} viewAll={viewAll} page={page} viewerScope={viewerScope} keep={keep} />
+    </Suspense>
+  )
+
+  const title = (
+    <div className="flex items-center gap-3">
+      <h2 className="text-lg font-bold tracking-tight">VAs</h2>
+      {isHRE && (
+        <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-info/10 text-info border-info/20">HR View</Badge>
+      )}
+    </div>
+  )
+
+  return (
+    <section id="va" className="space-y-3 scroll-mt-4">
+      {isAdmin ? (
+        <VABulkSelectToggle
+          headerActions={title}
+          extraActions={<QuickAddVABtn departments={addVaDepartments} positionSkills={addVaSkills} teams={addVaTeams} />}
+        >
+          <div className="rounded-lg border bg-card p-2.5">
+            <Suspense fallback={<Skeleton className="h-8 w-full rounded-md" />}>
+              <FilterWrapper scope={viewerScope} />
+            </Suspense>
+          </div>
+          {tableSection}
+        </VABulkSelectToggle>
+      ) : (
+        <>
+          <div className="flex items-center justify-between">
+            {title}
+            {canAddVA && <QuickAddVABtn departments={addVaDepartments} positionSkills={addVaSkills} teams={addVaTeams} />}
+          </div>
+
+          <div className="rounded-lg border bg-card p-2.5">
+            <Suspense fallback={<Skeleton className="h-8 w-full rounded-md" />}>
+              <FilterWrapper scope={viewerScope} />
+            </Suspense>
+          </div>
+
+          {tableSection}
+        </>
+      )}
+    </section>
+  )
+}
+
+// The Department/Team dropdowns follow the same scope as the rows — a PPC
+// manager picking "Amazon" would only ever get an empty list, and the option
+// list itself shouldn't enumerate other departments' teams.
+async function FilterWrapper({ scope }: { scope: ViewerScope }) {
+  // A team-scoped Team Leader gets both: their led teams, and only the
+  // departments those teams belong to.
+  const deptIds = scope.type === 'department' ? scope.scope.departmentIds : null
+  const teamIds =
+    scope.type === 'team' ? scope.teamIds
+    : scope.type === 'self' ? []
+    : scope.type === 'department' ? scope.teamIds
+    : null
+  const key = [deptIds ? `d:${[...deptIds].sort().join(',')}` : '', teamIds ? `t:${[...teamIds].sort().join(',')}` : ''].filter(Boolean).join('|') || 'all'
+  const [departments, teams] = await Promise.all([
+    cached(`vas:departments:${key}`, [CACHE_TAGS.departments], 600, () =>
+      prisma.department.findMany({
+        where: {
+          status: 'ACTIVE',
+          parentId: { not: null },
+          ...(deptIds && { id: { in: deptIds } }),
+          ...(teamIds && { teams: { some: { id: { in: teamIds } } } }),
+        },
+        orderBy: { sortOrder: 'asc' },
+      })
+    ),
+    cached(`vas:teams:${key}`, [CACHE_TAGS.teams], 600, () =>
+      prisma.team.findMany({
+        where: {
+          status: 'ACTIVE',
+          ...(deptIds && { departmentId: { in: deptIds } }),
+          ...(teamIds && { id: { in: teamIds } }),
+        },
+        select: { id: true, name: true, department: { select: { name: true } } },
+        orderBy: [{ department: { sortOrder: 'asc' } }, { name: 'asc' }],
+      })
+    ),
+  ])
+
+  return (
+    <FilterBar
+      filters={[
+        {
+          key: 'status',
+          label: 'Status',
+          defaultValue: DEFAULT_STATUS,
+          options: [
+            { value: 'ALL', label: 'All Statuses' },
+            { value: 'ACTIVE', label: 'Active' },
+            { value: 'PENDING', label: 'Pending' },
+            { value: 'TRANSFERRED', label: 'Transferred' },
+            { value: 'RESIGNED', label: 'Resigned' },
+            { value: 'REMOVED', label: 'Removed' },
+            { value: 'PROJECT_ENDED', label: 'Project Ended' },
+            { value: 'CANCELLED', label: 'Cancelled' },
+            { value: 'BLACKLISTED', label: 'Blacklisted' },
+            { value: 'UNIDENTIFIED', label: 'Unidentified' },
+          ],
+        },
+        ...(departments.length > 0
+          ? [{ key: 'dept', label: 'Dept', options: departments.map((d) => ({ value: d.id, label: d.name })) }]
+          : []),
+        ...(teams.length > 0
+          ? [{ key: 'team', label: 'Team', options: teams.map((t) => ({ value: t.id, label: `${t.department.name} — ${t.name}` })) }]
+          : []),
+        {
+          key: 'avail',
+          label: 'Avail',
+          options: [
+            { value: 'AVAILABLE', label: 'Available' },
+            { value: 'PARTIALLY_ASSIGNED', label: 'Partially' },
+            { value: 'FULLY_ASSIGNED', label: 'Fully' },
+            { value: 'UNAVAILABLE', label: 'Unavailable' },
+            { value: 'ON_HOLD_BY_VA', label: 'On hold by VA' },
+            { value: 'ON_HOLD_BY_VAA', label: 'On hold by VAA' },
+            { value: 'RECOMMENDED', label: 'Recommended' },
+          ],
+        },
+        {
+          key: 'emp',
+          label: 'Eng',
+          options: [
+            { value: 'EMPLOYED', label: 'Employed' },
+            { value: 'ENGAGED', label: 'Engaged' },
+            { value: 'CONTRACTED', label: 'Contracted' },
+            { value: 'END_OF_CONTRACT', label: 'Ended' },
+            { value: 'TRANSFERRED', label: 'Transferred' },
+            { value: 'RESIGNED', label: 'Resigned' },
+            { value: 'TERMINATED', label: 'Terminated' },
+          ],
+        },
+      ]}
+      searchPlaceholder="Search name or email..."
+      paramKeys={VA_PARAM_KEYS}
+    />
+  )
+}
+
+async function VATableSection({
+  q,
+  dept,
+  team,
+  avail,
+  empStatus,
+  status,
+  sort,
+  isHRE,
+  isAdmin,
+  viewAll,
+  page,
+  viewerScope,
+  keep,
+}: {
+  q?: string
+  dept?: string
+  team?: string
+  avail?: string
+  empStatus?: string
+  status?: string
+  sort: string
+  isHRE: boolean
+  isAdmin: boolean
+  viewAll: boolean
+  page: number
+  viewerScope: ViewerScope
+  keep: string
+}) {
+  // Row-level scoping layered on top of the filter-param where clause: Dept/Ops
+  // Managers only ever see VAs whose current department membership is one of
+  // their own; team-affiliated VA viewers only see VAs on the same team(s); a
+  // VA on no team sees only their own record. Admins/HR/EXECUTIVE and any other
+  // untouched viewer stay unrestricted.
+  const scopeWhere = buildScopeWhere(viewerScope)
+  const scopeCacheKey = scopeKey(viewerScope)
+
+  const userWhere: Record<string, unknown> = {}
+  if (q) {
+    userWhere.OR = [
+      { firstName: { contains: q, mode: 'insensitive' } },
+      { lastName: { contains: q, mode: 'insensitive' } },
+      { email: { contains: q, mode: 'insensitive' } },
+    ]
+  }
+  if (dept) {
+    userWhere.memberships = { some: { departmentId: dept, endedAt: null } }
+  }
+  if (team) {
+    userWhere.teamMemberships = { some: { teamId: team, endedAt: null } }
+  }
+  if (empStatus) {
+    userWhere.employmentRecords = { some: { isCurrent: true, employmentStatus: empStatus } }
+  }
+
+  const vaWhere: Record<string, unknown> = {}
+  if (avail) vaWhere.availabilityStatus = avail
+  if (status) vaWhere.status = status
+
+  const { field: sortField, dir: sortDir } = parseSort(sort)
+
+  const orderBy: Prisma.VAProfileOrderByWithRelationInput =
+    sortField === 'name' ? { user: { firstName: sortDir } } :
+    sortField === 'position' ? { positionSkill: { shortName: sortDir } } :
+    sortField === 'status' ? { status: sortDir } :
+    sortField === 'engagement' ? { engagementStatus: sortDir } :
+    sortField === 'eocDate' ? { currentEndDate: { sort: sortDir, nulls: 'last' } } :
+    { currentHireDate: { sort: sortDir, nulls: 'last' } }
+
+  const where: Prisma.VAProfileWhereInput = {
+    user: { userType: 'VIRTUAL_ASSISTANT', ...userWhere },
+    ...vaWhere,
+    ...(viewerScope.type === 'unrestricted' ? {} : { AND: [scopeWhere] }),
+  }
+
+  // Total roster count ("X / Y VAs" header stat) is scoped the same as the row
+  // query — otherwise a Dept Manager/team-scoped viewer sees a misleading total
+  // like "12 / 340 VAs" for a roster they can never see beyond their 12.
+  const allVAsWhere: Prisma.VAProfileWhereInput = {
+    user: { userType: 'VIRTUAL_ASSISTANT' },
+    ...(viewerScope.type === 'unrestricted' ? {} : { AND: [scopeWhere] }),
+  }
+
+  const cacheKey = `vas:list:${scopeCacheKey}:${JSON.stringify({ q, dept, team, avail, empStatus, status, sort, viewAll, page })}`
+
+  const include = {
+    user: {
+      include: {
+        profile: true,
+        memberships: {
+          where: { endedAt: null },
+          include: { department: true, position: true },
+        },
+        employmentRecords: { where: { isCurrent: true }, take: 1 },
+        teamMemberships: {
+          where: { endedAt: null },
+          select: { team: { select: { id: true, name: true } } },
+          orderBy: { startedAt: 'asc' },
+        },
+      },
+    },
+    positionSkill: true,
+    vaSkills: { include: { skill: true } },
+    // Scoped by the assignment's client department, not the VA's — the
+    // cache key already carries scopeCacheKey, which includes the ids.
+    assignments: {
+      where: { status: 'ACTIVE', ...assignmentScopeWhere(assignmentScope(viewerScope)) },
+      include: { client: true },
+    },
+  } satisfies Prisma.VAProfileInclude
+
+  // With no status filter, Active then Pending VAs always list above the
+  // inactive ones (Removed, Resigned, Blacklisted, ...), each tier in the chosen
+  // sort. Prisma can't ORDER BY a CASE, and the live Postgres enum's order
+  // may not match the schema (it was altered by hand-written migrations), so this pages across per-tier queries.
+  // Sorting explicitly by Status skips the tiers.
+  const tiers: Prisma.VAProfileWhereInput[] =
+    !status && sortField !== 'status'
+      ? [{ status: 'ACTIVE' }, { status: 'PENDING' }, { status: { notIn: ['ACTIVE', 'PENDING'] } }]
+      : [{}]
+
+  const fetchTieredVAs = async () => {
+    const tierCounts = tiers.length > 1
+      ? await Promise.all(tiers.map((t) => prisma.vAProfile.count({ where: { AND: [where, t] } })))
+      : [Infinity]
+    let skip = viewAll ? 0 : (page - 1) * PAGE_SIZE
+    let take = viewAll ? Infinity : PAGE_SIZE
+    const queries = []
+    for (let i = 0; i < tiers.length && take > 0; i++) {
+      if (skip >= tierCounts[i]) { skip -= tierCounts[i]; continue }
+      const n = Math.min(take, tierCounts[i] - skip)
+      queries.push(prisma.vAProfile.findMany({
+        where: { AND: [where, tiers[i]] },
+        include,
+        orderBy,
+        ...(skip ? { skip } : {}),
+        ...(Number.isFinite(n) ? { take: n } : {}),
+      }))
+      take -= n
+      skip = 0
+    }
+    return (await Promise.all(queries)).flat()
+  }
+
+  const [filteredVAs, filteredCount, allVAs] = await Promise.all([
+    cached(cacheKey, [CACHE_TAGS.vas], 60, fetchTieredVAs),
+    cached(`vas:count:${scopeCacheKey}:${JSON.stringify({ q, dept, team, avail, empStatus, status })}`, [CACHE_TAGS.vas], 60, () =>
+      prisma.vAProfile.count({ where })
+    ),
+    cached(`vas:count:all:${scopeCacheKey}`, [CACHE_TAGS.vas], 60, () =>
+      prisma.vAProfile.count({ where: allVAsWhere })
+    ),
+  ])
+
+  const activeCount = filteredVAs.filter((v) => v.status === 'ACTIVE').length
+  const availableCount = filteredVAs.filter((v) => v.availabilityStatus === 'AVAILABLE').length
+  const hasFilters = !!(q || dept || team || avail || empStatus || (status && status !== DEFAULT_STATUS))
+  const pageCount = Math.max(1, Math.ceil(filteredCount / PAGE_SIZE))
+
+  // Single param-serialization helper — the four link builders below (page,
+  // view-all toggle, paginated toggle, sort) previously each re-listed every
+  // query param independently, so adding `team` meant editing four
+  // near-identical blocks and risked silently dropping the filter from one.
+  type ParamsState = {
+    q?: string
+    dept?: string
+    team?: string
+    avail?: string
+    empStatus?: string
+    status?: string
+    sort?: string
+    viewAll?: boolean
+    page?: number
+  }
+  const baseParams: ParamsState = { q, dept, team, avail, empStatus, status, sort, viewAll, page }
+  const buildParams = (overrides: Partial<ParamsState>) => {
+    const merged = { ...baseParams, ...overrides }
+    const sp = new URLSearchParams(keep)
+    if (merged.q) sp.set('q', merged.q)
+    if (merged.dept) sp.set('dept', merged.dept)
+    if (merged.team) sp.set('team', merged.team)
+    if (merged.avail) sp.set('avail', merged.avail)
+    if (merged.empStatus) sp.set('emp', merged.empStatus)
+    sp.set('status', merged.status ?? 'ALL')
+    if (merged.sort) sp.set('sort', merged.sort)
+    if (merged.viewAll) sp.set('view', 'all')
+    if (merged.page && merged.page > 1) sp.set('page', String(merged.page))
+    return `?${sp.toString()}#va`
+  }
+
+  const buildHref = (targetPage: number) => buildParams({ page: targetPage })
+  const viewAllHref = buildParams({ viewAll: true, page: undefined })
+  const paginatedHref = buildParams({ viewAll: false, page: undefined })
+  const buildSortHref = (field: SortField) => {
+    const nextDir = sortField === field && sortDir === 'desc' ? 'asc' : sortField === field ? 'desc' : (field === 'hireDate' || field === 'eocDate' ? 'desc' : 'asc')
+    return buildParams({ sort: `${field}:${nextDir}`, page: undefined })
+  }
+
+  const sortIcon = (field: SortField) => {
+    if (sortField !== field) return <ArrowUpDown className="h-3 w-3 text-muted-foreground/50" />
+    return sortDir === 'asc' ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />
+  }
+
+  // Years of Service is a strict monotonic inverse of Hire Date, so its
+  // header reuses the Hire Date sort target — just with the arrow flipped.
+  const sortIconInverted = (field: SortField) => {
+    if (sortField !== field) return <ArrowUpDown className="h-3 w-3 text-muted-foreground/50" />
+    return sortDir === 'asc' ? <ArrowDown className="h-3 w-3" /> : <ArrowUp className="h-3 w-3" />
+  }
+
+  return (
+    <>
+      <div className="flex items-center justify-between gap-3 px-3 py-2 rounded-lg border bg-muted/30 text-xs text-muted-foreground">
+        <div className="flex items-center gap-3">
+          <span className="flex items-center gap-1.5">
+            <Users className="h-3 w-3" />
+            {hasFilters ? `${filteredCount} / ${allVAs}` : allVAs} VAs
+          </span>
+          <span className="flex items-center gap-1.5">
+            <UserCog className="h-3 w-3" />
+            {activeCount} active
+          </span>
+          <span className="flex items-center gap-1.5">
+            <Clock className="h-3 w-3" />
+            {availableCount} available
+          </span>
+        </div>
+        {viewAll ? (
+          <Link href={paginatedHref} className="flex items-center gap-1.5 font-medium text-primary hover:underline">
+            <LayoutList className="h-3 w-3" />
+            Paginate ({PAGE_SIZE}/page)
+          </Link>
+        ) : (
+          filteredCount > PAGE_SIZE && (
+            <Link href={viewAllHref} className="flex items-center gap-1.5 font-medium text-primary hover:underline">
+              <LayoutList className="h-3 w-3" />
+              View All
+            </Link>
+          )
+        )}
+      </div>
+
+      <div className="rounded-lg border bg-card overflow-hidden">
+        {filteredVAs.length === 0 ? (
+          <div className="p-10 text-center">
+            <Users className="h-8 w-8 text-muted-foreground/40 mx-auto mb-2" />
+            <p className="text-sm text-muted-foreground">No VAs match your filters</p>
+          </div>
+        ) : (
+          <div className="max-h-[calc(100vh-19rem)] overflow-y-auto">
+          <Table className="text-xs">
+            <TableHeader className="sticky top-0 z-20">
+              <TableRow className="bg-muted/30">
+                {isAdmin && (
+                  <TableHead className="px-3 py-2.5 w-0">
+                    <VASelectAllCheckbox ids={filteredVAs.map((va) => va.id)} />
+                  </TableHead>
+                )}
+                <TableHead className="px-3 py-2.5 sticky left-0 bg-muted/30 z-10">
+                  <Link href={buildSortHref('name')} className="flex items-center gap-1 hover:text-foreground">
+                    Name {sortIcon('name')}
+                  </Link>
+                </TableHead>
+                <TableHead className="px-3 py-2.5 hidden md:table-cell">Work Email</TableHead>
+                <TableHead className="px-3 py-2.5 hidden lg:table-cell">Department</TableHead>
+                <TableHead className="px-3 py-2.5 hidden lg:table-cell">Team</TableHead>
+                <TableHead className="px-3 py-2.5 hidden lg:table-cell">
+                  <Link href={buildSortHref('position')} className="flex items-center gap-1 hover:text-foreground">
+                    Position {sortIcon('position')}
+                  </Link>
+                </TableHead>
+                <TableHead className="px-3 py-2.5 hidden sm:table-cell">
+                  <Link href={buildSortHref('status')} className="flex items-center gap-1 hover:text-foreground">
+                    Status {sortIcon('status')}
+                  </Link>
+                </TableHead>
+                <TableHead className="px-3 py-2.5 hidden md:table-cell">
+                  <Link href={buildSortHref('engagement')} className="flex items-center gap-1 hover:text-foreground">
+                    Engagement Status {sortIcon('engagement')}
+                  </Link>
+                </TableHead>
+                <TableHead className="px-3 py-2.5 hidden md:table-cell">
+                  <Link href={buildSortHref('hireDate')} className="flex items-center gap-1 hover:text-foreground">
+                    Hire Date {sortIcon('hireDate')}
+                  </Link>
+                </TableHead>
+                <TableHead className="px-3 py-2.5 hidden xl:table-cell">
+                  <Link href={buildSortHref('hireDate')} className="flex items-center gap-1 hover:text-foreground">
+                    Yrs {sortIconInverted('hireDate')}
+                  </Link>
+                </TableHead>
+                <TableHead className="px-3 py-2.5 hidden md:table-cell">
+                  <Link href={buildSortHref('eocDate')} className="flex items-center gap-1 hover:text-foreground">
+                    EOC/Transfer Date {sortIcon('eocDate')}
+                  </Link>
+                </TableHead>
+                <TableHead className="px-3 py-2.5 hidden xl:table-cell">Remarks</TableHead>
+                <TableHead className="px-3 py-2.5 w-0"> </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredVAs.map((va) => {
+                const emp = va.user.employmentRecords?.[0]
+                const primaryMem = va.user.memberships?.find((m) => m.isPrimary) ?? va.user.memberships?.[0]
+                // TeamMembership has no unique constraint on (teamId, userId) — a VA
+                // can end up with two simultaneously-active rows on the same team (a
+                // data-quality issue, not two distinct teams), so dedupe by team id
+                // rather than showing a misleading "+1" for a duplicate row.
+                const teams = Array.from(new Map(va.user.teamMemberships.map((tm) => [tm.team.id, tm.team])).values())
+
+                return (
+                  <TableRow key={va.id} className="hover:bg-accent/50 group">
+                    {isAdmin && (
+                      <TableCell className="px-3 py-2.5">
+                        <VARowCheckbox id={va.id} />
+                      </TableCell>
+                    )}
+                    <TableCell className="px-3 py-2.5 sticky left-0 bg-card group-hover:bg-accent/50 z-10 transition-colors">
+                      <Link href={`/vas/${va.id}`} className="flex items-center gap-2 hover:text-primary transition-colors">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-[10px] font-medium text-primary shrink-0">
+                          {(va.user.firstName || 'V')[0].toUpperCase()}
+                        </div>
+                        <span className="font-medium">
+                          {va.user.firstName} {va.user.lastName}
+                        </span>
+                        {va.user.employeeId && (
+                          <span className="text-[10px] font-mono text-muted-foreground">{va.user.employeeId}</span>
+                        )}
+                      </Link>
+                    </TableCell>
+                    <TableCell className="px-3 py-2.5 text-muted-foreground hidden md:table-cell">{va.user.profile?.workEmail || <span className="text-muted-foreground/50">—</span>}</TableCell>
+                    <TableCell className="px-3 py-2.5 hidden lg:table-cell">
+                      {primaryMem?.department ? (
+                        <Badge variant="outline" className="text-[10px] py-0 px-1.5">{primaryMem.department.name}</Badge>
+                      ) : <span className="text-muted-foreground">—</span>}
+                    </TableCell>
+                    <TableCell className="px-3 py-2.5 hidden lg:table-cell">
+                      {teams.length > 0 ? (
+                        <span className="flex items-center gap-1">
+                          <Link href={`/teams/${teams[0].id}`}>
+                            <Badge variant="outline" className="text-[10px] py-0 px-1.5 hover:bg-accent">
+                              {teams[0].name}
+                            </Badge>
+                          </Link>
+                          {teams.length > 1 && (
+                            <span className="text-[10px] text-muted-foreground">+{teams.length - 1}</span>
+                          )}
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="px-3 py-2.5 hidden lg:table-cell">
+                      {va.positionSkill?.shortName ?? va.vaaPosition ?? <span className="text-muted-foreground">—</span>}
+                    </TableCell>
+                    <TableCell className="px-3 py-2.5 hidden sm:table-cell">
+                      <div className="flex items-center gap-1">
+                        <StatusIndicator tone={STATUS_TONE[va.status] ?? 'neutral'}>
+                          {STATUS_LABEL[va.status] ?? va.status}
+                        </StatusIndicator>
+                        {va.onHold && <StatusIndicator tone="warning">On Hold</StatusIndicator>}
+                      </div>
+                    </TableCell>
+                    <TableCell className="px-3 py-2.5 hidden md:table-cell">
+                      {emp ? (
+                        <StatusIndicator tone={EMPLOYMENT_TONE[emp.employmentStatus] ?? 'neutral'}>
+                          {emp.employmentStatus.replace(/_/g, ' ')}
+                        </StatusIndicator>
+                      ) : <span className="text-muted-foreground">—</span>}
+                    </TableCell>
+                    <TableCell className="px-3 py-2.5 text-muted-foreground hidden md:table-cell">
+                      {(va.currentHireDate && formatDate(va.currentHireDate)) || <span className="text-muted-foreground/50">—</span>}
+                    </TableCell>
+                    <TableCell className="px-3 py-2.5 text-muted-foreground hidden xl:table-cell">
+                      {formatYearsOfService(va.currentHireDate) ?? <span className="text-muted-foreground/50">—</span>}
+                    </TableCell>
+                    <TableCell className="px-3 py-2.5 text-muted-foreground hidden md:table-cell">
+                      {(va.currentEndDate && formatDate(va.currentEndDate)) || <span className="text-muted-foreground/50">—</span>}
+                    </TableCell>
+                    <TableCell className="px-3 py-2.5 text-muted-foreground hidden xl:table-cell max-w-[16rem] truncate" title={va.notes ?? undefined}>
+                      {va.notes || <span className="text-muted-foreground/50">—</span>}
+                    </TableCell>
+                    <TableCell className="px-3 py-2.5">
+                      <Link href={`/vas/${va.id}`}>
+                        {isHRE ? (
+                          <Button variant="outline" size="sm" className="h-6 text-[10px] px-2 gap-1 bg-info/5 hover:bg-info/10 border-info/30 text-info">
+                            <Pencil className="h-3 w-3" />
+                            Edit
+                          </Button>
+                        ) : (
+                          <Button variant="outline" size="sm" className="h-6 text-[10px] px-2 gap-1">
+                            <Eye className="h-3 w-3" />
+                            View
+                          </Button>
+                        )}
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+          </div>
+        )}
+      </div>
+
+      {!viewAll && (
+        <Pagination page={page} pageCount={pageCount} buildHref={buildHref} />
+      )}
+    </>
+  )
+}
+
+function TableSkeleton() {
+  return (
+    <>
+      <div className="flex items-center gap-3 px-3 py-2 rounded-lg border bg-muted/30">
+        <Skeleton className="h-3 w-16" />
+        <Skeleton className="h-3 w-20" />
+        <Skeleton className="h-3 w-20" />
+      </div>
+      <div className="rounded-lg border bg-card overflow-hidden">
+        <div className="p-2 space-y-1">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="flex items-center gap-3 p-2">
+              <Skeleton className="h-6 w-6 rounded-full shrink-0" />
+              <Skeleton className="h-3 w-32" />
+              <Skeleton className="h-3 w-40 hidden md:block" />
+              <Skeleton className="h-5 w-16 rounded-full ml-auto" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
+  )
+}

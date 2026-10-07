@@ -191,7 +191,7 @@ export async function quickAddVA(formData: FormData) {
     console.error('[VA] Failed to create 201 Drive folder:', e instanceof Error ? e.message : e)
   }
 
-  revalidatePath('/vas')
+  revalidatePath('/masterlist')
   revalidateTag(CACHE_TAGS.vas, 'default')
   revalidateTag(CACHE_TAGS.users, 'default')
   if (teamId) revalidateTag(CACHE_TAGS.teams, 'default')
@@ -932,7 +932,7 @@ export async function bulkImportVAs(rowsInput: VACsvRow[], overwriteExisting = f
   }
 
   if (result.created > 0 || result.updated > 0) {
-    revalidatePath('/vas')
+    revalidatePath('/masterlist')
     revalidateTag(CACHE_TAGS.vas, 'default')
     revalidateTag(CACHE_TAGS.users, 'default')
   }
@@ -1014,7 +1014,7 @@ export async function updateVAProfile(vaProfileId: string, formData: FormData) {
 
   revalidatePath(`/vas/${vaProfileId}`)
   revalidateTag(CACHE_TAGS.vas, 'default')
-  revalidatePath('/vas')
+  revalidatePath('/masterlist')
   revalidateTag(CACHE_TAGS.vas, 'default')
 }
 
@@ -1084,7 +1084,7 @@ export async function changeVAStatus(
 
   revalidatePath(`/vas/${vaProfileId}`)
   revalidateTag(CACHE_TAGS.vas, 'default')
-  revalidatePath('/vas')
+  revalidatePath('/masterlist')
 }
 
 export async function transferVA(
@@ -1209,7 +1209,7 @@ export async function transferVA(
 
   revalidatePath(`/vas/${vaProfileId}`)
   revalidateTag(CACHE_TAGS.vas, 'default')
-  revalidatePath('/vas')
+  revalidatePath('/masterlist')
   revalidateTag(CACHE_TAGS.users, 'default')
   revalidateTag(CACHE_TAGS.departments, 'default')
 }
@@ -1307,7 +1307,7 @@ export async function updateUserProfile(userId: string, formData: FormData) {
 
   revalidatePath(`/vas/${userId}`)
   revalidateTag(CACHE_TAGS.users, 'default')
-  revalidatePath('/vas')
+  revalidatePath('/masterlist')
   revalidateTag(CACHE_TAGS.users, 'default')
   // The same sections back the Staff 201.
   revalidatePath('/staff', 'layout')
@@ -1467,7 +1467,7 @@ export async function terminateVA(formData: FormData) {
 
   revalidatePath(`/vas/${vaProfileId}`)
   revalidateTag(CACHE_TAGS.vas, 'default')
-  revalidatePath('/vas')
+  revalidatePath('/masterlist')
   revalidatePath('/tickets')
   revalidateTag(CACHE_TAGS.tickets, 'default')
   revalidatePath('/offboarding')
@@ -2355,7 +2355,7 @@ export async function updateUserProfileFiles(
 
   revalidatePath(`/vas/${userId}`)
   revalidateTag(CACHE_TAGS.users, 'default')
-  revalidatePath('/vas')
+  revalidatePath('/masterlist')
   revalidateTag(CACHE_TAGS.users, 'default')
   // The same sections back the Staff 201.
   revalidatePath('/staff', 'layout')
@@ -2420,7 +2420,7 @@ export async function bulkDeleteVAs(vaProfileIds: string[]): Promise<BulkDeleteV
   }
 
   if (result.deactivated > 0) {
-    revalidatePath('/vas')
+    revalidatePath('/masterlist')
     revalidateTag(CACHE_TAGS.vas, 'default')
     revalidateTag(CACHE_TAGS.users, 'default')
   }

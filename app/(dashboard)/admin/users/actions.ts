@@ -624,7 +624,7 @@ export async function deleteUser(userId: string) {
 
   revalidatePath('/admin/users')
   revalidateTag(CACHE_TAGS.users, 'default')
-  revalidatePath('/vas')
+  revalidatePath('/masterlist')
   revalidateTag(CACHE_TAGS.vas, 'default')
 }
 
@@ -672,7 +672,7 @@ export async function bulkDeleteUsers(userIds: string[]): Promise<BulkDeleteUser
   if (result.deleted > 0) {
     revalidatePath('/admin/users')
     revalidateTag(CACHE_TAGS.users, 'default')
-    revalidatePath('/vas')
+    revalidatePath('/masterlist')
     revalidateTag(CACHE_TAGS.vas, 'default')
   }
 

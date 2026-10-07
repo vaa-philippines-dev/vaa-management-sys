@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import { prisma } from '@/lib/prisma'
 
 // The Staff Masterlist is people, not sheet rows: a promotion or transfer
@@ -88,9 +89,9 @@ function toPeople(records: StaffRecordRow[]): StaffPerson[] {
   })
 }
 
-export async function getStaffPeople(): Promise<StaffPerson[]> {
-  return toPeople(await loadRecords())
-}
+// Per-request memo: the Masterlist reads it for both its scorecards and the
+// Staff table.
+export const getStaffPeople = cache(async (): Promise<StaffPerson[]> => toPeople(await loadRecords()))
 
 // Any of a person's record ids resolves to the whole person.
 export async function getStaffPerson(recordId: string): Promise<StaffPerson | null> {

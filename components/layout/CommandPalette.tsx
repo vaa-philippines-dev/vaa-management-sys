@@ -30,7 +30,6 @@ import {
   Bot,
   Database,
   IdCard,
-  Contact,
   UserMinus,
 } from 'lucide-react'
 
@@ -47,8 +46,7 @@ type Shortcut = {
 const SHORTCUTS: Shortcut[] = [
   { label: 'Dashboard', description: 'Overview of activity and stats', href: '/dashboard', icon: LayoutDashboard },
   { label: 'Inbox', description: 'Messages and department channels', href: '/inbox', icon: MessageSquare, adminOnly: true },
-  { label: 'VA Masterlist', description: 'Browse and manage virtual assistants', href: '/vas', icon: Users, keywords: 'va roster masterlist team' },
-  { label: 'Staff Masterlist', description: 'Internal staff roster', href: '/staff', icon: Contact, keywords: 'staff employees internal roster masterlist' },
+  { label: 'Masterlist', description: 'Staff and VA roster', href: '/masterlist', icon: Users, keywords: 'va staff employees roster masterlist team' },
   { label: 'Offboarding', description: 'Termination and resignation cases', href: '/offboarding', icon: UserMinus, keywords: 'termination resignation exit offboard' },
   { label: 'Client Request', description: 'View and manage clients', href: '/clients', icon: BriefcaseBusiness },
   { label: 'Assignments', description: 'VA-to-client staffing assignments', href: '/assignments', icon: Briefcase },

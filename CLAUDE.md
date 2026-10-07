@@ -61,7 +61,7 @@ Tab → app mapping as it stands:
 | Sheet tab | In-app |
 |---|---|
 | DASHBOARD | `/dashboard?dept=<id>` |
-| Masterlist | `/vas` |
+| Masterlist | `/masterlist` — Staff table (sectioned by department, s-prefixed URL params) above the VA table (unprefixed params). `/vas` and `/staff` redirect here; profiles stay at `/vas/[id]` and `/staff/[id]`. |
 | Team Assignment | `/team-assignment` |
 | Structure | `/departments/[id]` |
 | Headcount | `/reports/headcount` — monthly hires/EOCs (historical, from dated `EmploymentRecord`s) plus a **point-in-time** composition panel (`lib/headcount.ts`). There is deliberately no historical composition series: nothing snapshots `VAProfile`, so last March's FT/PT split is not reconstructible. A real series needs a scheduled snapshot write. |

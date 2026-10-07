@@ -147,8 +147,8 @@ export function VACsvImportProvider({ children }: { children: React.ReactNode })
   }, [])
 
   const restore = useCallback(() => {
-    if (window.location.pathname !== '/vas') {
-      router.push('/vas')
+    if (window.location.pathname !== '/masterlist') {
+      router.push('/masterlist')
     }
     setState((prev) => ({ ...prev, minimized: false, modalOpen: true }))
   }, [router])

@@ -305,7 +305,7 @@ function QuickActionsSection() {
       <CardContent className="grid gap-3 md:grid-cols-4">
         <QuickAction href="/admin/users" icon={UserPlus} label="Manage Users" desc="Roles, memberships, permissions" />
         <QuickAction href="/departments" icon={Building2} label="Department Views" desc="Switch between department dashboards" />
-        <QuickAction href="/vas" icon={UserCog} label="VA Workforce" desc="View and manage virtual assistants" />
+        <QuickAction href="/masterlist" icon={UserCog} label="VA Workforce" desc="View and manage virtual assistants" />
         <QuickAction href="/reports" icon={BarChart3} label="Reports" desc="Monthly operations overview" />
       </CardContent>
     </Card>
