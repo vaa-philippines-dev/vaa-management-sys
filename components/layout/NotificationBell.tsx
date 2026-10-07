@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Bell, Briefcase, Clock, MessageSquare, Reply, MoreHorizontal, Circle, CircleDot, UserMinus, CalendarCheck, CalendarX } from 'lucide-react'
+import { Bell, Briefcase, Clock, MessageSquare, Reply, MoreHorizontal, Circle, CircleDot, UserMinus, CalendarCheck, CalendarX, CalendarClock } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
   DropdownMenu,
@@ -28,6 +28,7 @@ type Notification = {
     | 'RESIGNATION_INTAKE'
     | 'LEAVE_APPROVAL_NEEDED'
     | 'LEAVE_REQUEST_DECIDED'
+    | 'AVAILABILITY_REVIEW_DUE'
   title: string
   message: string
   read: boolean
@@ -48,6 +49,7 @@ const TYPE_ICON: Record<Notification['type'], React.ComponentType<{ className?: 
   RESIGNATION_INTAKE: UserMinus,
   LEAVE_APPROVAL_NEEDED: CalendarCheck,
   LEAVE_REQUEST_DECIDED: CalendarX,
+  AVAILABILITY_REVIEW_DUE: CalendarClock,
 }
 
 export function NotificationBell() {
@@ -118,6 +120,8 @@ export function NotificationBell() {
         router.push('/leave/approvals')
       } else if (n.type === 'LEAVE_REQUEST_DECIDED') {
         router.push('/leave')
+      } else if (n.type === 'AVAILABILITY_REVIEW_DUE') {
+        router.push('/va-availability?review=due')
       }
     },
     [router]

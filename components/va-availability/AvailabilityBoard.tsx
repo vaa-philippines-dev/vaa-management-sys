@@ -55,10 +55,12 @@ export function AvailabilityBoard({
   rows,
   canMutate,
   showDepartment,
+  initialAlertsOnly = false,
 }: {
   rows: AvailabilityRow[]
   canMutate: boolean
   showDepartment: boolean
+  initialAlertsOnly?: boolean
 }) {
   const router = useRouter()
   const [editing, setEditing] = useState<AvailabilityRow | null>(null)
@@ -67,7 +69,7 @@ export function AvailabilityBoard({
   const [statusFilter, setStatusFilter] = useState('')
   const [freeOnly, setFreeOnly] = useState(false)
   const [recommendedOnly, setRecommendedOnly] = useState(false)
-  const [alertsOnly, setAlertsOnly] = useState(false)
+  const [alertsOnly, setAlertsOnly] = useState(initialAlertsOnly)
 
   const visible = useMemo(() => {
     const q = search.trim().toLowerCase()
@@ -126,7 +128,7 @@ export function AvailabilityBoard({
             Everything below is read-only — booked hours and client count come from active assignments, the
             rest from HR records and each VA&apos;s Team Leader (their TMF). The only things you can change
             here are <span className="font-medium text-foreground">availability, remarks, and the date changed</span>,
-            via <span className="font-medium text-foreground">Update</span>.
+            via <span className="font-medium text-foreground">Change availability</span>.
           </span>
         </div>
       )}
@@ -305,7 +307,7 @@ export function AvailabilityBoard({
                         )}
                         <Button variant="outline" size="sm" onClick={() => setEditing(r)}>
                           <Pencil className="h-3.5 w-3.5 mr-1.5" />
-                          Update
+                          Change availability
                         </Button>
                       </div>
                     </TableCell>
@@ -323,7 +325,7 @@ export function AvailabilityBoard({
           if (!next) setEditing(null)
         }}
         title={editing ? editing.name : ''}
-        description={editing ? `Update availability · ${editing.departmentName}` : 'Update availability'}
+        description={editing ? `Change availability · ${editing.departmentName}` : 'Change availability'}
         size="sm"
       >
         {editing && (

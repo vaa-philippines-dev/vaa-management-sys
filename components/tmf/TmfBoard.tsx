@@ -229,7 +229,7 @@ export function TmfBoard({ data }: { data: TmfData }) {
                             )}
                             <Button variant="outline" size="sm" onClick={() => setEditing(r)}>
                               <Pencil className="h-3.5 w-3.5 mr-1.5" />
-                              Update
+                              Change availability
                             </Button>
                           </div>
                         </TableCell>
@@ -373,7 +373,7 @@ export function TmfBoard({ data }: { data: TmfData }) {
           if (!next) setEditing(null)
         }}
         title={editing ? editing.name : ''}
-        description={`Update TMF · ${team.name}`}
+        description={`Change availability · ${team.name}`}
         size="sm"
       >
         {editing && (

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { notifyMany } from '@/lib/notifications'
+import { notifyAvailabilityReviewsDue } from '@/lib/availability-review-notify'
 import { ON_HOLD_AVAILABILITY } from '@/lib/va-availability-fields'
 import { startOfDay, endOfDay } from 'date-fns'
 
@@ -83,5 +84,9 @@ export async function GET(req: NextRequest) {
 
   await notifyMany(notifications)
 
-  return NextResponse.json({ checked: vas.length, notified: notifications.length })
+  // Rides on this cron rather than its own: Vercel Hobby caps how many cron
+  // jobs a project gets, and both are once-a-day sweeps of the roster.
+  const availabilityReviews = await notifyAvailabilityReviewsDue(today)
+
+  return NextResponse.json({ checked: vas.length, notified: notifications.length, availabilityReviews })
 }

@@ -2,7 +2,13 @@ import { prisma } from '@/lib/prisma'
 
 type NotifyEntry = {
   recipientId: string
-  type: 'NEW_ASSIGNMENT' | 'HOURS_SHORTFALL' | 'RESIGNATION_INTAKE' | 'LEAVE_APPROVAL_NEEDED' | 'LEAVE_REQUEST_DECIDED'
+  type:
+    | 'NEW_ASSIGNMENT'
+    | 'HOURS_SHORTFALL'
+    | 'RESIGNATION_INTAKE'
+    | 'LEAVE_APPROVAL_NEEDED'
+    | 'LEAVE_REQUEST_DECIDED'
+    | 'AVAILABILITY_REVIEW_DUE'
   title: string
   message: string
   entityType?: string

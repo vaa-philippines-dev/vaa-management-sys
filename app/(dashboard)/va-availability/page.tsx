@@ -12,7 +12,11 @@ import { CalendarRange, Users, UserCheck, Briefcase, PauseCircle, Clock, AlertTr
 
 // The DMF sheet's "VA Availability" tab: the per-VA hours ledger the
 // dashboard's Headcount card only shows in aggregate.
-export default async function VAAvailabilityPage() {
+export default async function VAAvailabilityPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ review?: string }>
+}) {
   const user = await getCurrentUser()
   if (!user) redirect('/login')
   if (user.userType === 'VIRTUAL_ASSISTANT') redirect('/dashboard')
@@ -57,6 +61,8 @@ export default async function VAAvailabilityPage() {
         rows={rows}
         canMutate={canMutate}
         showDepartment={unrestricted || scope.departmentIds.length > 1}
+        // ?review=due — the bell's availability-review notification lands here.
+        initialAlertsOnly={(await searchParams).review === 'due'}
       />
     </div>
   )
