@@ -19,7 +19,9 @@ import {
   AVAILABILITY_REVIEW_DAYS,
   AVAILABILITY_STATUSES,
   AVAILABILITY_STATUS_LABELS,
+  RECOMMENDED_NOT_YET_STARTED,
   WORK_PATTERN_LABELS,
+  recommendedUntilToInput,
   type AvailabilityRow,
 } from '@/lib/va-availability-fields'
 import {
@@ -27,6 +29,7 @@ import {
   confirmAvailability,
   hideAvailabilityRow,
   restoreAvailabilityRow,
+  updateRecommendation,
 } from '@/app/(dashboard)/va-availability/actions'
 
 const STATUS_LABELS: Record<string, string> = AVAILABILITY_STATUS_LABELS
@@ -51,6 +54,10 @@ function todayInput() {
   return new Date().toISOString().slice(0, 10)
 }
 
+function isNotYetStarted(until: string | null) {
+  return until?.trim().toLowerCase() === RECOMMENDED_NOT_YET_STARTED.toLowerCase()
+}
+
 function hours(n: number | null) {
   if (n == null) return '—'
   return Number.isInteger(n) ? `${n}h` : `${n.toFixed(1)}h`
@@ -60,6 +67,7 @@ export function AvailabilityBoard({
   rows: allRows,
   canMutate,
   canDelete = false,
+  canRecommend,
   showDepartment,
   initialAlertsOnly = false,
 }: {
@@ -67,6 +75,7 @@ export function AvailabilityBoard({
   rows: AvailabilityRow[]
   canMutate: boolean
   canDelete?: boolean
+  canRecommend: boolean
   showDepartment: boolean
   initialAlertsOnly?: boolean
 }) {
@@ -85,6 +94,10 @@ export function AvailabilityBoard({
   // its counts.
   const removedCount = allRows.filter((r) => r.hidden).length
   const rows = useMemo(() => allRows.filter((r) => r.hidden === showRemoved), [allRows, showRemoved])
+  // A removed row's DMF block was cleared; it comes back blank on restore.
+  const recommendable = canRecommend && !showRemoved
+  const [recommending, setRecommending] = useState<AvailabilityRow | null>(null)
+  const [notYetStarted, setNotYetStarted] = useState(false)
 
   const visible = useMemo(() => {
     const q = search.trim().toLowerCase()
@@ -168,6 +181,44 @@ export function AvailabilityBoard({
     }
   }
 
+  const openRecommendation = (r: AvailabilityRow) => {
+    setNotYetStarted(isNotYetStarted(r.recommendedUntil))
+    setRecommending(r)
+  }
+
+  const onRecommendationSubmit = async (formData: FormData) => {
+    if (!recommending) return
+    setSaving(true)
+    try {
+      await updateRecommendation(recommending.vaProfileId, recommending.departmentId, formData)
+      toast.success('Recommendation saved')
+      setRecommending(null)
+      router.refresh()
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Could not save recommendation')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const recommendationCell = (r: AvailabilityRow) =>
+    r.isRecommended ? (
+      <div className="text-xs">
+        <div className="flex items-center gap-1 text-warning font-medium">
+          <Star className="h-3 w-3 fill-current" />
+          Yes
+        </div>
+        {r.recommendedForClient && (
+          <div className="text-muted-foreground truncate" title={r.recommendedForClient}>
+            {r.recommendedForClient}
+          </div>
+        )}
+        {r.recommendedUntil && <div className="text-muted-foreground/70">until {r.recommendedUntil}</div>}
+      </div>
+    ) : (
+      <span className="text-xs text-muted-foreground">{recommendable ? '+ Recommend' : '\u2014'}</span>
+    )
+
   return (
     <div className="space-y-4">
       {canMutate && (
@@ -177,7 +228,15 @@ export function AvailabilityBoard({
             Everything below is read-only — booked hours and client count come from active assignments, the
             rest from HR records and each VA&apos;s Team Leader (their TMF). The only things you can change
             here are <span className="font-medium text-foreground">availability, remarks, and the date changed</span>,
-            via <span className="font-medium text-foreground">Change availability</span>.
+            via <span className="font-medium text-foreground">Change availability</span>
+            {canRecommend ? (
+              <>
+                , and the <span className="font-medium text-foreground">Recommended</span> column — click a cell to
+                edit it.
+              </>
+            ) : (
+              '.'
+            )}
           </span>
         </div>
       )}
@@ -294,23 +353,17 @@ export function AvailabilityBoard({
                     </Badge>
                   </TableCell>
                   <TableCell className="max-w-[10rem]">
-                    {r.isRecommended ? (
-                      <div className="text-xs">
-                        <div className="flex items-center gap-1 text-warning font-medium">
-                          <Star className="h-3 w-3 fill-current" />
-                          Yes
-                        </div>
-                        {r.recommendedForClient && (
-                          <div className="text-muted-foreground truncate" title={r.recommendedForClient}>
-                            {r.recommendedForClient}
-                          </div>
-                        )}
-                        {r.recommendedUntil && (
-                          <div className="text-muted-foreground/70">until {r.recommendedUntil}</div>
-                        )}
-                      </div>
+                    {recommendable ? (
+                      <button
+                        type="button"
+                        onClick={() => openRecommendation(r)}
+                        className="block w-full -mx-1.5 rounded-md px-1.5 py-1 text-left hover:bg-muted"
+                        title="Edit recommendation"
+                      >
+                        {recommendationCell(r)}
+                      </button>
                     ) : (
-                      <span className="text-xs text-muted-foreground">&mdash;</span>
+                      recommendationCell(r)
                     )}
                   </TableCell>
                   <TableCell className="max-w-[12rem]">
@@ -474,6 +527,73 @@ export function AvailabilityBoard({
               </Button>
               <Button type="submit" disabled={saving}>
                 {saving ? 'Saving...' : 'Save changes'}
+              </Button>
+            </div>
+          </form>
+        )}
+      </Modal>
+
+      <Modal
+        open={recommending !== null}
+        onOpenChange={(next) => {
+          if (!next) setRecommending(null)
+        }}
+        title={recommending ? recommending.name : ''}
+        description={recommending ? `Recommendation · ${recommending.departmentName}` : 'Recommendation'}
+        size="sm"
+      >
+        {recommending && (
+          <form action={onRecommendationSubmit} className="space-y-3">
+            <label className="flex items-center gap-2 text-sm font-medium">
+              <input type="checkbox" name="isRecommended" defaultChecked={recommending.isRecommended} />
+              Recommended for a client
+            </label>
+
+            <div>
+              <Label htmlFor="recommendedForClient">Recommended for</Label>
+              <Input
+                id="recommendedForClient"
+                name="recommendedForClient"
+                placeholder="Client name"
+                defaultValue={recommending.recommendedForClient ?? ''}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="recommendedUntil">Recommended until</Label>
+              <Input
+                id="recommendedUntil"
+                name="recommendedUntil"
+                type="date"
+                disabled={notYetStarted}
+                defaultValue={recommendedUntilToInput(recommending.recommendedUntil)}
+              />
+              <label className="flex items-center gap-2 text-xs text-muted-foreground mt-1.5">
+                <input
+                  type="checkbox"
+                  name="recommendedNotYetStarted"
+                  checked={notYetStarted}
+                  onChange={(e) => setNotYetStarted(e.target.checked)}
+                />
+                Not yet started
+              </label>
+              {recommending.recommendedUntil &&
+                !notYetStarted &&
+                !isNotYetStarted(recommending.recommendedUntil) &&
+                !recommendedUntilToInput(recommending.recommendedUntil) && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    The sheet had &ldquo;{recommending.recommendedUntil}&rdquo; here, which isn&apos;t a date. Pick
+                    one, or it&apos;s cleared on save.
+                  </p>
+                )}
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2">
+              <Button type="button" variant="outline" onClick={() => setRecommending(null)}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={saving}>
+                {saving ? 'Saving...' : 'Save'}
               </Button>
             </div>
           </form>

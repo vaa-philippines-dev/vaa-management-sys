@@ -8,10 +8,16 @@ import {
   getCurrentUser,
   VA_MUTATOR_ROLES,
   DMF_RECORD_DELETE_ROLES,
+  RECOMMENDATION_MUTATOR_ROLES,
 } from '@/lib/auth'
 import { getMutateScope, isDepartmentInScope, isUserInScope } from '@/lib/scope'
 import { logAudit } from '@/lib/audit'
-import { AVAILABILITY_REVIEW_DAYS, isAvailability } from '@/lib/va-availability-fields'
+import {
+  AVAILABILITY_REVIEW_DAYS,
+  RECOMMENDED_NOT_YET_STARTED,
+  isAvailability,
+  formatRecommendedUntil,
+} from '@/lib/va-availability-fields'
 
 // The department is part of the key, not inferred from the VA: a VA in two
 // departments has two availability records, and a manager may only touch the
@@ -215,6 +221,55 @@ export async function restoreAvailabilityRow(vaProfileId: string, departmentId: 
     entityId: vaProfileId,
     departmentId,
     after: { restored: true },
+    metadata: { surface: 'va-availability' },
+  })
+
+  revalidateAvailability()
+  return { ok: true }
+}
+
+// RECOMMENDED / RECOMMENDED FOR / RECOMMENDED UNTIL — the department putting a
+// VA forward for a client. Kept apart from updateAvailability() because it's
+// a narrower role group, and it doesn't touch DATE CHANGED or restart the
+// review window. UNTIL stays text in the sheet's own shape ("Oct 14 2026" or
+// "Not yet Started") so imported and in-app values read the same.
+export async function updateRecommendation(vaProfileId: string, departmentId: string, formData: FormData) {
+  const actor = await requireRole(...RECOMMENDATION_MUTATOR_ROLES)
+  await assertVAInScope(actor, vaProfileId, departmentId)
+
+  const before = await prisma.vADepartmentAvailability.findUnique({
+    where: { vaProfileId_departmentId: { vaProfileId, departmentId } },
+    select: { isRecommended: true, recommendedForClient: true, recommendedUntil: true, hiddenAt: true },
+  })
+  if (before?.hiddenAt) throw new Error('This row was removed from VA Availability; restore it first')
+
+  const isRecommended = formData.get('isRecommended') === 'on'
+  const recommendedForClient = ((formData.get('recommendedForClient') as string) ?? '').trim() || null
+  const recommendedUntil =
+    formData.get('recommendedNotYetStarted') === 'on'
+      ? RECOMMENDED_NOT_YET_STARTED
+      : formatRecommendedUntil(parseDate(formData.get('recommendedUntil')))
+  if (isRecommended && !recommendedForClient) throw new Error('Enter the client this VA is recommended for')
+
+  const data = { isRecommended, recommendedForClient, recommendedUntil }
+  await prisma.vADepartmentAvailability.upsert({
+    where: { vaProfileId_departmentId: { vaProfileId, departmentId } },
+    create: { vaProfileId, departmentId, ...data },
+    update: data,
+  })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'UPDATE',
+    entityType: 'VAProfile',
+    entityId: vaProfileId,
+    departmentId,
+    before: {
+      isRecommended: before?.isRecommended ?? false,
+      recommendedForClient: before?.recommendedForClient ?? null,
+      recommendedUntil: before?.recommendedUntil ?? null,
+    },
+    after: data,
     metadata: { surface: 'va-availability' },
   })
 

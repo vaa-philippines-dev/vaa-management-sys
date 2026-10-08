@@ -2,6 +2,7 @@ import {
   getCurrentUser,
   VA_MUTATOR_ROLES,
   DMF_RECORD_DELETE_ROLES,
+  RECOMMENDATION_MUTATOR_ROLES,
 } from '@/lib/auth'
 import { getViewScope } from '@/lib/scope'
 import { redirect } from 'next/navigation'
@@ -29,6 +30,7 @@ export default async function VAAvailabilityPage({
   const canMutate = VA_MUTATOR_ROLES.includes(user.systemRole)
   // Admins can remove a row from this list and restore it from "Removed".
   const canDelete = DMF_RECORD_DELETE_ROLES.includes(user.systemRole)
+  const canRecommend = RECOMMENDATION_MUTATOR_ROLES.includes(user.systemRole)
 
   const rows = await getAvailabilityRows(
     scope === null
@@ -68,6 +70,7 @@ export default async function VAAvailabilityPage({
         rows={rows}
         canMutate={canMutate}
         canDelete={canDelete}
+        canRecommend={canRecommend}
         showDepartment={unrestricted || scope.departmentIds.length > 1}
         // ?review=due — the bell's availability-review notification lands here.
         initialAlertsOnly={(await searchParams).review === 'due'}

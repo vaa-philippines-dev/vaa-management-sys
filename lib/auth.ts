@@ -24,6 +24,11 @@ export const DEPARTMENT_SCOPED_ROLES = ['DEPT_MANAGER', 'OPERATIONS_MANAGER']
 export const TEAM_MANAGE_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'OPERATIONS_MANAGER', 'HR']
 // Team Leader + both Temp Leader slots.
 export const TEAM_LEADER_ASSIGN_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'OPERATIONS_MANAGER', 'HR']
+// VA Availability's RECOMMENDED / RECOMMENDED FOR / RECOMMENDED UNTIL: putting a
+// VA forward for a client is the department's call, so it's the Dept/Ops
+// Managers' (plus admins) — not Team Leaders or HR, who can still change
+// availability itself (VA_MUTATOR_ROLES).
+export const RECOMMENDATION_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'OPERATIONS_MANAGER']
 // AI Agent suggestions (VA matches, onboarding drafts, stalled-handoff flags):
 // deciding on one is a real staffing/onboarding call, owned by the same roles
 // that manage departments and staffing day-to-day. EXECUTIVE (e.g. the COO)
