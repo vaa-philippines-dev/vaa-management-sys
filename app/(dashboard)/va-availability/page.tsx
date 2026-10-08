@@ -1,6 +1,7 @@
 import {
   getCurrentUser,
   VA_MUTATOR_ROLES,
+  DMF_RECORD_DELETE_ROLES,
 } from '@/lib/auth'
 import { getViewScope } from '@/lib/scope'
 import { redirect } from 'next/navigation'
@@ -26,13 +27,19 @@ export default async function VAAvailabilityPage({
   const scope = await getViewScope(user)
   const unrestricted = scope === null
   const canMutate = VA_MUTATOR_ROLES.includes(user.systemRole)
+  // Admins can remove a row from this list and restore it from "Removed".
+  const canDelete = DMF_RECORD_DELETE_ROLES.includes(user.systemRole)
 
   const rows = await getAvailabilityRows(
     scope === null
-      ? { departmentIds: null }
-      : { departmentIds: scope.departmentIds, ...(scope.userIds !== null && { userIds: scope.userIds }) }
+      ? { departmentIds: null, includeHidden: canDelete }
+      : {
+          departmentIds: scope.departmentIds,
+          includeHidden: canDelete,
+          ...(scope.userIds !== null && { userIds: scope.userIds }),
+        }
   )
-  const summary = computeAvailabilitySummary(rows)
+  const summary = computeAvailabilitySummary(rows.filter((r) => !r.hidden))
 
   return (
     <div data-wide-page className="space-y-6">
@@ -60,6 +67,7 @@ export default async function VAAvailabilityPage({
       <AvailabilityBoard
         rows={rows}
         canMutate={canMutate}
+        canDelete={canDelete}
         showDepartment={unrestricted || scope.departmentIds.length > 1}
         // ?review=due — the bell's availability-review notification lands here.
         initialAlertsOnly={(await searchParams).review === 'due'}

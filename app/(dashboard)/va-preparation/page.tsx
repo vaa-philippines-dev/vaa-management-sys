@@ -1,4 +1,4 @@
-import { getCurrentUser, ASSIGNMENT_MUTATOR_ROLES } from '@/lib/auth'
+import { getCurrentUser, ASSIGNMENT_MUTATOR_ROLES, DMF_RECORD_DELETE_ROLES } from '@/lib/auth'
 import { getViewScope, scopeDepartmentIds, userScopeWhere, vaProfileScopeWhere } from '@/lib/scope'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
@@ -18,6 +18,7 @@ export default async function VAPreparationPage() {
   const scope = await getViewScope(user)
   const unrestricted = scope === null
   const canMutate = ASSIGNMENT_MUTATOR_ROLES.includes(user.systemRole)
+  const canDelete = DMF_RECORD_DELETE_ROLES.includes(user.systemRole)
 
   const [preparations, teamLeaders, vas] = await Promise.all([
     getPreparations(scope),
@@ -57,6 +58,7 @@ export default async function VAPreparationPage() {
       <PreparationBoard
         preparations={preparations}
         canMutate={canMutate}
+        canDelete={canDelete}
         showDepartment={unrestricted || scope.departmentIds.length > 1}
         teamLeaders={teamLeaders.map((s) => ({ id: s.id, name: `${s.firstName} ${s.lastName}`.trim() }))}
         activeVaUsers={activeVas.map((v) => ({ id: v.userId, name: `${v.user.firstName} ${v.user.lastName}`.trim() }))}

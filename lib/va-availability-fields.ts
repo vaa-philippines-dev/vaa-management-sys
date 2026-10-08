@@ -124,6 +124,10 @@ export type AvailabilityRow = {
   // The sheet's reconciliation signal: the Team Leader and the department
   // disagree about whether this VA is free. Only raised once both have set one.
   tmfMismatch: boolean
+
+  // An admin removed this row from the list (VADepartmentAvailability.hiddenAt).
+  // Only ever true when the read asked for hidden rows.
+  hidden: boolean
 }
 
 // AVAILABLE WORK HOURS in the sheet = PREFERRED - CURRENT - HYBRID, floored

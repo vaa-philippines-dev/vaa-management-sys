@@ -776,6 +776,11 @@ model VADepartmentAvailability {
   tmfUpdatedById        String?       @map("tmf_updated_by_id")
   tmfUpdatedBy          User?         @relation("TmfAvailabilityUpdatedBy", fields: [tmfUpdatedById], references: [id], onDelete: SetNull)
 
+  // Set when an admin removes this VA from the department's VA Availability
+  // list (and the TMF copy). The membership itself stays — only these
+  // availability rows hide. Who did it is in the AuditLog.
+  hiddenAt DateTime? @map("hidden_at")
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

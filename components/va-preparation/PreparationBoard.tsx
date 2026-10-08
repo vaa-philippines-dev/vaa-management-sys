@@ -15,6 +15,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Progress } from '@/components/ui/progress'
 import {
   Pencil,
+  Trash2,
   ExternalLink,
   AlertTriangle,
   CheckCircle2,
@@ -36,7 +37,7 @@ import {
   type PreparationRow,
   type ChecklistKey,
 } from '@/lib/va-preparation-fields'
-import { updatePreparation } from '@/app/(dashboard)/va-preparation/actions'
+import { updatePreparation, deletePreparation } from '@/app/(dashboard)/va-preparation/actions'
 
 function formatDate(iso: string | null) {
   if (!iso) return '—'
@@ -124,6 +125,7 @@ export function PreparationBoard({
   activeVaProfiles,
   vaProfiles,
   canMutate,
+  canDelete = false,
   showDepartment,
 }: {
   preparations: PreparationRow[]
@@ -136,6 +138,8 @@ export function PreparationBoard({
   // Replacement for / Replaced by — every VA in scope, active or not
   vaProfiles: PickerOption[]
   canMutate: boolean
+  // Admins only — removes the preparation row, never the Assignment.
+  canDelete?: boolean
   showDepartment: boolean
 }) {
   const router = useRouter()
@@ -177,6 +181,28 @@ export function PreparationBoard({
     )
     setChecklistState({ ...prep.checklist })
     setBufferSlots(prep.buffers.length > 0 ? prep.buffers.map((b) => b.vaProfileId) : [''])
+  }
+
+  const onDelete = async (prep: PreparationRow) => {
+    if (
+      !confirm(
+        `Delete the VA Preparation record for ${prep.vaName} — ${prep.clientName}?\n\n` +
+          `The assignment itself is kept. This cannot be undone.`
+      )
+    )
+      return
+    setSaving(true)
+    try {
+      const res = await deletePreparation(prep.id)
+      if (res?.error) {
+        toast.error(res.error)
+        return
+      }
+      toast.success('Preparation deleted')
+      router.refresh()
+    } finally {
+      setSaving(false)
+    }
   }
 
   const onSubmit = async (formData: FormData) => {
@@ -262,7 +288,7 @@ export function PreparationBoard({
                 <TableHead>Pipeline</TableHead>
                 <TableHead>Checklist</TableHead>
                 <TableHead>VA Status</TableHead>
-                {canMutate && <TableHead className="w-12"></TableHead>}
+                {(canMutate || canDelete) && <TableHead className={canMutate && canDelete ? 'w-20' : 'w-12'}></TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -385,16 +411,32 @@ export function PreparationBoard({
                         ))}
                     </div>
                   </TableCell>
-                  {canMutate && (
+                  {(canMutate || canDelete) && (
                     <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => openEditor(p)}
-                        aria-label="Edit preparation"
-                      >
-                        <Pencil className="h-3.5 w-3.5" />
-                      </Button>
+                      <div className="flex items-center justify-end gap-1">
+                        {canMutate && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => openEditor(p)}
+                            aria-label="Edit preparation"
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </Button>
+                        )}
+                        {canDelete && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            disabled={saving}
+                            onClick={() => onDelete(p)}
+                            aria-label="Delete preparation"
+                            title="Delete preparation"
+                          >
+                            <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                          </Button>
+                        )}
+                      </div>
                     </TableCell>
                   )}
                 </TableRow>

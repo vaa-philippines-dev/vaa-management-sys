@@ -38,6 +38,10 @@ export const LEAVE_ADMIN_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'HR']
 // VA_MUTATOR_ROLES's day-to-day workflow actions on it), so it's scoped tighter:
 // full admins plus HR, who own the Offboarding module end-to-end.
 export const OFFBOARDING_DELETE_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'HR']
+// Deleting a VA Preparation record or hiding a VA Availability row cleans up
+// DMF data (usually a bad import), not a day-to-day manager action — full
+// admins only.
+export const DMF_RECORD_DELETE_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN']
 // A VA's Personal Information, Employment & Payment, and 201 Files/attachments
 // are sensitive employee data — per HR feedback, only HR + full admins may edit
 // these specific sections. Dept/Ops Managers and Team Leaders (who otherwise

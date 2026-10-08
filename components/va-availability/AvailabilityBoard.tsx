@@ -13,7 +13,7 @@ import { Select } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Modal } from '@/components/ui/modal'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Pencil, AlertTriangle, CheckCircle2, Star, CalendarRange, Info } from 'lucide-react'
+import { Pencil, AlertTriangle, CheckCircle2, Star, CalendarRange, Info, Trash2, RotateCcw, EyeOff } from 'lucide-react'
 import {
   ALERT_LABELS,
   AVAILABILITY_REVIEW_DAYS,
@@ -22,7 +22,12 @@ import {
   WORK_PATTERN_LABELS,
   type AvailabilityRow,
 } from '@/lib/va-availability-fields'
-import { updateAvailability, confirmAvailability } from '@/app/(dashboard)/va-availability/actions'
+import {
+  updateAvailability,
+  confirmAvailability,
+  hideAvailabilityRow,
+  restoreAvailabilityRow,
+} from '@/app/(dashboard)/va-availability/actions'
 
 const STATUS_LABELS: Record<string, string> = AVAILABILITY_STATUS_LABELS
 
@@ -52,13 +57,16 @@ function hours(n: number | null) {
 }
 
 export function AvailabilityBoard({
-  rows,
+  rows: allRows,
   canMutate,
+  canDelete = false,
   showDepartment,
   initialAlertsOnly = false,
 }: {
+  // Includes hidden rows only when the viewer is an admin (canDelete).
   rows: AvailabilityRow[]
   canMutate: boolean
+  canDelete?: boolean
   showDepartment: boolean
   initialAlertsOnly?: boolean
 }) {
@@ -70,6 +78,13 @@ export function AvailabilityBoard({
   const [freeOnly, setFreeOnly] = useState(false)
   const [recommendedOnly, setRecommendedOnly] = useState(false)
   const [alertsOnly, setAlertsOnly] = useState(initialAlertsOnly)
+  const [showRemoved, setShowRemoved] = useState(false)
+  const [busyRow, setBusyRow] = useState<string | null>(null)
+
+  // "Removed" is its own view: hidden rows never mix into the live list or
+  // its counts.
+  const removedCount = allRows.filter((r) => r.hidden).length
+  const rows = useMemo(() => allRows.filter((r) => r.hidden === showRemoved), [allRows, showRemoved])
 
   const visible = useMemo(() => {
     const q = search.trim().toLowerCase()
@@ -101,6 +116,40 @@ export function AvailabilityBoard({
       router.refresh()
     } catch {
       toast.error('Could not confirm availability')
+    }
+  }
+
+  const onHide = async (row: AvailabilityRow) => {
+    if (
+      !confirm(
+        `Delete ${row.name} from ${row.departmentName}'s VA Availability?\n\n` +
+          `This clears the row's availability, remarks, recommendation and TMF data and removes it from ` +
+          `VA Availability and the TMF. ${row.name} stays in the department. You can restore the row from "Removed".`
+      )
+    )
+      return
+    setBusyRow(row.rowKey)
+    try {
+      await hideAvailabilityRow(row.vaProfileId, row.departmentId)
+      toast.success(`${row.name} removed from VA Availability`)
+      router.refresh()
+    } catch {
+      toast.error('Could not delete this row')
+    } finally {
+      setBusyRow(null)
+    }
+  }
+
+  const onRestore = async (row: AvailabilityRow) => {
+    setBusyRow(row.rowKey)
+    try {
+      await restoreAvailabilityRow(row.vaProfileId, row.departmentId)
+      toast.success(`${row.name} restored to VA Availability`)
+      router.refresh()
+    } catch {
+      toast.error('Could not restore this row')
+    } finally {
+      setBusyRow(null)
     }
   }
 
@@ -164,6 +213,12 @@ export function AvailabilityBoard({
             Needs review ({alertCount})
           </Button>
         )}
+        {canDelete && (showRemoved || removedCount > 0) && (
+          <Button variant={showRemoved ? 'default' : 'outline'} size="sm" onClick={() => setShowRemoved((v) => !v)}>
+            <EyeOff className="h-3.5 w-3.5 mr-1.5" />
+            Removed ({removedCount})
+          </Button>
+        )}
         <span className="text-xs text-muted-foreground ml-auto">
           {visible.length} of {rows.length} &middot; {hours(totalAvailableHours)} free
         </span>
@@ -173,7 +228,11 @@ export function AvailabilityBoard({
         <Card className="flex flex-col items-center justify-center py-12 text-center">
           <CalendarRange className="h-10 w-10 text-muted-foreground/50 mb-3" />
           <p className="text-sm text-muted-foreground">
-            {rows.length === 0 ? 'No VAs in scope.' : 'No VAs match these filters.'}
+            {showRemoved && rows.length === 0
+              ? 'No removed rows.'
+              : rows.length === 0
+                ? 'No VAs in scope.'
+                : 'No VAs match these filters.'}
           </p>
         </Card>
       ) : (
@@ -193,7 +252,7 @@ export function AvailabilityBoard({
                 <TableHead>Recommended</TableHead>
                 <TableHead>Availability update</TableHead>
                 <TableHead>TMF</TableHead>
-                {canMutate && <TableHead className="w-32"></TableHead>}
+                {(canMutate || canDelete) && <TableHead className="w-32"></TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -291,10 +350,24 @@ export function AvailabilityBoard({
                       <span className="text-xs text-muted-foreground">&mdash;</span>
                     )}
                   </TableCell>
-                  {canMutate && (
+                  {r.hidden ? (
+                    <TableCell>
+                      <div className="flex items-center justify-end">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={busyRow === r.rowKey}
+                          onClick={() => onRestore(r)}
+                        >
+                          <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
+                          Restore
+                        </Button>
+                      </div>
+                    </TableCell>
+                  ) : (canMutate || canDelete) && (
                     <TableCell>
                       <div className="flex items-center justify-end gap-1">
-                        {r.alert !== 'NONE' && (
+                        {canMutate && r.alert !== 'NONE' && (
                           <Button
                             variant="ghost"
                             size="icon"
@@ -305,10 +378,24 @@ export function AvailabilityBoard({
                             <CheckCircle2 className="h-3.5 w-3.5 text-success" />
                           </Button>
                         )}
-                        <Button variant="outline" size="sm" onClick={() => setEditing(r)}>
-                          <Pencil className="h-3.5 w-3.5 mr-1.5" />
-                          Change availability
-                        </Button>
+                        {canMutate && (
+                          <Button variant="outline" size="sm" onClick={() => setEditing(r)}>
+                            <Pencil className="h-3.5 w-3.5 mr-1.5" />
+                            Change availability
+                          </Button>
+                        )}
+                        {canDelete && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            disabled={busyRow === r.rowKey}
+                            onClick={() => onHide(r)}
+                            aria-label="Delete from VA Availability"
+                            title="Delete from VA Availability"
+                          >
+                            <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                          </Button>
+                        )}
                       </div>
                     </TableCell>
                   )}

@@ -7,6 +7,7 @@ import {
   requireRole,
   getCurrentUser,
   ASSIGNMENT_MUTATOR_ROLES,
+  DMF_RECORD_DELETE_ROLES,
 } from '@/lib/auth'
 import { getMutateScope, assertAssignmentInScope } from '@/lib/scope'
 import { logAudit } from '@/lib/audit'
@@ -162,6 +163,51 @@ export async function updatePreparation(preparationId: string, formData: FormDat
     entityId: preparationId,
     before: { clientStatus: before.clientStatus, vaConnectStatus: before.vaConnectStatus, bufferIds: existingBufferIds },
     after: { clientStatus: data.clientStatus, vaConnectStatus: data.vaConnectStatus, bufferIds },
+  })
+
+  revalidatePreparation()
+  return { ok: true }
+}
+
+// Admin clean-up for a preparation row that shouldn't exist (typically a bad
+// DMF import). Removes the preparation and its buffers only — the Assignment
+// underneath, with its KPI checks, feedback and work logs, is kept.
+export async function deletePreparation(preparationId: string) {
+  const actor = await requireRole(...DMF_RECORD_DELETE_ROLES)
+
+  const existing = await prisma.assignmentPreparation.findUnique({
+    where: { id: preparationId },
+    select: {
+      assignmentId: true,
+      clientStatus: true,
+      vaConnectStatus: true,
+      assignment: {
+        select: {
+          client: { select: { name: true, departmentId: true } },
+          vaProfile: { select: { user: { select: { firstName: true, lastName: true } } } },
+        },
+      },
+    },
+  })
+  if (!existing) return { error: 'Preparation record not found' }
+
+  // Buffers cascade with the preparation.
+  await prisma.assignmentPreparation.delete({ where: { id: preparationId } })
+
+  const va = existing.assignment.vaProfile.user
+  await logAudit({
+    actorId: actor.id,
+    action: 'DELETE',
+    entityType: 'AssignmentPreparation',
+    entityId: preparationId,
+    departmentId: existing.assignment.client.departmentId,
+    before: {
+      assignmentId: existing.assignmentId,
+      vaName: `${va.firstName} ${va.lastName}`.trim(),
+      clientName: existing.assignment.client.name,
+      clientStatus: existing.clientStatus,
+      vaConnectStatus: existing.vaConnectStatus,
+    },
   })
 
   revalidatePreparation()

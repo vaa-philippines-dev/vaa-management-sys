@@ -40,6 +40,7 @@ export type VADepartmentAvailabilityMinAggregateOutputType = {
   tmfChangedAt: Date | null
   tmfReviewDueAt: Date | null
   tmfUpdatedById: string | null
+  hiddenAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -60,6 +61,7 @@ export type VADepartmentAvailabilityMaxAggregateOutputType = {
   tmfChangedAt: Date | null
   tmfReviewDueAt: Date | null
   tmfUpdatedById: string | null
+  hiddenAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -80,6 +82,7 @@ export type VADepartmentAvailabilityCountAggregateOutputType = {
   tmfChangedAt: number
   tmfReviewDueAt: number
   tmfUpdatedById: number
+  hiddenAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -102,6 +105,7 @@ export type VADepartmentAvailabilityMinAggregateInputType = {
   tmfChangedAt?: true
   tmfReviewDueAt?: true
   tmfUpdatedById?: true
+  hiddenAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -122,6 +126,7 @@ export type VADepartmentAvailabilityMaxAggregateInputType = {
   tmfChangedAt?: true
   tmfReviewDueAt?: true
   tmfUpdatedById?: true
+  hiddenAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -142,6 +147,7 @@ export type VADepartmentAvailabilityCountAggregateInputType = {
   tmfChangedAt?: true
   tmfReviewDueAt?: true
   tmfUpdatedById?: true
+  hiddenAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -235,6 +241,7 @@ export type VADepartmentAvailabilityGroupByOutputType = {
   tmfChangedAt: Date | null
   tmfReviewDueAt: Date | null
   tmfUpdatedById: string | null
+  hiddenAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: VADepartmentAvailabilityCountAggregateOutputType | null
@@ -276,6 +283,7 @@ export type VADepartmentAvailabilityWhereInput = {
   tmfChangedAt?: Prisma.DateTimeNullableFilter<"VADepartmentAvailability"> | Date | string | null
   tmfReviewDueAt?: Prisma.DateTimeNullableFilter<"VADepartmentAvailability"> | Date | string | null
   tmfUpdatedById?: Prisma.StringNullableFilter<"VADepartmentAvailability"> | string | null
+  hiddenAt?: Prisma.DateTimeNullableFilter<"VADepartmentAvailability"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"VADepartmentAvailability"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"VADepartmentAvailability"> | Date | string
   vaProfile?: Prisma.XOR<Prisma.VAProfileScalarRelationFilter, Prisma.VAProfileWhereInput>
@@ -299,6 +307,7 @@ export type VADepartmentAvailabilityOrderByWithRelationInput = {
   tmfChangedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   tmfReviewDueAt?: Prisma.SortOrderInput | Prisma.SortOrder
   tmfUpdatedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  hiddenAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   vaProfile?: Prisma.VAProfileOrderByWithRelationInput
@@ -326,6 +335,7 @@ export type VADepartmentAvailabilityWhereUniqueInput = Prisma.AtLeast<{
   tmfChangedAt?: Prisma.DateTimeNullableFilter<"VADepartmentAvailability"> | Date | string | null
   tmfReviewDueAt?: Prisma.DateTimeNullableFilter<"VADepartmentAvailability"> | Date | string | null
   tmfUpdatedById?: Prisma.StringNullableFilter<"VADepartmentAvailability"> | string | null
+  hiddenAt?: Prisma.DateTimeNullableFilter<"VADepartmentAvailability"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"VADepartmentAvailability"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"VADepartmentAvailability"> | Date | string
   vaProfile?: Prisma.XOR<Prisma.VAProfileScalarRelationFilter, Prisma.VAProfileWhereInput>
@@ -349,6 +359,7 @@ export type VADepartmentAvailabilityOrderByWithAggregationInput = {
   tmfChangedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   tmfReviewDueAt?: Prisma.SortOrderInput | Prisma.SortOrder
   tmfUpdatedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  hiddenAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.VADepartmentAvailabilityCountOrderByAggregateInput
@@ -375,6 +386,7 @@ export type VADepartmentAvailabilityScalarWhereWithAggregatesInput = {
   tmfChangedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"VADepartmentAvailability"> | Date | string | null
   tmfReviewDueAt?: Prisma.DateTimeNullableWithAggregatesFilter<"VADepartmentAvailability"> | Date | string | null
   tmfUpdatedById?: Prisma.StringNullableWithAggregatesFilter<"VADepartmentAvailability"> | string | null
+  hiddenAt?: Prisma.DateTimeNullableWithAggregatesFilter<"VADepartmentAvailability"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"VADepartmentAvailability"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"VADepartmentAvailability"> | Date | string
 }
@@ -392,6 +404,7 @@ export type VADepartmentAvailabilityCreateInput = {
   tmfRemarks?: string | null
   tmfChangedAt?: Date | string | null
   tmfReviewDueAt?: Date | string | null
+  hiddenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutDepartmentAvailabilitiesInput
@@ -415,6 +428,7 @@ export type VADepartmentAvailabilityUncheckedCreateInput = {
   tmfChangedAt?: Date | string | null
   tmfReviewDueAt?: Date | string | null
   tmfUpdatedById?: string | null
+  hiddenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -432,6 +446,7 @@ export type VADepartmentAvailabilityUpdateInput = {
   tmfRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tmfChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tmfReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutDepartmentAvailabilitiesNestedInput
@@ -455,6 +470,7 @@ export type VADepartmentAvailabilityUncheckedUpdateInput = {
   tmfChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tmfReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tmfUpdatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -475,6 +491,7 @@ export type VADepartmentAvailabilityCreateManyInput = {
   tmfChangedAt?: Date | string | null
   tmfReviewDueAt?: Date | string | null
   tmfUpdatedById?: string | null
+  hiddenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -492,6 +509,7 @@ export type VADepartmentAvailabilityUpdateManyMutationInput = {
   tmfRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tmfChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tmfReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -512,6 +530,7 @@ export type VADepartmentAvailabilityUncheckedUpdateManyInput = {
   tmfChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tmfReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tmfUpdatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -547,6 +566,7 @@ export type VADepartmentAvailabilityCountOrderByAggregateInput = {
   tmfChangedAt?: Prisma.SortOrder
   tmfReviewDueAt?: Prisma.SortOrder
   tmfUpdatedById?: Prisma.SortOrder
+  hiddenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -567,6 +587,7 @@ export type VADepartmentAvailabilityMaxOrderByAggregateInput = {
   tmfChangedAt?: Prisma.SortOrder
   tmfReviewDueAt?: Prisma.SortOrder
   tmfUpdatedById?: Prisma.SortOrder
+  hiddenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -587,6 +608,7 @@ export type VADepartmentAvailabilityMinOrderByAggregateInput = {
   tmfChangedAt?: Prisma.SortOrder
   tmfReviewDueAt?: Prisma.SortOrder
   tmfUpdatedById?: Prisma.SortOrder
+  hiddenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -734,6 +756,7 @@ export type VADepartmentAvailabilityCreateWithoutDepartmentInput = {
   tmfRemarks?: string | null
   tmfChangedAt?: Date | string | null
   tmfReviewDueAt?: Date | string | null
+  hiddenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutDepartmentAvailabilitiesInput
@@ -755,6 +778,7 @@ export type VADepartmentAvailabilityUncheckedCreateWithoutDepartmentInput = {
   tmfChangedAt?: Date | string | null
   tmfReviewDueAt?: Date | string | null
   tmfUpdatedById?: string | null
+  hiddenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -804,6 +828,7 @@ export type VADepartmentAvailabilityScalarWhereInput = {
   tmfChangedAt?: Prisma.DateTimeNullableFilter<"VADepartmentAvailability"> | Date | string | null
   tmfReviewDueAt?: Prisma.DateTimeNullableFilter<"VADepartmentAvailability"> | Date | string | null
   tmfUpdatedById?: Prisma.StringNullableFilter<"VADepartmentAvailability"> | string | null
+  hiddenAt?: Prisma.DateTimeNullableFilter<"VADepartmentAvailability"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"VADepartmentAvailability"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"VADepartmentAvailability"> | Date | string
 }
@@ -821,6 +846,7 @@ export type VADepartmentAvailabilityCreateWithoutTmfUpdatedByInput = {
   tmfRemarks?: string | null
   tmfChangedAt?: Date | string | null
   tmfReviewDueAt?: Date | string | null
+  hiddenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutDepartmentAvailabilitiesInput
@@ -842,6 +868,7 @@ export type VADepartmentAvailabilityUncheckedCreateWithoutTmfUpdatedByInput = {
   tmfRemarks?: string | null
   tmfChangedAt?: Date | string | null
   tmfReviewDueAt?: Date | string | null
+  hiddenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -885,6 +912,7 @@ export type VADepartmentAvailabilityCreateWithoutVaProfileInput = {
   tmfRemarks?: string | null
   tmfChangedAt?: Date | string | null
   tmfReviewDueAt?: Date | string | null
+  hiddenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutVaAvailabilitiesInput
@@ -906,6 +934,7 @@ export type VADepartmentAvailabilityUncheckedCreateWithoutVaProfileInput = {
   tmfChangedAt?: Date | string | null
   tmfReviewDueAt?: Date | string | null
   tmfUpdatedById?: string | null
+  hiddenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -951,6 +980,7 @@ export type VADepartmentAvailabilityCreateManyDepartmentInput = {
   tmfChangedAt?: Date | string | null
   tmfReviewDueAt?: Date | string | null
   tmfUpdatedById?: string | null
+  hiddenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -968,6 +998,7 @@ export type VADepartmentAvailabilityUpdateWithoutDepartmentInput = {
   tmfRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tmfChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tmfReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutDepartmentAvailabilitiesNestedInput
@@ -989,6 +1020,7 @@ export type VADepartmentAvailabilityUncheckedUpdateWithoutDepartmentInput = {
   tmfChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tmfReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tmfUpdatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1008,6 +1040,7 @@ export type VADepartmentAvailabilityUncheckedUpdateManyWithoutDepartmentInput = 
   tmfChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tmfReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tmfUpdatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1027,6 +1060,7 @@ export type VADepartmentAvailabilityCreateManyTmfUpdatedByInput = {
   tmfRemarks?: string | null
   tmfChangedAt?: Date | string | null
   tmfReviewDueAt?: Date | string | null
+  hiddenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1044,6 +1078,7 @@ export type VADepartmentAvailabilityUpdateWithoutTmfUpdatedByInput = {
   tmfRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tmfChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tmfReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutDepartmentAvailabilitiesNestedInput
@@ -1065,6 +1100,7 @@ export type VADepartmentAvailabilityUncheckedUpdateWithoutTmfUpdatedByInput = {
   tmfRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tmfChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tmfReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1084,6 +1120,7 @@ export type VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByInput 
   tmfRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tmfChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tmfReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1103,6 +1140,7 @@ export type VADepartmentAvailabilityCreateManyVaProfileInput = {
   tmfChangedAt?: Date | string | null
   tmfReviewDueAt?: Date | string | null
   tmfUpdatedById?: string | null
+  hiddenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1120,6 +1158,7 @@ export type VADepartmentAvailabilityUpdateWithoutVaProfileInput = {
   tmfRemarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tmfChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tmfReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutVaAvailabilitiesNestedInput
@@ -1141,6 +1180,7 @@ export type VADepartmentAvailabilityUncheckedUpdateWithoutVaProfileInput = {
   tmfChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tmfReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tmfUpdatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1160,6 +1200,7 @@ export type VADepartmentAvailabilityUncheckedUpdateManyWithoutVaProfileInput = {
   tmfChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tmfReviewDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tmfUpdatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hiddenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1182,6 +1223,7 @@ export type VADepartmentAvailabilitySelect<ExtArgs extends runtime.Types.Extensi
   tmfChangedAt?: boolean
   tmfReviewDueAt?: boolean
   tmfUpdatedById?: boolean
+  hiddenAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   vaProfile?: boolean | Prisma.VAProfileDefaultArgs<ExtArgs>
@@ -1205,6 +1247,7 @@ export type VADepartmentAvailabilitySelectCreateManyAndReturn<ExtArgs extends ru
   tmfChangedAt?: boolean
   tmfReviewDueAt?: boolean
   tmfUpdatedById?: boolean
+  hiddenAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   vaProfile?: boolean | Prisma.VAProfileDefaultArgs<ExtArgs>
@@ -1228,6 +1271,7 @@ export type VADepartmentAvailabilitySelectUpdateManyAndReturn<ExtArgs extends ru
   tmfChangedAt?: boolean
   tmfReviewDueAt?: boolean
   tmfUpdatedById?: boolean
+  hiddenAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   vaProfile?: boolean | Prisma.VAProfileDefaultArgs<ExtArgs>
@@ -1251,11 +1295,12 @@ export type VADepartmentAvailabilitySelectScalar = {
   tmfChangedAt?: boolean
   tmfReviewDueAt?: boolean
   tmfUpdatedById?: boolean
+  hiddenAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type VADepartmentAvailabilityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vaProfileId" | "departmentId" | "availabilityStatus" | "remarks" | "changedAt" | "reviewDueAt" | "isRecommended" | "recommendedForClient" | "recommendedUntil" | "tmfAvailabilityStatus" | "tmfRemarks" | "tmfChangedAt" | "tmfReviewDueAt" | "tmfUpdatedById" | "createdAt" | "updatedAt", ExtArgs["result"]["vADepartmentAvailability"]>
+export type VADepartmentAvailabilityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vaProfileId" | "departmentId" | "availabilityStatus" | "remarks" | "changedAt" | "reviewDueAt" | "isRecommended" | "recommendedForClient" | "recommendedUntil" | "tmfAvailabilityStatus" | "tmfRemarks" | "tmfChangedAt" | "tmfReviewDueAt" | "tmfUpdatedById" | "hiddenAt" | "createdAt" | "updatedAt", ExtArgs["result"]["vADepartmentAvailability"]>
 export type VADepartmentAvailabilityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vaProfile?: boolean | Prisma.VAProfileDefaultArgs<ExtArgs>
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
@@ -1295,6 +1340,7 @@ export type $VADepartmentAvailabilityPayload<ExtArgs extends runtime.Types.Exten
     tmfChangedAt: Date | null
     tmfReviewDueAt: Date | null
     tmfUpdatedById: string | null
+    hiddenAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["vADepartmentAvailability"]>
@@ -1738,6 +1784,7 @@ export interface VADepartmentAvailabilityFieldRefs {
   readonly tmfChangedAt: Prisma.FieldRef<"VADepartmentAvailability", 'DateTime'>
   readonly tmfReviewDueAt: Prisma.FieldRef<"VADepartmentAvailability", 'DateTime'>
   readonly tmfUpdatedById: Prisma.FieldRef<"VADepartmentAvailability", 'String'>
+  readonly hiddenAt: Prisma.FieldRef<"VADepartmentAvailability", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"VADepartmentAvailability", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"VADepartmentAvailability", 'DateTime'>
 }

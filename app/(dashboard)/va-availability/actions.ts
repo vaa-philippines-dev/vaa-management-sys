@@ -7,6 +7,7 @@ import {
   requireRole,
   getCurrentUser,
   VA_MUTATOR_ROLES,
+  DMF_RECORD_DELETE_ROLES,
 } from '@/lib/auth'
 import { getMutateScope, isDepartmentInScope, isUserInScope } from '@/lib/scope'
 import { logAudit } from '@/lib/audit'
@@ -140,5 +141,83 @@ export async function confirmAvailability(vaProfileId: string, departmentId: str
 
   revalidatePath('/va-availability')
   revalidateTag(CACHE_TAGS.vas, 'default')
+  return { ok: true }
+}
+
+function revalidateAvailability() {
+  revalidatePath('/va-availability')
+  revalidatePath('/tmf')
+  revalidatePath('/dashboard')
+  revalidateTag(CACHE_TAGS.vas, 'default')
+  revalidateTag(CACHE_TAGS.dashboard, 'default')
+}
+
+// Admin "delete" for a VA Availability row. Rows are generated from active
+// department memberships, so there's nothing to delete outright: this hides
+// the (VA, department) row from VA Availability and the TMF, and clears its
+// DMF/TMF block so a restored row starts blank. The VA stays a member of the
+// department everywhere else.
+export async function hideAvailabilityRow(vaProfileId: string, departmentId: string) {
+  const actor = await requireRole(...DMF_RECORD_DELETE_ROLES)
+
+  const before = await prisma.vADepartmentAvailability.findUnique({
+    where: { vaProfileId_departmentId: { vaProfileId, departmentId } },
+    select: { availabilityStatus: true, remarks: true, isRecommended: true, tmfAvailabilityStatus: true, tmfRemarks: true },
+  })
+
+  const data = {
+    hiddenAt: new Date(),
+    availabilityStatus: null,
+    remarks: null,
+    changedAt: null,
+    reviewDueAt: null,
+    isRecommended: false,
+    recommendedForClient: null,
+    recommendedUntil: null,
+    tmfAvailabilityStatus: null,
+    tmfRemarks: null,
+    tmfChangedAt: null,
+    tmfReviewDueAt: null,
+    tmfUpdatedById: null,
+  }
+  await prisma.vADepartmentAvailability.upsert({
+    where: { vaProfileId_departmentId: { vaProfileId, departmentId } },
+    create: { vaProfileId, departmentId, ...data },
+    update: data,
+  })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'DELETE',
+    entityType: 'VADepartmentAvailability',
+    entityId: vaProfileId,
+    departmentId,
+    before: before ?? {},
+    metadata: { surface: 'va-availability', hidden: true },
+  })
+
+  revalidateAvailability()
+  return { ok: true }
+}
+
+export async function restoreAvailabilityRow(vaProfileId: string, departmentId: string) {
+  const actor = await requireRole(...DMF_RECORD_DELETE_ROLES)
+
+  await prisma.vADepartmentAvailability.update({
+    where: { vaProfileId_departmentId: { vaProfileId, departmentId } },
+    data: { hiddenAt: null },
+  })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'UPDATE',
+    entityType: 'VADepartmentAvailability',
+    entityId: vaProfileId,
+    departmentId,
+    after: { restored: true },
+    metadata: { surface: 'va-availability' },
+  })
+
+  revalidateAvailability()
   return { ok: true }
 }

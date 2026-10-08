@@ -22,12 +22,16 @@ export type AvailabilityScope = {
   departmentIds: string[] | null
   // Narrows further to specific people — the TMF passes its team's roster.
   userIds?: string[]
+  // Rows an admin removed from the list are dropped unless asked for (the
+  // admin-only "Removed" view on /va-availability).
+  includeHidden?: boolean
 }
 
 // Rows are built from active DepartmentMemberships rather than VAProfiles, so
 // a VA in two departments yields two rows — each with that department's own
 // DMF/TMF block and that department's own clients. VAs who have left
-// (ENDED_VA_STATUSES) are dropped even though their membership is still open.
+// (ENDED_VA_STATUSES) are dropped even though their membership is still open,
+// and so are rows an admin hid (VADepartmentAvailability.hiddenAt).
 export async function getAvailabilityRows(scope: AvailabilityScope): Promise<AvailabilityRow[]> {
   const where: Prisma.DepartmentMembershipWhereInput = {
     endedAt: null,
@@ -105,6 +109,7 @@ export async function getAvailabilityRows(scope: AvailabilityScope): Promise<Ava
     const isVA = m.user.userType === 'VIRTUAL_ASSISTANT'
     const employment = m.user.employmentRecords[0]
     const dept = p.departmentAvailabilities.find((d) => d.departmentId === m.departmentId)
+    if (dept?.hiddenAt && !scope.includeHidden) continue
     const availabilityStatus = dept?.availabilityStatus ?? p.availabilityStatus
     const tmfStatus = dept?.tmfAvailabilityStatus ?? null
 
@@ -158,6 +163,7 @@ export async function getAvailabilityRows(scope: AvailabilityScope): Promise<Ava
         now
       ),
       tmfMismatch: !!dept?.availabilityStatus && !!tmfStatus && dept.availabilityStatus !== tmfStatus,
+      hidden: !!dept?.hiddenAt,
     })
   }
 

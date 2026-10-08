@@ -386,6 +386,7 @@ export const VADepartmentAvailabilityScalarFieldEnum = {
   tmfChangedAt: 'tmfChangedAt',
   tmfReviewDueAt: 'tmfReviewDueAt',
   tmfUpdatedById: 'tmfUpdatedById',
+  hiddenAt: 'hiddenAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
