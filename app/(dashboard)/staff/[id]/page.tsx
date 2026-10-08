@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser, STAFF_MUTATOR_ROLES, VA_SENSITIVE_INFO_EDIT_ROLES } from '@/lib/auth'
-import { getStaffPerson } from '@/lib/staff'
+import { getStaffPerson, getStaffViewScope, staffScopeFilter } from '@/lib/staff'
 import { STAFF_STATUS_TONE, titleCase } from '@/lib/staff-fields'
 import { ROLE_LABELS } from '@/lib/role-labels'
 import { notFound, redirect } from 'next/navigation'
@@ -47,6 +47,9 @@ export default async function StaffDetailPage({ params }: { params: Promise<{ id
   // A staff-account Team Leader's view stops at their own team (lib/scope.ts),
   // same as the masterlist — only their own 201 is open to them.
   if (isTeamScoped(currentUser) && !isSelf) notFound()
+  // A Dept/Ops Manager only opens their own departments' staff — the
+  // Masterlist's Staff table rule.
+  if (!isSelf && !(await staffScopeFilter(await getStaffViewScope(currentUser)))(person)) notFound()
 
   const canEdit = STAFF_MUTATOR_ROLES.includes(currentUser.systemRole)
   const canViewSensitive = VA_SENSITIVE_INFO_EDIT_ROLES.includes(currentUser.systemRole) || isSelf

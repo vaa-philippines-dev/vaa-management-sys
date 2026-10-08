@@ -1,9 +1,9 @@
 import { prisma } from '@/lib/prisma'
 import type { Prisma } from '@/src/generated/prisma/client'
 import { getCurrentUser, STAFF_MUTATOR_ROLES } from '@/lib/auth'
-import { isTeamScoped, assignmentScopeWhere } from '@/lib/scope'
+import { isTeamScoped, assignmentScopeWhere, type Scope } from '@/lib/scope'
 import { cached, CACHE_TAGS } from '@/lib/cache'
-import { getStaffPeople } from '@/lib/staff'
+import { getVisibleStaffPeople, getStaffViewScope } from '@/lib/staff'
 import { ON_HOLD_AVAILABILITY } from '@/lib/va-availability-fields'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
@@ -32,6 +32,9 @@ export default async function MasterlistPage({
   // old Staff Masterlist turned away: VA accounts and a team-scoped Team
   // Leader (whose view stops at their own team).
   const showStaff = currentUser.userType !== 'VIRTUAL_ASSISTANT' && !isTeamScoped(currentUser)
+  // A Dept/Ops Manager sees only their own departments' staff; admins/HR/
+  // EXECUTIVE (and STAFF-role accounts) see everyone.
+  const staffScope = await getStaffViewScope(currentUser)
   const canEditStaff = STAFF_MUTATOR_ROLES.includes(currentUser.systemRole)
 
   const pick = (keys: string[]) => {
@@ -46,12 +49,12 @@ export default async function MasterlistPage({
   return (
     <div data-wide-page className="space-y-6">
       <Suspense fallback={<StatsSkeleton count={showStaff ? 7 : 4} />}>
-        <MasterlistStats viewerScope={viewerScope} showStaff={showStaff} />
+        <MasterlistStats viewerScope={viewerScope} showStaff={showStaff} staffScope={staffScope} />
       </Suspense>
 
       {showStaff && (
         <Suspense fallback={<SectionSkeleton />}>
-          <StaffSection canEdit={canEditStaff} params={params} keep={pick(VA_PARAM_KEYS)} />
+          <StaffSection scope={staffScope} canEdit={canEditStaff} params={params} keep={pick(VA_PARAM_KEYS)} />
         </Suspense>
       )}
 
@@ -60,10 +63,10 @@ export default async function MasterlistPage({
   )
 }
 
-// Whole-roster scorecards, independent of either table's filters. VA figures
-// follow the viewer's scope (same as the VA table); staff figures are
-// company-wide (same as the Staff table).
-async function MasterlistStats({ viewerScope, showStaff }: { viewerScope: ViewerScope; showStaff: boolean }) {
+// Whole-roster scorecards, independent of either table's filters but in the
+// same scope as each table: a Dept/Ops Manager's figures cover only their
+// own departments.
+async function MasterlistStats({ viewerScope, showStaff, staffScope }: { viewerScope: ViewerScope; showStaff: boolean; staffScope: Scope }) {
   const scopeAnd: Prisma.VAProfileWhereInput = viewerScope.type === 'unrestricted' ? {} : { AND: [buildScopeWhere(viewerScope)] }
   // A Dept/Ops Manager counts their departments' clients (an assignment's
   // department is its client's); team/self viewers count their teammates'.
@@ -72,7 +75,7 @@ async function MasterlistStats({ viewerScope, showStaff }: { viewerScope: Viewer
     : viewerScope.type === 'unrestricted' ? {}
     : { vaProfile: buildScopeWhere(viewerScope) }
 
-  const people = showStaff ? await getStaffPeople() : []
+  const people = showStaff ? await getVisibleStaffPeople(staffScope) : []
   const activeStaff = people.filter((p) => p.latest.generalStatus === 'ACTIVE')
   // Team Leaders on staff keep their VA account, so they're counted once in
   // Total Active, not as both an active VA and active staff.

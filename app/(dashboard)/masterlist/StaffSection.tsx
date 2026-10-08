@@ -1,4 +1,5 @@
-import { getStaffPeople, hiredBeforeStaff, type StaffPerson } from '@/lib/staff'
+import { getVisibleStaffPeople, hiredBeforeStaff, type StaffPerson } from '@/lib/staff'
+import type { Scope } from '@/lib/scope'
 import {
   STAFF_STATUS_OPTIONS,
   STAFF_EMPLOYMENT_OPTIONS,
@@ -63,13 +64,17 @@ const Empty = () => <span className="text-muted-foreground/50">—</span>
 
 // The Masterlist's Staff table: one row per person (their latest engagement),
 // opening the Staff 201 at /staff/[id], sectioned by department. ~150 people,
-// so it loads once and filters/sorts/pages in memory. `keep` is the VA
-// table's query string, carried through this table's links.
+// so it loads once and filters/sorts/pages in memory. `scope` limits a Dept/
+// Ops Manager to their own departments' staff (lib/staff.ts
+// getStaffViewScope); `keep` is the VA table's query string, carried through
+// this table's links.
 export async function StaffSection({
+  scope,
   canEdit,
   params,
   keep,
 }: {
+  scope: Scope
   canEdit: boolean
   params: Record<string, string | string[] | undefined>
   keep: string
@@ -87,7 +92,7 @@ export async function StaffSection({
   const sortField = parsedSort?.field ?? null
   const sortDir = parsedSort?.dir ?? 'desc'
 
-  const people = await getStaffPeople()
+  const people = await getVisibleStaffPeople(scope)
   const departments = [...new Set(people.map((p) => p.latest.department).filter(Boolean) as string[])].sort()
   const levels = [...new Set(people.map((p) => p.latest.level).filter(Boolean) as string[])].sort()
 
