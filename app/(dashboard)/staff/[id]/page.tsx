@@ -13,7 +13,6 @@ import { ArrowLeft, Mail } from 'lucide-react'
 import { differenceInMonths } from 'date-fns'
 import { OnboardingInviteControl } from '@/components/vas/OnboardingInviteControl'
 import { StaffProfileEditor } from '@/components/staff/StaffProfileEditor'
-import { isTeamScoped } from '@/lib/scope'
 
 const isoDay = (d: Date | null) => (d ? d.toISOString().slice(0, 10) : null)
 
@@ -42,14 +41,12 @@ export default async function StaffDetailPage({ params }: { params: Promise<{ id
   const latest = person.latest
   const userId = latest.userId
   const isSelf = !!userId && userId === currentUser.id
-  // Same audience as the masterlist, plus Team Leaders (VA accounts) opening their own.
-  if (currentUser.userType === 'VIRTUAL_ASSISTANT' && !isSelf) notFound()
-  // A staff-account Team Leader's view stops at their own team (lib/scope.ts),
-  // same as the masterlist — only their own 201 is open to them.
-  if (isTeamScoped(currentUser) && !isSelf) notFound()
-  // A Dept/Ops Manager only opens their own departments' staff — the
-  // Masterlist's Staff table rule.
-  if (!isSelf && !(await staffScopeFilter(await getStaffViewScope(currentUser)))(person)) notFound()
+  // Same audience as the Masterlist's Staff table (lib/staff.ts
+  // getStaffViewScope), plus anyone opening their own 201.
+  if (!isSelf) {
+    const scope = await getStaffViewScope(currentUser)
+    if (scope === undefined || !(await staffScopeFilter(scope))(person)) notFound()
+  }
 
   const canEdit = STAFF_MUTATOR_ROLES.includes(currentUser.systemRole)
   const canViewSensitive = VA_SENSITIVE_INFO_EDIT_ROLES.includes(currentUser.systemRole) || isSelf

@@ -1,7 +1,7 @@
 import { cache } from 'react'
 import { prisma } from '@/lib/prisma'
-import { getViewScope, isTeamScoped, type Scope } from '@/lib/scope'
-import { DEPARTMENT_SCOPED_ROLES, type getCurrentUser } from '@/lib/auth'
+import { getViewScope, getLedTeamScope, type Scope } from '@/lib/scope'
+import { DEPARTMENT_SCOPED_ROLES, getManagedDepartmentIds, type getCurrentUser } from '@/lib/auth'
 
 // The Staff Masterlist is people, not sheet rows: a promotion or transfer
 // gives one person several StaffRecords (one per engagement, same as the
@@ -122,8 +122,8 @@ export function staffServiceLine(r: Pick<StaffRecordRow, 'department' | 'subdepa
   return d === 'service' || d === 'service department' ? r.subdepartment : null
 }
 
-// lib/scope.ts's Scope, resolved to a per-person test. A Team Leader's scope
-// (userIds set) further limits it to the people on the teams they lead.
+// lib/scope.ts's Scope, resolved to a per-person test. A scope with userIds
+// set further limits it to those people.
 export async function staffScopeFilter(scope: Scope): Promise<(p: StaffPerson) => boolean> {
   if (scope === null) return () => true
   const departments = await prisma.department.findMany({ where: { id: { in: scope.departmentIds } }, select: { name: true } })
@@ -135,14 +135,25 @@ export async function staffScopeFilter(scope: Scope): Promise<(p: StaffPerson) =
   }
 }
 
-// Whose staff view is limited to their own departments: Dept/Ops Managers and
-// a staff-account Team Leader (lib/scope.ts). Everyone else who can open the
-// staff directory sees all of it — admins/HR/EXECUTIVE by design, and
-// STAFF-role accounts because HR specialists and the founders hold that role
-// with no department membership, which would leave them an empty list.
-export async function getStaffViewScope(user: Awaited<ReturnType<typeof getCurrentUser>>): Promise<Scope> {
-  if (!user) return { departmentIds: [], userIds: [] }
-  return DEPARTMENT_SCOPED_ROLES.includes(user.systemRole) || isTeamScoped(user) ? getViewScope(user) : null
+// Which staff a viewer sees — the Masterlist's Staff table and the Staff 201:
+//  - admins/HR/EXECUTIVE: everyone. STAFF-role accounts too: HR specialists
+//    and the founders hold that role with no department membership, which
+//    would leave them an empty list.
+//  - Dept/Ops Managers: their own departments' staff.
+//  - Team Leaders (staff or VA accounts — most are VA accounts, some with the
+//    plain VA SystemRole): the staff of the departments they lead a team in,
+//    i.e. their DM/OM and fellow TLs. Wider than their VA table, which stays
+//    on their own team. A TEAM_LEADER leading no team falls back to their
+//    department memberships.
+//  - any other VA account: no staff directory at all (undefined).
+export async function getStaffViewScope(user: Awaited<ReturnType<typeof getCurrentUser>>): Promise<Scope | undefined> {
+  if (!user) return undefined
+  if (DEPARTMENT_SCOPED_ROLES.includes(user.systemRole)) return getViewScope(user)
+  const isTeamLeaderRole = user.systemRole === 'TEAM_LEADER'
+  if (!isTeamLeaderRole && user.userType !== 'VIRTUAL_ASSISTANT') return null
+  const led = await getLedTeamScope(user.id)
+  if (!isTeamLeaderRole && led.teamIds.length === 0) return undefined
+  return { departmentIds: led.departmentIds.length > 0 ? led.departmentIds : getManagedDepartmentIds(user), userIds: null }
 }
 
 export async function getVisibleStaffPeople(scope: Scope): Promise<StaffPerson[]> {
