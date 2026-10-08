@@ -19,9 +19,7 @@ import {
   AVAILABILITY_REVIEW_DAYS,
   AVAILABILITY_STATUSES,
   AVAILABILITY_STATUS_LABELS,
-  RECOMMENDED_NOT_YET_STARTED,
   WORK_PATTERN_LABELS,
-  recommendedUntilToInput,
   type AvailabilityRow,
 } from '@/lib/va-availability-fields'
 import {
@@ -52,10 +50,6 @@ function toDateInput(iso: string | null) {
 
 function todayInput() {
   return new Date().toISOString().slice(0, 10)
-}
-
-function isNotYetStarted(until: string | null) {
-  return until?.trim().toLowerCase() === RECOMMENDED_NOT_YET_STARTED.toLowerCase()
 }
 
 function hours(n: number | null) {
@@ -97,7 +91,6 @@ export function AvailabilityBoard({
   // A removed row's DMF block was cleared; it comes back blank on restore.
   const recommendable = canRecommend && !showRemoved
   const [recommending, setRecommending] = useState<AvailabilityRow | null>(null)
-  const [notYetStarted, setNotYetStarted] = useState(false)
 
   const visible = useMemo(() => {
     const q = search.trim().toLowerCase()
@@ -179,11 +172,6 @@ export function AvailabilityBoard({
     } finally {
       setSaving(false)
     }
-  }
-
-  const openRecommendation = (r: AvailabilityRow) => {
-    setNotYetStarted(isNotYetStarted(r.recommendedUntil))
-    setRecommending(r)
   }
 
   const onRecommendationSubmit = async (formData: FormData) => {
@@ -356,7 +344,7 @@ export function AvailabilityBoard({
                     {recommendable ? (
                       <button
                         type="button"
-                        onClick={() => openRecommendation(r)}
+                        onClick={() => setRecommending(r)}
                         className="block w-full -mx-1.5 rounded-md px-1.5 py-1 text-left hover:bg-muted"
                         title="Edit recommendation"
                       >
@@ -564,28 +552,9 @@ export function AvailabilityBoard({
               <Input
                 id="recommendedUntil"
                 name="recommendedUntil"
-                type="date"
-                disabled={notYetStarted}
-                defaultValue={recommendedUntilToInput(recommending.recommendedUntil)}
+                placeholder="e.g. Oct 14 2026"
+                defaultValue={recommending.recommendedUntil ?? ''}
               />
-              <label className="flex items-center gap-2 text-xs text-muted-foreground mt-1.5">
-                <input
-                  type="checkbox"
-                  name="recommendedNotYetStarted"
-                  checked={notYetStarted}
-                  onChange={(e) => setNotYetStarted(e.target.checked)}
-                />
-                Not yet started
-              </label>
-              {recommending.recommendedUntil &&
-                !notYetStarted &&
-                !isNotYetStarted(recommending.recommendedUntil) &&
-                !recommendedUntilToInput(recommending.recommendedUntil) && (
-                  <p className="text-xs text-muted-foreground mt-1">
-                    The sheet had &ldquo;{recommending.recommendedUntil}&rdquo; here, which isn&apos;t a date. Pick
-                    one, or it&apos;s cleared on save.
-                  </p>
-                )}
             </div>
 
             <div className="flex justify-end gap-2 pt-2">

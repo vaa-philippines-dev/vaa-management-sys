@@ -52,25 +52,6 @@ export const PART_TIME_FLOOR_HOURS = 20
 // CHANGED; when no review date has been set, this is the fallback window.
 export const AVAILABILITY_REVIEW_DAYS = 30
 
-// RECOMMENDED UNTIL is text, as in the sheet: a date written "Oct 14 2026",
-// or this placeholder for a recommendation whose client hasn't started yet.
-export const RECOMMENDED_NOT_YET_STARTED = 'Not yet Started'
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-
-export function formatRecommendedUntil(date: Date | null): string | null {
-  if (!date) return null
-  return `${MONTHS[date.getUTCMonth()]} ${String(date.getUTCDate()).padStart(2, '0')} ${date.getUTCFullYear()}`
-}
-
-// The reverse, for a date input: "Oct 14 2026" -> "2026-10-14". Anything else
-// (the placeholder, or sheet leftovers like "46313" / "#REF!") gives ''.
-export function recommendedUntilToInput(value: string | null): string {
-  const m = value?.trim().match(/^([A-Z][a-z]{2}) (\d{1,2}) (\d{4})$/)
-  const month = m ? MONTHS.indexOf(m[1]) : -1
-  if (!m || month < 0) return ''
-  return `${m[3]}-${String(month + 1).padStart(2, '0')}-${m[2].padStart(2, '0')}`
-}
-
 export type AvailabilityAlert = 'NONE' | 'NEVER_UPDATED' | 'REVIEW_OVERDUE'
 
 export const ALERT_LABELS: Record<AvailabilityAlert, string> = {
