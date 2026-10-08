@@ -252,7 +252,8 @@ export async function VASection({
   const title = (
     <div className="flex items-center gap-3">
       <h2 className="text-lg font-bold tracking-tight">VAs</h2>
-      {isHRE && (
+      {/* Dept/Ops Managers get the same edit access but it isn't an HR view. */}
+      {isHRE && !DEPARTMENT_SCOPED_ROLES.includes(currentUser.systemRole) && (
         <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-info/10 text-info border-info/20">HR View</Badge>
       )}
     </div>
