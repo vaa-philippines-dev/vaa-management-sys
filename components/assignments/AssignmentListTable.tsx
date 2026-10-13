@@ -25,6 +25,9 @@ export function AssignmentListTable({ assignments }: { assignments: AssignmentRo
                 <Link href={`/assignments/${a.id}`} className="hover:text-primary transition-colors">
                   {a.clientName}
                 </Link>
+                {a.isAdditional && (
+                  <Badge variant="outline" className="ml-1.5 text-[10px] py-0 px-1.5">+ Additional</Badge>
+                )}
               </TableCell>
               <TableCell className="px-3 py-2 text-muted-foreground">{a.vaName}</TableCell>
               <TableCell className="px-3 py-2">

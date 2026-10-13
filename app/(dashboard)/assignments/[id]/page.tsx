@@ -10,6 +10,8 @@ import { ArrowLeft } from 'lucide-react'
 import { format } from 'date-fns'
 import { AssignmentStatusButtons } from '@/components/assignments/AssignmentStatusButtons'
 import { AssignmentEditButton } from '@/components/assignments/AssignmentEditButton'
+import { AdditionalHoursButton } from '@/components/assignments/AdditionalHoursButton'
+import { updateAssignmentStatus } from '@/app/(dashboard)/assignments/actions'
 
 export default async function AssignmentDetailPage({
   params,
@@ -26,6 +28,19 @@ export default async function AssignmentDetailPage({
       client: true,
       vaProfile: { include: { user: true, vaSkills: { include: { skill: true } } } },
       workLogs: { orderBy: { workDate: 'desc' } },
+      parentAssignment: {
+        select: {
+          id: true,
+          agreedHours: true,
+          status: true,
+          startDate: true,
+          additionalHours: { select: { id: true, agreedHours: true, status: true } },
+        },
+      },
+      additionalHours: {
+        select: { id: true, agreedHours: true, status: true, startDate: true, notes: true },
+        orderBy: { startDate: 'desc' },
+      },
     },
   })
 
@@ -45,6 +60,19 @@ export default async function AssignmentDetailPage({
 
   const totalLogged = assignment.workLogs.reduce((s, l) => s + Number(l.hours), 0)
 
+  // The whole engagement = the root assignment plus its additional-hours
+  // add-ons. Only ACTIVE rows count toward current hours, same as VA
+  // Availability.
+  const root = assignment.parentAssignment ?? assignment
+  const engagementRows = [root, ...root.additionalHours]
+  const engagementHours = engagementRows
+    .filter((a) => a.status === 'ACTIVE')
+    .reduce((s, a) => s + Number(a.agreedHours), 0)
+  const hasAddOns = root.additionalHours.length > 0
+  const canMutate = ASSIGNMENT_MUTATOR_ROLES.includes(user.systemRole) && assignment.source !== 'VA_CONNECTIONS_SYNC'
+  const canAddHours = canMutate && (root.status === 'ACTIVE' || root.status === 'PAUSED')
+  const vaName = assignment.vaProfile.user.firstName || assignment.vaProfile.user.email
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
@@ -60,26 +88,45 @@ export default async function AssignmentDetailPage({
               {assignment.status}
             </Badge>
             <Badge variant="outline">{assignment.type}</Badge>
+            {assignment.parentAssignment && <Badge variant="outline">Additional Hours</Badge>}
             {assignment.source === 'VA_CONNECTIONS_SYNC' && (
               <Badge variant="outline">Synced from VAConnections</Badge>
             )}
           </div>
           <p className="text-sm text-muted-foreground mt-1">
-            Assigned to {assignment.vaProfile.user.firstName || assignment.vaProfile.user.email}
+            Assigned to {vaName}
           </p>
+          {assignment.parentAssignment && (
+            <p className="text-xs text-muted-foreground mt-1">
+              Adds to the{' '}
+              <Link href={`/assignments/${assignment.parentAssignment.id}`} className="underline hover:text-primary">
+                {Number(assignment.parentAssignment.agreedHours)}h engagement from{' '}
+                {format(assignment.parentAssignment.startDate, 'MMM dd, yyyy')}
+              </Link>
+            </p>
+          )}
           {assignment.source === 'VA_CONNECTIONS_SYNC' && (
             <p className="text-xs text-muted-foreground mt-1">
               Managed by the VAConnections sheet — edit there, changes sync in automatically.
             </p>
           )}
         </div>
-        {ASSIGNMENT_MUTATOR_ROLES.includes(user.systemRole) && assignment.source !== 'VA_CONNECTIONS_SYNC' && (
+        {canMutate && (
           <div className="flex items-center gap-2">
+            {canAddHours && (
+              <AdditionalHoursButton
+                assignmentId={root.id}
+                clientName={assignment.client.name}
+                vaName={vaName}
+                type={assignment.type}
+                currentHours={engagementHours}
+              />
+            )}
             <AssignmentEditButton
               assignment={{
                 id: assignment.id,
                 clientName: assignment.client.name,
-                vaName: assignment.vaProfile.user.firstName || assignment.vaProfile.user.email,
+                vaName,
                 type: assignment.type,
                 agreedHours: Number(assignment.agreedHours),
                 monthlyHours: assignment.monthlyHours ? Number(assignment.monthlyHours) : null,
@@ -98,7 +145,12 @@ export default async function AssignmentDetailPage({
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Agreed Hours</CardTitle>
           </CardHeader>
-          <CardContent className="text-2xl font-bold">{Number(assignment.agreedHours)}h</CardContent>
+          <CardContent>
+            <p className="text-2xl font-bold">{Number(assignment.agreedHours)}h</p>
+            {hasAddOns && (
+              <p className="text-xs text-muted-foreground mt-1">{engagementHours}h active across the engagement</p>
+            )}
+          </CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2">
@@ -125,6 +177,40 @@ export default async function AssignmentDetailPage({
           </CardContent>
         </Card>
       </div>
+
+      {!assignment.parentAssignment && hasAddOns && (
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">Additional Hours</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {assignment.additionalHours.map((a) => (
+                <div key={a.id} className="flex items-start justify-between gap-3 p-3 rounded-lg border">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <Link href={`/assignments/${a.id}`} className="text-sm font-medium hover:text-primary">
+                        +{Number(a.agreedHours)}h from {format(a.startDate, 'MMM dd, yyyy')}
+                      </Link>
+                      <Badge variant={a.status === 'ACTIVE' ? 'default' : 'secondary'} className="text-[10px] py-0 px-1.5">
+                        {a.status}
+                      </Badge>
+                    </div>
+                    {a.notes && <p className="text-xs text-muted-foreground mt-1 whitespace-pre-wrap">{a.notes}</p>}
+                  </div>
+                  {canMutate && (a.status === 'ACTIVE' || a.status === 'PAUSED') && (
+                    <form action={updateAssignmentStatus.bind(null, a.id, 'CANCELLED')}>
+                      <Button type="submit" size="sm" variant="ghost" className="text-muted-foreground">
+                        Cancel request
+                      </Button>
+                    </form>
+                  )}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader className="pb-3 flex flex-row items-center justify-between">

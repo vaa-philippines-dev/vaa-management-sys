@@ -10,6 +10,7 @@ import { notify } from '@/lib/notifications'
 import { computeKpiCheckpoints } from '@/lib/kpi-checks'
 import { getMutateScope, assertClientInScope, assertAssignmentInScope, assertVAProfileInScope } from '@/lib/scope'
 import { ACTIVE_VA_PROFILE_WHERE } from '@/lib/active-va'
+import type { AssignmentStatus } from '@/src/generated/prisma/enums'
 
 export async function createAssignment(formData: FormData) {
   const actor = await requireRole(...ASSIGNMENT_MUTATOR_ROLES)
@@ -181,6 +182,125 @@ export async function updateAssignment(id: string, formData: FormData) {
   revalidateTag(CACHE_TAGS.assignments, 'default')
 }
 
+// A client asking for more hours on an existing engagement (e.g. "+2 hours").
+// The DMF sheet logs these as a separate row with VA TYPE "Additional" and
+// its own KPI cycle, so this creates a full Assignment for the same VA and
+// client — seeded with KPI check-ins and a Preparation row exactly like
+// createAssignment() — linked to the engagement it extends. Hours-derived
+// views (VA Availability, TMF, Team Assignment) sum active assignments, so the
+// VA's total picks the add-on up without any change there; cancelling the
+// request is just cancelling the add-on.
+export async function addAdditionalHours(parentId: string, formData: FormData) {
+  const actor = await requireRole(...ASSIGNMENT_MUTATOR_ROLES)
+  await assertAssignmentInScope(await getMutateScope(actor), parentId)
+
+  const target = await prisma.assignment.findUnique({
+    where: { id: parentId },
+    select: { id: true, parentAssignmentId: true },
+  })
+  if (!target) throw new Error('Assignment not found')
+
+  // Add-ons never nest: hours added from an add-on's page still attach to the
+  // engagement that add-on extends.
+  const rootId = target.parentAssignmentId ?? target.id
+  const parent = await prisma.assignment.findUnique({
+    where: { id: rootId },
+    select: {
+      id: true,
+      status: true,
+      source: true,
+      type: true,
+      endDate: true,
+      clientId: true,
+      vaProfileId: true,
+      client: { select: { name: true } },
+      vaProfile: { select: { userId: true } },
+    },
+  })
+  if (!parent) throw new Error('Assignment not found')
+  if (parent.source === 'VA_CONNECTIONS_SYNC') {
+    throw new Error('This assignment is synced from the VAConnections sheet and cannot be edited here.')
+  }
+  if (parent.status !== 'ACTIVE' && parent.status !== 'PAUSED') {
+    throw new Error('Additional hours can only be added to an active or paused assignment')
+  }
+
+  const hours = Number(formData.get('hours'))
+  if (!Number.isFinite(hours) || hours <= 0) throw new Error('Enter how many hours to add')
+  const startDateRaw = formData.get('startDate') as string
+  if (!startDateRaw) throw new Error('Effective date is required')
+  const startDate = new Date(startDateRaw)
+  if (Number.isNaN(startDate.getTime())) throw new Error('Effective date is invalid')
+  const monthlyHoursRaw = formData.get('monthlyHours') as string | null
+  const monthlyHours = parent.type === 'REGULAR' && monthlyHoursRaw ? Number(monthlyHoursRaw) : null
+  const notes = ((formData.get('notes') as string) || '').trim() || null
+
+  const vaActive = await prisma.vAProfile.count({ where: { AND: [{ id: parent.vaProfileId }, ACTIVE_VA_PROFILE_WHERE] } })
+  if (vaActive === 0) throw new Error('Only active VAs can be assigned')
+
+  const addOn = await prisma.assignment.create({
+    data: {
+      clientId: parent.clientId,
+      vaProfileId: parent.vaProfileId,
+      parentAssignmentId: parent.id,
+      type: parent.type,
+      agreedHours: hours,
+      startDate,
+      // A project add-on ends with the project it extends.
+      endDate: parent.type === 'PROJECT' ? parent.endDate : null,
+      monthlyHours,
+      notes,
+    },
+    select: { id: true },
+  })
+
+  await prisma.assignmentKpiCheck.createMany({
+    data: computeKpiCheckpoints(startDate).map(({ milestone, dueDate }) => ({
+      assignmentId: addOn.id,
+      milestone,
+      dueDate,
+    })),
+  })
+
+  await prisma.assignmentPreparation.create({
+    data: { assignmentId: addOn.id, targetStartDate: startDate, vaType: 'ADDITIONAL' },
+  })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'CREATE',
+    entityType: 'Assignment',
+    entityId: addOn.id,
+    after: {
+      parentAssignmentId: parent.id,
+      clientId: parent.clientId,
+      vaProfileId: parent.vaProfileId,
+      type: parent.type,
+      agreedHours: hours,
+      startDate: startDate.toISOString(),
+      monthlyHours,
+      notes,
+    },
+  })
+
+  await notify({
+    recipientId: parent.vaProfile.userId,
+    type: 'NEW_ASSIGNMENT',
+    title: 'Additional hours',
+    message: `${parent.client.name} added ${hours} hour${hours === 1 ? '' : 's'} to your assignment.`,
+    entityType: 'Assignment',
+    entityId: addOn.id,
+  })
+
+  revalidatePath('/assignments')
+  revalidatePath(`/assignments/${parent.id}`)
+  if (target.id !== parent.id) revalidatePath(`/assignments/${target.id}`)
+  revalidateTag(CACHE_TAGS.assignments, 'default')
+  revalidateTag(CACHE_TAGS.dashboard, 'default')
+
+  return { id: addOn.id }
+}
+
 // Marks one KPI check-in milestone done — the sheet's own "ACTION: Reschedule"
 // column is just a static call-to-action until this happens, not a real
 // per-row state machine, so this is the only mutation the KPI panels need.
@@ -215,7 +335,10 @@ export async function updateAssignmentStatus(id: string, status: string) {
   const actor = await requireRole(...ASSIGNMENT_MUTATOR_ROLES)
   await assertAssignmentInScope(await getMutateScope(actor), id)
 
-  const before = await prisma.assignment.findUnique({ where: { id }, select: { status: true, source: true } })
+  const before = await prisma.assignment.findUnique({
+    where: { id },
+    select: { status: true, source: true, parentAssignmentId: true },
+  })
 
   // Synced Assignments are owned by the VAConnections sheet import — manual edits
   // here would just get silently overwritten by the next sync run.
@@ -223,7 +346,7 @@ export async function updateAssignmentStatus(id: string, status: string) {
     throw new Error('This assignment is synced from the VAConnections sheet and cannot be edited here.')
   }
 
-  await prisma.assignment.update({ where: { id }, data: { status: status as any } })
+  await prisma.assignment.update({ where: { id }, data: { status: status as AssignmentStatus } })
 
   await logAudit({
     actorId: actor.id,
@@ -234,8 +357,34 @@ export async function updateAssignmentStatus(id: string, status: string) {
     after: { status },
   })
 
+  // Ending an engagement ends the additional hours on it too — otherwise a
+  // still-ACTIVE add-on would keep counting toward the VA's hours on VA
+  // Availability after the VA has stopped working the account.
+  if (status === 'COMPLETED' || status === 'CANCELLED') {
+    const addOns = await prisma.assignment.findMany({
+      where: { parentAssignmentId: id, status: { in: ['ACTIVE', 'PAUSED'] } },
+      select: { id: true, status: true },
+    })
+    if (addOns.length > 0) {
+      await prisma.assignment.updateMany({
+        where: { id: { in: addOns.map((a) => a.id) } },
+        data: { status: status as AssignmentStatus },
+      })
+      for (const a of addOns) {
+        await logAudit({
+          actorId: actor.id,
+          action: 'STATUS_CHANGE',
+          entityType: 'Assignment',
+          entityId: a.id,
+          before: { status: a.status },
+          after: { status, cascadedFrom: id },
+        })
+      }
+    }
+  }
+
   revalidatePath('/assignments')
-  revalidateTag(CACHE_TAGS.assignments, 'default')
   revalidatePath(`/assignments/${id}`)
+  if (before?.parentAssignmentId) revalidatePath(`/assignments/${before.parentAssignmentId}`)
   revalidateTag(CACHE_TAGS.assignments, 'default')
 }

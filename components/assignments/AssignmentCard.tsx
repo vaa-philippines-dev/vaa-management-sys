@@ -11,6 +11,8 @@ export type AssignmentRow = {
   loggedHours: number
   startLabel: string
   endLabel: string | null
+  // An additional-hours add-on to another engagement (parentAssignmentId set).
+  isAdditional: boolean
 }
 
 export function AssignmentCard({ a }: { a: AssignmentRow }) {
@@ -23,7 +25,10 @@ export function AssignmentCard({ a }: { a: AssignmentRow }) {
           <div className="flex items-start justify-between gap-2 mb-2">
             <div>
               <p className="text-sm font-semibold">{a.clientName}</p>
-              <p className="text-xs text-muted-foreground">{a.vaName}</p>
+              <p className="text-xs text-muted-foreground">
+                {a.vaName}
+                {a.isAdditional && <span className="ml-1.5 text-[10px] font-medium text-primary">+ Additional hours</span>}
+              </p>
             </div>
             <Badge variant={a.status === 'ACTIVE' ? 'default' : 'secondary'} className="shrink-0">
               {a.status}

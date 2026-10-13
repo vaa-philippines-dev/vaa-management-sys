@@ -52,6 +52,7 @@ export type AssignmentMinAggregateOutputType = {
   updatedAt: Date | null
   vaProfileId: string | null
   clientId: string | null
+  parentAssignmentId: string | null
 }
 
 export type AssignmentMaxAggregateOutputType = {
@@ -70,6 +71,7 @@ export type AssignmentMaxAggregateOutputType = {
   updatedAt: Date | null
   vaProfileId: string | null
   clientId: string | null
+  parentAssignmentId: string | null
 }
 
 export type AssignmentCountAggregateOutputType = {
@@ -89,6 +91,7 @@ export type AssignmentCountAggregateOutputType = {
   updatedAt: number
   vaProfileId: number
   clientId: number
+  parentAssignmentId: number
   _all: number
 }
 
@@ -119,6 +122,7 @@ export type AssignmentMinAggregateInputType = {
   updatedAt?: true
   vaProfileId?: true
   clientId?: true
+  parentAssignmentId?: true
 }
 
 export type AssignmentMaxAggregateInputType = {
@@ -137,6 +141,7 @@ export type AssignmentMaxAggregateInputType = {
   updatedAt?: true
   vaProfileId?: true
   clientId?: true
+  parentAssignmentId?: true
 }
 
 export type AssignmentCountAggregateInputType = {
@@ -156,6 +161,7 @@ export type AssignmentCountAggregateInputType = {
   updatedAt?: true
   vaProfileId?: true
   clientId?: true
+  parentAssignmentId?: true
   _all?: true
 }
 
@@ -262,6 +268,7 @@ export type AssignmentGroupByOutputType = {
   updatedAt: Date
   vaProfileId: string
   clientId: string
+  parentAssignmentId: string | null
   _count: AssignmentCountAggregateOutputType | null
   _avg: AssignmentAvgAggregateOutputType | null
   _sum: AssignmentSumAggregateOutputType | null
@@ -304,8 +311,11 @@ export type AssignmentWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Assignment"> | Date | string
   vaProfileId?: Prisma.StringFilter<"Assignment"> | string
   clientId?: Prisma.StringFilter<"Assignment"> | string
+  parentAssignmentId?: Prisma.StringNullableFilter<"Assignment"> | string | null
   vaProfile?: Prisma.XOR<Prisma.VAProfileScalarRelationFilter, Prisma.VAProfileWhereInput>
   client?: Prisma.XOR<Prisma.ClientScalarRelationFilter, Prisma.ClientWhereInput>
+  parentAssignment?: Prisma.XOR<Prisma.AssignmentNullableScalarRelationFilter, Prisma.AssignmentWhereInput> | null
+  additionalHours?: Prisma.AssignmentListRelationFilter
   workLogs?: Prisma.WorkLogListRelationFilter
   terminations?: Prisma.TerminationListRelationFilter
   kpiChecks?: Prisma.AssignmentKpiCheckListRelationFilter
@@ -330,8 +340,11 @@ export type AssignmentOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   vaProfileId?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
+  parentAssignmentId?: Prisma.SortOrderInput | Prisma.SortOrder
   vaProfile?: Prisma.VAProfileOrderByWithRelationInput
   client?: Prisma.ClientOrderByWithRelationInput
+  parentAssignment?: Prisma.AssignmentOrderByWithRelationInput
+  additionalHours?: Prisma.AssignmentOrderByRelationAggregateInput
   workLogs?: Prisma.WorkLogOrderByRelationAggregateInput
   terminations?: Prisma.TerminationOrderByRelationAggregateInput
   kpiChecks?: Prisma.AssignmentKpiCheckOrderByRelationAggregateInput
@@ -359,8 +372,11 @@ export type AssignmentWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Assignment"> | Date | string
   vaProfileId?: Prisma.StringFilter<"Assignment"> | string
   clientId?: Prisma.StringFilter<"Assignment"> | string
+  parentAssignmentId?: Prisma.StringNullableFilter<"Assignment"> | string | null
   vaProfile?: Prisma.XOR<Prisma.VAProfileScalarRelationFilter, Prisma.VAProfileWhereInput>
   client?: Prisma.XOR<Prisma.ClientScalarRelationFilter, Prisma.ClientWhereInput>
+  parentAssignment?: Prisma.XOR<Prisma.AssignmentNullableScalarRelationFilter, Prisma.AssignmentWhereInput> | null
+  additionalHours?: Prisma.AssignmentListRelationFilter
   workLogs?: Prisma.WorkLogListRelationFilter
   terminations?: Prisma.TerminationListRelationFilter
   kpiChecks?: Prisma.AssignmentKpiCheckListRelationFilter
@@ -385,6 +401,7 @@ export type AssignmentOrderByWithAggregationInput = {
   updatedAt?: Prisma.SortOrder
   vaProfileId?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
+  parentAssignmentId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.AssignmentCountOrderByAggregateInput
   _avg?: Prisma.AssignmentAvgOrderByAggregateInput
   _max?: Prisma.AssignmentMaxOrderByAggregateInput
@@ -412,6 +429,7 @@ export type AssignmentScalarWhereWithAggregatesInput = {
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Assignment"> | Date | string
   vaProfileId?: Prisma.StringWithAggregatesFilter<"Assignment"> | string
   clientId?: Prisma.StringWithAggregatesFilter<"Assignment"> | string
+  parentAssignmentId?: Prisma.StringNullableWithAggregatesFilter<"Assignment"> | string | null
 }
 
 export type AssignmentCreateInput = {
@@ -431,6 +449,8 @@ export type AssignmentCreateInput = {
   updatedAt?: Date | string
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutAssignmentsInput
   client: Prisma.ClientCreateNestedOneWithoutAssignmentsInput
+  parentAssignment?: Prisma.AssignmentCreateNestedOneWithoutAdditionalHoursInput
+  additionalHours?: Prisma.AssignmentCreateNestedManyWithoutParentAssignmentInput
   workLogs?: Prisma.WorkLogCreateNestedManyWithoutAssignmentInput
   terminations?: Prisma.TerminationCreateNestedManyWithoutAssignmentInput
   kpiChecks?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutAssignmentInput
@@ -455,6 +475,8 @@ export type AssignmentUncheckedCreateInput = {
   updatedAt?: Date | string
   vaProfileId: string
   clientId: string
+  parentAssignmentId?: string | null
+  additionalHours?: Prisma.AssignmentUncheckedCreateNestedManyWithoutParentAssignmentInput
   workLogs?: Prisma.WorkLogUncheckedCreateNestedManyWithoutAssignmentInput
   terminations?: Prisma.TerminationUncheckedCreateNestedManyWithoutAssignmentInput
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutAssignmentInput
@@ -479,6 +501,8 @@ export type AssignmentUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutAssignmentsNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutAssignmentsNestedInput
+  parentAssignment?: Prisma.AssignmentUpdateOneWithoutAdditionalHoursNestedInput
+  additionalHours?: Prisma.AssignmentUpdateManyWithoutParentAssignmentNestedInput
   workLogs?: Prisma.WorkLogUpdateManyWithoutAssignmentNestedInput
   terminations?: Prisma.TerminationUpdateManyWithoutAssignmentNestedInput
   kpiChecks?: Prisma.AssignmentKpiCheckUpdateManyWithoutAssignmentNestedInput
@@ -503,6 +527,8 @@ export type AssignmentUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfileId?: Prisma.StringFieldUpdateOperationsInput | string
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentAssignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalHours?: Prisma.AssignmentUncheckedUpdateManyWithoutParentAssignmentNestedInput
   workLogs?: Prisma.WorkLogUncheckedUpdateManyWithoutAssignmentNestedInput
   terminations?: Prisma.TerminationUncheckedUpdateManyWithoutAssignmentNestedInput
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutAssignmentNestedInput
@@ -527,6 +553,7 @@ export type AssignmentCreateManyInput = {
   updatedAt?: Date | string
   vaProfileId: string
   clientId: string
+  parentAssignmentId?: string | null
 }
 
 export type AssignmentUpdateManyMutationInput = {
@@ -563,6 +590,7 @@ export type AssignmentUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfileId?: Prisma.StringFieldUpdateOperationsInput | string
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentAssignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type AssignmentListRelationFilter = {
@@ -573,6 +601,11 @@ export type AssignmentListRelationFilter = {
 
 export type AssignmentOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type AssignmentNullableScalarRelationFilter = {
+  is?: Prisma.AssignmentWhereInput | null
+  isNot?: Prisma.AssignmentWhereInput | null
 }
 
 export type AssignmentCountOrderByAggregateInput = {
@@ -592,6 +625,7 @@ export type AssignmentCountOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
   vaProfileId?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
+  parentAssignmentId?: Prisma.SortOrder
 }
 
 export type AssignmentAvgOrderByAggregateInput = {
@@ -615,6 +649,7 @@ export type AssignmentMaxOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
   vaProfileId?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
+  parentAssignmentId?: Prisma.SortOrder
 }
 
 export type AssignmentMinOrderByAggregateInput = {
@@ -633,6 +668,7 @@ export type AssignmentMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
   vaProfileId?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
+  parentAssignmentId?: Prisma.SortOrder
 }
 
 export type AssignmentSumOrderByAggregateInput = {
@@ -643,11 +679,6 @@ export type AssignmentSumOrderByAggregateInput = {
 export type AssignmentScalarRelationFilter = {
   is?: Prisma.AssignmentWhereInput
   isNot?: Prisma.AssignmentWhereInput
-}
-
-export type AssignmentNullableScalarRelationFilter = {
-  is?: Prisma.AssignmentWhereInput | null
-  isNot?: Prisma.AssignmentWhereInput | null
 }
 
 export type AssignmentCreateNestedManyWithoutVaProfileInput = {
@@ -738,6 +769,26 @@ export type AssignmentCreateskillRequirementsInput = {
   set: string[]
 }
 
+export type AssignmentCreateNestedOneWithoutAdditionalHoursInput = {
+  create?: Prisma.XOR<Prisma.AssignmentCreateWithoutAdditionalHoursInput, Prisma.AssignmentUncheckedCreateWithoutAdditionalHoursInput>
+  connectOrCreate?: Prisma.AssignmentCreateOrConnectWithoutAdditionalHoursInput
+  connect?: Prisma.AssignmentWhereUniqueInput
+}
+
+export type AssignmentCreateNestedManyWithoutParentAssignmentInput = {
+  create?: Prisma.XOR<Prisma.AssignmentCreateWithoutParentAssignmentInput, Prisma.AssignmentUncheckedCreateWithoutParentAssignmentInput> | Prisma.AssignmentCreateWithoutParentAssignmentInput[] | Prisma.AssignmentUncheckedCreateWithoutParentAssignmentInput[]
+  connectOrCreate?: Prisma.AssignmentCreateOrConnectWithoutParentAssignmentInput | Prisma.AssignmentCreateOrConnectWithoutParentAssignmentInput[]
+  createMany?: Prisma.AssignmentCreateManyParentAssignmentInputEnvelope
+  connect?: Prisma.AssignmentWhereUniqueInput | Prisma.AssignmentWhereUniqueInput[]
+}
+
+export type AssignmentUncheckedCreateNestedManyWithoutParentAssignmentInput = {
+  create?: Prisma.XOR<Prisma.AssignmentCreateWithoutParentAssignmentInput, Prisma.AssignmentUncheckedCreateWithoutParentAssignmentInput> | Prisma.AssignmentCreateWithoutParentAssignmentInput[] | Prisma.AssignmentUncheckedCreateWithoutParentAssignmentInput[]
+  connectOrCreate?: Prisma.AssignmentCreateOrConnectWithoutParentAssignmentInput | Prisma.AssignmentCreateOrConnectWithoutParentAssignmentInput[]
+  createMany?: Prisma.AssignmentCreateManyParentAssignmentInputEnvelope
+  connect?: Prisma.AssignmentWhereUniqueInput | Prisma.AssignmentWhereUniqueInput[]
+}
+
 export type EnumAssignmentTypeFieldUpdateOperationsInput = {
   set?: $Enums.AssignmentType
 }
@@ -753,6 +804,44 @@ export type AssignmentUpdateskillRequirementsInput = {
 
 export type EnumAssignmentSourceFieldUpdateOperationsInput = {
   set?: $Enums.AssignmentSource
+}
+
+export type AssignmentUpdateOneWithoutAdditionalHoursNestedInput = {
+  create?: Prisma.XOR<Prisma.AssignmentCreateWithoutAdditionalHoursInput, Prisma.AssignmentUncheckedCreateWithoutAdditionalHoursInput>
+  connectOrCreate?: Prisma.AssignmentCreateOrConnectWithoutAdditionalHoursInput
+  upsert?: Prisma.AssignmentUpsertWithoutAdditionalHoursInput
+  disconnect?: Prisma.AssignmentWhereInput | boolean
+  delete?: Prisma.AssignmentWhereInput | boolean
+  connect?: Prisma.AssignmentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AssignmentUpdateToOneWithWhereWithoutAdditionalHoursInput, Prisma.AssignmentUpdateWithoutAdditionalHoursInput>, Prisma.AssignmentUncheckedUpdateWithoutAdditionalHoursInput>
+}
+
+export type AssignmentUpdateManyWithoutParentAssignmentNestedInput = {
+  create?: Prisma.XOR<Prisma.AssignmentCreateWithoutParentAssignmentInput, Prisma.AssignmentUncheckedCreateWithoutParentAssignmentInput> | Prisma.AssignmentCreateWithoutParentAssignmentInput[] | Prisma.AssignmentUncheckedCreateWithoutParentAssignmentInput[]
+  connectOrCreate?: Prisma.AssignmentCreateOrConnectWithoutParentAssignmentInput | Prisma.AssignmentCreateOrConnectWithoutParentAssignmentInput[]
+  upsert?: Prisma.AssignmentUpsertWithWhereUniqueWithoutParentAssignmentInput | Prisma.AssignmentUpsertWithWhereUniqueWithoutParentAssignmentInput[]
+  createMany?: Prisma.AssignmentCreateManyParentAssignmentInputEnvelope
+  set?: Prisma.AssignmentWhereUniqueInput | Prisma.AssignmentWhereUniqueInput[]
+  disconnect?: Prisma.AssignmentWhereUniqueInput | Prisma.AssignmentWhereUniqueInput[]
+  delete?: Prisma.AssignmentWhereUniqueInput | Prisma.AssignmentWhereUniqueInput[]
+  connect?: Prisma.AssignmentWhereUniqueInput | Prisma.AssignmentWhereUniqueInput[]
+  update?: Prisma.AssignmentUpdateWithWhereUniqueWithoutParentAssignmentInput | Prisma.AssignmentUpdateWithWhereUniqueWithoutParentAssignmentInput[]
+  updateMany?: Prisma.AssignmentUpdateManyWithWhereWithoutParentAssignmentInput | Prisma.AssignmentUpdateManyWithWhereWithoutParentAssignmentInput[]
+  deleteMany?: Prisma.AssignmentScalarWhereInput | Prisma.AssignmentScalarWhereInput[]
+}
+
+export type AssignmentUncheckedUpdateManyWithoutParentAssignmentNestedInput = {
+  create?: Prisma.XOR<Prisma.AssignmentCreateWithoutParentAssignmentInput, Prisma.AssignmentUncheckedCreateWithoutParentAssignmentInput> | Prisma.AssignmentCreateWithoutParentAssignmentInput[] | Prisma.AssignmentUncheckedCreateWithoutParentAssignmentInput[]
+  connectOrCreate?: Prisma.AssignmentCreateOrConnectWithoutParentAssignmentInput | Prisma.AssignmentCreateOrConnectWithoutParentAssignmentInput[]
+  upsert?: Prisma.AssignmentUpsertWithWhereUniqueWithoutParentAssignmentInput | Prisma.AssignmentUpsertWithWhereUniqueWithoutParentAssignmentInput[]
+  createMany?: Prisma.AssignmentCreateManyParentAssignmentInputEnvelope
+  set?: Prisma.AssignmentWhereUniqueInput | Prisma.AssignmentWhereUniqueInput[]
+  disconnect?: Prisma.AssignmentWhereUniqueInput | Prisma.AssignmentWhereUniqueInput[]
+  delete?: Prisma.AssignmentWhereUniqueInput | Prisma.AssignmentWhereUniqueInput[]
+  connect?: Prisma.AssignmentWhereUniqueInput | Prisma.AssignmentWhereUniqueInput[]
+  update?: Prisma.AssignmentUpdateWithWhereUniqueWithoutParentAssignmentInput | Prisma.AssignmentUpdateWithWhereUniqueWithoutParentAssignmentInput[]
+  updateMany?: Prisma.AssignmentUpdateManyWithWhereWithoutParentAssignmentInput | Prisma.AssignmentUpdateManyWithWhereWithoutParentAssignmentInput[]
+  deleteMany?: Prisma.AssignmentScalarWhereInput | Prisma.AssignmentScalarWhereInput[]
 }
 
 export type AssignmentCreateNestedOneWithoutKpiChecksInput = {
@@ -843,6 +932,8 @@ export type AssignmentCreateWithoutVaProfileInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   client: Prisma.ClientCreateNestedOneWithoutAssignmentsInput
+  parentAssignment?: Prisma.AssignmentCreateNestedOneWithoutAdditionalHoursInput
+  additionalHours?: Prisma.AssignmentCreateNestedManyWithoutParentAssignmentInput
   workLogs?: Prisma.WorkLogCreateNestedManyWithoutAssignmentInput
   terminations?: Prisma.TerminationCreateNestedManyWithoutAssignmentInput
   kpiChecks?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutAssignmentInput
@@ -866,6 +957,8 @@ export type AssignmentUncheckedCreateWithoutVaProfileInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   clientId: string
+  parentAssignmentId?: string | null
+  additionalHours?: Prisma.AssignmentUncheckedCreateNestedManyWithoutParentAssignmentInput
   workLogs?: Prisma.WorkLogUncheckedCreateNestedManyWithoutAssignmentInput
   terminations?: Prisma.TerminationUncheckedCreateNestedManyWithoutAssignmentInput
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutAssignmentInput
@@ -919,6 +1012,7 @@ export type AssignmentScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Assignment"> | Date | string
   vaProfileId?: Prisma.StringFilter<"Assignment"> | string
   clientId?: Prisma.StringFilter<"Assignment"> | string
+  parentAssignmentId?: Prisma.StringNullableFilter<"Assignment"> | string | null
 }
 
 export type AssignmentCreateWithoutClientInput = {
@@ -937,6 +1031,8 @@ export type AssignmentCreateWithoutClientInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutAssignmentsInput
+  parentAssignment?: Prisma.AssignmentCreateNestedOneWithoutAdditionalHoursInput
+  additionalHours?: Prisma.AssignmentCreateNestedManyWithoutParentAssignmentInput
   workLogs?: Prisma.WorkLogCreateNestedManyWithoutAssignmentInput
   terminations?: Prisma.TerminationCreateNestedManyWithoutAssignmentInput
   kpiChecks?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutAssignmentInput
@@ -960,6 +1056,8 @@ export type AssignmentUncheckedCreateWithoutClientInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   vaProfileId: string
+  parentAssignmentId?: string | null
+  additionalHours?: Prisma.AssignmentUncheckedCreateNestedManyWithoutParentAssignmentInput
   workLogs?: Prisma.WorkLogUncheckedCreateNestedManyWithoutAssignmentInput
   terminations?: Prisma.TerminationUncheckedCreateNestedManyWithoutAssignmentInput
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutAssignmentInput
@@ -993,6 +1091,198 @@ export type AssignmentUpdateManyWithWhereWithoutClientInput = {
   data: Prisma.XOR<Prisma.AssignmentUpdateManyMutationInput, Prisma.AssignmentUncheckedUpdateManyWithoutClientInput>
 }
 
+export type AssignmentCreateWithoutAdditionalHoursInput = {
+  id?: string
+  type: $Enums.AssignmentType
+  status?: $Enums.AssignmentStatus
+  agreedHours: runtime.Decimal | runtime.DecimalJsLike | number | string
+  monthlyHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  notes?: string | null
+  skillRequirements?: Prisma.AssignmentCreateskillRequirementsInput | string[]
+  source?: $Enums.AssignmentSource
+  externalId?: string | null
+  syncedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  vaProfile: Prisma.VAProfileCreateNestedOneWithoutAssignmentsInput
+  client: Prisma.ClientCreateNestedOneWithoutAssignmentsInput
+  parentAssignment?: Prisma.AssignmentCreateNestedOneWithoutAdditionalHoursInput
+  workLogs?: Prisma.WorkLogCreateNestedManyWithoutAssignmentInput
+  terminations?: Prisma.TerminationCreateNestedManyWithoutAssignmentInput
+  kpiChecks?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutAssignmentInput
+  preparation?: Prisma.AssignmentPreparationCreateNestedOneWithoutAssignmentInput
+  clientFeedback?: Prisma.AssignmentClientFeedbackCreateNestedManyWithoutAssignmentInput
+}
+
+export type AssignmentUncheckedCreateWithoutAdditionalHoursInput = {
+  id?: string
+  type: $Enums.AssignmentType
+  status?: $Enums.AssignmentStatus
+  agreedHours: runtime.Decimal | runtime.DecimalJsLike | number | string
+  monthlyHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  notes?: string | null
+  skillRequirements?: Prisma.AssignmentCreateskillRequirementsInput | string[]
+  source?: $Enums.AssignmentSource
+  externalId?: string | null
+  syncedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  vaProfileId: string
+  clientId: string
+  parentAssignmentId?: string | null
+  workLogs?: Prisma.WorkLogUncheckedCreateNestedManyWithoutAssignmentInput
+  terminations?: Prisma.TerminationUncheckedCreateNestedManyWithoutAssignmentInput
+  kpiChecks?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutAssignmentInput
+  preparation?: Prisma.AssignmentPreparationUncheckedCreateNestedOneWithoutAssignmentInput
+  clientFeedback?: Prisma.AssignmentClientFeedbackUncheckedCreateNestedManyWithoutAssignmentInput
+}
+
+export type AssignmentCreateOrConnectWithoutAdditionalHoursInput = {
+  where: Prisma.AssignmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.AssignmentCreateWithoutAdditionalHoursInput, Prisma.AssignmentUncheckedCreateWithoutAdditionalHoursInput>
+}
+
+export type AssignmentCreateWithoutParentAssignmentInput = {
+  id?: string
+  type: $Enums.AssignmentType
+  status?: $Enums.AssignmentStatus
+  agreedHours: runtime.Decimal | runtime.DecimalJsLike | number | string
+  monthlyHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  notes?: string | null
+  skillRequirements?: Prisma.AssignmentCreateskillRequirementsInput | string[]
+  source?: $Enums.AssignmentSource
+  externalId?: string | null
+  syncedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  vaProfile: Prisma.VAProfileCreateNestedOneWithoutAssignmentsInput
+  client: Prisma.ClientCreateNestedOneWithoutAssignmentsInput
+  additionalHours?: Prisma.AssignmentCreateNestedManyWithoutParentAssignmentInput
+  workLogs?: Prisma.WorkLogCreateNestedManyWithoutAssignmentInput
+  terminations?: Prisma.TerminationCreateNestedManyWithoutAssignmentInput
+  kpiChecks?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutAssignmentInput
+  preparation?: Prisma.AssignmentPreparationCreateNestedOneWithoutAssignmentInput
+  clientFeedback?: Prisma.AssignmentClientFeedbackCreateNestedManyWithoutAssignmentInput
+}
+
+export type AssignmentUncheckedCreateWithoutParentAssignmentInput = {
+  id?: string
+  type: $Enums.AssignmentType
+  status?: $Enums.AssignmentStatus
+  agreedHours: runtime.Decimal | runtime.DecimalJsLike | number | string
+  monthlyHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  notes?: string | null
+  skillRequirements?: Prisma.AssignmentCreateskillRequirementsInput | string[]
+  source?: $Enums.AssignmentSource
+  externalId?: string | null
+  syncedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  vaProfileId: string
+  clientId: string
+  additionalHours?: Prisma.AssignmentUncheckedCreateNestedManyWithoutParentAssignmentInput
+  workLogs?: Prisma.WorkLogUncheckedCreateNestedManyWithoutAssignmentInput
+  terminations?: Prisma.TerminationUncheckedCreateNestedManyWithoutAssignmentInput
+  kpiChecks?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutAssignmentInput
+  preparation?: Prisma.AssignmentPreparationUncheckedCreateNestedOneWithoutAssignmentInput
+  clientFeedback?: Prisma.AssignmentClientFeedbackUncheckedCreateNestedManyWithoutAssignmentInput
+}
+
+export type AssignmentCreateOrConnectWithoutParentAssignmentInput = {
+  where: Prisma.AssignmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.AssignmentCreateWithoutParentAssignmentInput, Prisma.AssignmentUncheckedCreateWithoutParentAssignmentInput>
+}
+
+export type AssignmentCreateManyParentAssignmentInputEnvelope = {
+  data: Prisma.AssignmentCreateManyParentAssignmentInput | Prisma.AssignmentCreateManyParentAssignmentInput[]
+  skipDuplicates?: boolean
+}
+
+export type AssignmentUpsertWithoutAdditionalHoursInput = {
+  update: Prisma.XOR<Prisma.AssignmentUpdateWithoutAdditionalHoursInput, Prisma.AssignmentUncheckedUpdateWithoutAdditionalHoursInput>
+  create: Prisma.XOR<Prisma.AssignmentCreateWithoutAdditionalHoursInput, Prisma.AssignmentUncheckedCreateWithoutAdditionalHoursInput>
+  where?: Prisma.AssignmentWhereInput
+}
+
+export type AssignmentUpdateToOneWithWhereWithoutAdditionalHoursInput = {
+  where?: Prisma.AssignmentWhereInput
+  data: Prisma.XOR<Prisma.AssignmentUpdateWithoutAdditionalHoursInput, Prisma.AssignmentUncheckedUpdateWithoutAdditionalHoursInput>
+}
+
+export type AssignmentUpdateWithoutAdditionalHoursInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumAssignmentTypeFieldUpdateOperationsInput | $Enums.AssignmentType
+  status?: Prisma.EnumAssignmentStatusFieldUpdateOperationsInput | $Enums.AssignmentStatus
+  agreedHours?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  monthlyHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skillRequirements?: Prisma.AssignmentUpdateskillRequirementsInput | string[]
+  source?: Prisma.EnumAssignmentSourceFieldUpdateOperationsInput | $Enums.AssignmentSource
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutAssignmentsNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutAssignmentsNestedInput
+  parentAssignment?: Prisma.AssignmentUpdateOneWithoutAdditionalHoursNestedInput
+  workLogs?: Prisma.WorkLogUpdateManyWithoutAssignmentNestedInput
+  terminations?: Prisma.TerminationUpdateManyWithoutAssignmentNestedInput
+  kpiChecks?: Prisma.AssignmentKpiCheckUpdateManyWithoutAssignmentNestedInput
+  preparation?: Prisma.AssignmentPreparationUpdateOneWithoutAssignmentNestedInput
+  clientFeedback?: Prisma.AssignmentClientFeedbackUpdateManyWithoutAssignmentNestedInput
+}
+
+export type AssignmentUncheckedUpdateWithoutAdditionalHoursInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumAssignmentTypeFieldUpdateOperationsInput | $Enums.AssignmentType
+  status?: Prisma.EnumAssignmentStatusFieldUpdateOperationsInput | $Enums.AssignmentStatus
+  agreedHours?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  monthlyHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skillRequirements?: Prisma.AssignmentUpdateskillRequirementsInput | string[]
+  source?: Prisma.EnumAssignmentSourceFieldUpdateOperationsInput | $Enums.AssignmentSource
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vaProfileId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentAssignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workLogs?: Prisma.WorkLogUncheckedUpdateManyWithoutAssignmentNestedInput
+  terminations?: Prisma.TerminationUncheckedUpdateManyWithoutAssignmentNestedInput
+  kpiChecks?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutAssignmentNestedInput
+  preparation?: Prisma.AssignmentPreparationUncheckedUpdateOneWithoutAssignmentNestedInput
+  clientFeedback?: Prisma.AssignmentClientFeedbackUncheckedUpdateManyWithoutAssignmentNestedInput
+}
+
+export type AssignmentUpsertWithWhereUniqueWithoutParentAssignmentInput = {
+  where: Prisma.AssignmentWhereUniqueInput
+  update: Prisma.XOR<Prisma.AssignmentUpdateWithoutParentAssignmentInput, Prisma.AssignmentUncheckedUpdateWithoutParentAssignmentInput>
+  create: Prisma.XOR<Prisma.AssignmentCreateWithoutParentAssignmentInput, Prisma.AssignmentUncheckedCreateWithoutParentAssignmentInput>
+}
+
+export type AssignmentUpdateWithWhereUniqueWithoutParentAssignmentInput = {
+  where: Prisma.AssignmentWhereUniqueInput
+  data: Prisma.XOR<Prisma.AssignmentUpdateWithoutParentAssignmentInput, Prisma.AssignmentUncheckedUpdateWithoutParentAssignmentInput>
+}
+
+export type AssignmentUpdateManyWithWhereWithoutParentAssignmentInput = {
+  where: Prisma.AssignmentScalarWhereInput
+  data: Prisma.XOR<Prisma.AssignmentUpdateManyMutationInput, Prisma.AssignmentUncheckedUpdateManyWithoutParentAssignmentInput>
+}
+
 export type AssignmentCreateWithoutKpiChecksInput = {
   id?: string
   type: $Enums.AssignmentType
@@ -1010,6 +1300,8 @@ export type AssignmentCreateWithoutKpiChecksInput = {
   updatedAt?: Date | string
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutAssignmentsInput
   client: Prisma.ClientCreateNestedOneWithoutAssignmentsInput
+  parentAssignment?: Prisma.AssignmentCreateNestedOneWithoutAdditionalHoursInput
+  additionalHours?: Prisma.AssignmentCreateNestedManyWithoutParentAssignmentInput
   workLogs?: Prisma.WorkLogCreateNestedManyWithoutAssignmentInput
   terminations?: Prisma.TerminationCreateNestedManyWithoutAssignmentInput
   preparation?: Prisma.AssignmentPreparationCreateNestedOneWithoutAssignmentInput
@@ -1033,6 +1325,8 @@ export type AssignmentUncheckedCreateWithoutKpiChecksInput = {
   updatedAt?: Date | string
   vaProfileId: string
   clientId: string
+  parentAssignmentId?: string | null
+  additionalHours?: Prisma.AssignmentUncheckedCreateNestedManyWithoutParentAssignmentInput
   workLogs?: Prisma.WorkLogUncheckedCreateNestedManyWithoutAssignmentInput
   terminations?: Prisma.TerminationUncheckedCreateNestedManyWithoutAssignmentInput
   preparation?: Prisma.AssignmentPreparationUncheckedCreateNestedOneWithoutAssignmentInput
@@ -1072,6 +1366,8 @@ export type AssignmentUpdateWithoutKpiChecksInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutAssignmentsNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutAssignmentsNestedInput
+  parentAssignment?: Prisma.AssignmentUpdateOneWithoutAdditionalHoursNestedInput
+  additionalHours?: Prisma.AssignmentUpdateManyWithoutParentAssignmentNestedInput
   workLogs?: Prisma.WorkLogUpdateManyWithoutAssignmentNestedInput
   terminations?: Prisma.TerminationUpdateManyWithoutAssignmentNestedInput
   preparation?: Prisma.AssignmentPreparationUpdateOneWithoutAssignmentNestedInput
@@ -1095,6 +1391,8 @@ export type AssignmentUncheckedUpdateWithoutKpiChecksInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfileId?: Prisma.StringFieldUpdateOperationsInput | string
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentAssignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalHours?: Prisma.AssignmentUncheckedUpdateManyWithoutParentAssignmentNestedInput
   workLogs?: Prisma.WorkLogUncheckedUpdateManyWithoutAssignmentNestedInput
   terminations?: Prisma.TerminationUncheckedUpdateManyWithoutAssignmentNestedInput
   preparation?: Prisma.AssignmentPreparationUncheckedUpdateOneWithoutAssignmentNestedInput
@@ -1118,6 +1416,8 @@ export type AssignmentCreateWithoutWorkLogsInput = {
   updatedAt?: Date | string
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutAssignmentsInput
   client: Prisma.ClientCreateNestedOneWithoutAssignmentsInput
+  parentAssignment?: Prisma.AssignmentCreateNestedOneWithoutAdditionalHoursInput
+  additionalHours?: Prisma.AssignmentCreateNestedManyWithoutParentAssignmentInput
   terminations?: Prisma.TerminationCreateNestedManyWithoutAssignmentInput
   kpiChecks?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutAssignmentInput
   preparation?: Prisma.AssignmentPreparationCreateNestedOneWithoutAssignmentInput
@@ -1141,6 +1441,8 @@ export type AssignmentUncheckedCreateWithoutWorkLogsInput = {
   updatedAt?: Date | string
   vaProfileId: string
   clientId: string
+  parentAssignmentId?: string | null
+  additionalHours?: Prisma.AssignmentUncheckedCreateNestedManyWithoutParentAssignmentInput
   terminations?: Prisma.TerminationUncheckedCreateNestedManyWithoutAssignmentInput
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutAssignmentInput
   preparation?: Prisma.AssignmentPreparationUncheckedCreateNestedOneWithoutAssignmentInput
@@ -1180,6 +1482,8 @@ export type AssignmentUpdateWithoutWorkLogsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutAssignmentsNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutAssignmentsNestedInput
+  parentAssignment?: Prisma.AssignmentUpdateOneWithoutAdditionalHoursNestedInput
+  additionalHours?: Prisma.AssignmentUpdateManyWithoutParentAssignmentNestedInput
   terminations?: Prisma.TerminationUpdateManyWithoutAssignmentNestedInput
   kpiChecks?: Prisma.AssignmentKpiCheckUpdateManyWithoutAssignmentNestedInput
   preparation?: Prisma.AssignmentPreparationUpdateOneWithoutAssignmentNestedInput
@@ -1203,6 +1507,8 @@ export type AssignmentUncheckedUpdateWithoutWorkLogsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfileId?: Prisma.StringFieldUpdateOperationsInput | string
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentAssignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalHours?: Prisma.AssignmentUncheckedUpdateManyWithoutParentAssignmentNestedInput
   terminations?: Prisma.TerminationUncheckedUpdateManyWithoutAssignmentNestedInput
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutAssignmentNestedInput
   preparation?: Prisma.AssignmentPreparationUncheckedUpdateOneWithoutAssignmentNestedInput
@@ -1226,6 +1532,8 @@ export type AssignmentCreateWithoutTerminationsInput = {
   updatedAt?: Date | string
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutAssignmentsInput
   client: Prisma.ClientCreateNestedOneWithoutAssignmentsInput
+  parentAssignment?: Prisma.AssignmentCreateNestedOneWithoutAdditionalHoursInput
+  additionalHours?: Prisma.AssignmentCreateNestedManyWithoutParentAssignmentInput
   workLogs?: Prisma.WorkLogCreateNestedManyWithoutAssignmentInput
   kpiChecks?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutAssignmentInput
   preparation?: Prisma.AssignmentPreparationCreateNestedOneWithoutAssignmentInput
@@ -1249,6 +1557,8 @@ export type AssignmentUncheckedCreateWithoutTerminationsInput = {
   updatedAt?: Date | string
   vaProfileId: string
   clientId: string
+  parentAssignmentId?: string | null
+  additionalHours?: Prisma.AssignmentUncheckedCreateNestedManyWithoutParentAssignmentInput
   workLogs?: Prisma.WorkLogUncheckedCreateNestedManyWithoutAssignmentInput
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutAssignmentInput
   preparation?: Prisma.AssignmentPreparationUncheckedCreateNestedOneWithoutAssignmentInput
@@ -1288,6 +1598,8 @@ export type AssignmentUpdateWithoutTerminationsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutAssignmentsNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutAssignmentsNestedInput
+  parentAssignment?: Prisma.AssignmentUpdateOneWithoutAdditionalHoursNestedInput
+  additionalHours?: Prisma.AssignmentUpdateManyWithoutParentAssignmentNestedInput
   workLogs?: Prisma.WorkLogUpdateManyWithoutAssignmentNestedInput
   kpiChecks?: Prisma.AssignmentKpiCheckUpdateManyWithoutAssignmentNestedInput
   preparation?: Prisma.AssignmentPreparationUpdateOneWithoutAssignmentNestedInput
@@ -1311,6 +1623,8 @@ export type AssignmentUncheckedUpdateWithoutTerminationsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfileId?: Prisma.StringFieldUpdateOperationsInput | string
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentAssignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalHours?: Prisma.AssignmentUncheckedUpdateManyWithoutParentAssignmentNestedInput
   workLogs?: Prisma.WorkLogUncheckedUpdateManyWithoutAssignmentNestedInput
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutAssignmentNestedInput
   preparation?: Prisma.AssignmentPreparationUncheckedUpdateOneWithoutAssignmentNestedInput
@@ -1334,6 +1648,8 @@ export type AssignmentCreateWithoutPreparationInput = {
   updatedAt?: Date | string
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutAssignmentsInput
   client: Prisma.ClientCreateNestedOneWithoutAssignmentsInput
+  parentAssignment?: Prisma.AssignmentCreateNestedOneWithoutAdditionalHoursInput
+  additionalHours?: Prisma.AssignmentCreateNestedManyWithoutParentAssignmentInput
   workLogs?: Prisma.WorkLogCreateNestedManyWithoutAssignmentInput
   terminations?: Prisma.TerminationCreateNestedManyWithoutAssignmentInput
   kpiChecks?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutAssignmentInput
@@ -1357,6 +1673,8 @@ export type AssignmentUncheckedCreateWithoutPreparationInput = {
   updatedAt?: Date | string
   vaProfileId: string
   clientId: string
+  parentAssignmentId?: string | null
+  additionalHours?: Prisma.AssignmentUncheckedCreateNestedManyWithoutParentAssignmentInput
   workLogs?: Prisma.WorkLogUncheckedCreateNestedManyWithoutAssignmentInput
   terminations?: Prisma.TerminationUncheckedCreateNestedManyWithoutAssignmentInput
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutAssignmentInput
@@ -1396,6 +1714,8 @@ export type AssignmentUpdateWithoutPreparationInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutAssignmentsNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutAssignmentsNestedInput
+  parentAssignment?: Prisma.AssignmentUpdateOneWithoutAdditionalHoursNestedInput
+  additionalHours?: Prisma.AssignmentUpdateManyWithoutParentAssignmentNestedInput
   workLogs?: Prisma.WorkLogUpdateManyWithoutAssignmentNestedInput
   terminations?: Prisma.TerminationUpdateManyWithoutAssignmentNestedInput
   kpiChecks?: Prisma.AssignmentKpiCheckUpdateManyWithoutAssignmentNestedInput
@@ -1419,6 +1739,8 @@ export type AssignmentUncheckedUpdateWithoutPreparationInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfileId?: Prisma.StringFieldUpdateOperationsInput | string
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentAssignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalHours?: Prisma.AssignmentUncheckedUpdateManyWithoutParentAssignmentNestedInput
   workLogs?: Prisma.WorkLogUncheckedUpdateManyWithoutAssignmentNestedInput
   terminations?: Prisma.TerminationUncheckedUpdateManyWithoutAssignmentNestedInput
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutAssignmentNestedInput
@@ -1442,6 +1764,8 @@ export type AssignmentCreateWithoutClientFeedbackInput = {
   updatedAt?: Date | string
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutAssignmentsInput
   client: Prisma.ClientCreateNestedOneWithoutAssignmentsInput
+  parentAssignment?: Prisma.AssignmentCreateNestedOneWithoutAdditionalHoursInput
+  additionalHours?: Prisma.AssignmentCreateNestedManyWithoutParentAssignmentInput
   workLogs?: Prisma.WorkLogCreateNestedManyWithoutAssignmentInput
   terminations?: Prisma.TerminationCreateNestedManyWithoutAssignmentInput
   kpiChecks?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutAssignmentInput
@@ -1465,6 +1789,8 @@ export type AssignmentUncheckedCreateWithoutClientFeedbackInput = {
   updatedAt?: Date | string
   vaProfileId: string
   clientId: string
+  parentAssignmentId?: string | null
+  additionalHours?: Prisma.AssignmentUncheckedCreateNestedManyWithoutParentAssignmentInput
   workLogs?: Prisma.WorkLogUncheckedCreateNestedManyWithoutAssignmentInput
   terminations?: Prisma.TerminationUncheckedCreateNestedManyWithoutAssignmentInput
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutAssignmentInput
@@ -1504,6 +1830,8 @@ export type AssignmentUpdateWithoutClientFeedbackInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutAssignmentsNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutAssignmentsNestedInput
+  parentAssignment?: Prisma.AssignmentUpdateOneWithoutAdditionalHoursNestedInput
+  additionalHours?: Prisma.AssignmentUpdateManyWithoutParentAssignmentNestedInput
   workLogs?: Prisma.WorkLogUpdateManyWithoutAssignmentNestedInput
   terminations?: Prisma.TerminationUpdateManyWithoutAssignmentNestedInput
   kpiChecks?: Prisma.AssignmentKpiCheckUpdateManyWithoutAssignmentNestedInput
@@ -1527,6 +1855,8 @@ export type AssignmentUncheckedUpdateWithoutClientFeedbackInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfileId?: Prisma.StringFieldUpdateOperationsInput | string
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentAssignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalHours?: Prisma.AssignmentUncheckedUpdateManyWithoutParentAssignmentNestedInput
   workLogs?: Prisma.WorkLogUncheckedUpdateManyWithoutAssignmentNestedInput
   terminations?: Prisma.TerminationUncheckedUpdateManyWithoutAssignmentNestedInput
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutAssignmentNestedInput
@@ -1549,6 +1879,7 @@ export type AssignmentCreateManyVaProfileInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   clientId: string
+  parentAssignmentId?: string | null
 }
 
 export type AssignmentUpdateWithoutVaProfileInput = {
@@ -1567,6 +1898,8 @@ export type AssignmentUpdateWithoutVaProfileInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   client?: Prisma.ClientUpdateOneRequiredWithoutAssignmentsNestedInput
+  parentAssignment?: Prisma.AssignmentUpdateOneWithoutAdditionalHoursNestedInput
+  additionalHours?: Prisma.AssignmentUpdateManyWithoutParentAssignmentNestedInput
   workLogs?: Prisma.WorkLogUpdateManyWithoutAssignmentNestedInput
   terminations?: Prisma.TerminationUpdateManyWithoutAssignmentNestedInput
   kpiChecks?: Prisma.AssignmentKpiCheckUpdateManyWithoutAssignmentNestedInput
@@ -1590,6 +1923,8 @@ export type AssignmentUncheckedUpdateWithoutVaProfileInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentAssignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalHours?: Prisma.AssignmentUncheckedUpdateManyWithoutParentAssignmentNestedInput
   workLogs?: Prisma.WorkLogUncheckedUpdateManyWithoutAssignmentNestedInput
   terminations?: Prisma.TerminationUncheckedUpdateManyWithoutAssignmentNestedInput
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutAssignmentNestedInput
@@ -1613,6 +1948,7 @@ export type AssignmentUncheckedUpdateManyWithoutVaProfileInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentAssignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type AssignmentCreateManyClientInput = {
@@ -1631,6 +1967,7 @@ export type AssignmentCreateManyClientInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   vaProfileId: string
+  parentAssignmentId?: string | null
 }
 
 export type AssignmentUpdateWithoutClientInput = {
@@ -1649,6 +1986,8 @@ export type AssignmentUpdateWithoutClientInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutAssignmentsNestedInput
+  parentAssignment?: Prisma.AssignmentUpdateOneWithoutAdditionalHoursNestedInput
+  additionalHours?: Prisma.AssignmentUpdateManyWithoutParentAssignmentNestedInput
   workLogs?: Prisma.WorkLogUpdateManyWithoutAssignmentNestedInput
   terminations?: Prisma.TerminationUpdateManyWithoutAssignmentNestedInput
   kpiChecks?: Prisma.AssignmentKpiCheckUpdateManyWithoutAssignmentNestedInput
@@ -1672,6 +2011,8 @@ export type AssignmentUncheckedUpdateWithoutClientInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfileId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentAssignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalHours?: Prisma.AssignmentUncheckedUpdateManyWithoutParentAssignmentNestedInput
   workLogs?: Prisma.WorkLogUncheckedUpdateManyWithoutAssignmentNestedInput
   terminations?: Prisma.TerminationUncheckedUpdateManyWithoutAssignmentNestedInput
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutAssignmentNestedInput
@@ -1695,6 +2036,95 @@ export type AssignmentUncheckedUpdateManyWithoutClientInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vaProfileId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentAssignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type AssignmentCreateManyParentAssignmentInput = {
+  id?: string
+  type: $Enums.AssignmentType
+  status?: $Enums.AssignmentStatus
+  agreedHours: runtime.Decimal | runtime.DecimalJsLike | number | string
+  monthlyHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  notes?: string | null
+  skillRequirements?: Prisma.AssignmentCreateskillRequirementsInput | string[]
+  source?: $Enums.AssignmentSource
+  externalId?: string | null
+  syncedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  vaProfileId: string
+  clientId: string
+}
+
+export type AssignmentUpdateWithoutParentAssignmentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumAssignmentTypeFieldUpdateOperationsInput | $Enums.AssignmentType
+  status?: Prisma.EnumAssignmentStatusFieldUpdateOperationsInput | $Enums.AssignmentStatus
+  agreedHours?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  monthlyHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skillRequirements?: Prisma.AssignmentUpdateskillRequirementsInput | string[]
+  source?: Prisma.EnumAssignmentSourceFieldUpdateOperationsInput | $Enums.AssignmentSource
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutAssignmentsNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutAssignmentsNestedInput
+  additionalHours?: Prisma.AssignmentUpdateManyWithoutParentAssignmentNestedInput
+  workLogs?: Prisma.WorkLogUpdateManyWithoutAssignmentNestedInput
+  terminations?: Prisma.TerminationUpdateManyWithoutAssignmentNestedInput
+  kpiChecks?: Prisma.AssignmentKpiCheckUpdateManyWithoutAssignmentNestedInput
+  preparation?: Prisma.AssignmentPreparationUpdateOneWithoutAssignmentNestedInput
+  clientFeedback?: Prisma.AssignmentClientFeedbackUpdateManyWithoutAssignmentNestedInput
+}
+
+export type AssignmentUncheckedUpdateWithoutParentAssignmentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumAssignmentTypeFieldUpdateOperationsInput | $Enums.AssignmentType
+  status?: Prisma.EnumAssignmentStatusFieldUpdateOperationsInput | $Enums.AssignmentStatus
+  agreedHours?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  monthlyHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skillRequirements?: Prisma.AssignmentUpdateskillRequirementsInput | string[]
+  source?: Prisma.EnumAssignmentSourceFieldUpdateOperationsInput | $Enums.AssignmentSource
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vaProfileId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  additionalHours?: Prisma.AssignmentUncheckedUpdateManyWithoutParentAssignmentNestedInput
+  workLogs?: Prisma.WorkLogUncheckedUpdateManyWithoutAssignmentNestedInput
+  terminations?: Prisma.TerminationUncheckedUpdateManyWithoutAssignmentNestedInput
+  kpiChecks?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutAssignmentNestedInput
+  preparation?: Prisma.AssignmentPreparationUncheckedUpdateOneWithoutAssignmentNestedInput
+  clientFeedback?: Prisma.AssignmentClientFeedbackUncheckedUpdateManyWithoutAssignmentNestedInput
+}
+
+export type AssignmentUncheckedUpdateManyWithoutParentAssignmentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumAssignmentTypeFieldUpdateOperationsInput | $Enums.AssignmentType
+  status?: Prisma.EnumAssignmentStatusFieldUpdateOperationsInput | $Enums.AssignmentStatus
+  agreedHours?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  monthlyHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skillRequirements?: Prisma.AssignmentUpdateskillRequirementsInput | string[]
+  source?: Prisma.EnumAssignmentSourceFieldUpdateOperationsInput | $Enums.AssignmentSource
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vaProfileId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
@@ -1703,6 +2133,7 @@ export type AssignmentUncheckedUpdateManyWithoutClientInput = {
  */
 
 export type AssignmentCountOutputType = {
+  additionalHours: number
   workLogs: number
   terminations: number
   kpiChecks: number
@@ -1710,6 +2141,7 @@ export type AssignmentCountOutputType = {
 }
 
 export type AssignmentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  additionalHours?: boolean | AssignmentCountOutputTypeCountAdditionalHoursArgs
   workLogs?: boolean | AssignmentCountOutputTypeCountWorkLogsArgs
   terminations?: boolean | AssignmentCountOutputTypeCountTerminationsArgs
   kpiChecks?: boolean | AssignmentCountOutputTypeCountKpiChecksArgs
@@ -1724,6 +2156,13 @@ export type AssignmentCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.E
    * Select specific fields to fetch from the AssignmentCountOutputType
    */
   select?: Prisma.AssignmentCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * AssignmentCountOutputType without action
+ */
+export type AssignmentCountOutputTypeCountAdditionalHoursArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AssignmentWhereInput
 }
 
 /**
@@ -1772,8 +2211,11 @@ export type AssignmentSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   updatedAt?: boolean
   vaProfileId?: boolean
   clientId?: boolean
+  parentAssignmentId?: boolean
   vaProfile?: boolean | Prisma.VAProfileDefaultArgs<ExtArgs>
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
+  parentAssignment?: boolean | Prisma.Assignment$parentAssignmentArgs<ExtArgs>
+  additionalHours?: boolean | Prisma.Assignment$additionalHoursArgs<ExtArgs>
   workLogs?: boolean | Prisma.Assignment$workLogsArgs<ExtArgs>
   terminations?: boolean | Prisma.Assignment$terminationsArgs<ExtArgs>
   kpiChecks?: boolean | Prisma.Assignment$kpiChecksArgs<ExtArgs>
@@ -1799,8 +2241,10 @@ export type AssignmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   updatedAt?: boolean
   vaProfileId?: boolean
   clientId?: boolean
+  parentAssignmentId?: boolean
   vaProfile?: boolean | Prisma.VAProfileDefaultArgs<ExtArgs>
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
+  parentAssignment?: boolean | Prisma.Assignment$parentAssignmentArgs<ExtArgs>
 }, ExtArgs["result"]["assignment"]>
 
 export type AssignmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1820,8 +2264,10 @@ export type AssignmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   updatedAt?: boolean
   vaProfileId?: boolean
   clientId?: boolean
+  parentAssignmentId?: boolean
   vaProfile?: boolean | Prisma.VAProfileDefaultArgs<ExtArgs>
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
+  parentAssignment?: boolean | Prisma.Assignment$parentAssignmentArgs<ExtArgs>
 }, ExtArgs["result"]["assignment"]>
 
 export type AssignmentSelectScalar = {
@@ -1841,12 +2287,15 @@ export type AssignmentSelectScalar = {
   updatedAt?: boolean
   vaProfileId?: boolean
   clientId?: boolean
+  parentAssignmentId?: boolean
 }
 
-export type AssignmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "status" | "agreedHours" | "monthlyHours" | "startDate" | "endDate" | "notes" | "skillRequirements" | "source" | "externalId" | "syncedAt" | "createdAt" | "updatedAt" | "vaProfileId" | "clientId", ExtArgs["result"]["assignment"]>
+export type AssignmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "status" | "agreedHours" | "monthlyHours" | "startDate" | "endDate" | "notes" | "skillRequirements" | "source" | "externalId" | "syncedAt" | "createdAt" | "updatedAt" | "vaProfileId" | "clientId" | "parentAssignmentId", ExtArgs["result"]["assignment"]>
 export type AssignmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vaProfile?: boolean | Prisma.VAProfileDefaultArgs<ExtArgs>
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
+  parentAssignment?: boolean | Prisma.Assignment$parentAssignmentArgs<ExtArgs>
+  additionalHours?: boolean | Prisma.Assignment$additionalHoursArgs<ExtArgs>
   workLogs?: boolean | Prisma.Assignment$workLogsArgs<ExtArgs>
   terminations?: boolean | Prisma.Assignment$terminationsArgs<ExtArgs>
   kpiChecks?: boolean | Prisma.Assignment$kpiChecksArgs<ExtArgs>
@@ -1857,10 +2306,12 @@ export type AssignmentInclude<ExtArgs extends runtime.Types.Extensions.InternalA
 export type AssignmentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vaProfile?: boolean | Prisma.VAProfileDefaultArgs<ExtArgs>
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
+  parentAssignment?: boolean | Prisma.Assignment$parentAssignmentArgs<ExtArgs>
 }
 export type AssignmentIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vaProfile?: boolean | Prisma.VAProfileDefaultArgs<ExtArgs>
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
+  parentAssignment?: boolean | Prisma.Assignment$parentAssignmentArgs<ExtArgs>
 }
 
 export type $AssignmentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1868,6 +2319,8 @@ export type $AssignmentPayload<ExtArgs extends runtime.Types.Extensions.Internal
   objects: {
     vaProfile: Prisma.$VAProfilePayload<ExtArgs>
     client: Prisma.$ClientPayload<ExtArgs>
+    parentAssignment: Prisma.$AssignmentPayload<ExtArgs> | null
+    additionalHours: Prisma.$AssignmentPayload<ExtArgs>[]
     workLogs: Prisma.$WorkLogPayload<ExtArgs>[]
     terminations: Prisma.$TerminationPayload<ExtArgs>[]
     kpiChecks: Prisma.$AssignmentKpiCheckPayload<ExtArgs>[]
@@ -1891,6 +2344,7 @@ export type $AssignmentPayload<ExtArgs extends runtime.Types.Extensions.Internal
     updatedAt: Date
     vaProfileId: string
     clientId: string
+    parentAssignmentId: string | null
   }, ExtArgs["result"]["assignment"]>
   composites: {}
 }
@@ -2287,6 +2741,8 @@ export interface Prisma__AssignmentClient<T, Null = never, ExtArgs extends runti
   readonly [Symbol.toStringTag]: "PrismaPromise"
   vaProfile<T extends Prisma.VAProfileDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VAProfileDefaultArgs<ExtArgs>>): Prisma.Prisma__VAProfileClient<runtime.Types.Result.GetResult<Prisma.$VAProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   client<T extends Prisma.ClientDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClientDefaultArgs<ExtArgs>>): Prisma.Prisma__ClientClient<runtime.Types.Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  parentAssignment<T extends Prisma.Assignment$parentAssignmentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Assignment$parentAssignmentArgs<ExtArgs>>): Prisma.Prisma__AssignmentClient<runtime.Types.Result.GetResult<Prisma.$AssignmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  additionalHours<T extends Prisma.Assignment$additionalHoursArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Assignment$additionalHoursArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workLogs<T extends Prisma.Assignment$workLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Assignment$workLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   terminations<T extends Prisma.Assignment$terminationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Assignment$terminationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TerminationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   kpiChecks<T extends Prisma.Assignment$kpiChecksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Assignment$kpiChecksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssignmentKpiCheckPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2337,6 +2793,7 @@ export interface AssignmentFieldRefs {
   readonly updatedAt: Prisma.FieldRef<"Assignment", 'DateTime'>
   readonly vaProfileId: Prisma.FieldRef<"Assignment", 'String'>
   readonly clientId: Prisma.FieldRef<"Assignment", 'String'>
+  readonly parentAssignmentId: Prisma.FieldRef<"Assignment", 'String'>
 }
     
 
@@ -2735,6 +3192,49 @@ export type AssignmentDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * Limit how many Assignments to delete.
    */
   limit?: number
+}
+
+/**
+ * Assignment.parentAssignment
+ */
+export type Assignment$parentAssignmentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Assignment
+   */
+  select?: Prisma.AssignmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Assignment
+   */
+  omit?: Prisma.AssignmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AssignmentInclude<ExtArgs> | null
+  where?: Prisma.AssignmentWhereInput
+}
+
+/**
+ * Assignment.additionalHours
+ */
+export type Assignment$additionalHoursArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Assignment
+   */
+  select?: Prisma.AssignmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Assignment
+   */
+  omit?: Prisma.AssignmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AssignmentInclude<ExtArgs> | null
+  where?: Prisma.AssignmentWhereInput
+  orderBy?: Prisma.AssignmentOrderByWithRelationInput | Prisma.AssignmentOrderByWithRelationInput[]
+  cursor?: Prisma.AssignmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AssignmentScalarFieldEnum | Prisma.AssignmentScalarFieldEnum[]
 }
 
 /**

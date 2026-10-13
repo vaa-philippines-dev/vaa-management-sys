@@ -56,6 +56,7 @@ export default async function AssignmentsPage() {
     loggedHours: sumHours(a.workLogs),
     startLabel: format(a.startDate, 'MMM dd, yyyy'),
     endLabel: a.endDate ? format(a.endDate, 'MMM dd, yyyy') : null,
+    isAdditional: Boolean(a.parentAssignmentId),
   })
 
   const regular = assignments.filter((a) => a.type === 'REGULAR').map(toRow)

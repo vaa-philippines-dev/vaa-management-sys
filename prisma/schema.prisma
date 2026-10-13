@@ -1054,6 +1054,15 @@ model Assignment {
   clientId String @map("client_id")
   client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
 
+  // Additional hours a client requested on top of an existing engagement.
+  // The DMF sheet records these as their own row (VA TYPE "Additional") with
+  // their own KPI check-ins and preparation, so an add-on is a full
+  // Assignment for the same VA + client, linked back to the engagement it
+  // extends. Always points at the root — add-ons never nest.
+  parentAssignmentId String?      @map("parent_assignment_id")
+  parentAssignment   Assignment?  @relation("AssignmentAdditionalHours", fields: [parentAssignmentId], references: [id], onDelete: SetNull)
+  additionalHours    Assignment[] @relation("AssignmentAdditionalHours")
+
   workLogs     WorkLog[]
   terminations Termination[]
   kpiChecks    AssignmentKpiCheck[]
@@ -1063,6 +1072,7 @@ model Assignment {
   @@index([vaProfileId])
   @@index([clientId])
   @@index([status])
+  @@index([parentAssignmentId])
   @@map("assignments")
 }
 

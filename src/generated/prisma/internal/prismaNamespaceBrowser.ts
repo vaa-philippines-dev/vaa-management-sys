@@ -596,7 +596,8 @@ export const AssignmentScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   vaProfileId: 'vaProfileId',
-  clientId: 'clientId'
+  clientId: 'clientId',
+  parentAssignmentId: 'parentAssignmentId'
 } as const
 
 export type AssignmentScalarFieldEnum = (typeof AssignmentScalarFieldEnum)[keyof typeof AssignmentScalarFieldEnum]
