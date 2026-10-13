@@ -12,10 +12,14 @@ import { isTeamScoped } from '@/lib/scope'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
+import Link from 'next/link'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { StatusIndicator } from '@/components/ui/status-indicator'
-import { TeamAssignmentCard } from '@/components/team-assignment/TeamAssignmentCard'
-import { UnassignedVAsCard } from '@/components/team-assignment/UnassignedVAsCard'
+import { Briefcase, Building2, CircleOff, ClipboardList, Coffee, ListChecks, Users } from 'lucide-react'
+import { STATE_LABEL } from '@/lib/team-assignments-fields'
+import { TeamAssignmentBoard } from '@/components/team-assignment/TeamAssignmentBoard'
+import { DepartmentSwitcher } from '@/components/team-assignment/DepartmentSwitcher'
 
 export default async function TeamAssignmentPage({
   searchParams,
@@ -89,32 +93,28 @@ export default async function TeamAssignmentPage({
     params.state === 'ACTIVE' || params.state === 'IDLE' || params.state === 'UNAVAILABLE' ? (params.state as VAAssignmentState) : undefined
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-start justify-between gap-4">
+    <div data-wide-page className="space-y-6">
+      <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Team Assignment</h2>
+          <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+            <ListChecks className="h-6 w-6" />
+            Team Assignment
+          </h2>
           <p className="text-sm text-muted-foreground mt-1">
             Per-team capacity and VA-to-client assignments{department ? ` — ${department.name}` : ''}
           </p>
         </div>
-        {departments.length > 1 && (
-          <form className="flex items-center gap-2">
-            <select
-              name="dept"
-              defaultValue={deptId ?? ''}
-              className="h-9 rounded-md border border-input bg-background px-3 text-sm outline-none"
-            >
-              {departments.map((d) => (
-                <option key={d.id} value={d.id}>
-                  {d.name}
-                </option>
-              ))}
-            </select>
-            <button type="submit" className="h-9 rounded-md border px-3 text-sm hover:bg-muted transition-colors">
-              Switch
-            </button>
-          </form>
-        )}
+        <div className="flex flex-wrap items-center gap-2">
+          {ledTeamIds && (
+            <Link href="/tmf">
+              <Button variant="outline" size="sm" className="gap-1.5">
+                <ClipboardList className="h-3.5 w-3.5" />
+                Team Monitoring
+              </Button>
+            </Link>
+          )}
+          {departments.length > 1 && <DepartmentSwitcher departments={departments} value={deptId} />}
+        </div>
       </div>
 
       {!department ? (
@@ -156,8 +156,8 @@ async function TeamAssignmentSection({
     () => getDepartmentTeamAssignments(departmentId)
   )
 
-  let teams = data.teams
-  if (ledTeamIds) teams = teams.filter((t) => ledTeamIds.includes(t.teamId))
+  const scopedTeams = ledTeamIds ? data.teams.filter((t) => ledTeamIds.includes(t.teamId)) : data.teams
+  let teams = scopedTeams
   if (teamFilter) teams = teams.filter((t) => t.teamId === teamFilter)
   if (stateFilter) {
     teams = teams
@@ -165,60 +165,125 @@ async function TeamAssignmentSection({
       .filter((t) => t.members.length > 0)
   }
   // Team-scoped viewers get totals over their own teams only, not the department's.
-  const totals = ledTeamIds
-    ? countTeamMembers(data.teams.filter((t) => ledTeamIds.includes(t.teamId)))
-    : data.totals
-  const unassigned = ledTeamIds
+  const totals = ledTeamIds ? countTeamMembers(scopedTeams) : data.totals
+  const unassigned = ledTeamIds || teamFilter
     ? []
     : stateFilter
       ? data.unassigned.filter((m) => m.state === stateFilter)
       : data.unassigned
+  const scopedMembers = [...scopedTeams.flatMap((t) => t.members), ...(ledTeamIds ? [] : data.unassigned)]
+  const clientsServed = new Set(scopedMembers.flatMap((m) => m.clients.map((c) => c.id))).size
+  const agreedHours = scopedMembers.reduce((sum, m) => sum + m.totalAgreedHours, 0)
+  // A Team Leader with one team is always looking at just that team — no chip for it.
+  const singleTeam = !!ledTeamIds && scopedTeams.length === 1
+  const filteredTeamName = teamFilter && !singleTeam ? data.teams.find((t) => t.teamId === teamFilter)?.teamName : undefined
+
+  // State tiles toggle their filter and keep the department/team in the URL.
+  const stateHref = (state?: VAAssignmentState) => {
+    const params = new URLSearchParams({ dept: departmentId })
+    if (teamFilter) params.set('team', teamFilter)
+    if (state && state !== stateFilter) params.set('state', state)
+    return `/team-assignment?${params.toString()}`
+  }
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap gap-4 rounded-lg border bg-card p-4">
-        <SummaryChip label="Total" value={totals.total} tone="neutral" />
-        <SummaryChip label="Active" value={totals.active} tone="success" />
-        <SummaryChip label="Idle" value={totals.idle} tone="info" />
-        <SummaryChip label="Unavailable" value={totals.unavailable} tone="warning" />
+      <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+        <StateTile icon={Users} label="Total VAs" value={totals.total} href={stateHref()} active={!stateFilter} />
+        <StateTile icon={Briefcase} label="Active" value={totals.active} tone="success" href={stateHref('ACTIVE')} active={stateFilter === 'ACTIVE'} />
+        <StateTile icon={Coffee} label="Idle (bench)" value={totals.idle} tone="info" href={stateHref('IDLE')} active={stateFilter === 'IDLE'} />
+        <StateTile icon={CircleOff} label="Unavailable" value={totals.unavailable} tone="warning" href={stateHref('UNAVAILABLE')} active={stateFilter === 'UNAVAILABLE'} />
+        <div className="rounded-xl border bg-gradient-to-br from-card to-muted/40 p-4">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-sm font-medium text-muted-foreground">Clients Served</span>
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted">
+              <Building2 className="h-4 w-4 text-muted-foreground" />
+            </span>
+          </div>
+          <p className="mt-2 text-2xl font-bold tabular-nums">{clientsServed}</p>
+          <p className="text-[11px] text-muted-foreground tabular-nums">{Math.round(agreedHours * 10) / 10}h agreed</p>
+        </div>
       </div>
 
-      {teams.length === 0 && unassigned.length === 0 ? (
-        <div className="rounded-lg border bg-card p-12 text-center">
-          <p className="text-sm text-muted-foreground">No VAs match the current filters.</p>
-        </div>
-      ) : (
-        <>
-          {teams.map((team) => (
-            <TeamAssignmentCard key={team.teamId} team={team} />
-          ))}
-          {!ledTeamIds && unassigned.length > 0 && (
-            <UnassignedVAsCard
-              members={unassigned}
-              teams={canManageTeams ? data.teams.map((t) => ({ id: t.teamId, name: t.teamName })) : []}
-            />
+      {(filteredTeamName || stateFilter) && (
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          <span className="text-muted-foreground">Filtered:</span>
+          {filteredTeamName && (
+            <span className="inline-flex items-center gap-1 rounded-full border bg-card px-2.5 py-0.5 font-medium">{filteredTeamName}</span>
           )}
-        </>
+          {stateFilter && (
+            <span className="inline-flex items-center gap-1 rounded-full border bg-card px-2.5 py-0.5 font-medium">{STATE_LABEL[stateFilter]}</span>
+          )}
+          <Link href={`/team-assignment?dept=${departmentId}`} className="text-muted-foreground hover:text-primary transition-colors">
+            Clear
+          </Link>
+        </div>
       )}
+
+      <TeamAssignmentBoard
+        teams={teams}
+        unassigned={unassigned}
+        assignableTeams={canManageTeams ? data.teams.map((t) => ({ id: t.teamId, name: t.teamName })) : []}
+        singleTeam={singleTeam}
+      />
     </div>
   )
 }
 
-function SummaryChip({ label, value, tone }: { label: string; value: number; tone: 'success' | 'warning' | 'info' | 'neutral' }) {
+const TILE_TONE = {
+  success: 'text-success',
+  info: 'text-info',
+  warning: 'text-warning',
+  neutral: 'text-muted-foreground',
+} as const
+
+function StateTile({
+  icon: Icon,
+  label,
+  value,
+  href,
+  active,
+  tone = 'neutral',
+}: {
+  icon: React.ComponentType<{ className?: string }>
+  label: string
+  value: number
+  href: string
+  active: boolean
+  tone?: keyof typeof TILE_TONE
+}) {
   return (
-    <div className="flex items-center gap-2">
-      <StatusIndicator tone={tone}>{label}</StatusIndicator>
-      <span className="text-lg font-semibold">{value}</span>
-    </div>
+    <Link
+      href={href}
+      scroll={false}
+      aria-current={active ? 'true' : undefined}
+      className={cn(
+        'group/tile card-hover rounded-xl border bg-gradient-to-br from-card to-muted/40 p-4 transition-all',
+        active && 'border-primary/50 ring-2 ring-primary/20'
+      )}
+    >
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-sm font-medium text-muted-foreground">{label}</span>
+        <span className={cn('flex h-8 w-8 items-center justify-center rounded-lg bg-muted transition-transform group-hover/tile:scale-110', TILE_TONE[tone])}>
+          <Icon className="h-4 w-4" />
+        </span>
+      </div>
+      <p className="mt-2 text-2xl font-bold tabular-nums">{value}</p>
+    </Link>
   )
 }
 
 function TeamAssignmentSkeleton() {
   return (
     <div className="space-y-4">
-      <Skeleton className="h-16 rounded-lg" />
-      <Skeleton className="h-40 rounded-lg" />
-      <Skeleton className="h-40 rounded-lg" />
+      <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Skeleton key={i} className="h-24 rounded-xl" />
+        ))}
+      </div>
+      <Skeleton className="h-10 rounded-lg" />
+      <Skeleton className="h-48 rounded-lg" />
+      <Skeleton className="h-48 rounded-lg" />
     </div>
   )
 }

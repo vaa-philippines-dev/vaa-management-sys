@@ -3,14 +3,10 @@
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { StatusIndicator } from '@/components/ui/status-indicator'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { MemberCombobox } from '@/components/teams/MemberCombobox'
+import { TeamRoster, type TeamMemberRow } from '@/components/teams/TeamRoster'
 import { toast } from 'sonner'
-import { Loader2, Crown, ShieldHalf, ArrowRightLeft, UserMinus, Users } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { isEndedVAStatus, ENDED_VA_STATUS_LABEL } from '@/lib/active-va'
+import { Loader2, Crown, ArrowRightLeft, UserMinus, UserPlus } from 'lucide-react'
 import {
   setTeamLeader,
   setTempLeader,
@@ -19,45 +15,7 @@ import {
   transferTeamMembers,
 } from '@/app/(dashboard)/teams/actions'
 
-type Tone = 'success' | 'warning' | 'destructive' | 'info' | 'neutral'
-
-const AVAILABILITY_TONE: Record<string, Tone> = {
-  AVAILABLE: 'success',
-  PARTIALLY_ASSIGNED: 'info',
-  FULLY_ASSIGNED: 'warning',
-  ON_LEAVE: 'neutral',
-  UNAVAILABLE: 'destructive',
-  ON_HOLD_BY_VA: 'neutral',
-  ON_HOLD_BY_VAA: 'neutral',
-  RECOMMENDED: 'info',
-}
-
-const AVAILABILITY_LABEL: Record<string, string> = {
-  AVAILABLE: 'Available',
-  PARTIALLY_ASSIGNED: 'Partially Assigned',
-  FULLY_ASSIGNED: 'Fully Assigned',
-  ON_LEAVE: 'On hold by VA',
-  UNAVAILABLE: 'Unavailable',
-  ON_HOLD_BY_VA: 'On hold by VA',
-  ON_HOLD_BY_VAA: 'On hold by VAA',
-  RECOMMENDED: 'Recommended',
-}
-
-function initials(name: string) {
-  const parts = name.trim().split(/\s+/)
-  const first = parts[0]?.[0] ?? ''
-  const last = parts.length > 1 ? parts[parts.length - 1]?.[0] ?? '' : ''
-  return (first + last).toUpperCase()
-}
-
-export type TeamMemberRow = {
-  membershipId: string
-  userId: string
-  name: string
-  availabilityStatus: string | null
-  vaStatus: string | null
-}
-
+export type { TeamMemberRow }
 
 export type OtherTeamOption = {
   id: string
@@ -74,6 +32,7 @@ export function TeamDetailControls({
   leaderId,
   tempLeader1Id,
   tempLeader2Id,
+  linkProfiles,
 }: {
   teamId: string
   members: TeamMemberRow[]
@@ -84,6 +43,7 @@ export function TeamDetailControls({
   leaderId: string | null
   tempLeader1Id: string | null
   tempLeader2Id: string | null
+  linkProfiles: boolean
 }) {
   const router = useRouter()
   const [selected, setSelected] = useState<Set<string>>(new Set())
@@ -101,10 +61,17 @@ export function TeamDetailControls({
     })
   }
 
-  const allSelected = members.length > 0 && selected.size === members.length
-
-  const toggleAll = () => {
-    setSelected((prev) => (prev.size === members.length ? new Set() : new Set(members.map((m) => m.userId))))
+  // Toggles the members currently shown (the roster may be filtered).
+  const toggleAll = (userIds: string[]) => {
+    setSelected((prev) => {
+      const allOn = userIds.every((id) => prev.has(id))
+      const next = new Set(prev)
+      for (const id of userIds) {
+        if (allOn) next.delete(id)
+        else next.add(id)
+      }
+      return next
+    })
   }
 
   const runAction = (key: string, fn: () => Promise<void>, successMessage: string) => {
@@ -185,139 +152,80 @@ export function TeamDetailControls({
         </div>
       )}
 
-      <div className="rounded-lg border bg-card overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3 border-b bg-muted/20">
-          <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-muted-foreground" />
-            <p className="text-sm font-semibold">Members ({members.length})</p>
-          </div>
-          {canManageMembership && members.length > 0 && (
-            <button
-              type="button"
-              onClick={toggleAll}
-              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {allSelected ? 'Deselect all' : 'Select all'}
-            </button>
-          )}
-        </div>
+      <TeamRoster
+        members={members}
+        leaderId={leaderId}
+        tempLeader1Id={tempLeader1Id}
+        tempLeader2Id={tempLeader2Id}
+        linkProfiles={linkProfiles}
+        selected={canManageMembership ? selected : undefined}
+        onToggle={canManageMembership ? toggle : undefined}
+        onToggleAll={canManageMembership ? toggleAll : undefined}
+        footer={
+          canManageMembership ? (
+            <div className="border-t bg-muted/30 p-4 space-y-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                  <UserPlus className="h-3.5 w-3.5" />
+                  Add member
+                </span>
+                <MemberCombobox
+                  options={candidates}
+                  value={addUserId}
+                  disabled={isPending}
+                  onSelect={(userId) => {
+                    setAddUserId(userId)
+                    if (userId) handleAdd(userId)
+                  }}
+                />
+                {pendingAction === 'add' && <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />}
+              </div>
 
-        {members.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-2 px-4 py-10 text-center">
-            <Users className="h-8 w-8 text-muted-foreground/40" />
-            <p className="text-sm text-muted-foreground">No members yet. Add one below to get started.</p>
-          </div>
-        ) : (
-          <ScrollArea className="max-h-[14.0625rem]">
-            <div className="grid sm:grid-cols-2">
-              {members.map((m) => (
-                <div
-                  key={m.membershipId}
-                  className={cn(
-                    'flex h-11 items-center gap-3 border-b px-4 transition-colors min-w-0 sm:odd:border-r',
-                    selected.has(m.userId) && 'bg-accent/40'
-                  )}
-                >
-                  {canManageMembership && (
-                    <input
-                      type="checkbox"
-                      checked={selected.has(m.userId)}
-                      onChange={() => toggle(m.userId)}
-                      className="h-3.5 w-3.5 shrink-0 accent-primary"
-                      aria-label={`Select ${m.name}`}
-                    />
-                  )}
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[11px] font-semibold text-primary">
-                    {initials(m.name)}
-                  </span>
-                  <span className="text-sm font-medium flex-1 truncate min-w-0">{m.name}</span>
-                  {(m.userId === leaderId || m.userId === tempLeader1Id || m.userId === tempLeader2Id) && (
-                    <Badge variant="outline" className="text-[10px] gap-1 shrink-0">
-                      {m.userId === leaderId ? (
-                        <Crown className="h-2.5 w-2.5" />
-                      ) : (
-                        <ShieldHalf className="h-2.5 w-2.5" />
-                      )}
-                      {m.userId === leaderId ? 'Leader' : 'Temp Leader'}
-                    </Badge>
-                  )}
-                  {/* Left VAs whose membership was never ended: flag them for removal. */}
-                  {isEndedVAStatus(m.vaStatus) ? (
-                    <StatusIndicator tone="destructive" className="shrink-0">
-                      {ENDED_VA_STATUS_LABEL[m.vaStatus!] ?? m.vaStatus}
-                    </StatusIndicator>
-                  ) : (
-                    <StatusIndicator
-                      tone={AVAILABILITY_TONE[m.availabilityStatus ?? ''] ?? 'neutral'}
-                      className="shrink-0"
-                    >
-                      {AVAILABILITY_LABEL[m.availabilityStatus ?? ''] ?? m.availabilityStatus ?? 'Unknown'}
-                    </StatusIndicator>
-                  )}
+              {selected.size > 0 && (
+                <div className="flex flex-wrap items-center gap-2 animate-in fade-in-0 slide-in-from-top-1 duration-150">
+                  <span className="text-xs text-muted-foreground">{selected.size} selected</span>
+                  <button
+                    type="button"
+                    onClick={() => setSelected(new Set())}
+                    className="text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+                  >
+                    Clear
+                  </button>
+                  <Button size="sm" variant="destructive" disabled={isPending} onClick={handleRemove} className="gap-1.5">
+                    {pendingAction === 'remove' ? <Loader2 className="h-3 w-3 animate-spin" /> : <UserMinus className="h-3 w-3" />}
+                    Remove
+                  </Button>
+                  <select
+                    value={transferTeamId}
+                    onChange={(e) => setTransferTeamId(e.target.value)}
+                    disabled={isPending}
+                    className="flex h-8 rounded-md border border-input bg-background px-2 text-xs disabled:opacity-50"
+                  >
+                    <option value="">Transfer to…</option>
+                    {otherTeams.map((t) => (
+                      <option key={t.id} value={t.id}>{t.name}</option>
+                    ))}
+                  </select>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={!transferTeamId || isPending}
+                    onClick={handleTransfer}
+                    className="gap-1.5"
+                  >
+                    {pendingAction === 'transfer' ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <ArrowRightLeft className="h-3 w-3" />
+                    )}
+                    Transfer
+                  </Button>
                 </div>
-              ))}
-            </div>
-          </ScrollArea>
-        )}
-
-        {canManageMembership && (
-          <div className="border-t bg-muted/30 p-4 space-y-3">
-            <div className="flex flex-wrap items-center gap-2">
-              <MemberCombobox
-                options={candidates}
-                value={addUserId}
-                disabled={isPending}
-                onSelect={(userId) => {
-                  setAddUserId(userId)
-                  if (userId) handleAdd(userId)
-                }}
-              />
-              {pendingAction === 'add' && (
-                <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
               )}
             </div>
-
-            {selected.size > 0 && (
-              <div className="flex flex-wrap items-center gap-2 animate-in fade-in-0 slide-in-from-top-1 duration-150">
-                <span className="text-xs text-muted-foreground">{selected.size} selected</span>
-                <Button size="sm" variant="destructive" disabled={isPending} onClick={handleRemove} className="gap-1.5">
-                  {pendingAction === 'remove' ? (
-                    <Loader2 className="h-3 w-3 animate-spin" />
-                  ) : (
-                    <UserMinus className="h-3 w-3" />
-                  )}
-                  Remove
-                </Button>
-                <select
-                  value={transferTeamId}
-                  onChange={(e) => setTransferTeamId(e.target.value)}
-                  disabled={isPending}
-                  className="flex h-8 rounded-md border border-input bg-background px-2 text-xs disabled:opacity-50"
-                >
-                  <option value="">Transfer to…</option>
-                  {otherTeams.map((t) => (
-                    <option key={t.id} value={t.id}>{t.name}</option>
-                  ))}
-                </select>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  disabled={!transferTeamId || isPending}
-                  onClick={handleTransfer}
-                  className="gap-1.5"
-                >
-                  {pendingAction === 'transfer' ? (
-                    <Loader2 className="h-3 w-3 animate-spin" />
-                  ) : (
-                    <ArrowRightLeft className="h-3 w-3" />
-                  )}
-                  Transfer
-                </Button>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+          ) : undefined
+        }
+      />
     </div>
   )
 }

@@ -1,11 +1,16 @@
+'use client'
+
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { StatusIndicator } from '@/components/ui/status-indicator'
-import { CLIENT_PLATFORM_META, CLIENT_STATUS_LABEL, CLIENT_STATUS_TONE, clientCompanyName, clientDisplayName } from '@/lib/clients/display'
-import type { ClientCardData } from '@/components/clients/ClientCard'
+import { UserRoundX } from 'lucide-react'
+import { CLIENT_PLATFORM_META, clientCompanyName, clientDisplayName } from '@/lib/clients/display'
+import { clientStatusLabel, clientStatusTone, type ClientCardData } from '@/components/clients/ClientCard'
 
 export function ClientListTable({ clients }: { clients: ClientCardData[] }) {
+  const router = useRouter()
   return (
     <div className="rounded-lg border bg-card overflow-hidden">
       <Table className="text-xs">
@@ -16,6 +21,7 @@ export function ClientListTable({ clients }: { clients: ClientCardData[] }) {
             <TableHead className="px-3 py-2 hidden md:table-cell">Category / Niche</TableHead>
             <TableHead className="px-3 py-2">Platform</TableHead>
             <TableHead className="px-3 py-2">Status</TableHead>
+            <TableHead className="px-3 py-2 hidden md:table-cell">Active VAs</TableHead>
             <TableHead className="px-3 py-2 hidden lg:table-cell">Services</TableHead>
             <TableHead className="px-3 py-2 hidden sm:table-cell whitespace-nowrap">Date Added</TableHead>
             <TableHead className="px-3 py-2 text-right">Assignments</TableHead>
@@ -23,16 +29,24 @@ export function ClientListTable({ clients }: { clients: ClientCardData[] }) {
         </TableHeader>
         <TableBody>
           {clients.map((c) => (
-            <TableRow key={c.id} className="cursor-pointer">
+            <TableRow
+              key={c.id}
+              className="cursor-pointer"
+              onClick={(e) => {
+                // Let real links (and modifier-clicks on them) behave normally.
+                if ((e.target as HTMLElement).closest('a')) return
+                router.push(`/clients/${c.id}`)
+              }}
+            >
               <TableCell className="px-3 py-2 font-medium">
                 <Link href={`/clients/${c.id}`} className="hover:text-primary transition-colors">
                   {clientDisplayName(c)}
                 </Link>
               </TableCell>
-              <TableCell className="px-3 py-2 text-muted-foreground hidden sm:table-cell truncate max-w-[180px]">
+              <TableCell className="px-3 py-2 text-muted-foreground hidden sm:table-cell truncate max-w-[220px]">
                 {clientCompanyName(c) || <span className="text-muted-foreground/50">—</span>}
               </TableCell>
-              <TableCell className="px-3 py-2 text-muted-foreground hidden md:table-cell max-w-[200px]">
+              <TableCell className="px-3 py-2 text-muted-foreground hidden md:table-cell max-w-[240px]">
                 {c.category || c.niche ? (
                   <div className="flex flex-col gap-0.5">
                     {c.category && <span className="truncate">{c.category}</span>}
@@ -47,19 +61,31 @@ export function ClientListTable({ clients }: { clients: ClientCardData[] }) {
                   {CLIENT_PLATFORM_META[c.platform]?.label ?? c.platform}
                 </Badge>
               </TableCell>
-              <TableCell className="px-3 py-2">
-                <StatusIndicator tone={c.onHold ? 'warning' : (CLIENT_STATUS_TONE[c.status] ?? 'neutral')}>
-                  {c.onHold ? 'On Hold' : (CLIENT_STATUS_LABEL[c.status] ?? c.status)}
-                </StatusIndicator>
+              <TableCell className="px-3 py-2 whitespace-nowrap">
+                <StatusIndicator tone={clientStatusTone(c)}>{clientStatusLabel(c)}</StatusIndicator>
+              </TableCell>
+              <TableCell className="px-3 py-2 hidden md:table-cell max-w-[260px]">
+                {c.activeVAs.length === 0 ? (
+                  <span className="inline-flex items-center gap-1 text-warning">
+                    <UserRoundX className="h-3 w-3" />
+                    None
+                  </span>
+                ) : (
+                  <span className="line-clamp-2 text-muted-foreground" title={c.activeVAs.map((v) => v.name).join(', ')}>
+                    {c.activeVAs.map((v) => v.name).join(', ')}
+                  </span>
+                )}
               </TableCell>
               <TableCell className="px-3 py-2 hidden lg:table-cell">
                 {c.requiredSkills.length > 0 ? (
-                  <div className="flex flex-wrap gap-1 max-w-[220px]">
-                    {c.requiredSkills.slice(0, 2).map((s) => (
+                  <div className="flex flex-wrap gap-1 max-w-[260px]">
+                    {c.requiredSkills.slice(0, 3).map((s) => (
                       <Badge key={s} variant="outline" className="text-[10px] py-0 px-1.5">{s}</Badge>
                     ))}
-                    {c.requiredSkills.length > 2 && (
-                      <span className="text-[10px] text-muted-foreground/70">+{c.requiredSkills.length - 2}</span>
+                    {c.requiredSkills.length > 3 && (
+                      <span className="text-[10px] text-muted-foreground/70" title={c.requiredSkills.slice(3).join(', ')}>
+                        +{c.requiredSkills.length - 3}
+                      </span>
                     )}
                   </div>
                 ) : (
@@ -69,8 +95,8 @@ export function ClientListTable({ clients }: { clients: ClientCardData[] }) {
               <TableCell className="px-3 py-2 text-muted-foreground hidden sm:table-cell whitespace-nowrap">
                 {c.dateAdded}
               </TableCell>
-              <TableCell className="px-3 py-2 text-right text-muted-foreground">
-                {c.assignments.length}
+              <TableCell className="px-3 py-2 text-right text-muted-foreground tabular-nums">
+                {c.assignmentCount}
               </TableCell>
             </TableRow>
           ))}

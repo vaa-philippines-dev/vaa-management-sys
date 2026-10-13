@@ -4,13 +4,15 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { UsersRound, Building2, ChevronDown } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { UsersRound, Building2, ChevronDown, Crown, Search } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export type TeamListRow = {
   id: string
   name: string
   department: { name: string }
+  leader?: { firstName: string; lastName: string } | null
   _count?: { memberships: number }
 }
 
@@ -20,16 +22,23 @@ export function TeamsBrowser({ teams }: { teams: TeamListRow[] }) {
   const [department, setDepartment] = useState('all')
   const [sortMode, setSortMode] = useState<SortMode>('name')
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set())
+  const [search, setSearch] = useState('')
 
   const departments = useMemo(() => {
     const set = new Set(teams.map((t) => t.department.name))
     return Array.from(set).sort((a, b) => a.localeCompare(b))
   }, [teams])
 
-  const filtered = useMemo(
-    () => (department === 'all' ? teams : teams.filter((t) => t.department.name === department)),
-    [teams, department]
-  )
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    return teams.filter(
+      (t) =>
+        (department === 'all' || t.department.name === department) &&
+        (!q ||
+          t.name.toLowerCase().includes(q) ||
+          (t.leader ? `${t.leader.firstName} ${t.leader.lastName}`.toLowerCase().includes(q) : false))
+    )
+  }, [teams, department, search])
 
   const groups = useMemo(() => {
     const byDept = new Map<string, TeamListRow[]>()
@@ -76,8 +85,17 @@ export function TeamsBrowser({ teams }: { teams: TeamListRow[] }) {
 
   return (
     <div className="space-y-4">
-      {departments.length > 1 && (
-        <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="relative w-full sm:w-64">
+          <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search team or leader…"
+            className="h-8 pl-8 text-xs"
+          />
+        </div>
+        {departments.length > 1 && (
           <select
             value={department}
             onChange={(e) => setDepartment(e.target.value)}
@@ -90,23 +108,28 @@ export function TeamsBrowser({ teams }: { teams: TeamListRow[] }) {
               </option>
             ))}
           </select>
+        )}
 
-          <select
-            value={sortMode}
-            onChange={(e) => setSortMode(e.target.value as SortMode)}
-            className="h-8 rounded-md border border-input bg-background px-2 text-xs transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 outline-none"
-          >
-            <option value="name">Sort: Name (A–Z)</option>
-            <option value="members">Sort: Most members</option>
-          </select>
+        <select
+          value={sortMode}
+          onChange={(e) => setSortMode(e.target.value as SortMode)}
+          className="h-8 rounded-md border border-input bg-background px-2 text-xs transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 outline-none"
+        >
+          <option value="name">Sort: Name (A–Z)</option>
+          <option value="members">Sort: Most members</option>
+        </select>
 
-          <span className="text-xs text-muted-foreground ml-auto">
-            {filtered.length} team{filtered.length === 1 ? '' : 's'} across {groups.length} department{groups.length === 1 ? '' : 's'}
-          </span>
-        </div>
-      )}
+        <span className="text-xs text-muted-foreground ml-auto">
+          {filtered.length} team{filtered.length === 1 ? '' : 's'} across {groups.length} department{groups.length === 1 ? '' : 's'}
+        </span>
+      </div>
 
       <div className="space-y-3">
+        {groups.length === 0 && (
+          <div className="rounded-lg border bg-card px-4 py-10 text-center text-sm text-muted-foreground">
+            No teams match &ldquo;{search}&rdquo;.
+          </div>
+        )}
         {groups.map((group) => {
           const isCollapsed = collapsed.has(group.departmentName)
           return (
@@ -129,23 +152,34 @@ export function TeamsBrowser({ teams }: { teams: TeamListRow[] }) {
               )}
 
               {!isCollapsed && (
-                <div className={cn('grid gap-4 md:grid-cols-2 lg:grid-cols-3 fade-in-stagger', departments.length > 1 && 'p-4')}>
+                <div
+                  className={cn(
+                    'grid gap-4 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 min-[1920px]:grid-cols-5 fade-in-stagger',
+                    departments.length > 1 && 'p-4'
+                  )}
+                >
                   {group.teams.map((t) => (
                     <Link key={t.id} href={`/teams/${t.id}`}>
-                      <Card className="group cursor-pointer border bg-card shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-primary/30">
+                      <Card className="group h-full cursor-pointer border bg-card shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-primary/30">
                         <CardHeader className="pb-3">
                           <div className="flex items-center justify-between gap-2">
                             <div className="flex items-center gap-2.5 min-w-0">
                               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors group-hover:bg-primary/15">
                                 <UsersRound className="h-4 w-4" />
                               </div>
-                              <CardTitle className="text-base font-semibold truncate">{t.name}</CardTitle>
+                              <CardTitle className="text-base font-semibold truncate group-hover:text-primary transition-colors">{t.name}</CardTitle>
                             </div>
                             <Badge variant="outline" className="text-xs shrink-0">{t.department.name}</Badge>
                           </div>
                         </CardHeader>
-                        <CardContent className="text-sm text-muted-foreground">
-                          {t._count?.memberships ?? 0} member{(t._count?.memberships ?? 0) === 1 ? '' : 's'}
+                        <CardContent className="flex items-center justify-between gap-2 text-sm text-muted-foreground">
+                          <span className="inline-flex min-w-0 items-center gap-1.5">
+                            <Crown className={cn('h-3.5 w-3.5 shrink-0', t.leader ? 'text-primary' : 'text-muted-foreground/40')} />
+                            <span className="truncate">{t.leader ? `${t.leader.firstName} ${t.leader.lastName}` : 'No leader'}</span>
+                          </span>
+                          <span className="shrink-0 tabular-nums">
+                            {t._count?.memberships ?? 0} member{(t._count?.memberships ?? 0) === 1 ? '' : 's'}
+                          </span>
                         </CardContent>
                       </Card>
                     </Link>

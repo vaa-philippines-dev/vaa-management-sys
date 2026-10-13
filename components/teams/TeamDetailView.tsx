@@ -4,51 +4,37 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { StatusIndicator } from '@/components/ui/status-indicator'
-import { ArrowLeft, Crown, ShieldHalf, Users, UsersRound } from 'lucide-react'
+import {
+  ArrowLeft,
+  Briefcase,
+  CalendarRange,
+  CircleCheck,
+  ClipboardList,
+  Crown,
+  ListChecks,
+  PauseCircle,
+  ShieldHalf,
+  UserX,
+  Users,
+  UsersRound,
+} from 'lucide-react'
 import { TeamDetailControls } from '@/components/teams/TeamDetailControls'
+import { TeamRoster, type TeamMemberRow } from '@/components/teams/TeamRoster'
 import { TeamNameEditor } from '@/components/teams/TeamNameEditor'
 import { StructureCard } from '@/components/departments/StructureCard'
 import { isTeamScoped, getLedTeamScope } from '@/lib/scope'
 import { getTeamCandidates } from '@/lib/teams'
-import { isEndedVAStatus, ENDED_VA_STATUS_LABEL } from '@/lib/active-va'
-
-function initials(name: string) {
-  const parts = name.trim().split(/\s+/)
-  const first = parts[0]?.[0] ?? ''
-  const last = parts.length > 1 ? parts[parts.length - 1]?.[0] ?? '' : ''
-  return (first + last).toUpperCase()
-}
-
-type Tone = 'success' | 'warning' | 'destructive' | 'info' | 'neutral'
-
-const AVAILABILITY_TONE: Record<string, Tone> = {
-  AVAILABLE: 'success',
-  PARTIALLY_ASSIGNED: 'info',
-  FULLY_ASSIGNED: 'warning',
-  ON_LEAVE: 'neutral',
-  UNAVAILABLE: 'destructive',
-  ON_HOLD_BY_VA: 'neutral',
-  ON_HOLD_BY_VAA: 'neutral',
-  RECOMMENDED: 'info',
-}
-
-const AVAILABILITY_LABEL: Record<string, string> = {
-  AVAILABLE: 'Available',
-  PARTIALLY_ASSIGNED: 'Partially Assigned',
-  FULLY_ASSIGNED: 'Fully Assigned',
-  ON_LEAVE: 'On hold by VA',
-  UNAVAILABLE: 'Unavailable',
-  ON_HOLD_BY_VA: 'On hold by VA',
-  ON_HOLD_BY_VAA: 'On hold by VAA',
-  RECOMMENDED: 'Recommended',
-}
+import { rosterBucket, type RosterBucket } from '@/lib/team-roster-fields'
+import { cn } from '@/lib/utils'
 
 function userName(user: { firstName: string; lastName: string }) {
   return `${user.firstName} ${user.lastName}`
 }
 
 type Viewer = NonNullable<Awaited<ReturnType<typeof getCurrentUser>>>
+
+// Roles that can open /tmf for a team they don't lead (mirrors getTmfTeams()).
+const TMF_OVERSIGHT_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'HR', 'DEPT_MANAGER', 'OPERATIONS_MANAGER']
 
 // One team's page: leaders, roster and (for managers) the membership controls.
 // Rendered by /teams/[id], and inline on /teams for a Team Leader, who only
@@ -71,7 +57,21 @@ export async function TeamDetailView({
       tempLeader2: true,
       memberships: {
         where: { endedAt: null },
-        include: { user: { include: { vaProfile: true } } },
+        include: {
+          user: {
+            include: {
+              vaProfile: {
+                select: {
+                  id: true,
+                  status: true,
+                  availabilityStatus: true,
+                  vaaPosition: true,
+                  positionSkill: { select: { shortName: true } },
+                },
+              },
+            },
+          },
+        },
         orderBy: { startedAt: 'asc' },
       },
     },
@@ -81,16 +81,13 @@ export async function TeamDetailView({
 
   const isAdmin = isDepartmentUnrestricted(user)
   const isVA = user.userType === 'VIRTUAL_ASSISTANT'
+  const viewerLeads = [team.leaderId, team.tempLeader1Id, team.tempLeader2Id].includes(user.id)
 
   // Scope check: managers/ops managers must have this team's department in their
   // managed set; full admins are unrestricted. VA-type viewers must be affiliated.
   if (!isAdmin) {
     if (isVA) {
-      const affiliated =
-        team.leaderId === user.id ||
-        team.tempLeader1Id === user.id ||
-        team.tempLeader2Id === user.id ||
-        team.memberships.some((m) => m.userId === user.id)
+      const affiliated = viewerLeads || team.memberships.some((m) => m.userId === user.id)
       if (!affiliated) notFound()
     } else if (isTeamScoped(user)) {
       // TEAM_LEADER SystemRole on a staff account: only the teams they lead.
@@ -104,14 +101,49 @@ export async function TeamDetailView({
 
   const canManageMembership = TEAM_MANAGE_ROLES.includes(user.systemRole)
   const canAssignLeaders = TEAM_LEADER_ASSIGN_ROLES.includes(user.systemRole)
+  // A plain team member sees who's on the team, not their teammates' clients.
+  const canSeeWork = !isVA || viewerLeads
 
-  const members = team.memberships.map((m) => ({
-    membershipId: m.id,
-    userId: m.userId,
-    name: userName(m.user),
-    availabilityStatus: m.user.vaProfile?.availabilityStatus ?? null,
-    vaStatus: m.user.vaProfile?.status ?? null,
-  }))
+  // This department's active engagements per member — another department's
+  // clients stay out, same rule as Team Assignment.
+  const vaProfileIds = team.memberships.map((m) => m.user.vaProfile?.id).filter((v): v is string => !!v)
+  const assignments =
+    canSeeWork && vaProfileIds.length > 0
+      ? await prisma.assignment.findMany({
+          where: { vaProfileId: { in: vaProfileIds }, status: 'ACTIVE', client: { departmentId: team.departmentId } },
+          select: { vaProfileId: true, agreedHours: true, client: { select: { id: true, name: true } } },
+          orderBy: { startDate: 'asc' },
+        })
+      : []
+  const clientsByProfile = new Map<string, { id: string; name: string; hours: number }[]>()
+  for (const a of assignments) {
+    const list = clientsByProfile.get(a.vaProfileId) ?? []
+    list.push({ id: a.client.id, name: a.client.name, hours: Number(a.agreedHours) })
+    clientsByProfile.set(a.vaProfileId, list)
+  }
+
+  const members: TeamMemberRow[] = team.memberships.map((m) => {
+    const profile = m.user.vaProfile
+    const clients = canSeeWork ? (profile ? clientsByProfile.get(profile.id) ?? [] : []) : null
+    return {
+      membershipId: m.id,
+      userId: m.userId,
+      name: userName(m.user),
+      availabilityStatus: profile?.availabilityStatus ?? null,
+      vaStatus: profile?.status ?? null,
+      vaProfileId: profile?.id ?? null,
+      position: profile?.positionSkill?.shortName ?? profile?.vaaPosition ?? null,
+      clients,
+      agreedHours: (clients ?? []).reduce((sum, c) => sum + c.hours, 0),
+    }
+  })
+
+  const buckets: Record<RosterBucket, number> = { AVAILABLE: 0, ASSIGNED: 0, ON_HOLD: 0, ENDED: 0 }
+  for (const m of members) {
+    const b = rosterBucket(m)
+    if (b) buckets[b] += 1
+  }
+  const clientCount = new Set(assignments.map((a) => a.client.id)).size
 
   let candidates: { userId: string; name: string; isVA: boolean }[] = []
   let otherTeams: { id: string; name: string }[] = []
@@ -131,35 +163,80 @@ export async function TeamDetailView({
     })
   }
 
+  // Shortcuts to the team's other pages, only where the viewer can open them.
+  const quickLinks = [
+    ...(viewerLeads || !isVA
+      ? [{ href: `/team-assignment?dept=${team.departmentId}&team=${team.id}`, label: 'Team Assignment', icon: ListChecks }]
+      : []),
+    ...(viewerLeads || TMF_OVERSIGHT_ROLES.includes(user.systemRole)
+      ? [{ href: `/tmf?team=${team.id}`, label: 'Team Monitoring', icon: ClipboardList }]
+      : []),
+    ...(!isVA ? [{ href: '/va-availability', label: 'VA Availability', icon: CalendarRange }] : []),
+  ]
+
+  const leaderNames = [team.leader, team.tempLeader1, team.tempLeader2].filter(Boolean).length
+
   return (
-    <div className="space-y-6 animate-in fade-in-0 duration-300">
-      <div className="flex items-center gap-3">
-        {showBack && (
-          <Link href="/teams">
-            <Button variant="ghost" size="icon">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          </Link>
-        )}
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-          <UsersRound className="h-5 w-5" />
-        </div>
-        <div className="flex-1">
-          <div className="flex items-center gap-3">
-            {canManageMembership ? (
-              <TeamNameEditor teamId={team.id} name={team.name} />
-            ) : (
-              <h2 className="text-2xl font-bold tracking-tight">{team.name}</h2>
-            )}
-            <Badge variant="outline">{team.department.name}</Badge>
+    <div data-wide-page className="space-y-6 animate-in fade-in-0 duration-300">
+      <div className="relative overflow-hidden rounded-xl border bg-gradient-to-br from-primary/10 via-card to-card p-5">
+        <div className="flex flex-wrap items-center gap-4">
+          {showBack && (
+            <Link href="/teams">
+              <Button variant="ghost" size="icon" aria-label="Back to teams">
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            </Link>
+          )}
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/15 text-primary">
+            <UsersRound className="h-7 w-7" />
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            {team.memberships.length} member{team.memberships.length === 1 ? '' : 's'}
-          </p>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              {canManageMembership ? (
+                <TeamNameEditor teamId={team.id} name={team.name} />
+              ) : (
+                <h2 className="text-2xl font-bold tracking-tight">{team.name}</h2>
+              )}
+              <Badge variant="outline">{team.department.name}</Badge>
+              {viewerLeads && (
+                <Badge className="gap-1">
+                  <Crown className="h-3 w-3" />
+                  {team.leaderId === user.id ? 'You lead this team' : 'You are a temp leader'}
+                </Badge>
+              )}
+            </div>
+            <p className="text-sm text-muted-foreground mt-1">
+              {members.length} member{members.length === 1 ? '' : 's'}
+              {canSeeWork && ` · ${clientCount} client${clientCount === 1 ? '' : 's'} in ${team.department.name}`}
+              {` · ${leaderNames} of 3 leader slots filled`}
+            </p>
+          </div>
+          {quickLinks.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {quickLinks.map((l) => (
+                <Link key={l.href} href={l.href}>
+                  <Button variant="outline" size="sm" className="gap-1.5 bg-card">
+                    <l.icon className="h-3.5 w-3.5" />
+                    {l.label}
+                  </Button>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3 fade-in-stagger">
+      <div className={cn('grid gap-3 grid-cols-2 md:grid-cols-3', buckets.ENDED > 0 ? 'lg:grid-cols-5' : 'lg:grid-cols-4')}>
+        <MiniStat icon={Users} label="Members" value={members.length} />
+        <MiniStat icon={CircleCheck} label="Available" value={buckets.AVAILABLE} tone="text-success" />
+        <MiniStat icon={Briefcase} label="Assigned" value={buckets.ASSIGNED} tone="text-info" />
+        <MiniStat icon={PauseCircle} label="On hold / Unavailable" value={buckets.ON_HOLD} tone="text-warning" />
+        {buckets.ENDED > 0 && (
+          <MiniStat icon={UserX} label="Left VAA, still listed" value={buckets.ENDED} tone="text-destructive" />
+        )}
+      </div>
+
+      <div className="grid gap-3 md:grid-cols-3">
         <StructureCard label="Team Leader" people={team.leader ? [team.leader] : []} icon={Crown} />
         <StructureCard label="Temp Leader 1" people={team.tempLeader1 ? [team.tempLeader1] : []} icon={ShieldHalf} />
         <StructureCard label="Temp Leader 2" people={team.tempLeader2 ? [team.tempLeader2] : []} icon={ShieldHalf} />
@@ -176,49 +253,41 @@ export async function TeamDetailView({
           leaderId={team.leaderId}
           tempLeader1Id={team.tempLeader1Id}
           tempLeader2Id={team.tempLeader2Id}
+          linkProfiles={!isVA}
         />
       ) : (
-        <div className="rounded-lg border bg-card overflow-hidden">
-          <div className="flex items-center gap-2 px-4 py-3 border-b bg-muted/20">
-            <Users className="h-4 w-4 text-muted-foreground" />
-            <p className="text-sm font-semibold">Members ({members.length})</p>
-          </div>
-          {members.length === 0 ? (
-            <div className="flex flex-col items-center justify-center gap-2 px-4 py-10 text-center">
-              <Users className="h-8 w-8 text-muted-foreground/40" />
-              <p className="text-sm text-muted-foreground">No members yet.</p>
-            </div>
-          ) : (
-            <div className="divide-y">
-              {members.map((m) => (
-                <div key={m.membershipId} className="flex items-center gap-3 px-4 py-2.5">
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[11px] font-semibold text-primary">
-                    {initials(m.name)}
-                  </span>
-                  <span className="text-sm font-medium flex-1 truncate">{m.name}</span>
-                  {(m.userId === team.leaderId || m.userId === team.tempLeader1Id || m.userId === team.tempLeader2Id) && (
-                    <Badge variant="outline" className="text-[10px] gap-1">
-                      {m.userId === team.leaderId ? (
-                        <Crown className="h-2.5 w-2.5" />
-                      ) : (
-                        <ShieldHalf className="h-2.5 w-2.5" />
-                      )}
-                      {m.userId === team.leaderId ? 'Leader' : 'Temp Leader'}
-                    </Badge>
-                  )}
-                  {isEndedVAStatus(m.vaStatus) ? (
-                    <StatusIndicator tone="destructive">{ENDED_VA_STATUS_LABEL[m.vaStatus!] ?? m.vaStatus}</StatusIndicator>
-                  ) : (
-                    <StatusIndicator tone={AVAILABILITY_TONE[m.availabilityStatus ?? ''] ?? 'neutral'}>
-                      {AVAILABILITY_LABEL[m.availabilityStatus ?? ''] ?? m.availabilityStatus ?? 'Unknown'}
-                    </StatusIndicator>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        <TeamRoster
+          members={members}
+          leaderId={team.leaderId}
+          tempLeader1Id={team.tempLeader1Id}
+          tempLeader2Id={team.tempLeader2Id}
+          linkProfiles={!isVA}
+        />
       )}
+    </div>
+  )
+}
+
+function MiniStat({
+  icon: Icon,
+  label,
+  value,
+  tone = 'text-muted-foreground',
+}: {
+  icon: React.ComponentType<{ className?: string }>
+  label: string
+  value: number
+  tone?: string
+}) {
+  return (
+    <div className="flex items-center gap-3 rounded-lg border bg-card px-4 py-3">
+      <span className={cn('flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted', tone)}>
+        <Icon className="h-4 w-4" />
+      </span>
+      <div className="min-w-0">
+        <p className="text-xl font-bold leading-tight tabular-nums">{value}</p>
+        <p className="text-xs text-muted-foreground truncate">{label}</p>
+      </div>
     </div>
   )
 }

@@ -3,7 +3,7 @@ import { getCurrentUser, isDepartmentUnrestricted, getManagedDepartmentIds } fro
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Plus } from 'lucide-react'
+import { Plus, UsersRound } from 'lucide-react'
 import { TEAM_MANAGE_ROLES } from '@/lib/auth'
 import { TeamsBrowser } from '@/components/teams/TeamsBrowser'
 import { TeamDetailView } from '@/components/teams/TeamDetailView'
@@ -38,7 +38,7 @@ export default async function TeamsPage() {
           { memberships: { some: { userId: user.id, endedAt: null } } },
         ],
       },
-      include: { department: true },
+      include: { department: true, leader: { select: { firstName: true, lastName: true } } },
       orderBy: { name: 'asc' },
     })
 
@@ -47,9 +47,12 @@ export default async function TeamsPage() {
     }
 
     return (
-      <div className="space-y-6">
+      <div data-wide-page className="space-y-6">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Teams</h2>
+          <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+            <UsersRound className="h-6 w-6" />
+            Teams
+          </h2>
           <p className="text-sm text-muted-foreground mt-1">Teams you&apos;re affiliated with</p>
         </div>
         <TeamsBrowser teams={affiliatedTeams} />
@@ -59,7 +62,7 @@ export default async function TeamsPage() {
 
   const managedIds = getManagedDepartmentIds(user)
   const teams = await cached(
-    `teams:list:${isAdmin ? 'all' : managedIds.join(',')}`,
+    `teams:browser:${isAdmin ? 'all' : managedIds.join(',')}`,
     [CACHE_TAGS.teams],
     60,
     () =>
@@ -67,16 +70,23 @@ export default async function TeamsPage() {
         // Archived teams (e.g. Amazon's old Team 03/07, folded into the
         // others) stay reachable from Admin > Teams, not here.
         where: isAdmin ? { status: 'ACTIVE' } : { departmentId: { in: managedIds }, status: 'ACTIVE' },
-        include: { department: true, _count: { select: { memberships: { where: { endedAt: null } } } } },
+        include: {
+          department: true,
+          leader: { select: { firstName: true, lastName: true } },
+          _count: { select: { memberships: { where: { endedAt: null } } } },
+        },
         orderBy: { name: 'asc' },
       })
   )
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div data-wide-page className="space-y-6">
+      <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Teams</h2>
+          <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+            <UsersRound className="h-6 w-6" />
+            Teams
+          </h2>
           <p className="text-sm text-muted-foreground mt-1">
             Teams within your department{isAdmin ? 's' : ''}
           </p>
@@ -105,9 +115,15 @@ function TeamViews({
 }) {
   if (teamIds.length === 0) {
     return (
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold tracking-tight">Teams</h2>
-        <p className="text-sm text-muted-foreground">You aren&apos;t leading a team yet.</p>
+      <div data-wide-page className="space-y-6">
+        <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+          <UsersRound className="h-6 w-6" />
+          Teams
+        </h2>
+        <div className="flex flex-col items-center justify-center gap-2 rounded-lg border bg-card px-4 py-12 text-center">
+          <UsersRound className="h-8 w-8 text-muted-foreground/40" />
+          <p className="text-sm text-muted-foreground">You aren&apos;t leading a team yet.</p>
+        </div>
       </div>
     )
   }

@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 export default function AssignmentsLoading() {
   return (
-    <div className="space-y-6">
+    <div data-wide-page className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="space-y-2">
           <Skeleton className="h-8 w-40" />

@@ -1,7 +1,9 @@
 import { prisma } from '@/lib/prisma'
-import { getCurrentUser } from '@/lib/auth'
+import type { Prisma } from '@/src/generated/prisma/client'
+import { getCurrentUser, ASSIGNMENT_MUTATOR_ROLES } from '@/lib/auth'
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import { getViewScope, assignmentScopeWhere, scopeKey as toScopeKey } from '@/lib/scope'
+import { clientCompanyName, clientDisplayName } from '@/lib/clients/display'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -15,71 +17,97 @@ export default async function AssignmentsPage() {
   const user = await getCurrentUser()
   if (!user) redirect('/login')
 
-  let where: Record<string, unknown> = {}
+  const isVA = user.userType === 'VIRTUAL_ASSISTANT'
+  let where: Prisma.AssignmentWhereInput = {}
   let scopeKey = 'all'
-  if (user.userType === 'VIRTUAL_ASSISTANT') {
+  let multiDepartment = true
+  if (isVA) {
     // Scope to '' rather than undefined when a VA has no profile row yet — Prisma
     // treats `undefined` as "filter not provided" and would return every assignment.
     const vaProfileId = user.vaProfile?.id ?? ''
-    where.vaProfileId = vaProfileId
+    where = { vaProfileId }
     scopeKey = `va:${vaProfileId}`
   } else {
     // Staff see only assignments whose client sits in one of their departments —
     // a VA shared between PPC and Amazon must not surface Amazon work to PPC.
     const scope = await getViewScope(user)
-    where = assignmentScopeWhere(scope) as Record<string, unknown>
+    where = assignmentScopeWhere(scope)
     scopeKey = toScopeKey(scope)
+    multiDepartment = scope === null || scope.departmentIds.length > 1
   }
 
   // Cache key must carry every value the `where` closure depends on — a static
   // key here served an admin's full list to the next VA who loaded the page.
-  const assignments = await cached(`assignments:list:${scopeKey}`, [CACHE_TAGS.assignments], 30, () =>
+  const assignments = await cached(`assignments:board:${scopeKey}`, [CACHE_TAGS.assignments], 30, () =>
     prisma.assignment.findMany({
-      where: where as any,
-      include: {
-        client: true,
-        vaProfile: { include: { user: true, vaSkills: { include: { skill: true } } } },
-        workLogs: true,
+      where,
+      select: {
+        id: true,
+        type: true,
+        status: true,
+        agreedHours: true,
+        startDate: true,
+        endDate: true,
+        parentAssignmentId: true,
+        client: {
+          select: { id: true, name: true, contactName: true, department: { select: { name: true } } },
+        },
+        vaProfile: { select: { id: true, user: { select: { firstName: true, lastName: true, email: true } } } },
+        workLogs: { select: { hours: true } },
       },
       orderBy: [{ status: 'asc' }, { createdAt: 'desc' }],
     })
   )
 
-  const sumHours = (logs: { hours: any }[]) => logs.reduce((s, l) => s + Number(l.hours), 0)
-
-  const toRow = (a: typeof assignments[number]): AssignmentRow => ({
-    id: a.id,
-    clientName: a.client.name,
-    vaName: a.vaProfile.user.firstName || a.vaProfile.user.email,
-    status: a.status,
-    agreedHours: Number(a.agreedHours),
-    loggedHours: sumHours(a.workLogs),
-    startLabel: format(a.startDate, 'MMM dd, yyyy'),
-    endLabel: a.endDate ? format(a.endDate, 'MMM dd, yyyy') : null,
-    isAdditional: Boolean(a.parentAssignmentId),
+  const rows: AssignmentRow[] = assignments.map((a) => {
+    const vaUser = a.vaProfile.user
+    // new Date(): the cached() result comes back JSON-serialized, so these are strings.
+    const start = new Date(a.startDate)
+    const end = a.endDate ? new Date(a.endDate) : null
+    return {
+      id: a.id,
+      type: a.type,
+      status: a.status,
+      clientId: a.client.id,
+      clientName: clientDisplayName(a.client),
+      clientCompany: clientCompanyName(a.client),
+      departmentName: a.client.department?.name ?? null,
+      vaProfileId: a.vaProfile.id,
+      vaName: `${vaUser.firstName} ${vaUser.lastName}`.trim() || vaUser.email,
+      agreedHours: Number(a.agreedHours),
+      loggedHours: a.workLogs.reduce((s, l) => s + Number(l.hours), 0),
+      startTime: start.getTime(),
+      startLabel: format(start, 'MMM dd, yyyy'),
+      endLabel: end ? format(end, 'MMM dd, yyyy') : null,
+      isAdditional: Boolean(a.parentAssignmentId),
+    }
   })
 
-  const regular = assignments.filter((a) => a.type === 'REGULAR').map(toRow)
-  const projects = assignments.filter((a) => a.type === 'PROJECT').map(toRow)
+  const canCreate = ASSIGNMENT_MUTATOR_ROLES.includes(user.systemRole)
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div data-wide-page className="space-y-6">
+      <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Assignments</h2>
+          <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+            <Briefcase className="h-6 w-6" />
+            Assignments
+          </h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Match VAs to clients based on skills
+            {isVA ? 'Your client engagements' : 'VA-to-client engagements, regular and project-based'}
           </p>
         </div>
-        <Link href="/assignments/new">
-          <Button className="gap-2">
-            <Plus className="h-4 w-4" />
-            New Assignment
-          </Button>
-        </Link>
+        {canCreate && (
+          <Link href="/assignments/new">
+            <Button className="gap-2">
+              <Plus className="h-4 w-4" />
+              New Assignment
+            </Button>
+          </Link>
+        )}
       </div>
 
-      {assignments.length === 0 ? (
+      {rows.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12 text-center">
             <Briefcase className="h-10 w-10 text-muted-foreground/50 mb-3" />
@@ -87,7 +115,7 @@ export default async function AssignmentsPage() {
           </CardContent>
         </Card>
       ) : (
-        <AssignmentsBoard regular={regular} projects={projects} />
+        <AssignmentsBoard rows={rows} showDepartment={multiDepartment} showVA={!isVA} />
       )}
     </div>
   )
