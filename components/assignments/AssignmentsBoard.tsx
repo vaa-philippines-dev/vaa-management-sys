@@ -1,12 +1,12 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import { Briefcase, CircleCheck, PauseCircle, CircleSlash, Flag, Clock, LayoutGrid, LayoutList, Search, X } from 'lucide-react'
-import { AssignmentCard, type AssignmentRow } from './AssignmentCard'
+import { AssignmentCard, ASSIGNMENT_STATUS_LABEL, type AssignmentRow } from './AssignmentCard'
 import { AssignmentListTable, type AssignmentSort, type AssignmentSortKey } from './AssignmentListTable'
 
 const VIEW_MODE_STORAGE_KEY = 'assignments-view-mode'
@@ -53,6 +53,23 @@ function compare(a: AssignmentRow, b: AssignmentRow, key: AssignmentSortKey) {
     case 'start':
       return a.startTime - b.startTime
   }
+}
+
+// Everything a row can be found by. Each word of the query must match
+// somewhere, so "amazon maria" finds Maria's Amazon engagements.
+function searchText(r: AssignmentRow) {
+  return [
+    r.clientName,
+    r.clientCompany,
+    r.vaName,
+    r.departmentName,
+    ASSIGNMENT_STATUS_LABEL[r.status] ?? r.status,
+    r.type === 'PROJECT' ? 'project' : 'regular',
+    r.isAdditional ? 'additional hours' : null,
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase()
 }
 
 function parseParam<T extends string>(value: string | null, allowed: readonly T[], fallback: T): T {
@@ -124,6 +141,21 @@ export function AssignmentsBoard({
   const [search, setSearch] = useState(() => searchParams.get('q') ?? '')
   const [sort, setSort] = useState<AssignmentSort>({ key: 'status', dir: 'asc' })
   const [limit, setLimit] = useState(PAGE_SIZE)
+  const searchRef = useRef<HTMLInputElement>(null)
+
+  // "/" jumps to the search box from anywhere on the page (unless already typing).
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey) return
+      const target = e.target as HTMLElement | null
+      if (target && (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName))) return
+      e.preventDefault()
+      searchRef.current?.focus()
+      searchRef.current?.select()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
 
   useEffect(() => {
     const stored = window.localStorage.getItem(VIEW_MODE_STORAGE_KEY)
@@ -151,19 +183,18 @@ export function AssignmentsBoard({
   )
 
   // Everything except the status filter — the status tiles count within this.
+  const searchIndex = useMemo(() => new Map(rows.map((r) => [r.id, searchText(r)])), [rows])
+
   const baseRows = useMemo(() => {
-    const q = search.trim().toLowerCase()
+    const terms = search.trim().toLowerCase().split(/\s+/).filter(Boolean)
     return rows.filter((r) => {
       if (type !== 'ALL' && r.type !== type) return false
       if (department !== 'all' && r.departmentName !== department) return false
-      if (!q) return true
-      return (
-        r.clientName.toLowerCase().includes(q) ||
-        (r.clientCompany ?? '').toLowerCase().includes(q) ||
-        r.vaName.toLowerCase().includes(q)
-      )
+      if (terms.length === 0) return true
+      const text = searchIndex.get(r.id) ?? ''
+      return terms.every((t) => text.includes(t))
     })
-  }, [rows, type, department, search])
+  }, [rows, type, department, search, searchIndex])
 
   const statusCounts = useMemo(() => {
     const counts: Record<StatusFilter, number> = { ALL: baseRows.length, ACTIVE: 0, PAUSED: 0, COMPLETED: 0, CANCELLED: 0 }
@@ -231,14 +262,28 @@ export function AssignmentsBoard({
       </div>
 
       <div className="sticky -top-6 z-20 -mx-6 flex flex-wrap items-center gap-2 border-b bg-background/85 px-6 py-2 backdrop-blur-sm">
-        <div className="relative w-full sm:w-72">
+        <div className="relative w-full sm:w-80">
           <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
           <Input
+            ref={searchRef}
+            type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder={showVA ? 'Search client or VA…' : 'Search client…'}
-            className="h-8 pl-8 pr-7 text-xs"
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                setSearch('')
+                e.currentTarget.blur()
+              }
+            }}
+            placeholder={showVA ? 'Search client, VA, department, status…' : 'Search client, department, status…'}
+            aria-label="Search assignments"
+            className="h-8 pl-8 pr-8 text-xs [&::-webkit-search-cancel-button]:hidden"
           />
+          {!search && (
+            <kbd className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 rounded border bg-muted px-1.5 text-[10px] font-medium text-muted-foreground">
+              /
+            </kbd>
+          )}
           {search && (
             <button
               type="button"
