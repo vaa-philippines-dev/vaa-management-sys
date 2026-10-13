@@ -78,6 +78,7 @@ export const ModelName = {
   WorkLog: 'WorkLog',
   Ticket: 'Ticket',
   TicketConversation: 'TicketConversation',
+  TerminationDocument: 'TerminationDocument',
   Termination: 'Termination',
   ResignationDiscussion: 'ResignationDiscussion',
   ReplacementRequest: 'ReplacementRequest',
@@ -668,6 +669,18 @@ export const TicketConversationScalarFieldEnum = {
 export type TicketConversationScalarFieldEnum = (typeof TicketConversationScalarFieldEnum)[keyof typeof TicketConversationScalarFieldEnum]
 
 
+export const TerminationDocumentScalarFieldEnum = {
+  id: 'id',
+  terminationId: 'terminationId',
+  label: 'label',
+  url: 'url',
+  addedById: 'addedById',
+  createdAt: 'createdAt'
+} as const
+
+export type TerminationDocumentScalarFieldEnum = (typeof TerminationDocumentScalarFieldEnum)[keyof typeof TerminationDocumentScalarFieldEnum]
+
+
 export const TerminationScalarFieldEnum = {
   id: 'id',
   vaProfileId: 'vaProfileId',
@@ -689,7 +702,12 @@ export const TerminationScalarFieldEnum = {
   trainingNotedById: 'trainingNotedById',
   separationOutcome: 'separationOutcome',
   separationOutcomeOtherNote: 'separationOutcomeOtherNote',
-  rehireEligibility: 'rehireEligibility'
+  rehireEligibility: 'rehireEligibility',
+  meetingDate: 'meetingDate',
+  meetingAttendees: 'meetingAttendees',
+  meetingRecordingUrl: 'meetingRecordingUrl',
+  meetingNotes: 'meetingNotes',
+  meetingDecision: 'meetingDecision'
 } as const
 
 export type TerminationScalarFieldEnum = (typeof TerminationScalarFieldEnum)[keyof typeof TerminationScalarFieldEnum]

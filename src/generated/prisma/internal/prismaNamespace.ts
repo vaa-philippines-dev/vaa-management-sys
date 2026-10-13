@@ -411,6 +411,7 @@ export const ModelName = {
   WorkLog: 'WorkLog',
   Ticket: 'Ticket',
   TicketConversation: 'TicketConversation',
+  TerminationDocument: 'TerminationDocument',
   Termination: 'Termination',
   ResignationDiscussion: 'ResignationDiscussion',
   ReplacementRequest: 'ReplacementRequest',
@@ -456,7 +457,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "position" | "departmentMembership" | "user" | "staffRecord" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vADepartmentAvailability" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveApprovalRule" | "leaveApprovalStep" | "leaveRequest" | "leaveApprovalAction" | "employeeIdCounter" | "vAOnboardingInvite" | "client" | "assignment" | "assignmentKpiCheck" | "workLog" | "ticket" | "ticketConversation" | "termination" | "resignationDiscussion" | "replacementRequest" | "exitClearanceApproval" | "complianceReview" | "finalPayout" | "exitSurveyInvite" | "exitSurveyResponse" | "exitClearance" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "customer" | "account" | "notification" | "sidebarFavorite" | "team" | "teamMembership" | "clientPipeline" | "agentSuggestion" | "agentRun" | "project" | "assignmentPreparation" | "assignmentPreparationBuffer" | "assignmentClientFeedback"
+    modelProps: "department" | "position" | "departmentMembership" | "user" | "staffRecord" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vADepartmentAvailability" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveApprovalRule" | "leaveApprovalStep" | "leaveRequest" | "leaveApprovalAction" | "employeeIdCounter" | "vAOnboardingInvite" | "client" | "assignment" | "assignmentKpiCheck" | "workLog" | "ticket" | "ticketConversation" | "terminationDocument" | "termination" | "resignationDiscussion" | "replacementRequest" | "exitClearanceApproval" | "complianceReview" | "finalPayout" | "exitSurveyInvite" | "exitSurveyResponse" | "exitClearance" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "customer" | "account" | "notification" | "sidebarFavorite" | "team" | "teamMembership" | "clientPipeline" | "agentSuggestion" | "agentRun" | "project" | "assignmentPreparation" | "assignmentPreparationBuffer" | "assignmentClientFeedback"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2455,6 +2456,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.TicketConversationCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.TicketConversationCountAggregateOutputType> | number
+        }
+      }
+    }
+    TerminationDocument: {
+      payload: Prisma.$TerminationDocumentPayload<ExtArgs>
+      fields: Prisma.TerminationDocumentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TerminationDocumentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TerminationDocumentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TerminationDocumentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TerminationDocumentPayload>
+        }
+        findFirst: {
+          args: Prisma.TerminationDocumentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TerminationDocumentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TerminationDocumentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TerminationDocumentPayload>
+        }
+        findMany: {
+          args: Prisma.TerminationDocumentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TerminationDocumentPayload>[]
+        }
+        create: {
+          args: Prisma.TerminationDocumentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TerminationDocumentPayload>
+        }
+        createMany: {
+          args: Prisma.TerminationDocumentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TerminationDocumentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TerminationDocumentPayload>[]
+        }
+        delete: {
+          args: Prisma.TerminationDocumentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TerminationDocumentPayload>
+        }
+        update: {
+          args: Prisma.TerminationDocumentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TerminationDocumentPayload>
+        }
+        deleteMany: {
+          args: Prisma.TerminationDocumentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TerminationDocumentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TerminationDocumentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TerminationDocumentPayload>[]
+        }
+        upsert: {
+          args: Prisma.TerminationDocumentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TerminationDocumentPayload>
+        }
+        aggregate: {
+          args: Prisma.TerminationDocumentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTerminationDocument>
+        }
+        groupBy: {
+          args: Prisma.TerminationDocumentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TerminationDocumentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TerminationDocumentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TerminationDocumentCountAggregateOutputType> | number
         }
       }
     }
@@ -5259,6 +5334,18 @@ export const TicketConversationScalarFieldEnum = {
 export type TicketConversationScalarFieldEnum = (typeof TicketConversationScalarFieldEnum)[keyof typeof TicketConversationScalarFieldEnum]
 
 
+export const TerminationDocumentScalarFieldEnum = {
+  id: 'id',
+  terminationId: 'terminationId',
+  label: 'label',
+  url: 'url',
+  addedById: 'addedById',
+  createdAt: 'createdAt'
+} as const
+
+export type TerminationDocumentScalarFieldEnum = (typeof TerminationDocumentScalarFieldEnum)[keyof typeof TerminationDocumentScalarFieldEnum]
+
+
 export const TerminationScalarFieldEnum = {
   id: 'id',
   vaProfileId: 'vaProfileId',
@@ -5280,7 +5367,12 @@ export const TerminationScalarFieldEnum = {
   trainingNotedById: 'trainingNotedById',
   separationOutcome: 'separationOutcome',
   separationOutcomeOtherNote: 'separationOutcomeOtherNote',
-  rehireEligibility: 'rehireEligibility'
+  rehireEligibility: 'rehireEligibility',
+  meetingDate: 'meetingDate',
+  meetingAttendees: 'meetingAttendees',
+  meetingRecordingUrl: 'meetingRecordingUrl',
+  meetingNotes: 'meetingNotes',
+  meetingDecision: 'meetingDecision'
 } as const
 
 export type TerminationScalarFieldEnum = (typeof TerminationScalarFieldEnum)[keyof typeof TerminationScalarFieldEnum]
@@ -6377,6 +6469,20 @@ export type ListEnumRehireEligibilityFieldRefInput<$PrismaModel> = FieldRefInput
 
 
 /**
+ * Reference to a field of type 'OffboardingMeetingDecision'
+ */
+export type EnumOffboardingMeetingDecisionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OffboardingMeetingDecision'>
+    
+
+
+/**
+ * Reference to a field of type 'OffboardingMeetingDecision[]'
+ */
+export type ListEnumOffboardingMeetingDecisionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OffboardingMeetingDecision[]'>
+    
+
+
+/**
  * Reference to a field of type 'ReplacementPipelineStatus'
  */
 export type EnumReplacementPipelineStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReplacementPipelineStatus'>
@@ -6834,6 +6940,7 @@ export type GlobalOmitConfig = {
   workLog?: Prisma.WorkLogOmit
   ticket?: Prisma.TicketOmit
   ticketConversation?: Prisma.TicketConversationOmit
+  terminationDocument?: Prisma.TerminationDocumentOmit
   termination?: Prisma.TerminationOmit
   resignationDiscussion?: Prisma.ResignationDiscussionOmit
   replacementRequest?: Prisma.ReplacementRequestOmit

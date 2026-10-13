@@ -232,6 +232,16 @@ export const TerminationType = {
 export type TerminationType = (typeof TerminationType)[keyof typeof TerminationType]
 
 
+export const OffboardingMeetingDecision = {
+  END_CONFIRMED: 'END_CONFIRMED',
+  EXTENDED: 'EXTENDED',
+  REASSIGNED: 'REASSIGNED',
+  OTHER: 'OTHER'
+} as const
+
+export type OffboardingMeetingDecision = (typeof OffboardingMeetingDecision)[keyof typeof OffboardingMeetingDecision]
+
+
 export const SeparationOutcome = {
   CUSTOMER_RESIGNATION_ONLY: 'CUSTOMER_RESIGNATION_ONLY',
   EOC_TOC: 'EOC_TOC',

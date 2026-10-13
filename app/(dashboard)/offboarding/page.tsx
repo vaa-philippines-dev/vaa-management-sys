@@ -11,9 +11,11 @@ import Link from 'next/link'
 import { format } from 'date-fns'
 import { Card, CardContent } from '@/components/ui/card'
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table'
-import { UserMinus, Ticket as TicketIcon } from 'lucide-react'
+import { UserMinus, Ticket as TicketIcon, Paperclip } from 'lucide-react'
 import { OffboardingStatusBadge, OffboardingTypeBadge } from '@/components/offboarding/OffboardingStatusBadge'
 import { CopyLinkCard } from '@/components/offboarding/CopyLinkCard'
+import { Badge } from '@/components/ui/badge'
+import { OFFBOARDING_TABS, offboardingTabOf, MEETING_DECISION_LABELS, type OffboardingTab } from '@/lib/offboarding'
 import type { ExitClearanceDepartment } from '@/src/generated/prisma/enums'
 import type { Prisma } from '@/src/generated/prisma/client'
 
@@ -25,7 +27,13 @@ const ALL_CLEARANCE_DEPARTMENTS: ExitClearanceDepartment[] = [
   'HR',
 ]
 
-export default async function OffboardingPage() {
+export default async function OffboardingPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string }>
+}) {
+  const { tab: tabParam } = await searchParams
+  const tab: OffboardingTab = OFFBOARDING_TABS.some((t) => t.key === tabParam) ? (tabParam as OffboardingTab) : 'all'
   const user = await getCurrentUser()
   if (!user) redirect('/login')
 
@@ -57,6 +65,7 @@ export default async function OffboardingPage() {
       vaProfile: { select: { id: true, userId: true, user: { select: { firstName: true, lastName: true } } } },
       assignment: { select: { client: { select: { name: true } } } },
       ticket: { select: { id: true, ticketNumber: true } },
+      _count: { select: { documents: true } },
     },
     orderBy: { createdAt: 'desc' },
   })
@@ -72,6 +81,11 @@ export default async function OffboardingPage() {
     }
     terminations = filtered
   }
+
+  // Counts come from every visible case; the table shows the current tab.
+  const tabCounts: Record<OffboardingTab, number> = { all: terminations.length, eoc: 0, client: 0, vaa: 0, completed: 0 }
+  for (const t of terminations) tabCounts[offboardingTabOf(t)]++
+  const shown = tab === 'all' ? terminations : terminations.filter((t) => offboardingTabOf(t) === tab)
 
   return (
     <div className="space-y-6">
@@ -92,11 +106,29 @@ export default async function OffboardingPage() {
         />
       )}
 
-      {terminations.length === 0 ? (
+      <div className="flex flex-wrap gap-1.5">
+        {OFFBOARDING_TABS.map((t) => (
+          <Link
+            key={t.key}
+            href={t.key === 'all' ? '/offboarding' : `/offboarding?tab=${t.key}`}
+            className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+              tab === t.key
+                ? 'bg-primary text-primary-foreground border-primary'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+            }`}
+          >
+            {t.label} <span className="opacity-70">({tabCounts[t.key]})</span>
+          </Link>
+        ))}
+      </div>
+
+      {shown.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12 text-center">
             <UserMinus className="h-10 w-10 text-muted-foreground/50 mb-3" />
-            <p className="text-sm text-muted-foreground">No offboarding cases yet.</p>
+            <p className="text-sm text-muted-foreground">
+              {terminations.length === 0 ? 'No offboarding cases yet.' : 'No cases in this tab.'}
+            </p>
           </CardContent>
         </Card>
       ) : (
@@ -109,11 +141,12 @@ export default async function OffboardingPage() {
                 <TableHead>Type</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Effective Date</TableHead>
+                <TableHead>Meeting</TableHead>
                 <TableHead>Ticket</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {terminations.map((t) => (
+              {shown.map((t) => (
                 <TableRow key={t.id} className="cursor-pointer">
                   <TableCell className="p-0">
                     <Link href={`/offboarding/${t.id}`} className="block px-4 py-3 font-medium hover:text-primary">
@@ -138,6 +171,25 @@ export default async function OffboardingPage() {
                   <TableCell>
                     <Link href={`/offboarding/${t.id}`} className="block text-muted-foreground">
                       {format(t.effectiveDate, 'MMM dd, yyyy')}
+                    </Link>
+                  </TableCell>
+                  <TableCell>
+                    <Link href={`/offboarding/${t.id}`} className="flex items-center gap-1.5">
+                      {t.isVoluntaryResignation ? (
+                        <span className="text-xs text-muted-foreground">In SOP</span>
+                      ) : t.meetingDecision ? (
+                        <Badge variant="outline" className="text-[10px]">{MEETING_DECISION_LABELS[t.meetingDecision]}</Badge>
+                      ) : t.meetingDate ? (
+                        <span className="text-xs text-muted-foreground">Held, no decision</span>
+                      ) : (
+                        <span className="text-xs text-warning">Not recorded</span>
+                      )}
+                      {t._count.documents > 0 && (
+                        <span className="inline-flex items-center gap-0.5 text-xs text-muted-foreground" title={`${t._count.documents} document(s)`}>
+                          <Paperclip className="h-3 w-3" />
+                          {t._count.documents}
+                        </span>
+                      )}
                     </Link>
                   </TableCell>
                   <TableCell>

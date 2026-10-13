@@ -153,6 +153,11 @@ export type Ticket = Prisma.TicketModel
  */
 export type TicketConversation = Prisma.TicketConversationModel
 /**
+ * Model TerminationDocument
+ * 
+ */
+export type TerminationDocument = Prisma.TerminationDocumentModel
+/**
  * Model Termination
  * 
  */

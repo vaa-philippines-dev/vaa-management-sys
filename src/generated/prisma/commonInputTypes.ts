@@ -845,6 +845,13 @@ export type EnumRehireEligibilityNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumRehireEligibilityNullableFilter<$PrismaModel> | $Enums.RehireEligibility | null
 }
 
+export type EnumOffboardingMeetingDecisionNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.OffboardingMeetingDecision | Prisma.EnumOffboardingMeetingDecisionFieldRefInput<$PrismaModel> | null
+  in?: $Enums.OffboardingMeetingDecision[] | Prisma.ListEnumOffboardingMeetingDecisionFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.OffboardingMeetingDecision[] | Prisma.ListEnumOffboardingMeetingDecisionFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumOffboardingMeetingDecisionNullableFilter<$PrismaModel> | $Enums.OffboardingMeetingDecision | null
+}
+
 export type EnumTerminationTypeWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.TerminationType | Prisma.EnumTerminationTypeFieldRefInput<$PrismaModel>
   in?: $Enums.TerminationType[] | Prisma.ListEnumTerminationTypeFieldRefInput<$PrismaModel>
@@ -883,6 +890,16 @@ export type EnumRehireEligibilityNullableWithAggregatesFilter<$PrismaModel = nev
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedEnumRehireEligibilityNullableFilter<$PrismaModel>
   _max?: Prisma.NestedEnumRehireEligibilityNullableFilter<$PrismaModel>
+}
+
+export type EnumOffboardingMeetingDecisionNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OffboardingMeetingDecision | Prisma.EnumOffboardingMeetingDecisionFieldRefInput<$PrismaModel> | null
+  in?: $Enums.OffboardingMeetingDecision[] | Prisma.ListEnumOffboardingMeetingDecisionFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.OffboardingMeetingDecision[] | Prisma.ListEnumOffboardingMeetingDecisionFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumOffboardingMeetingDecisionNullableWithAggregatesFilter<$PrismaModel> | $Enums.OffboardingMeetingDecision | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOffboardingMeetingDecisionNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOffboardingMeetingDecisionNullableFilter<$PrismaModel>
 }
 
 export type BoolNullableFilter<$PrismaModel = never> = {
@@ -2140,6 +2157,13 @@ export type NestedEnumRehireEligibilityNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumRehireEligibilityNullableFilter<$PrismaModel> | $Enums.RehireEligibility | null
 }
 
+export type NestedEnumOffboardingMeetingDecisionNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.OffboardingMeetingDecision | Prisma.EnumOffboardingMeetingDecisionFieldRefInput<$PrismaModel> | null
+  in?: $Enums.OffboardingMeetingDecision[] | Prisma.ListEnumOffboardingMeetingDecisionFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.OffboardingMeetingDecision[] | Prisma.ListEnumOffboardingMeetingDecisionFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumOffboardingMeetingDecisionNullableFilter<$PrismaModel> | $Enums.OffboardingMeetingDecision | null
+}
+
 export type NestedEnumTerminationTypeWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.TerminationType | Prisma.EnumTerminationTypeFieldRefInput<$PrismaModel>
   in?: $Enums.TerminationType[] | Prisma.ListEnumTerminationTypeFieldRefInput<$PrismaModel>
@@ -2178,6 +2202,16 @@ export type NestedEnumRehireEligibilityNullableWithAggregatesFilter<$PrismaModel
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedEnumRehireEligibilityNullableFilter<$PrismaModel>
   _max?: Prisma.NestedEnumRehireEligibilityNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumOffboardingMeetingDecisionNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OffboardingMeetingDecision | Prisma.EnumOffboardingMeetingDecisionFieldRefInput<$PrismaModel> | null
+  in?: $Enums.OffboardingMeetingDecision[] | Prisma.ListEnumOffboardingMeetingDecisionFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.OffboardingMeetingDecision[] | Prisma.ListEnumOffboardingMeetingDecisionFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumOffboardingMeetingDecisionNullableWithAggregatesFilter<$PrismaModel> | $Enums.OffboardingMeetingDecision | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOffboardingMeetingDecisionNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOffboardingMeetingDecisionNullableFilter<$PrismaModel>
 }
 
 export type NestedBoolNullableFilter<$PrismaModel = never> = {

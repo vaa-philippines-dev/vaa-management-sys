@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button'
 import { ArrowLeft, Ticket as TicketIcon } from 'lucide-react'
 import { TerminationPanel } from '@/components/tickets/TerminationPanel'
 import { DeleteOffboardingButton } from '@/components/offboarding/DeleteOffboardingButton'
+import { OffboardingMeetingCard } from '@/components/offboarding/OffboardingMeetingCard'
+import { OffboardingDocumentsCard } from '@/components/offboarding/OffboardingDocumentsCard'
 import {
   VA_MUTATOR_ROLES,
   TICKET_VIEW_ALL_ROLES,
@@ -60,6 +62,10 @@ export default async function OffboardingDetailPage({
       },
       complianceReview: true,
       finalPayout: true,
+      documents: {
+        include: { addedBy: { select: { firstName: true, lastName: true } } },
+        orderBy: { createdAt: 'asc' },
+      },
     },
   })
 
@@ -218,6 +224,34 @@ export default async function OffboardingDetailPage({
         }}
         canEdit={canEdit}
         approvableDepartments={approvableDepartments}
+      />
+
+      {/* Resignations record their meeting in the SOP's Discussion section
+          above; every other case gets the end-of-contract meeting here. */}
+      {!termination.isVoluntaryResignation && (
+        <OffboardingMeetingCard
+          terminationId={termination.id}
+          canEdit={canEdit}
+          meeting={{
+            date: termination.meetingDate?.toISOString() ?? null,
+            attendees: termination.meetingAttendees,
+            recordingUrl: termination.meetingRecordingUrl,
+            notes: termination.meetingNotes,
+            decision: termination.meetingDecision,
+          }}
+        />
+      )}
+
+      <OffboardingDocumentsCard
+        terminationId={termination.id}
+        canEdit={canEdit}
+        documents={termination.documents.map((d) => ({
+          id: d.id,
+          label: d.label,
+          url: d.url,
+          addedByName: d.addedBy ? `${d.addedBy.firstName} ${d.addedBy.lastName}`.trim() : null,
+          createdAt: d.createdAt.toISOString(),
+        }))}
       />
     </div>
   )

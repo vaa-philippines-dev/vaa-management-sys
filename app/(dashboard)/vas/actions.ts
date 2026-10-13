@@ -21,7 +21,7 @@ import { logAudit } from '@/lib/audit'
 import { generateEmployeeId } from '@/lib/employee-id'
 import { normalizeWhatsApp, normalizeGcash } from '@/lib/phone'
 import { OFFBOARDING_TYPE_LABELS as TERMINATION_TYPE_LABELS } from '@/lib/offboarding'
-import { canApproveClearanceDepartment, canInitiateEocOrClientInitiatedTermination } from '@/lib/offboarding-permissions'
+import { canApproveClearanceDepartment, canInitiateEocOrClientInitiatedTermination, assertTerminationInScope } from '@/lib/offboarding-permissions'
 import { DEPARTMENT_CHECKLISTS } from '@/lib/offboarding'
 import { addWorkingDays } from '@/lib/working-days'
 import { nextTerminationTicketNumber } from '@/lib/tickets'
@@ -63,21 +63,6 @@ async function assertVAInActorScope(actor: Actor, vaProfileId: string) {
 
 async function assertUserInActorScope(actor: Actor, userId: string) {
   await assertUserInScope(await getMutateScope(actor), userId)
-}
-
-// An offboarding case resolves to its VA and — for a single-assignment case —
-// to that assignment's client department too, so a PPC manager can't work the
-// Amazon side of a VA who sits in both.
-async function assertTerminationInActorScope(actor: Actor, terminationId: string) {
-  const scope = await getMutateScope(actor)
-  if (scope === null) return
-  const t = await prisma.termination.findUnique({
-    where: { id: terminationId },
-    select: { vaProfileId: true, assignmentId: true },
-  })
-  if (!t) throw new Error('Offboarding case not found')
-  await assertVAProfileInScope(scope, t.vaProfileId)
-  if (t.assignmentId) await assertAssignmentInScope(scope, t.assignmentId)
 }
 
 // Per VA_SENSITIVE_INFO_EDIT_ROLES: only these UserProfile fields (Complete
@@ -1482,7 +1467,7 @@ export async function updateExitClearance(clearanceId: string, formData: FormDat
   const actor = await requireRole(...VA_MUTATOR_ROLES)
   const owning = await prisma.exitClearance.findUnique({ where: { id: clearanceId }, select: { terminationId: true } })
   if (!owning) throw new Error('Exit clearance not found')
-  await assertTerminationInActorScope(actor, owning.terminationId)
+  await assertTerminationInScope(actor, owning.terminationId)
 
   const data: Record<string, boolean> = {}
   for (const field of CLEARANCE_CHECKLIST_FIELDS) data[field] = formData.get(field) === 'true'
@@ -1546,7 +1531,7 @@ const REHIRE_ELIGIBILITY_VALUES: string[] = ['YES', 'NO', 'SUBJECT_TO_MANAGEMENT
 // ResignationDiscussion.lastWorkingDay for the resignation SOP).
 export async function updateSeparationDetails(terminationId: string, formData: FormData) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
-  await assertTerminationInActorScope(actor, terminationId)
+  await assertTerminationInScope(actor, terminationId)
 
   const separationOutcome =(formData.get('separationOutcome') as string) || null
   const separationOutcomeOtherNote = ((formData.get('separationOutcomeOtherNote') as string) || '').trim() || null
@@ -1723,7 +1708,7 @@ export async function initiateResignation(formData: FormData) {
 // (min. 2 weeks unless an override reason is captured).
 export async function logDiscussionOutcome(terminationId: string, formData: FormData) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
-  await assertTerminationInActorScope(actor, terminationId)
+  await assertTerminationInScope(actor, terminationId)
 
   const termination = await prisma.termination.findUnique({ where: { id: terminationId } })
   if (!termination || !termination.isVoluntaryResignation) throw new Error('Not a resignation case')
@@ -1828,7 +1813,7 @@ export async function logDiscussionOutcome(terminationId: string, formData: Form
 // customer name.
 export async function submitResignationLetter(terminationId: string, formData: FormData) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
-  await assertTerminationInActorScope(actor, terminationId)
+  await assertTerminationInScope(actor, terminationId)
 
   const termination = await prisma.termination.findUnique({
     where: { id: terminationId },
@@ -1884,7 +1869,7 @@ export async function submitResignationLetter(terminationId: string, formData: F
 // FR-008: Replacement Request pipeline, sourced by the Service Department.
 export async function updateReplacementRequest(terminationId: string, formData: FormData) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
-  await assertTerminationInActorScope(actor, terminationId)
+  await assertTerminationInScope(actor, terminationId)
 
   const pipelineStatus = (formData.get('pipelineStatus') as string) || ''
   const validStatuses: ReplacementPipelineStatus[] = ['SOURCED', 'ENDORSED', 'INTERVIEWED', 'APPROVED', 'REJECTED', 'NOT_APPLICABLE']
@@ -1934,7 +1919,7 @@ export async function updateReplacementRequest(terminationId: string, formData: 
 // invite — reusing terminateVA's exact token/expiry pattern.
 export async function logCustomerNotification(terminationId: string) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
-  await assertTerminationInActorScope(actor, terminationId)
+  await assertTerminationInScope(actor, terminationId)
 
   const termination = await prisma.termination.findUnique({
     where: { id: terminationId },
@@ -1982,7 +1967,7 @@ const CLEARANCE_DEPARTMENTS: ExitClearanceDepartment[] = [
 // sub-tasks. Only callable once the Exit Survey invite is completed.
 export async function initiateExitClearance(terminationId: string) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
-  await assertTerminationInActorScope(actor, terminationId)
+  await assertTerminationInScope(actor, terminationId)
 
   const termination = await prisma.termination.findUnique({
     where: { id: terminationId },
@@ -2100,7 +2085,7 @@ export async function actOnClearanceApproval(approvalId: string, formData: FormD
 // the SOP, where the same reviewer typically does both in sequence.
 export async function submitComplianceReview(terminationId: string, formData: FormData) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
-  await assertTerminationInActorScope(actor, terminationId)
+  await assertTerminationInScope(actor, terminationId)
 
   const termination = await prisma.termination.findUnique({ where: { id: terminationId } })
   if (!termination || !termination.isVoluntaryResignation) throw new Error('Not a resignation case')
@@ -2184,7 +2169,7 @@ export async function submitComplianceReview(terminationId: string, formData: Fo
 // than at intake, since the SOP conditions it on full clearance + payout.
 export async function recordFinalPayout(terminationId: string, formData: FormData) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
-  await assertTerminationInActorScope(actor, terminationId)
+  await assertTerminationInScope(actor, terminationId)
 
   const amountRaw = (formData.get('amount') as string) || ''
   const amount = Number(amountRaw)
@@ -2263,7 +2248,7 @@ export async function recordFinalPayout(terminationId: string, formData: FormDat
 // sub-module — retrying on failure is just calling this again later.
 export async function markTrainingPassed(terminationId: string) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
-  await assertTerminationInActorScope(actor, terminationId)
+  await assertTerminationInScope(actor, terminationId)
 
   const termination = await prisma.termination.findUnique({ where: { id: terminationId } })
   if (!termination || !termination.isVoluntaryResignation) throw new Error('Not a resignation case')
@@ -2298,7 +2283,7 @@ const WITHDRAWABLE_STATUSES = ['INITIATED', 'PENDING_LETTER', 'UNDER_DOCUMENTATI
 // escalation rather than a standard path, which this simply blocks.
 export async function withdrawResignation(terminationId: string, formData: FormData) {
   const actor = await requireRole(...VA_MUTATOR_ROLES)
-  await assertTerminationInActorScope(actor, terminationId)
+  await assertTerminationInScope(actor, terminationId)
 
   const reason = ((formData.get('reason') as string) || '').trim()
   if (!reason) throw new Error('A reason is required to withdraw a resignation (FR-021).')

@@ -3,7 +3,7 @@
 // this pulls in prisma/auth and would otherwise break the client bundle.
 import { prisma } from '@/lib/prisma'
 import { isDepartmentUnrestricted, canMutate, getManagedDepartmentIds, hasModuleAccess, type getCurrentUser } from '@/lib/auth'
-import { getMutateScope, isDepartmentInScope, isUserInScope } from '@/lib/scope'
+import { getMutateScope, isDepartmentInScope, isUserInScope, assertVAProfileInScope, assertAssignmentInScope } from '@/lib/scope'
 import type { ExitClearanceDepartment } from '@/src/generated/prisma/enums'
 
 type CurrentUser = Awaited<ReturnType<typeof getCurrentUser>>
@@ -90,4 +90,20 @@ export async function canInitiateEocOrClientInitiatedTermination(
     (ownDeptId !== null && isDepartmentInScope(scope, ownDeptId) && isUserInScope(scope, vaUserId)) ||
     (csDeptId !== null && managed.includes(csDeptId))
   )
+}
+
+// An offboarding case resolves to its VA and — for a single-assignment case —
+// to that assignment's client department too, so a PPC manager can't work the
+// Amazon side of a VA who sits in both. Admins/HR (null scope) pass straight
+// through. Used by every Server Action that takes a termination id.
+export async function assertTerminationInScope(user: NonNullable<CurrentUser>, terminationId: string) {
+  const scope = await getMutateScope(user)
+  if (scope === null) return
+  const t = await prisma.termination.findUnique({
+    where: { id: terminationId },
+    select: { vaProfileId: true, assignmentId: true },
+  })
+  if (!t) throw new Error('Offboarding case not found')
+  await assertVAProfileInScope(scope, t.vaProfileId)
+  if (t.assignmentId) await assertAssignmentInScope(scope, t.assignmentId)
 }

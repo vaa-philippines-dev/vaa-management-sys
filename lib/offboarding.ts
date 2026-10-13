@@ -111,3 +111,38 @@ export const DEPARTMENT_CHECKLISTS: Record<string, string[]> = {
     'Device/equipment returned (if applicable)',
   ],
 }
+
+// What the end-of-contract meeting decided (Termination.meetingDecision).
+export const MEETING_DECISION_LABELS: Record<string, string> = {
+  END_CONFIRMED: 'End confirmed',
+  EXTENDED: 'Contract extended',
+  REASSIGNED: 'VA reassigned',
+  OTHER: 'Other',
+}
+
+// Suggested labels for a case's documents — free text, these only prefill.
+export const OFFBOARDING_DOCUMENT_SUGGESTIONS = [
+  'Client confirmation',
+  'EOC notice',
+  'Turnover notes',
+  'Meeting recording',
+]
+
+// The /offboarding tabs. Open cases sit under their type; finished or
+// cancelled ones move to Completed so the type tabs stay a to-do list.
+export const OFFBOARDING_TABS = [
+  { key: 'all', label: 'All' },
+  { key: 'eoc', label: 'End of Contract' },
+  { key: 'client', label: 'Client-Initiated' },
+  { key: 'vaa', label: 'Resignations & Removals' },
+  { key: 'completed', label: 'Completed' },
+] as const
+
+export type OffboardingTab = (typeof OFFBOARDING_TABS)[number]['key']
+
+export function offboardingTabOf(t: { type: string; workflowStatus: string }): Exclude<OffboardingTab, 'all'> {
+  if (t.workflowStatus === 'COMPLETED' || t.workflowStatus === 'CANCELLED') return 'completed'
+  if (t.type === 'EOC') return 'eoc'
+  if (t.type === 'CLIENT_INITIATED') return 'client'
+  return 'vaa'
+}

@@ -46,6 +46,11 @@ export type TerminationMinAggregateOutputType = {
   separationOutcome: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote: string | null
   rehireEligibility: $Enums.RehireEligibility | null
+  meetingDate: Date | null
+  meetingAttendees: string | null
+  meetingRecordingUrl: string | null
+  meetingNotes: string | null
+  meetingDecision: $Enums.OffboardingMeetingDecision | null
 }
 
 export type TerminationMaxAggregateOutputType = {
@@ -70,6 +75,11 @@ export type TerminationMaxAggregateOutputType = {
   separationOutcome: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote: string | null
   rehireEligibility: $Enums.RehireEligibility | null
+  meetingDate: Date | null
+  meetingAttendees: string | null
+  meetingRecordingUrl: string | null
+  meetingNotes: string | null
+  meetingDecision: $Enums.OffboardingMeetingDecision | null
 }
 
 export type TerminationCountAggregateOutputType = {
@@ -94,6 +104,11 @@ export type TerminationCountAggregateOutputType = {
   separationOutcome: number
   separationOutcomeOtherNote: number
   rehireEligibility: number
+  meetingDate: number
+  meetingAttendees: number
+  meetingRecordingUrl: number
+  meetingNotes: number
+  meetingDecision: number
   _all: number
 }
 
@@ -120,6 +135,11 @@ export type TerminationMinAggregateInputType = {
   separationOutcome?: true
   separationOutcomeOtherNote?: true
   rehireEligibility?: true
+  meetingDate?: true
+  meetingAttendees?: true
+  meetingRecordingUrl?: true
+  meetingNotes?: true
+  meetingDecision?: true
 }
 
 export type TerminationMaxAggregateInputType = {
@@ -144,6 +164,11 @@ export type TerminationMaxAggregateInputType = {
   separationOutcome?: true
   separationOutcomeOtherNote?: true
   rehireEligibility?: true
+  meetingDate?: true
+  meetingAttendees?: true
+  meetingRecordingUrl?: true
+  meetingNotes?: true
+  meetingDecision?: true
 }
 
 export type TerminationCountAggregateInputType = {
@@ -168,6 +193,11 @@ export type TerminationCountAggregateInputType = {
   separationOutcome?: true
   separationOutcomeOtherNote?: true
   rehireEligibility?: true
+  meetingDate?: true
+  meetingAttendees?: true
+  meetingRecordingUrl?: true
+  meetingNotes?: true
+  meetingDecision?: true
   _all?: true
 }
 
@@ -265,6 +295,11 @@ export type TerminationGroupByOutputType = {
   separationOutcome: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote: string | null
   rehireEligibility: $Enums.RehireEligibility | null
+  meetingDate: Date | null
+  meetingAttendees: string | null
+  meetingRecordingUrl: string | null
+  meetingNotes: string | null
+  meetingDecision: $Enums.OffboardingMeetingDecision | null
   _count: TerminationCountAggregateOutputType | null
   _min: TerminationMinAggregateOutputType | null
   _max: TerminationMaxAggregateOutputType | null
@@ -310,6 +345,11 @@ export type TerminationWhereInput = {
   separationOutcome?: Prisma.EnumSeparationOutcomeNullableFilter<"Termination"> | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.StringNullableFilter<"Termination"> | string | null
   rehireEligibility?: Prisma.EnumRehireEligibilityNullableFilter<"Termination"> | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.DateTimeNullableFilter<"Termination"> | Date | string | null
+  meetingAttendees?: Prisma.StringNullableFilter<"Termination"> | string | null
+  meetingRecordingUrl?: Prisma.StringNullableFilter<"Termination"> | string | null
+  meetingNotes?: Prisma.StringNullableFilter<"Termination"> | string | null
+  meetingDecision?: Prisma.EnumOffboardingMeetingDecisionNullableFilter<"Termination"> | $Enums.OffboardingMeetingDecision | null
   vaProfile?: Prisma.XOR<Prisma.VAProfileScalarRelationFilter, Prisma.VAProfileWhereInput>
   assignment?: Prisma.XOR<Prisma.AssignmentNullableScalarRelationFilter, Prisma.AssignmentWhereInput> | null
   ticket?: Prisma.XOR<Prisma.TicketNullableScalarRelationFilter, Prisma.TicketWhereInput> | null
@@ -322,6 +362,7 @@ export type TerminationWhereInput = {
   complianceReview?: Prisma.XOR<Prisma.ComplianceReviewNullableScalarRelationFilter, Prisma.ComplianceReviewWhereInput> | null
   finalPayout?: Prisma.XOR<Prisma.FinalPayoutNullableScalarRelationFilter, Prisma.FinalPayoutWhereInput> | null
   trainingNotedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  documents?: Prisma.TerminationDocumentListRelationFilter
 }
 
 export type TerminationOrderByWithRelationInput = {
@@ -346,6 +387,11 @@ export type TerminationOrderByWithRelationInput = {
   separationOutcome?: Prisma.SortOrderInput | Prisma.SortOrder
   separationOutcomeOtherNote?: Prisma.SortOrderInput | Prisma.SortOrder
   rehireEligibility?: Prisma.SortOrderInput | Prisma.SortOrder
+  meetingDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  meetingAttendees?: Prisma.SortOrderInput | Prisma.SortOrder
+  meetingRecordingUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  meetingNotes?: Prisma.SortOrderInput | Prisma.SortOrder
+  meetingDecision?: Prisma.SortOrderInput | Prisma.SortOrder
   vaProfile?: Prisma.VAProfileOrderByWithRelationInput
   assignment?: Prisma.AssignmentOrderByWithRelationInput
   ticket?: Prisma.TicketOrderByWithRelationInput
@@ -358,6 +404,7 @@ export type TerminationOrderByWithRelationInput = {
   complianceReview?: Prisma.ComplianceReviewOrderByWithRelationInput
   finalPayout?: Prisma.FinalPayoutOrderByWithRelationInput
   trainingNotedBy?: Prisma.UserOrderByWithRelationInput
+  documents?: Prisma.TerminationDocumentOrderByRelationAggregateInput
 }
 
 export type TerminationWhereUniqueInput = Prisma.AtLeast<{
@@ -385,6 +432,11 @@ export type TerminationWhereUniqueInput = Prisma.AtLeast<{
   separationOutcome?: Prisma.EnumSeparationOutcomeNullableFilter<"Termination"> | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.StringNullableFilter<"Termination"> | string | null
   rehireEligibility?: Prisma.EnumRehireEligibilityNullableFilter<"Termination"> | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.DateTimeNullableFilter<"Termination"> | Date | string | null
+  meetingAttendees?: Prisma.StringNullableFilter<"Termination"> | string | null
+  meetingRecordingUrl?: Prisma.StringNullableFilter<"Termination"> | string | null
+  meetingNotes?: Prisma.StringNullableFilter<"Termination"> | string | null
+  meetingDecision?: Prisma.EnumOffboardingMeetingDecisionNullableFilter<"Termination"> | $Enums.OffboardingMeetingDecision | null
   vaProfile?: Prisma.XOR<Prisma.VAProfileScalarRelationFilter, Prisma.VAProfileWhereInput>
   assignment?: Prisma.XOR<Prisma.AssignmentNullableScalarRelationFilter, Prisma.AssignmentWhereInput> | null
   ticket?: Prisma.XOR<Prisma.TicketNullableScalarRelationFilter, Prisma.TicketWhereInput> | null
@@ -397,6 +449,7 @@ export type TerminationWhereUniqueInput = Prisma.AtLeast<{
   complianceReview?: Prisma.XOR<Prisma.ComplianceReviewNullableScalarRelationFilter, Prisma.ComplianceReviewWhereInput> | null
   finalPayout?: Prisma.XOR<Prisma.FinalPayoutNullableScalarRelationFilter, Prisma.FinalPayoutWhereInput> | null
   trainingNotedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  documents?: Prisma.TerminationDocumentListRelationFilter
 }, "id" | "ticketId">
 
 export type TerminationOrderByWithAggregationInput = {
@@ -421,6 +474,11 @@ export type TerminationOrderByWithAggregationInput = {
   separationOutcome?: Prisma.SortOrderInput | Prisma.SortOrder
   separationOutcomeOtherNote?: Prisma.SortOrderInput | Prisma.SortOrder
   rehireEligibility?: Prisma.SortOrderInput | Prisma.SortOrder
+  meetingDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  meetingAttendees?: Prisma.SortOrderInput | Prisma.SortOrder
+  meetingRecordingUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  meetingNotes?: Prisma.SortOrderInput | Prisma.SortOrder
+  meetingDecision?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.TerminationCountOrderByAggregateInput
   _max?: Prisma.TerminationMaxOrderByAggregateInput
   _min?: Prisma.TerminationMinOrderByAggregateInput
@@ -451,6 +509,11 @@ export type TerminationScalarWhereWithAggregatesInput = {
   separationOutcome?: Prisma.EnumSeparationOutcomeNullableWithAggregatesFilter<"Termination"> | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.StringNullableWithAggregatesFilter<"Termination"> | string | null
   rehireEligibility?: Prisma.EnumRehireEligibilityNullableWithAggregatesFilter<"Termination"> | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Termination"> | Date | string | null
+  meetingAttendees?: Prisma.StringNullableWithAggregatesFilter<"Termination"> | string | null
+  meetingRecordingUrl?: Prisma.StringNullableWithAggregatesFilter<"Termination"> | string | null
+  meetingNotes?: Prisma.StringNullableWithAggregatesFilter<"Termination"> | string | null
+  meetingDecision?: Prisma.EnumOffboardingMeetingDecisionNullableWithAggregatesFilter<"Termination"> | $Enums.OffboardingMeetingDecision | null
 }
 
 export type TerminationCreateInput = {
@@ -470,6 +533,11 @@ export type TerminationCreateInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutTerminationsInput
   assignment?: Prisma.AssignmentCreateNestedOneWithoutTerminationsInput
   ticket?: Prisma.TicketCreateNestedOneWithoutTerminationInput
@@ -482,6 +550,7 @@ export type TerminationCreateInput = {
   complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
   trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+  documents?: Prisma.TerminationDocumentCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateInput = {
@@ -506,6 +575,11 @@ export type TerminationUncheckedCreateInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedCreateNestedOneWithoutTerminationInput
   clearance?: Prisma.ExitClearanceUncheckedCreateNestedOneWithoutTerminationInput
   discussion?: Prisma.ResignationDiscussionUncheckedCreateNestedOneWithoutTerminationInput
@@ -513,6 +587,7 @@ export type TerminationUncheckedCreateInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+  documents?: Prisma.TerminationDocumentUncheckedCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationUpdateInput = {
@@ -532,6 +607,11 @@ export type TerminationUpdateInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutTerminationsNestedInput
   assignment?: Prisma.AssignmentUpdateOneWithoutTerminationsNestedInput
   ticket?: Prisma.TicketUpdateOneWithoutTerminationNestedInput
@@ -544,6 +624,7 @@ export type TerminationUpdateInput = {
   complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
   trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+  documents?: Prisma.TerminationDocumentUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateInput = {
@@ -568,6 +649,11 @@ export type TerminationUncheckedUpdateInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedUpdateOneWithoutTerminationNestedInput
   clearance?: Prisma.ExitClearanceUncheckedUpdateOneWithoutTerminationNestedInput
   discussion?: Prisma.ResignationDiscussionUncheckedUpdateOneWithoutTerminationNestedInput
@@ -575,6 +661,7 @@ export type TerminationUncheckedUpdateInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
+  documents?: Prisma.TerminationDocumentUncheckedUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationCreateManyInput = {
@@ -599,6 +686,11 @@ export type TerminationCreateManyInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
 }
 
 export type TerminationUpdateManyMutationInput = {
@@ -618,6 +710,11 @@ export type TerminationUpdateManyMutationInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
 }
 
 export type TerminationUncheckedUpdateManyInput = {
@@ -642,6 +739,11 @@ export type TerminationUncheckedUpdateManyInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
 }
 
 export type TerminationListRelationFilter = {
@@ -657,6 +759,11 @@ export type TerminationOrderByRelationAggregateInput = {
 export type TerminationNullableScalarRelationFilter = {
   is?: Prisma.TerminationWhereInput | null
   isNot?: Prisma.TerminationWhereInput | null
+}
+
+export type TerminationScalarRelationFilter = {
+  is?: Prisma.TerminationWhereInput
+  isNot?: Prisma.TerminationWhereInput
 }
 
 export type TerminationCountOrderByAggregateInput = {
@@ -681,6 +788,11 @@ export type TerminationCountOrderByAggregateInput = {
   separationOutcome?: Prisma.SortOrder
   separationOutcomeOtherNote?: Prisma.SortOrder
   rehireEligibility?: Prisma.SortOrder
+  meetingDate?: Prisma.SortOrder
+  meetingAttendees?: Prisma.SortOrder
+  meetingRecordingUrl?: Prisma.SortOrder
+  meetingNotes?: Prisma.SortOrder
+  meetingDecision?: Prisma.SortOrder
 }
 
 export type TerminationMaxOrderByAggregateInput = {
@@ -705,6 +817,11 @@ export type TerminationMaxOrderByAggregateInput = {
   separationOutcome?: Prisma.SortOrder
   separationOutcomeOtherNote?: Prisma.SortOrder
   rehireEligibility?: Prisma.SortOrder
+  meetingDate?: Prisma.SortOrder
+  meetingAttendees?: Prisma.SortOrder
+  meetingRecordingUrl?: Prisma.SortOrder
+  meetingNotes?: Prisma.SortOrder
+  meetingDecision?: Prisma.SortOrder
 }
 
 export type TerminationMinOrderByAggregateInput = {
@@ -729,11 +846,11 @@ export type TerminationMinOrderByAggregateInput = {
   separationOutcome?: Prisma.SortOrder
   separationOutcomeOtherNote?: Prisma.SortOrder
   rehireEligibility?: Prisma.SortOrder
-}
-
-export type TerminationScalarRelationFilter = {
-  is?: Prisma.TerminationWhereInput
-  isNot?: Prisma.TerminationWhereInput
+  meetingDate?: Prisma.SortOrder
+  meetingAttendees?: Prisma.SortOrder
+  meetingRecordingUrl?: Prisma.SortOrder
+  meetingNotes?: Prisma.SortOrder
+  meetingDecision?: Prisma.SortOrder
 }
 
 export type TerminationCreateNestedManyWithoutInitiatedByInput = {
@@ -936,6 +1053,20 @@ export type TerminationUncheckedUpdateOneWithoutTicketNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TerminationUpdateToOneWithWhereWithoutTicketInput, Prisma.TerminationUpdateWithoutTicketInput>, Prisma.TerminationUncheckedUpdateWithoutTicketInput>
 }
 
+export type TerminationCreateNestedOneWithoutDocumentsInput = {
+  create?: Prisma.XOR<Prisma.TerminationCreateWithoutDocumentsInput, Prisma.TerminationUncheckedCreateWithoutDocumentsInput>
+  connectOrCreate?: Prisma.TerminationCreateOrConnectWithoutDocumentsInput
+  connect?: Prisma.TerminationWhereUniqueInput
+}
+
+export type TerminationUpdateOneRequiredWithoutDocumentsNestedInput = {
+  create?: Prisma.XOR<Prisma.TerminationCreateWithoutDocumentsInput, Prisma.TerminationUncheckedCreateWithoutDocumentsInput>
+  connectOrCreate?: Prisma.TerminationCreateOrConnectWithoutDocumentsInput
+  upsert?: Prisma.TerminationUpsertWithoutDocumentsInput
+  connect?: Prisma.TerminationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TerminationUpdateToOneWithWhereWithoutDocumentsInput, Prisma.TerminationUpdateWithoutDocumentsInput>, Prisma.TerminationUncheckedUpdateWithoutDocumentsInput>
+}
+
 export type EnumTerminationTypeFieldUpdateOperationsInput = {
   set?: $Enums.TerminationType
 }
@@ -950,6 +1081,10 @@ export type NullableEnumSeparationOutcomeFieldUpdateOperationsInput = {
 
 export type NullableEnumRehireEligibilityFieldUpdateOperationsInput = {
   set?: $Enums.RehireEligibility | null
+}
+
+export type NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput = {
+  set?: $Enums.OffboardingMeetingDecision | null
 }
 
 export type TerminationCreateNestedOneWithoutDiscussionInput = {
@@ -1067,6 +1202,11 @@ export type TerminationCreateWithoutInitiatedByInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutTerminationsInput
   assignment?: Prisma.AssignmentCreateNestedOneWithoutTerminationsInput
   ticket?: Prisma.TicketCreateNestedOneWithoutTerminationInput
@@ -1078,6 +1218,7 @@ export type TerminationCreateWithoutInitiatedByInput = {
   complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
   trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+  documents?: Prisma.TerminationDocumentCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateWithoutInitiatedByInput = {
@@ -1101,6 +1242,11 @@ export type TerminationUncheckedCreateWithoutInitiatedByInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedCreateNestedOneWithoutTerminationInput
   clearance?: Prisma.ExitClearanceUncheckedCreateNestedOneWithoutTerminationInput
   discussion?: Prisma.ResignationDiscussionUncheckedCreateNestedOneWithoutTerminationInput
@@ -1108,6 +1254,7 @@ export type TerminationUncheckedCreateWithoutInitiatedByInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+  documents?: Prisma.TerminationDocumentUncheckedCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationCreateOrConnectWithoutInitiatedByInput = {
@@ -1137,6 +1284,11 @@ export type TerminationCreateWithoutTrainingNotedByInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutTerminationsInput
   assignment?: Prisma.AssignmentCreateNestedOneWithoutTerminationsInput
   ticket?: Prisma.TicketCreateNestedOneWithoutTerminationInput
@@ -1148,6 +1300,7 @@ export type TerminationCreateWithoutTrainingNotedByInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
+  documents?: Prisma.TerminationDocumentCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateWithoutTrainingNotedByInput = {
@@ -1171,6 +1324,11 @@ export type TerminationUncheckedCreateWithoutTrainingNotedByInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedCreateNestedOneWithoutTerminationInput
   clearance?: Prisma.ExitClearanceUncheckedCreateNestedOneWithoutTerminationInput
   discussion?: Prisma.ResignationDiscussionUncheckedCreateNestedOneWithoutTerminationInput
@@ -1178,6 +1336,7 @@ export type TerminationUncheckedCreateWithoutTrainingNotedByInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+  documents?: Prisma.TerminationDocumentUncheckedCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationCreateOrConnectWithoutTrainingNotedByInput = {
@@ -1231,6 +1390,11 @@ export type TerminationScalarWhereInput = {
   separationOutcome?: Prisma.EnumSeparationOutcomeNullableFilter<"Termination"> | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.StringNullableFilter<"Termination"> | string | null
   rehireEligibility?: Prisma.EnumRehireEligibilityNullableFilter<"Termination"> | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.DateTimeNullableFilter<"Termination"> | Date | string | null
+  meetingAttendees?: Prisma.StringNullableFilter<"Termination"> | string | null
+  meetingRecordingUrl?: Prisma.StringNullableFilter<"Termination"> | string | null
+  meetingNotes?: Prisma.StringNullableFilter<"Termination"> | string | null
+  meetingDecision?: Prisma.EnumOffboardingMeetingDecisionNullableFilter<"Termination"> | $Enums.OffboardingMeetingDecision | null
 }
 
 export type TerminationUpsertWithWhereUniqueWithoutTrainingNotedByInput = {
@@ -1266,6 +1430,11 @@ export type TerminationCreateWithoutVaProfileInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   assignment?: Prisma.AssignmentCreateNestedOneWithoutTerminationsInput
   ticket?: Prisma.TicketCreateNestedOneWithoutTerminationInput
   initiatedBy: Prisma.UserCreateNestedOneWithoutTerminationsInitiatedInput
@@ -1277,6 +1446,7 @@ export type TerminationCreateWithoutVaProfileInput = {
   complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
   trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+  documents?: Prisma.TerminationDocumentCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateWithoutVaProfileInput = {
@@ -1300,6 +1470,11 @@ export type TerminationUncheckedCreateWithoutVaProfileInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedCreateNestedOneWithoutTerminationInput
   clearance?: Prisma.ExitClearanceUncheckedCreateNestedOneWithoutTerminationInput
   discussion?: Prisma.ResignationDiscussionUncheckedCreateNestedOneWithoutTerminationInput
@@ -1307,6 +1482,7 @@ export type TerminationUncheckedCreateWithoutVaProfileInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+  documents?: Prisma.TerminationDocumentUncheckedCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationCreateOrConnectWithoutVaProfileInput = {
@@ -1352,6 +1528,11 @@ export type TerminationCreateWithoutAssignmentInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutTerminationsInput
   ticket?: Prisma.TicketCreateNestedOneWithoutTerminationInput
   initiatedBy: Prisma.UserCreateNestedOneWithoutTerminationsInitiatedInput
@@ -1363,6 +1544,7 @@ export type TerminationCreateWithoutAssignmentInput = {
   complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
   trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+  documents?: Prisma.TerminationDocumentCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateWithoutAssignmentInput = {
@@ -1386,6 +1568,11 @@ export type TerminationUncheckedCreateWithoutAssignmentInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedCreateNestedOneWithoutTerminationInput
   clearance?: Prisma.ExitClearanceUncheckedCreateNestedOneWithoutTerminationInput
   discussion?: Prisma.ResignationDiscussionUncheckedCreateNestedOneWithoutTerminationInput
@@ -1393,6 +1580,7 @@ export type TerminationUncheckedCreateWithoutAssignmentInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+  documents?: Prisma.TerminationDocumentUncheckedCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationCreateOrConnectWithoutAssignmentInput = {
@@ -1438,6 +1626,11 @@ export type TerminationCreateWithoutTicketInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutTerminationsInput
   assignment?: Prisma.AssignmentCreateNestedOneWithoutTerminationsInput
   initiatedBy: Prisma.UserCreateNestedOneWithoutTerminationsInitiatedInput
@@ -1449,6 +1642,7 @@ export type TerminationCreateWithoutTicketInput = {
   complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
   trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+  documents?: Prisma.TerminationDocumentCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateWithoutTicketInput = {
@@ -1472,6 +1666,11 @@ export type TerminationUncheckedCreateWithoutTicketInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedCreateNestedOneWithoutTerminationInput
   clearance?: Prisma.ExitClearanceUncheckedCreateNestedOneWithoutTerminationInput
   discussion?: Prisma.ResignationDiscussionUncheckedCreateNestedOneWithoutTerminationInput
@@ -1479,6 +1678,7 @@ export type TerminationUncheckedCreateWithoutTicketInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+  documents?: Prisma.TerminationDocumentUncheckedCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationCreateOrConnectWithoutTicketInput = {
@@ -1514,6 +1714,11 @@ export type TerminationUpdateWithoutTicketInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutTerminationsNestedInput
   assignment?: Prisma.AssignmentUpdateOneWithoutTerminationsNestedInput
   initiatedBy?: Prisma.UserUpdateOneRequiredWithoutTerminationsInitiatedNestedInput
@@ -1525,6 +1730,7 @@ export type TerminationUpdateWithoutTicketInput = {
   complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
   trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+  documents?: Prisma.TerminationDocumentUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateWithoutTicketInput = {
@@ -1548,6 +1754,172 @@ export type TerminationUncheckedUpdateWithoutTicketInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
+  exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedUpdateOneWithoutTerminationNestedInput
+  clearance?: Prisma.ExitClearanceUncheckedUpdateOneWithoutTerminationNestedInput
+  discussion?: Prisma.ResignationDiscussionUncheckedUpdateOneWithoutTerminationNestedInput
+  replacementRequest?: Prisma.ReplacementRequestUncheckedUpdateOneWithoutTerminationNestedInput
+  clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
+  complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
+  finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
+  documents?: Prisma.TerminationDocumentUncheckedUpdateManyWithoutTerminationNestedInput
+}
+
+export type TerminationCreateWithoutDocumentsInput = {
+  id?: string
+  type: $Enums.TerminationType
+  isVoluntaryResignation?: boolean
+  affectsBothParties?: boolean
+  resultingStatus: $Enums.EmploymentStatus
+  reason?: string | null
+  workflowStatus?: $Enums.TerminationWorkflowStatus
+  resignationDocUrl?: string | null
+  effectiveDate: Date | string
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  trainingPassedAt?: Date | string | null
+  separationOutcome?: $Enums.SeparationOutcome | null
+  separationOutcomeOtherNote?: string | null
+  rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
+  vaProfile: Prisma.VAProfileCreateNestedOneWithoutTerminationsInput
+  assignment?: Prisma.AssignmentCreateNestedOneWithoutTerminationsInput
+  ticket?: Prisma.TicketCreateNestedOneWithoutTerminationInput
+  initiatedBy: Prisma.UserCreateNestedOneWithoutTerminationsInitiatedInput
+  exitSurveyInvite?: Prisma.ExitSurveyInviteCreateNestedOneWithoutTerminationInput
+  clearance?: Prisma.ExitClearanceCreateNestedOneWithoutTerminationInput
+  discussion?: Prisma.ResignationDiscussionCreateNestedOneWithoutTerminationInput
+  replacementRequest?: Prisma.ReplacementRequestCreateNestedOneWithoutTerminationInput
+  clearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutTerminationInput
+  complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
+  finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
+  trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+}
+
+export type TerminationUncheckedCreateWithoutDocumentsInput = {
+  id?: string
+  vaProfileId: string
+  assignmentId?: string | null
+  type: $Enums.TerminationType
+  isVoluntaryResignation?: boolean
+  affectsBothParties?: boolean
+  resultingStatus: $Enums.EmploymentStatus
+  reason?: string | null
+  workflowStatus?: $Enums.TerminationWorkflowStatus
+  ticketId?: string | null
+  resignationDocUrl?: string | null
+  initiatedById: string
+  effectiveDate: Date | string
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  trainingPassedAt?: Date | string | null
+  trainingNotedById?: string | null
+  separationOutcome?: $Enums.SeparationOutcome | null
+  separationOutcomeOtherNote?: string | null
+  rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
+  exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedCreateNestedOneWithoutTerminationInput
+  clearance?: Prisma.ExitClearanceUncheckedCreateNestedOneWithoutTerminationInput
+  discussion?: Prisma.ResignationDiscussionUncheckedCreateNestedOneWithoutTerminationInput
+  replacementRequest?: Prisma.ReplacementRequestUncheckedCreateNestedOneWithoutTerminationInput
+  clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
+  complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
+  finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+}
+
+export type TerminationCreateOrConnectWithoutDocumentsInput = {
+  where: Prisma.TerminationWhereUniqueInput
+  create: Prisma.XOR<Prisma.TerminationCreateWithoutDocumentsInput, Prisma.TerminationUncheckedCreateWithoutDocumentsInput>
+}
+
+export type TerminationUpsertWithoutDocumentsInput = {
+  update: Prisma.XOR<Prisma.TerminationUpdateWithoutDocumentsInput, Prisma.TerminationUncheckedUpdateWithoutDocumentsInput>
+  create: Prisma.XOR<Prisma.TerminationCreateWithoutDocumentsInput, Prisma.TerminationUncheckedCreateWithoutDocumentsInput>
+  where?: Prisma.TerminationWhereInput
+}
+
+export type TerminationUpdateToOneWithWhereWithoutDocumentsInput = {
+  where?: Prisma.TerminationWhereInput
+  data: Prisma.XOR<Prisma.TerminationUpdateWithoutDocumentsInput, Prisma.TerminationUncheckedUpdateWithoutDocumentsInput>
+}
+
+export type TerminationUpdateWithoutDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumTerminationTypeFieldUpdateOperationsInput | $Enums.TerminationType
+  isVoluntaryResignation?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  affectsBothParties?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  resultingStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowStatus?: Prisma.EnumTerminationWorkflowStatusFieldUpdateOperationsInput | $Enums.TerminationWorkflowStatus
+  resignationDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  trainingPassedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
+  separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
+  vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutTerminationsNestedInput
+  assignment?: Prisma.AssignmentUpdateOneWithoutTerminationsNestedInput
+  ticket?: Prisma.TicketUpdateOneWithoutTerminationNestedInput
+  initiatedBy?: Prisma.UserUpdateOneRequiredWithoutTerminationsInitiatedNestedInput
+  exitSurveyInvite?: Prisma.ExitSurveyInviteUpdateOneWithoutTerminationNestedInput
+  clearance?: Prisma.ExitClearanceUpdateOneWithoutTerminationNestedInput
+  discussion?: Prisma.ResignationDiscussionUpdateOneWithoutTerminationNestedInput
+  replacementRequest?: Prisma.ReplacementRequestUpdateOneWithoutTerminationNestedInput
+  clearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutTerminationNestedInput
+  complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
+  finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
+  trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+}
+
+export type TerminationUncheckedUpdateWithoutDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  vaProfileId?: Prisma.StringFieldUpdateOperationsInput | string
+  assignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumTerminationTypeFieldUpdateOperationsInput | $Enums.TerminationType
+  isVoluntaryResignation?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  affectsBothParties?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  resultingStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowStatus?: Prisma.EnumTerminationWorkflowStatusFieldUpdateOperationsInput | $Enums.TerminationWorkflowStatus
+  ticketId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resignationDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedById?: Prisma.StringFieldUpdateOperationsInput | string
+  effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  trainingPassedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trainingNotedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
+  separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedUpdateOneWithoutTerminationNestedInput
   clearance?: Prisma.ExitClearanceUncheckedUpdateOneWithoutTerminationNestedInput
   discussion?: Prisma.ResignationDiscussionUncheckedUpdateOneWithoutTerminationNestedInput
@@ -1574,6 +1946,11 @@ export type TerminationCreateWithoutDiscussionInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutTerminationsInput
   assignment?: Prisma.AssignmentCreateNestedOneWithoutTerminationsInput
   ticket?: Prisma.TicketCreateNestedOneWithoutTerminationInput
@@ -1585,6 +1962,7 @@ export type TerminationCreateWithoutDiscussionInput = {
   complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
   trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+  documents?: Prisma.TerminationDocumentCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateWithoutDiscussionInput = {
@@ -1609,12 +1987,18 @@ export type TerminationUncheckedCreateWithoutDiscussionInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedCreateNestedOneWithoutTerminationInput
   clearance?: Prisma.ExitClearanceUncheckedCreateNestedOneWithoutTerminationInput
   replacementRequest?: Prisma.ReplacementRequestUncheckedCreateNestedOneWithoutTerminationInput
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+  documents?: Prisma.TerminationDocumentUncheckedCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationCreateOrConnectWithoutDiscussionInput = {
@@ -1650,6 +2034,11 @@ export type TerminationUpdateWithoutDiscussionInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutTerminationsNestedInput
   assignment?: Prisma.AssignmentUpdateOneWithoutTerminationsNestedInput
   ticket?: Prisma.TicketUpdateOneWithoutTerminationNestedInput
@@ -1661,6 +2050,7 @@ export type TerminationUpdateWithoutDiscussionInput = {
   complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
   trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+  documents?: Prisma.TerminationDocumentUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateWithoutDiscussionInput = {
@@ -1685,12 +2075,18 @@ export type TerminationUncheckedUpdateWithoutDiscussionInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedUpdateOneWithoutTerminationNestedInput
   clearance?: Prisma.ExitClearanceUncheckedUpdateOneWithoutTerminationNestedInput
   replacementRequest?: Prisma.ReplacementRequestUncheckedUpdateOneWithoutTerminationNestedInput
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
+  documents?: Prisma.TerminationDocumentUncheckedUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationCreateWithoutReplacementRequestInput = {
@@ -1710,6 +2106,11 @@ export type TerminationCreateWithoutReplacementRequestInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutTerminationsInput
   assignment?: Prisma.AssignmentCreateNestedOneWithoutTerminationsInput
   ticket?: Prisma.TicketCreateNestedOneWithoutTerminationInput
@@ -1721,6 +2122,7 @@ export type TerminationCreateWithoutReplacementRequestInput = {
   complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
   trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+  documents?: Prisma.TerminationDocumentCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateWithoutReplacementRequestInput = {
@@ -1745,12 +2147,18 @@ export type TerminationUncheckedCreateWithoutReplacementRequestInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedCreateNestedOneWithoutTerminationInput
   clearance?: Prisma.ExitClearanceUncheckedCreateNestedOneWithoutTerminationInput
   discussion?: Prisma.ResignationDiscussionUncheckedCreateNestedOneWithoutTerminationInput
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+  documents?: Prisma.TerminationDocumentUncheckedCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationCreateOrConnectWithoutReplacementRequestInput = {
@@ -1786,6 +2194,11 @@ export type TerminationUpdateWithoutReplacementRequestInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutTerminationsNestedInput
   assignment?: Prisma.AssignmentUpdateOneWithoutTerminationsNestedInput
   ticket?: Prisma.TicketUpdateOneWithoutTerminationNestedInput
@@ -1797,6 +2210,7 @@ export type TerminationUpdateWithoutReplacementRequestInput = {
   complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
   trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+  documents?: Prisma.TerminationDocumentUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateWithoutReplacementRequestInput = {
@@ -1821,12 +2235,18 @@ export type TerminationUncheckedUpdateWithoutReplacementRequestInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedUpdateOneWithoutTerminationNestedInput
   clearance?: Prisma.ExitClearanceUncheckedUpdateOneWithoutTerminationNestedInput
   discussion?: Prisma.ResignationDiscussionUncheckedUpdateOneWithoutTerminationNestedInput
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
+  documents?: Prisma.TerminationDocumentUncheckedUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationCreateWithoutClearanceApprovalsInput = {
@@ -1846,6 +2266,11 @@ export type TerminationCreateWithoutClearanceApprovalsInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutTerminationsInput
   assignment?: Prisma.AssignmentCreateNestedOneWithoutTerminationsInput
   ticket?: Prisma.TicketCreateNestedOneWithoutTerminationInput
@@ -1857,6 +2282,7 @@ export type TerminationCreateWithoutClearanceApprovalsInput = {
   complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
   trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+  documents?: Prisma.TerminationDocumentCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateWithoutClearanceApprovalsInput = {
@@ -1881,12 +2307,18 @@ export type TerminationUncheckedCreateWithoutClearanceApprovalsInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedCreateNestedOneWithoutTerminationInput
   clearance?: Prisma.ExitClearanceUncheckedCreateNestedOneWithoutTerminationInput
   discussion?: Prisma.ResignationDiscussionUncheckedCreateNestedOneWithoutTerminationInput
   replacementRequest?: Prisma.ReplacementRequestUncheckedCreateNestedOneWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+  documents?: Prisma.TerminationDocumentUncheckedCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationCreateOrConnectWithoutClearanceApprovalsInput = {
@@ -1922,6 +2354,11 @@ export type TerminationUpdateWithoutClearanceApprovalsInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutTerminationsNestedInput
   assignment?: Prisma.AssignmentUpdateOneWithoutTerminationsNestedInput
   ticket?: Prisma.TicketUpdateOneWithoutTerminationNestedInput
@@ -1933,6 +2370,7 @@ export type TerminationUpdateWithoutClearanceApprovalsInput = {
   complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
   trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+  documents?: Prisma.TerminationDocumentUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateWithoutClearanceApprovalsInput = {
@@ -1957,12 +2395,18 @@ export type TerminationUncheckedUpdateWithoutClearanceApprovalsInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedUpdateOneWithoutTerminationNestedInput
   clearance?: Prisma.ExitClearanceUncheckedUpdateOneWithoutTerminationNestedInput
   discussion?: Prisma.ResignationDiscussionUncheckedUpdateOneWithoutTerminationNestedInput
   replacementRequest?: Prisma.ReplacementRequestUncheckedUpdateOneWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
+  documents?: Prisma.TerminationDocumentUncheckedUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationCreateWithoutComplianceReviewInput = {
@@ -1982,6 +2426,11 @@ export type TerminationCreateWithoutComplianceReviewInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutTerminationsInput
   assignment?: Prisma.AssignmentCreateNestedOneWithoutTerminationsInput
   ticket?: Prisma.TicketCreateNestedOneWithoutTerminationInput
@@ -1993,6 +2442,7 @@ export type TerminationCreateWithoutComplianceReviewInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
   trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+  documents?: Prisma.TerminationDocumentCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateWithoutComplianceReviewInput = {
@@ -2017,12 +2467,18 @@ export type TerminationUncheckedCreateWithoutComplianceReviewInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedCreateNestedOneWithoutTerminationInput
   clearance?: Prisma.ExitClearanceUncheckedCreateNestedOneWithoutTerminationInput
   discussion?: Prisma.ResignationDiscussionUncheckedCreateNestedOneWithoutTerminationInput
   replacementRequest?: Prisma.ReplacementRequestUncheckedCreateNestedOneWithoutTerminationInput
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+  documents?: Prisma.TerminationDocumentUncheckedCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationCreateOrConnectWithoutComplianceReviewInput = {
@@ -2058,6 +2514,11 @@ export type TerminationUpdateWithoutComplianceReviewInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutTerminationsNestedInput
   assignment?: Prisma.AssignmentUpdateOneWithoutTerminationsNestedInput
   ticket?: Prisma.TicketUpdateOneWithoutTerminationNestedInput
@@ -2069,6 +2530,7 @@ export type TerminationUpdateWithoutComplianceReviewInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
   trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+  documents?: Prisma.TerminationDocumentUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateWithoutComplianceReviewInput = {
@@ -2093,12 +2555,18 @@ export type TerminationUncheckedUpdateWithoutComplianceReviewInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedUpdateOneWithoutTerminationNestedInput
   clearance?: Prisma.ExitClearanceUncheckedUpdateOneWithoutTerminationNestedInput
   discussion?: Prisma.ResignationDiscussionUncheckedUpdateOneWithoutTerminationNestedInput
   replacementRequest?: Prisma.ReplacementRequestUncheckedUpdateOneWithoutTerminationNestedInput
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
+  documents?: Prisma.TerminationDocumentUncheckedUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationCreateWithoutFinalPayoutInput = {
@@ -2118,6 +2586,11 @@ export type TerminationCreateWithoutFinalPayoutInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutTerminationsInput
   assignment?: Prisma.AssignmentCreateNestedOneWithoutTerminationsInput
   ticket?: Prisma.TicketCreateNestedOneWithoutTerminationInput
@@ -2129,6 +2602,7 @@ export type TerminationCreateWithoutFinalPayoutInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
   trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+  documents?: Prisma.TerminationDocumentCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateWithoutFinalPayoutInput = {
@@ -2153,12 +2627,18 @@ export type TerminationUncheckedCreateWithoutFinalPayoutInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedCreateNestedOneWithoutTerminationInput
   clearance?: Prisma.ExitClearanceUncheckedCreateNestedOneWithoutTerminationInput
   discussion?: Prisma.ResignationDiscussionUncheckedCreateNestedOneWithoutTerminationInput
   replacementRequest?: Prisma.ReplacementRequestUncheckedCreateNestedOneWithoutTerminationInput
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
+  documents?: Prisma.TerminationDocumentUncheckedCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationCreateOrConnectWithoutFinalPayoutInput = {
@@ -2194,6 +2674,11 @@ export type TerminationUpdateWithoutFinalPayoutInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutTerminationsNestedInput
   assignment?: Prisma.AssignmentUpdateOneWithoutTerminationsNestedInput
   ticket?: Prisma.TicketUpdateOneWithoutTerminationNestedInput
@@ -2205,6 +2690,7 @@ export type TerminationUpdateWithoutFinalPayoutInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
   trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+  documents?: Prisma.TerminationDocumentUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateWithoutFinalPayoutInput = {
@@ -2229,12 +2715,18 @@ export type TerminationUncheckedUpdateWithoutFinalPayoutInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedUpdateOneWithoutTerminationNestedInput
   clearance?: Prisma.ExitClearanceUncheckedUpdateOneWithoutTerminationNestedInput
   discussion?: Prisma.ResignationDiscussionUncheckedUpdateOneWithoutTerminationNestedInput
   replacementRequest?: Prisma.ReplacementRequestUncheckedUpdateOneWithoutTerminationNestedInput
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
+  documents?: Prisma.TerminationDocumentUncheckedUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationCreateWithoutExitSurveyInviteInput = {
@@ -2254,6 +2746,11 @@ export type TerminationCreateWithoutExitSurveyInviteInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutTerminationsInput
   assignment?: Prisma.AssignmentCreateNestedOneWithoutTerminationsInput
   ticket?: Prisma.TicketCreateNestedOneWithoutTerminationInput
@@ -2265,6 +2762,7 @@ export type TerminationCreateWithoutExitSurveyInviteInput = {
   complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
   trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+  documents?: Prisma.TerminationDocumentCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateWithoutExitSurveyInviteInput = {
@@ -2289,12 +2787,18 @@ export type TerminationUncheckedCreateWithoutExitSurveyInviteInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   clearance?: Prisma.ExitClearanceUncheckedCreateNestedOneWithoutTerminationInput
   discussion?: Prisma.ResignationDiscussionUncheckedCreateNestedOneWithoutTerminationInput
   replacementRequest?: Prisma.ReplacementRequestUncheckedCreateNestedOneWithoutTerminationInput
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+  documents?: Prisma.TerminationDocumentUncheckedCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationCreateOrConnectWithoutExitSurveyInviteInput = {
@@ -2330,6 +2834,11 @@ export type TerminationUpdateWithoutExitSurveyInviteInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutTerminationsNestedInput
   assignment?: Prisma.AssignmentUpdateOneWithoutTerminationsNestedInput
   ticket?: Prisma.TicketUpdateOneWithoutTerminationNestedInput
@@ -2341,6 +2850,7 @@ export type TerminationUpdateWithoutExitSurveyInviteInput = {
   complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
   trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+  documents?: Prisma.TerminationDocumentUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateWithoutExitSurveyInviteInput = {
@@ -2365,12 +2875,18 @@ export type TerminationUncheckedUpdateWithoutExitSurveyInviteInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   clearance?: Prisma.ExitClearanceUncheckedUpdateOneWithoutTerminationNestedInput
   discussion?: Prisma.ResignationDiscussionUncheckedUpdateOneWithoutTerminationNestedInput
   replacementRequest?: Prisma.ReplacementRequestUncheckedUpdateOneWithoutTerminationNestedInput
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
+  documents?: Prisma.TerminationDocumentUncheckedUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationCreateWithoutClearanceInput = {
@@ -2390,6 +2906,11 @@ export type TerminationCreateWithoutClearanceInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   vaProfile: Prisma.VAProfileCreateNestedOneWithoutTerminationsInput
   assignment?: Prisma.AssignmentCreateNestedOneWithoutTerminationsInput
   ticket?: Prisma.TicketCreateNestedOneWithoutTerminationInput
@@ -2401,6 +2922,7 @@ export type TerminationCreateWithoutClearanceInput = {
   complianceReview?: Prisma.ComplianceReviewCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutCreateNestedOneWithoutTerminationInput
   trainingNotedBy?: Prisma.UserCreateNestedOneWithoutResignationTrainingNotesInput
+  documents?: Prisma.TerminationDocumentCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationUncheckedCreateWithoutClearanceInput = {
@@ -2425,12 +2947,18 @@ export type TerminationUncheckedCreateWithoutClearanceInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
   exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedCreateNestedOneWithoutTerminationInput
   discussion?: Prisma.ResignationDiscussionUncheckedCreateNestedOneWithoutTerminationInput
   replacementRequest?: Prisma.ReplacementRequestUncheckedCreateNestedOneWithoutTerminationInput
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutTerminationInput
   complianceReview?: Prisma.ComplianceReviewUncheckedCreateNestedOneWithoutTerminationInput
   finalPayout?: Prisma.FinalPayoutUncheckedCreateNestedOneWithoutTerminationInput
+  documents?: Prisma.TerminationDocumentUncheckedCreateNestedManyWithoutTerminationInput
 }
 
 export type TerminationCreateOrConnectWithoutClearanceInput = {
@@ -2466,6 +2994,11 @@ export type TerminationUpdateWithoutClearanceInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutTerminationsNestedInput
   assignment?: Prisma.AssignmentUpdateOneWithoutTerminationsNestedInput
   ticket?: Prisma.TicketUpdateOneWithoutTerminationNestedInput
@@ -2477,6 +3010,7 @@ export type TerminationUpdateWithoutClearanceInput = {
   complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
   trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+  documents?: Prisma.TerminationDocumentUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateWithoutClearanceInput = {
@@ -2501,12 +3035,18 @@ export type TerminationUncheckedUpdateWithoutClearanceInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedUpdateOneWithoutTerminationNestedInput
   discussion?: Prisma.ResignationDiscussionUncheckedUpdateOneWithoutTerminationNestedInput
   replacementRequest?: Prisma.ReplacementRequestUncheckedUpdateOneWithoutTerminationNestedInput
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
+  documents?: Prisma.TerminationDocumentUncheckedUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationCreateManyInitiatedByInput = {
@@ -2530,6 +3070,11 @@ export type TerminationCreateManyInitiatedByInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
 }
 
 export type TerminationCreateManyTrainingNotedByInput = {
@@ -2553,6 +3098,11 @@ export type TerminationCreateManyTrainingNotedByInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
 }
 
 export type TerminationUpdateWithoutInitiatedByInput = {
@@ -2572,6 +3122,11 @@ export type TerminationUpdateWithoutInitiatedByInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutTerminationsNestedInput
   assignment?: Prisma.AssignmentUpdateOneWithoutTerminationsNestedInput
   ticket?: Prisma.TicketUpdateOneWithoutTerminationNestedInput
@@ -2583,6 +3138,7 @@ export type TerminationUpdateWithoutInitiatedByInput = {
   complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
   trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+  documents?: Prisma.TerminationDocumentUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateWithoutInitiatedByInput = {
@@ -2606,6 +3162,11 @@ export type TerminationUncheckedUpdateWithoutInitiatedByInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedUpdateOneWithoutTerminationNestedInput
   clearance?: Prisma.ExitClearanceUncheckedUpdateOneWithoutTerminationNestedInput
   discussion?: Prisma.ResignationDiscussionUncheckedUpdateOneWithoutTerminationNestedInput
@@ -2613,6 +3174,7 @@ export type TerminationUncheckedUpdateWithoutInitiatedByInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
+  documents?: Prisma.TerminationDocumentUncheckedUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateManyWithoutInitiatedByInput = {
@@ -2636,6 +3198,11 @@ export type TerminationUncheckedUpdateManyWithoutInitiatedByInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
 }
 
 export type TerminationUpdateWithoutTrainingNotedByInput = {
@@ -2655,6 +3222,11 @@ export type TerminationUpdateWithoutTrainingNotedByInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutTerminationsNestedInput
   assignment?: Prisma.AssignmentUpdateOneWithoutTerminationsNestedInput
   ticket?: Prisma.TicketUpdateOneWithoutTerminationNestedInput
@@ -2666,6 +3238,7 @@ export type TerminationUpdateWithoutTrainingNotedByInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
+  documents?: Prisma.TerminationDocumentUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateWithoutTrainingNotedByInput = {
@@ -2689,6 +3262,11 @@ export type TerminationUncheckedUpdateWithoutTrainingNotedByInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedUpdateOneWithoutTerminationNestedInput
   clearance?: Prisma.ExitClearanceUncheckedUpdateOneWithoutTerminationNestedInput
   discussion?: Prisma.ResignationDiscussionUncheckedUpdateOneWithoutTerminationNestedInput
@@ -2696,6 +3274,7 @@ export type TerminationUncheckedUpdateWithoutTrainingNotedByInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
+  documents?: Prisma.TerminationDocumentUncheckedUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateManyWithoutTrainingNotedByInput = {
@@ -2719,6 +3298,11 @@ export type TerminationUncheckedUpdateManyWithoutTrainingNotedByInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
 }
 
 export type TerminationCreateManyVaProfileInput = {
@@ -2742,6 +3326,11 @@ export type TerminationCreateManyVaProfileInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
 }
 
 export type TerminationUpdateWithoutVaProfileInput = {
@@ -2761,6 +3350,11 @@ export type TerminationUpdateWithoutVaProfileInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   assignment?: Prisma.AssignmentUpdateOneWithoutTerminationsNestedInput
   ticket?: Prisma.TicketUpdateOneWithoutTerminationNestedInput
   initiatedBy?: Prisma.UserUpdateOneRequiredWithoutTerminationsInitiatedNestedInput
@@ -2772,6 +3366,7 @@ export type TerminationUpdateWithoutVaProfileInput = {
   complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
   trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+  documents?: Prisma.TerminationDocumentUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateWithoutVaProfileInput = {
@@ -2795,6 +3390,11 @@ export type TerminationUncheckedUpdateWithoutVaProfileInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedUpdateOneWithoutTerminationNestedInput
   clearance?: Prisma.ExitClearanceUncheckedUpdateOneWithoutTerminationNestedInput
   discussion?: Prisma.ResignationDiscussionUncheckedUpdateOneWithoutTerminationNestedInput
@@ -2802,6 +3402,7 @@ export type TerminationUncheckedUpdateWithoutVaProfileInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
+  documents?: Prisma.TerminationDocumentUncheckedUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateManyWithoutVaProfileInput = {
@@ -2825,6 +3426,11 @@ export type TerminationUncheckedUpdateManyWithoutVaProfileInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
 }
 
 export type TerminationCreateManyAssignmentInput = {
@@ -2848,6 +3454,11 @@ export type TerminationCreateManyAssignmentInput = {
   separationOutcome?: $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: string | null
   rehireEligibility?: $Enums.RehireEligibility | null
+  meetingDate?: Date | string | null
+  meetingAttendees?: string | null
+  meetingRecordingUrl?: string | null
+  meetingNotes?: string | null
+  meetingDecision?: $Enums.OffboardingMeetingDecision | null
 }
 
 export type TerminationUpdateWithoutAssignmentInput = {
@@ -2867,6 +3478,11 @@ export type TerminationUpdateWithoutAssignmentInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutTerminationsNestedInput
   ticket?: Prisma.TicketUpdateOneWithoutTerminationNestedInput
   initiatedBy?: Prisma.UserUpdateOneRequiredWithoutTerminationsInitiatedNestedInput
@@ -2878,6 +3494,7 @@ export type TerminationUpdateWithoutAssignmentInput = {
   complianceReview?: Prisma.ComplianceReviewUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUpdateOneWithoutTerminationNestedInput
   trainingNotedBy?: Prisma.UserUpdateOneWithoutResignationTrainingNotesNestedInput
+  documents?: Prisma.TerminationDocumentUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateWithoutAssignmentInput = {
@@ -2901,6 +3518,11 @@ export type TerminationUncheckedUpdateWithoutAssignmentInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
   exitSurveyInvite?: Prisma.ExitSurveyInviteUncheckedUpdateOneWithoutTerminationNestedInput
   clearance?: Prisma.ExitClearanceUncheckedUpdateOneWithoutTerminationNestedInput
   discussion?: Prisma.ResignationDiscussionUncheckedUpdateOneWithoutTerminationNestedInput
@@ -2908,6 +3530,7 @@ export type TerminationUncheckedUpdateWithoutAssignmentInput = {
   clearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutTerminationNestedInput
   complianceReview?: Prisma.ComplianceReviewUncheckedUpdateOneWithoutTerminationNestedInput
   finalPayout?: Prisma.FinalPayoutUncheckedUpdateOneWithoutTerminationNestedInput
+  documents?: Prisma.TerminationDocumentUncheckedUpdateManyWithoutTerminationNestedInput
 }
 
 export type TerminationUncheckedUpdateManyWithoutAssignmentInput = {
@@ -2931,6 +3554,11 @@ export type TerminationUncheckedUpdateManyWithoutAssignmentInput = {
   separationOutcome?: Prisma.NullableEnumSeparationOutcomeFieldUpdateOperationsInput | $Enums.SeparationOutcome | null
   separationOutcomeOtherNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   rehireEligibility?: Prisma.NullableEnumRehireEligibilityFieldUpdateOperationsInput | $Enums.RehireEligibility | null
+  meetingDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  meetingAttendees?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingRecordingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meetingDecision?: Prisma.NullableEnumOffboardingMeetingDecisionFieldUpdateOperationsInput | $Enums.OffboardingMeetingDecision | null
 }
 
 
@@ -2940,10 +3568,12 @@ export type TerminationUncheckedUpdateManyWithoutAssignmentInput = {
 
 export type TerminationCountOutputType = {
   clearanceApprovals: number
+  documents: number
 }
 
 export type TerminationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   clearanceApprovals?: boolean | TerminationCountOutputTypeCountClearanceApprovalsArgs
+  documents?: boolean | TerminationCountOutputTypeCountDocumentsArgs
 }
 
 /**
@@ -2961,6 +3591,13 @@ export type TerminationCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.
  */
 export type TerminationCountOutputTypeCountClearanceApprovalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ExitClearanceApprovalWhereInput
+}
+
+/**
+ * TerminationCountOutputType without action
+ */
+export type TerminationCountOutputTypeCountDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TerminationDocumentWhereInput
 }
 
 
@@ -2986,6 +3623,11 @@ export type TerminationSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   separationOutcome?: boolean
   separationOutcomeOtherNote?: boolean
   rehireEligibility?: boolean
+  meetingDate?: boolean
+  meetingAttendees?: boolean
+  meetingRecordingUrl?: boolean
+  meetingNotes?: boolean
+  meetingDecision?: boolean
   vaProfile?: boolean | Prisma.VAProfileDefaultArgs<ExtArgs>
   assignment?: boolean | Prisma.Termination$assignmentArgs<ExtArgs>
   ticket?: boolean | Prisma.Termination$ticketArgs<ExtArgs>
@@ -2998,6 +3640,7 @@ export type TerminationSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   complianceReview?: boolean | Prisma.Termination$complianceReviewArgs<ExtArgs>
   finalPayout?: boolean | Prisma.Termination$finalPayoutArgs<ExtArgs>
   trainingNotedBy?: boolean | Prisma.Termination$trainingNotedByArgs<ExtArgs>
+  documents?: boolean | Prisma.Termination$documentsArgs<ExtArgs>
   _count?: boolean | Prisma.TerminationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["termination"]>
 
@@ -3023,6 +3666,11 @@ export type TerminationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   separationOutcome?: boolean
   separationOutcomeOtherNote?: boolean
   rehireEligibility?: boolean
+  meetingDate?: boolean
+  meetingAttendees?: boolean
+  meetingRecordingUrl?: boolean
+  meetingNotes?: boolean
+  meetingDecision?: boolean
   vaProfile?: boolean | Prisma.VAProfileDefaultArgs<ExtArgs>
   assignment?: boolean | Prisma.Termination$assignmentArgs<ExtArgs>
   ticket?: boolean | Prisma.Termination$ticketArgs<ExtArgs>
@@ -3052,6 +3700,11 @@ export type TerminationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   separationOutcome?: boolean
   separationOutcomeOtherNote?: boolean
   rehireEligibility?: boolean
+  meetingDate?: boolean
+  meetingAttendees?: boolean
+  meetingRecordingUrl?: boolean
+  meetingNotes?: boolean
+  meetingDecision?: boolean
   vaProfile?: boolean | Prisma.VAProfileDefaultArgs<ExtArgs>
   assignment?: boolean | Prisma.Termination$assignmentArgs<ExtArgs>
   ticket?: boolean | Prisma.Termination$ticketArgs<ExtArgs>
@@ -3081,9 +3734,14 @@ export type TerminationSelectScalar = {
   separationOutcome?: boolean
   separationOutcomeOtherNote?: boolean
   rehireEligibility?: boolean
+  meetingDate?: boolean
+  meetingAttendees?: boolean
+  meetingRecordingUrl?: boolean
+  meetingNotes?: boolean
+  meetingDecision?: boolean
 }
 
-export type TerminationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vaProfileId" | "assignmentId" | "type" | "isVoluntaryResignation" | "affectsBothParties" | "resultingStatus" | "reason" | "workflowStatus" | "ticketId" | "resignationDocUrl" | "initiatedById" | "effectiveDate" | "completedAt" | "createdAt" | "updatedAt" | "trainingPassedAt" | "trainingNotedById" | "separationOutcome" | "separationOutcomeOtherNote" | "rehireEligibility", ExtArgs["result"]["termination"]>
+export type TerminationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vaProfileId" | "assignmentId" | "type" | "isVoluntaryResignation" | "affectsBothParties" | "resultingStatus" | "reason" | "workflowStatus" | "ticketId" | "resignationDocUrl" | "initiatedById" | "effectiveDate" | "completedAt" | "createdAt" | "updatedAt" | "trainingPassedAt" | "trainingNotedById" | "separationOutcome" | "separationOutcomeOtherNote" | "rehireEligibility" | "meetingDate" | "meetingAttendees" | "meetingRecordingUrl" | "meetingNotes" | "meetingDecision", ExtArgs["result"]["termination"]>
 export type TerminationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vaProfile?: boolean | Prisma.VAProfileDefaultArgs<ExtArgs>
   assignment?: boolean | Prisma.Termination$assignmentArgs<ExtArgs>
@@ -3097,6 +3755,7 @@ export type TerminationInclude<ExtArgs extends runtime.Types.Extensions.Internal
   complianceReview?: boolean | Prisma.Termination$complianceReviewArgs<ExtArgs>
   finalPayout?: boolean | Prisma.Termination$finalPayoutArgs<ExtArgs>
   trainingNotedBy?: boolean | Prisma.Termination$trainingNotedByArgs<ExtArgs>
+  documents?: boolean | Prisma.Termination$documentsArgs<ExtArgs>
   _count?: boolean | Prisma.TerminationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TerminationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3129,6 +3788,7 @@ export type $TerminationPayload<ExtArgs extends runtime.Types.Extensions.Interna
     complianceReview: Prisma.$ComplianceReviewPayload<ExtArgs> | null
     finalPayout: Prisma.$FinalPayoutPayload<ExtArgs> | null
     trainingNotedBy: Prisma.$UserPayload<ExtArgs> | null
+    documents: Prisma.$TerminationDocumentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3152,6 +3812,11 @@ export type $TerminationPayload<ExtArgs extends runtime.Types.Extensions.Interna
     separationOutcome: $Enums.SeparationOutcome | null
     separationOutcomeOtherNote: string | null
     rehireEligibility: $Enums.RehireEligibility | null
+    meetingDate: Date | null
+    meetingAttendees: string | null
+    meetingRecordingUrl: string | null
+    meetingNotes: string | null
+    meetingDecision: $Enums.OffboardingMeetingDecision | null
   }, ExtArgs["result"]["termination"]>
   composites: {}
 }
@@ -3558,6 +4223,7 @@ export interface Prisma__TerminationClient<T, Null = never, ExtArgs extends runt
   complianceReview<T extends Prisma.Termination$complianceReviewArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Termination$complianceReviewArgs<ExtArgs>>): Prisma.Prisma__ComplianceReviewClient<runtime.Types.Result.GetResult<Prisma.$ComplianceReviewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   finalPayout<T extends Prisma.Termination$finalPayoutArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Termination$finalPayoutArgs<ExtArgs>>): Prisma.Prisma__FinalPayoutClient<runtime.Types.Result.GetResult<Prisma.$FinalPayoutPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   trainingNotedBy<T extends Prisma.Termination$trainingNotedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Termination$trainingNotedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  documents<T extends Prisma.Termination$documentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Termination$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TerminationDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3608,6 +4274,11 @@ export interface TerminationFieldRefs {
   readonly separationOutcome: Prisma.FieldRef<"Termination", 'SeparationOutcome'>
   readonly separationOutcomeOtherNote: Prisma.FieldRef<"Termination", 'String'>
   readonly rehireEligibility: Prisma.FieldRef<"Termination", 'RehireEligibility'>
+  readonly meetingDate: Prisma.FieldRef<"Termination", 'DateTime'>
+  readonly meetingAttendees: Prisma.FieldRef<"Termination", 'String'>
+  readonly meetingRecordingUrl: Prisma.FieldRef<"Termination", 'String'>
+  readonly meetingNotes: Prisma.FieldRef<"Termination", 'String'>
+  readonly meetingDecision: Prisma.FieldRef<"Termination", 'OffboardingMeetingDecision'>
 }
     
 
@@ -4201,6 +4872,30 @@ export type Termination$trainingNotedByArgs<ExtArgs extends runtime.Types.Extens
    */
   include?: Prisma.UserInclude<ExtArgs> | null
   where?: Prisma.UserWhereInput
+}
+
+/**
+ * Termination.documents
+ */
+export type Termination$documentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TerminationDocument
+   */
+  select?: Prisma.TerminationDocumentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TerminationDocument
+   */
+  omit?: Prisma.TerminationDocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TerminationDocumentInclude<ExtArgs> | null
+  where?: Prisma.TerminationDocumentWhereInput
+  orderBy?: Prisma.TerminationDocumentOrderByWithRelationInput | Prisma.TerminationDocumentOrderByWithRelationInput[]
+  cursor?: Prisma.TerminationDocumentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TerminationDocumentScalarFieldEnum | Prisma.TerminationDocumentScalarFieldEnum[]
 }
 
 /**

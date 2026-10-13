@@ -186,6 +186,14 @@ enum TerminationType {
   VAA_INITIATED // Type C — VAA-initiated (resignation or removal)
 }
 
+// What the end-of-contract meeting decided (Termination.meetingDecision).
+enum OffboardingMeetingDecision {
+  END_CONFIRMED
+  EXTENDED
+  REASSIGNED
+  OTHER
+}
+
 // FB-0006 (2026-09 HR feedback): the "TYPE OF SEPARATION" checkbox list from the
 // official TEMPLATE VAA PH | EXIT CLEARANCE FORM — a manual reclassification,
 // independent of (and finer-grained than) TerminationType above.
@@ -496,6 +504,7 @@ model User {
   onboardingInvite             VAOnboardingInvite?
   onboardingInvitesCreated     VAOnboardingInvite[]   @relation("OnboardingInviteCreator")
   terminationsInitiated        Termination[]          @relation("TerminationInitiator")
+  terminationDocumentsAdded    TerminationDocument[]  @relation("TerminationDocumentAddedBy")
   clearancesCleared            ExitClearance[]        @relation("ClearanceClearedBy")
   agentDecisions               AgentSuggestion[]      @relation("AgentSuggestionDecidedBy")
   assignmentKpiChecksCompleted AssignmentKpiCheck[]   @relation("AssignmentKpiCheckCompletedBy")
@@ -1194,6 +1203,23 @@ model TicketConversation {
 // MODELS — Phase 5: Offboarding
 // ──────────────────────────────────────────────────────────────────
 
+// Proof attached to an offboarding case — the client's confirmation email,
+// the EOC notice, turnover notes. Links (Drive or any URL), same as
+// Termination.resignationDocUrl; files themselves stay in Drive.
+model TerminationDocument {
+  id            String      @id @default(cuid())
+  terminationId String      @map("termination_id")
+  termination   Termination @relation(fields: [terminationId], references: [id], onDelete: Cascade)
+  label         String
+  url           String
+  addedById     String?     @map("added_by_id")
+  addedBy       User?       @relation("TerminationDocumentAddedBy", fields: [addedById], references: [id], onDelete: SetNull)
+  createdAt     DateTime    @default(now()) @map("created_at")
+
+  @@index([terminationId])
+  @@map("termination_documents")
+}
+
 model Termination {
   id                     String                    @id @default(cuid())
   vaProfileId            String                    @map("va_profile_id")
@@ -1245,6 +1271,17 @@ model Termination {
   separationOutcome          SeparationOutcome? @map("separation_outcome")
   separationOutcomeOtherNote String?            @map("separation_outcome_other_note")
   rehireEligibility          RehireEligibility? @map("rehire_eligibility")
+
+  // End-of-contract meeting (Business Ops meeting, 2026-10-12): what was
+  // discussed with the client/VA when the engagement ended and what was
+  // decided, so a contract end can be verified later without digging through
+  // chats. Resignations record theirs in ResignationDiscussion instead.
+  meetingDate         DateTime?                   @map("meeting_date")
+  meetingAttendees    String?                     @map("meeting_attendees")
+  meetingRecordingUrl String?                     @map("meeting_recording_url")
+  meetingNotes        String?                     @map("meeting_notes")
+  meetingDecision     OffboardingMeetingDecision? @map("meeting_decision")
+  documents           TerminationDocument[]
 
   @@index([vaProfileId])
   @@index([assignmentId])
