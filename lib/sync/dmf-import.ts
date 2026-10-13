@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { logAudit } from '@/lib/audit'
-import { computeKpiCheckpoints } from '@/lib/kpi-checks'
+import { computeKpiCheckpoints, getDepartmentKpiMilestones } from '@/lib/kpi-checks'
 import { fetchDmfTabRows, fetchDmfTabValues, resolveDmfTabTitle, zipDmfRows, type RawDmfRow } from '@/lib/google/dmf-sheet'
 import { parseDmfDate, parseDmfBool, parseDmfNumber, rowLabel } from '@/lib/sync/dmf-parse'
 import { buildDmfIndexes, matchName, pickAssignment, normalizeName, type DmfIndexes } from '@/lib/sync/dmf-match'
@@ -230,8 +230,8 @@ async function resolveOrCreateAssignment(
     summary.created++
 
     // Mirrors what the app's own createAssignment() Server Action seeds on
-    // every new Assignment — an empty AssignmentPreparation row and the 7
-    // fixed KPI checkpoints — so this Assignment behaves identically to one
+    // every new Assignment — an empty AssignmentPreparation row and the
+    // department's KPI checkpoints — so this Assignment behaves identically to one
     // created through the UI, and the update() calls later in this same
     // import run (VA Preparation's own fields, KPI completion flags) have
     // something to attach to instead of failing on a missing row.
@@ -239,7 +239,7 @@ async function resolveOrCreateAssignment(
       data: { assignmentId: newAssignmentId, targetStartDate: targetDate },
     })
     await prisma.assignmentKpiCheck.createMany({
-      data: computeKpiCheckpoints(targetDate).map(({ milestone, dueDate }) => ({
+      data: computeKpiCheckpoints(targetDate, await getDepartmentKpiMilestones(departmentId)).map(({ milestone, dueDate }) => ({
         assignmentId: newAssignmentId,
         milestone,
         dueDate,
@@ -566,7 +566,11 @@ export async function importVaPreparation(
 
 // ── Performance Monitoring ─────────────────────────────────────────
 
-const KPI_CHECK_COLUMNS: Record<KpiMilestone, string> = {
+// The sheet only has columns for its own seven milestones — D1 is an in-app
+// addition (FB-0015) with nothing to import.
+type SheetKpiMilestone = Exclude<KpiMilestone, 'D1'>
+
+const KPI_CHECK_COLUMNS: Record<SheetKpiMilestone, string> = {
   D4: 'KPI D4 CHECK',
   W1: 'KPI W1 CHECK',
   W2: 'KPI W2 CHECK',
@@ -586,7 +590,7 @@ const KPI_CHECK_COLUMNS: Record<KpiMilestone, string> = {
 //    calls are its own "First 20H Call" / "First Week Call", in D4/W1's place;
 //  - Creatives drops the W2/M6 prefix from its two feedback blocks, which
 //    repeat the same six names, so the first block is W2 and the second M6.
-const KPI_DUE_COLUMNS: Record<KpiMilestone, string[]> = {
+const KPI_DUE_COLUMNS: Record<SheetKpiMilestone, string[]> = {
   D4: ['KPI D4', 'KPI CHECK (4TH DAY)', 'FIRST 20H CALL (PROJECT BASED ONLY)'],
   W1: ['KPI W1', 'FIRST WEEK CALL', 'FIRST WEEK CALL (FIXED HOURS ONLY)'],
   W2: ['KPI W2', 'SECOND WEEK CALL'],
@@ -609,7 +613,7 @@ export function canonicalPerformanceHeader(header: string[], rows: string[][]): 
     const legacy = upper.indexOf('KPI M4 CHECK')
     if (legacy >= 0) out[legacy] = 'KPI M6 CHECK'
   }
-  for (const [milestone, dueNames] of Object.entries(KPI_DUE_COLUMNS) as [KpiMilestone, string[]][]) {
+  for (const [milestone, dueNames] of Object.entries(KPI_DUE_COLUMNS) as [SheetKpiMilestone, string[]][]) {
     const checkName = KPI_CHECK_COLUMNS[milestone]
     if (out.includes(checkName)) continue
     const due = upper.findIndex((h) => dueNames.includes(h))
@@ -741,6 +745,7 @@ export async function importPerformanceMonitoring(
       select: { id: true, milestone: true, completed: true },
     })
     for (const check of checks) {
+      if (check.milestone === 'D1') continue
       const column = KPI_CHECK_COLUMNS[check.milestone]
       if (!parseDmfBool(row[column])) continue
       if (check.completed) continue // already done in-app; don't touch completedAt/completedById

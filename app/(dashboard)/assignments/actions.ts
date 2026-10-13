@@ -7,10 +7,11 @@ import { redirect } from 'next/navigation'
 import { requireRole, ASSIGNMENT_MUTATOR_ROLES } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
 import { notify } from '@/lib/notifications'
-import { computeKpiCheckpoints } from '@/lib/kpi-checks'
+import { computeKpiCheckpoints, getDepartmentKpiMilestones, KPI_MILESTONES } from '@/lib/kpi-checks'
 import { getMutateScope, assertClientInScope, assertAssignmentInScope, assertVAProfileInScope } from '@/lib/scope'
 import { ACTIVE_VA_PROFILE_WHERE } from '@/lib/active-va'
 import type { AssignmentStatus } from '@/src/generated/prisma/enums'
+import { applyAssignmentStatus } from '@/lib/assignment-status'
 
 export async function createAssignment(formData: FormData) {
   const actor = await requireRole(...ASSIGNMENT_MUTATOR_ROLES)
@@ -65,15 +66,16 @@ export async function createAssignment(formData: FormData) {
       notes,
     },
     include: {
-      client: { select: { name: true } },
+      client: { select: { name: true, departmentId: true } },
       vaProfile: { select: { userId: true } },
     },
   })
 
-  // Seeds the 7 fixed KPI check-in milestones (Day 4/Week 1/Week 2/Month
-  // 1/2/3/6) for this assignment up front — see lib/kpi-checks.ts.
+  // Seeds the client's department's KPI check-in milestones (by default the
+  // sheet's Day 4/Week 1/Week 2/Month 1/2/3/6) up front — see lib/kpi-checks.ts.
+  const milestones = await getDepartmentKpiMilestones(assignment.client.departmentId)
   await prisma.assignmentKpiCheck.createMany({
-    data: computeKpiCheckpoints(startDate).map(({ milestone, dueDate }) => ({
+    data: computeKpiCheckpoints(startDate, milestones).map(({ milestone, dueDate }) => ({
       assignmentId: assignment.id,
       milestone,
       dueDate,
@@ -152,7 +154,9 @@ export async function updateAssignment(id: string, formData: FormData) {
   // happened.
   if (startDate.getTime() !== before.startDate.getTime()) {
     await Promise.all(
-      computeKpiCheckpoints(startDate).map(({ milestone, dueDate }) =>
+      // Every milestone, not just the department's current schedule: only
+      // rows this assignment actually has are matched.
+      computeKpiCheckpoints(startDate, KPI_MILESTONES).map(({ milestone, dueDate }) =>
         prisma.assignmentKpiCheck.updateMany({
           where: { assignmentId: id, milestone, completed: false },
           data: { dueDate },
@@ -213,7 +217,7 @@ export async function addAdditionalHours(parentId: string, formData: FormData) {
       endDate: true,
       clientId: true,
       vaProfileId: true,
-      client: { select: { name: true } },
+      client: { select: { name: true, departmentId: true } },
       vaProfile: { select: { userId: true } },
     },
   })
@@ -254,8 +258,9 @@ export async function addAdditionalHours(parentId: string, formData: FormData) {
     select: { id: true },
   })
 
+  const milestones = await getDepartmentKpiMilestones(parent.client.departmentId)
   await prisma.assignmentKpiCheck.createMany({
-    data: computeKpiCheckpoints(startDate).map(({ milestone, dueDate }) => ({
+    data: computeKpiCheckpoints(startDate, milestones).map(({ milestone, dueDate }) => ({
       assignmentId: addOn.id,
       milestone,
       dueDate,
@@ -331,13 +336,16 @@ export async function completeKpiCheck(checkId: string) {
   revalidateTag(CACHE_TAGS.dashboard, 'default')
 }
 
+const ASSIGNMENT_STATUSES: AssignmentStatus[] = ['ACTIVE', 'PAUSED', 'ON_HOLD', 'COMPLETED', 'CANCELLED']
+
 export async function updateAssignmentStatus(id: string, status: string) {
   const actor = await requireRole(...ASSIGNMENT_MUTATOR_ROLES)
   await assertAssignmentInScope(await getMutateScope(actor), id)
+  if (!ASSIGNMENT_STATUSES.includes(status as AssignmentStatus)) throw new Error('Invalid status')
 
   const before = await prisma.assignment.findUnique({
     where: { id },
-    select: { status: true, source: true, parentAssignmentId: true },
+    select: { source: true, parentAssignmentId: true },
   })
 
   // Synced Assignments are owned by the VAConnections sheet import — manual edits
@@ -346,45 +354,15 @@ export async function updateAssignmentStatus(id: string, status: string) {
     throw new Error('This assignment is synced from the VAConnections sheet and cannot be edited here.')
   }
 
-  await prisma.assignment.update({ where: { id }, data: { status: status as AssignmentStatus } })
-
-  await logAudit({
-    actorId: actor.id,
-    action: 'STATUS_CHANGE',
-    entityType: 'Assignment',
-    entityId: id,
-    before: before ? { status: before.status } : undefined,
-    after: { status },
-  })
-
-  // Ending an engagement ends the additional hours on it too — otherwise a
-  // still-ACTIVE add-on would keep counting toward the VA's hours on VA
-  // Availability after the VA has stopped working the account.
-  if (status === 'COMPLETED' || status === 'CANCELLED') {
-    const addOns = await prisma.assignment.findMany({
-      where: { parentAssignmentId: id, status: { in: ['ACTIVE', 'PAUSED'] } },
-      select: { id: true, status: true },
-    })
-    if (addOns.length > 0) {
-      await prisma.assignment.updateMany({
-        where: { id: { in: addOns.map((a) => a.id) } },
-        data: { status: status as AssignmentStatus },
-      })
-      for (const a of addOns) {
-        await logAudit({
-          actorId: actor.id,
-          action: 'STATUS_CHANGE',
-          entityType: 'Assignment',
-          entityId: a.id,
-          before: { status: a.status },
-          after: { status, cascadedFrom: id },
-        })
-      }
-    }
-  }
+  // Mirrors onto VA Preparation's VA STATUS WITH CLIENT and ends add-ons
+  // with their engagement — see lib/assignment-status.ts.
+  await applyAssignmentStatus({ actorId: actor.id, assignmentId: id, status: status as AssignmentStatus })
 
   revalidatePath('/assignments')
   revalidatePath(`/assignments/${id}`)
   if (before?.parentAssignmentId) revalidatePath(`/assignments/${before.parentAssignmentId}`)
+  revalidatePath('/va-preparation')
+  revalidatePath('/performance')
   revalidateTag(CACHE_TAGS.assignments, 'default')
+  revalidateTag(CACHE_TAGS.dashboard, 'default')
 }

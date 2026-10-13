@@ -42,12 +42,14 @@ export async function getPerformanceRows(scope: Scope): Promise<PerformanceRow[]
   const assignments = await prisma.assignment.findMany({
     where: {
       // Cancelled engagements never ran, so there's nothing to monitor; a
-      // completed one still carries its history and stays visible.
-      status: { in: ['ACTIVE', 'COMPLETED'] },
+      // completed one still carries its history and stays visible, and a
+      // paused one is still the department's to follow up (FB-0014).
+      status: { in: ['ACTIVE', 'PAUSED', 'ON_HOLD', 'COMPLETED'] },
       ...assignmentScopeWhere(scope),
     },
     select: {
       id: true,
+      status: true,
       startDate: true,
       endDate: true,
       client: { select: { name: true, department: { select: { name: true } } } },
@@ -87,6 +89,9 @@ export async function getPerformanceRows(scope: Scope): Promise<PerformanceRow[]
   const now = new Date()
 
   return assignments.map((a) => {
+    // While the client has the VA paused nobody is holding the check-in, so
+    // a due date passing isn't the department falling behind.
+    const paused = a.status === 'PAUSED' || a.status === 'ON_HOLD'
     const byMilestone = new Map(a.kpiChecks.map((c) => [c.milestone, c]))
     const kpi = KPI_MILESTONES.flatMap((m) => {
       const c = byMilestone.get(m)
@@ -101,7 +106,7 @@ export async function getPerformanceRows(scope: Scope): Promise<PerformanceRow[]
           dueDate: c.dueDate.toISOString(),
           completed: c.completed,
           completedAt: iso(c.completedAt),
-          overdue: !c.completed && c.dueDate < now,
+          overdue: !paused && !c.completed && c.dueDate < now,
           late: c.completed && c.completedAt !== null && c.completedAt > c.dueDate,
           notes: c.notes,
         },
@@ -132,6 +137,7 @@ export async function getPerformanceRows(scope: Scope): Promise<PerformanceRow[]
 
     return {
       assignmentId: a.id,
+      status: a.status,
       vaProfileId: a.vaProfile.id,
       vaName: fullName(a.vaProfile.user) ?? 'Unknown VA',
       clientName: a.client.name,

@@ -11,7 +11,15 @@ import {
 } from '@/lib/auth'
 import { getMutateScope, assertAssignmentInScope } from '@/lib/scope'
 import { logAudit } from '@/lib/audit'
-import { CHECKLIST_FIELDS, CLIENT_STATUS_LABELS, requiresEffectivityDate, resolveClientStatus } from '@/lib/va-preparation-fields'
+import {
+  CHECKLIST_FIELDS,
+  CLIENT_STATUS_LABELS,
+  CLIENT_TO_ASSIGNMENT_STATUS,
+  requiresEffectivityDate,
+  resolveClientStatus,
+  startStatusAfter,
+} from '@/lib/va-preparation-fields'
+import { applyAssignmentStatus } from '@/lib/assignment-status'
 import { ACTIVE_VA_PROFILE_WHERE, ACTIVE_VA_USER_WHERE } from '@/lib/active-va'
 import { teamLeaderUserWhere } from '@/lib/teams'
 import type { PreparationStepStatus, PreparationClientStatus } from '@/src/generated/prisma/enums'
@@ -85,6 +93,8 @@ export async function updatePreparation(preparationId: string, formData: FormDat
     return { error: 'An effectivity date is required when the status is Paused, End of Work or Cancelled' }
   }
 
+  const clientStatusChanged = clientStatus !== before.clientStatus
+
   // The pickers only offer Team Leaders (person in-charge) and active VAs
   // (shadow trainer, buffers); hold the server to the same lists. A value the
   // record already had is kept even if that person no longer qualifies, so
@@ -117,7 +127,8 @@ export async function updatePreparation(preparationId: string, formData: FormDat
     // fetched", not DM/OM-editable (unlike e.g. vaBuffers, which is
     // genuinely orange/editable there). They're only ever populated by the
     // DMF import; a manager can view but not retype them, same as VA NAME/
-    // TEAM/PRIMARY ACCOUNT already are.
+    // TEAM/PRIMARY ACCOUNT already are. The one exception is startStatus
+    // following a cancellation (startStatusAfter, below).
     //
     // vaBuffers (legacy text) is only ever cleared here, once a manager
     // dismisses it — buffers are picked from the VA list instead.
@@ -139,6 +150,9 @@ export async function updatePreparation(preparationId: string, formData: FormDat
 
     clientStatus,
     effectivityDate,
+    // Only moved by an actual status change, so saving an unrelated field
+    // never rewrites a start status the DMF import brought in.
+    startStatus: clientStatusChanged ? startStatusAfter(before.startStatus, clientStatus) : before.startStatus,
     statusReason: text(formData, 'statusReason'),
     replacementNote: text(formData, 'replacementNote'),
     replacedById: text(formData, 'replacedById'),
@@ -164,6 +178,23 @@ export async function updatePreparation(preparationId: string, formData: FormDat
     before: { clientStatus: before.clientStatus, vaConnectStatus: before.vaConnectStatus, bufferIds: existingBufferIds },
     after: { clientStatus: data.clientStatus, vaConnectStatus: data.vaConnectStatus, bufferIds },
   })
+
+  // Paused / End of Work / Cancelled here is the engagement's real status
+  // (FB-0014): mirror it onto the Assignment, which is what VA Availability,
+  // Performance Monitoring and the hours cron read. A blank status leaves the
+  // Assignment alone.
+  if (clientStatusChanged && clientStatus) {
+    await applyAssignmentStatus({
+      actorId: actor.id,
+      assignmentId: before.assignmentId,
+      status: CLIENT_TO_ASSIGNMENT_STATUS[clientStatus],
+      syncPreparation: false,
+      effectiveDate: effectivityDate,
+    })
+    revalidatePath('/assignments')
+    revalidatePath(`/assignments/${before.assignmentId}`)
+    revalidatePath('/performance')
+  }
 
   revalidatePreparation()
   return { ok: true }

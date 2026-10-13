@@ -133,6 +133,7 @@ export const DepartmentScalarFieldEnum = {
   acronym: 'acronym',
   level: 'level',
   status: 'status',
+  kpiMilestones: 'kpiMilestones',
   parentId: 'parentId',
   mergedIntoId: 'mergedIntoId',
   splitFromId: 'splitFromId',

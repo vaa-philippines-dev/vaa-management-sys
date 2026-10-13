@@ -195,7 +195,15 @@ export function PerformanceBoard({
                     <Link href={`/vas/${r.vaProfileId}`} className="font-medium hover:text-primary">
                       {r.vaName}
                     </Link>
-                    <div className="text-xs text-muted-foreground">{r.clientName}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {r.clientName}
+                      {(r.status === 'PAUSED' || r.status === 'ON_HOLD') && (
+                        <Badge variant="outline" className="ml-1.5 text-[10px] py-0 px-1.5">Paused</Badge>
+                      )}
+                      {r.status === 'COMPLETED' && (
+                        <Badge variant="secondary" className="ml-1.5 text-[10px] py-0 px-1.5">Ended</Badge>
+                      )}
+                    </div>
                     <div className="text-xs text-muted-foreground/70">
                       {[r.teamName, r.expertiseGroup].filter(Boolean).join(' · ')}
                     </div>

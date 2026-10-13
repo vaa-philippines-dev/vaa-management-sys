@@ -346,6 +346,10 @@ model Department {
   acronym      String?
   level        DepartmentLevel?
   status       DepartmentStatus @default(ACTIVE)
+  // Which KPI check-in milestones this department runs (FB-0015). Empty means
+  // the DMF sheet's default seven — see resolveKpiMilestones() in
+  // lib/kpi-checks-labels.ts. Edited from /performance.
+  kpiMilestones KpiMilestone[]  @default([]) @map("kpi_milestones")
   parentId     String?          @map("parent_id")
   parent       Department?      @relation("DeptHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
   children     Department[]     @relation("DeptHierarchy")
@@ -1084,6 +1088,9 @@ model Assignment {
 // a completed checkpoint's due date must stay historical even if the
 // assignment's startDate is corrected later.
 enum KpiMilestone {
+  // Day 1 call — not one of the sheet's original seven; departments opt in
+  // through Department.kpiMilestones (EA runs one, FB-0015).
+  D1
   D4
   W1
   W2

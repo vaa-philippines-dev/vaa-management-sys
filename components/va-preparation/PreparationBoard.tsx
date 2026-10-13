@@ -792,7 +792,9 @@ export function PreparationBoard({
                     ))}
                   </Select>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Left blank, it becomes Active once VA Connect is marked Done.
+                    Left blank, it becomes Active once VA Connect is marked Done. Paused, End of Work and
+                    Cancelled also update the assignment itself; Cancelled before the VA starts marks the
+                    client request Cancelled.
                   </p>
                 </div>
                 <div className="space-y-1.5">

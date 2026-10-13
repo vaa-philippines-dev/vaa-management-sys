@@ -418,6 +418,7 @@ export type GeneralStatus = (typeof GeneralStatus)[keyof typeof GeneralStatus]
 
 
 export const KpiMilestone = {
+  D1: 'D1',
   D4: 'D4',
   W1: 'W1',
   W2: 'W2',

@@ -3,10 +3,12 @@
 import { prisma } from '@/lib/prisma'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { CACHE_TAGS } from '@/lib/cache'
-import { requireRole, getCurrentUser, ASSIGNMENT_MUTATOR_ROLES } from '@/lib/auth'
-import { getMutateScope, assertAssignmentInScope as assertInScope } from '@/lib/scope'
+import { requireRole, getCurrentUser, ASSIGNMENT_MUTATOR_ROLES, KPI_SCHEDULE_ROLES } from '@/lib/auth'
+import { getMutateScope, assertAssignmentInScope as assertInScope, assertDepartmentInScope } from '@/lib/scope'
 import { logAudit } from '@/lib/audit'
-import type { FeedbackWindow, ClientResponseStatus } from '@/src/generated/prisma/enums'
+import { computeKpiCheckpoints } from '@/lib/kpi-checks'
+import { KPI_MILESTONES, resolveKpiMilestones } from '@/lib/kpi-checks-labels'
+import type { FeedbackWindow, ClientResponseStatus, KpiMilestone } from '@/src/generated/prisma/enums'
 
 async function assertAssignmentInScope(
   actor: Awaited<ReturnType<typeof getCurrentUser>>,
@@ -149,4 +151,72 @@ export async function setKpiCheckCompleted(checkId: string, formData: FormData) 
 
   revalidatePerformance()
   return { ok: true, late }
+}
+
+// A department's KPI check-in schedule (FB-0015 — e.g. EA's Day 1 call).
+// New engagements are seeded from it (getDepartmentKpiMilestones). Running
+// engagements are brought in line only going forward: a milestone added
+// here is created where it's still ahead of them, and one removed is dropped
+// where it's still ahead and untouched. Nothing already due is fabricated or
+// erased — a Day 1 call added today doesn't make every live engagement
+// overdue, and a check-in someone already took notes on stays.
+export async function updateKpiSchedule(departmentId: string, milestones: string[]) {
+  const actor = await requireRole(...KPI_SCHEDULE_ROLES)
+  assertDepartmentInScope(await getMutateScope(actor), departmentId)
+
+  const selected = KPI_MILESTONES.filter((m) => milestones.includes(m))
+  if (selected.length === 0) return { error: 'Pick at least one check-in' }
+
+  const dept = await prisma.department.findUnique({ where: { id: departmentId }, select: { kpiMilestones: true } })
+  if (!dept) return { error: 'Department not found' }
+  const previous = resolveKpiMilestones(dept.kpiMilestones)
+  const added = selected.filter((m) => !previous.includes(m))
+  const removed = previous.filter((m) => !selected.includes(m))
+
+  await prisma.department.update({ where: { id: departmentId }, data: { kpiMilestones: selected } })
+
+  const today = new Date(`${new Date().toISOString().slice(0, 10)}T00:00:00.000Z`)
+  const running = { status: { in: ['ACTIVE', 'PAUSED'] as ('ACTIVE' | 'PAUSED')[] }, client: { departmentId } }
+
+  let createdChecks = 0
+  if (added.length > 0) {
+    const assignments = await prisma.assignment.findMany({ where: running, select: { id: true, startDate: true } })
+    const data = assignments.flatMap((a) =>
+      computeKpiCheckpoints(a.startDate, added)
+        .filter((c) => c.dueDate >= today)
+        .map((c) => ({ assignmentId: a.id, milestone: c.milestone as KpiMilestone, dueDate: c.dueDate }))
+    )
+    if (data.length > 0) {
+      createdChecks = (await prisma.assignmentKpiCheck.createMany({ data, skipDuplicates: true })).count
+    }
+  }
+
+  let removedChecks = 0
+  if (removed.length > 0) {
+    removedChecks = (
+      await prisma.assignmentKpiCheck.deleteMany({
+        where: {
+          milestone: { in: removed },
+          completed: false,
+          notes: null,
+          dueDate: { gte: today },
+          assignment: running,
+        },
+      })
+    ).count
+  }
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'UPDATE',
+    entityType: 'Department',
+    entityId: departmentId,
+    departmentId,
+    before: { kpiMilestones: previous },
+    after: { kpiMilestones: selected, createdChecks, removedChecks },
+  })
+
+  revalidatePerformance()
+  revalidatePath('/tmf')
+  return { ok: true, createdChecks, removedChecks }
 }

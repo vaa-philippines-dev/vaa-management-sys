@@ -3,6 +3,14 @@
 import { Button } from '@/components/ui/button'
 import { updateAssignmentStatus } from '@/app/(dashboard)/assignments/actions'
 
+// Button label per target status — the action, not the raw enum.
+const ACTION_LABELS: Record<string, string> = {
+  ACTIVE: 'Resume',
+  PAUSED: 'Pause',
+  COMPLETED: 'Complete',
+  CANCELLED: 'Cancel',
+}
+
 export function AssignmentStatusButtons({
   id,
   current,
@@ -13,6 +21,7 @@ export function AssignmentStatusButtons({
   const transitions: Record<string, string[]> = {
     ACTIVE: ['PAUSED', 'COMPLETED', 'CANCELLED'],
     PAUSED: ['ACTIVE', 'CANCELLED'],
+    ON_HOLD: ['ACTIVE', 'CANCELLED'],
     COMPLETED: [],
     CANCELLED: ['ACTIVE'],
   }
@@ -26,7 +35,7 @@ export function AssignmentStatusButtons({
       {options.map((s) => (
         <form key={s} action={updateAssignmentStatus.bind(null, id, s)}>
           <Button type="submit" size="sm" variant="outline">
-            {s}
+            {current === 'CANCELLED' && s === 'ACTIVE' ? 'Reactivate' : ACTION_LABELS[s]}
           </Button>
         </form>
       ))}

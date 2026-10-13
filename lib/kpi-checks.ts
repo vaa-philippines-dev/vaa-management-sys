@@ -6,6 +6,7 @@ import type { KpiMilestone } from '@/src/generated/prisma/enums'
 // client components can use the labels. Kept exported from here too, since
 // every existing server-side importer already reaches for them at this path.
 export { KPI_MILESTONES, KPI_MILESTONE_LABELS } from '@/lib/kpi-checks-labels'
+import { DEFAULT_KPI_MILESTONES, resolveKpiMilestones } from '@/lib/kpi-checks-labels'
 
 // N business days after start, skipping Saturday/Sunday — matches the
 // sheet's WORKDAY(start, 3) used for the D4 checkpoint.
@@ -33,9 +34,16 @@ function addCalendarMonthsSkipWeekend(start: Date, months: number): Date {
 // Ported directly from the DMF sheet's "Performance Monitoring" tab formulas
 // (D4 = WORKDAY(start,3); W1/W2 = start+7/+14 calendar days; M1/M2/M3/M6 =
 // EDATE(start, n) pushed off weekends) — not reinvented, so the due dates
-// this app computes match what the sheet has always computed.
-export function computeKpiCheckpoints(startDate: Date): { milestone: KpiMilestone; dueDate: Date }[] {
-  return [
+// this app computes match what the sheet has always computed. D1 isn't one of
+// the sheet's columns: it's the start date itself (day 1 of the D4 count).
+// `milestones` is the department's schedule (getDepartmentKpiMilestones);
+// it defaults to the sheet's seven.
+export function computeKpiCheckpoints(
+  startDate: Date,
+  milestones: readonly KpiMilestone[] = DEFAULT_KPI_MILESTONES
+): { milestone: KpiMilestone; dueDate: Date }[] {
+  const all: { milestone: KpiMilestone; dueDate: Date }[] = [
+    { milestone: 'D1', dueDate: new Date(startDate) },
     { milestone: 'D4', dueDate: addWorkdays(startDate, 3) },
     { milestone: 'W1', dueDate: addDays(startDate, 7) },
     { milestone: 'W2', dueDate: addDays(startDate, 14) },
@@ -44,6 +52,15 @@ export function computeKpiCheckpoints(startDate: Date): { milestone: KpiMileston
     { milestone: 'M3', dueDate: addCalendarMonthsSkipWeekend(startDate, 3) },
     { milestone: 'M6', dueDate: addCalendarMonthsSkipWeekend(startDate, 6) },
   ]
+  return all.filter((c) => milestones.includes(c.milestone))
+}
+
+// The milestones a department runs — what a new engagement for one of its
+// clients gets seeded with. A client with no department gets the default.
+export async function getDepartmentKpiMilestones(departmentId: string | null | undefined): Promise<KpiMilestone[]> {
+  if (!departmentId) return DEFAULT_KPI_MILESTONES
+  const dept = await prisma.department.findUnique({ where: { id: departmentId }, select: { kpiMilestones: true } })
+  return resolveKpiMilestones(dept?.kpiMilestones)
 }
 
 export type KpiCheckRow = {
@@ -58,7 +75,7 @@ export type KpiCheckRow = {
 export type KpiChecksByMilestone = Record<KpiMilestone, KpiCheckRow[]>
 
 function emptyByMilestone(): KpiChecksByMilestone {
-  return { D4: [], W1: [], W2: [], M1: [], M2: [], M3: [], M6: [] }
+  return { D1: [], D4: [], W1: [], W2: [], M1: [], M2: [], M3: [], M6: [] }
 }
 
 // Not-yet-completed checkpoints for a department, grouped by milestone and
@@ -69,7 +86,9 @@ function emptyByMilestone(): KpiChecksByMilestone {
 // already ended before reaching that milestone.
 export async function getDepartmentKpiChecks(departmentId: string): Promise<KpiChecksByMilestone> {
   const checks = await prisma.assignmentKpiCheck.findMany({
-    where: { completed: false, assignment: { client: { departmentId } } },
+    // Only running engagements, same as the TMF's check-ins due: a paused,
+    // cancelled or ended one has nobody to hold the call with.
+    where: { completed: false, assignment: { status: 'ACTIVE', client: { departmentId } } },
     select: {
       id: true,
       milestone: true,

@@ -4724,6 +4724,7 @@ export const DepartmentScalarFieldEnum = {
   acronym: 'acronym',
   level: 'level',
   status: 'status',
+  kpiMilestones: 'kpiMilestones',
   parentId: 'parentId',
   mergedIntoId: 'mergedIntoId',
   splitFromId: 'splitFromId',
@@ -5907,6 +5908,20 @@ export type ListEnumDepartmentStatusFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
+ * Reference to a field of type 'KpiMilestone[]'
+ */
+export type ListEnumKpiMilestoneFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'KpiMilestone[]'>
+    
+
+
+/**
+ * Reference to a field of type 'KpiMilestone'
+ */
+export type EnumKpiMilestoneFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'KpiMilestone'>
+    
+
+
+/**
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
@@ -6246,20 +6261,6 @@ export type EnumAssignmentSourceFieldRefInput<$PrismaModel> = FieldRefInputType<
  * Reference to a field of type 'AssignmentSource[]'
  */
 export type ListEnumAssignmentSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssignmentSource[]'>
-    
-
-
-/**
- * Reference to a field of type 'KpiMilestone'
- */
-export type EnumKpiMilestoneFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'KpiMilestone'>
-    
-
-
-/**
- * Reference to a field of type 'KpiMilestone[]'
- */
-export type ListEnumKpiMilestoneFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'KpiMilestone[]'>
     
 
 

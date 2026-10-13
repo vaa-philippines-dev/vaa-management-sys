@@ -29,6 +29,10 @@ export const TEAM_LEADER_ASSIGN_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MA
 // Managers' (plus admins) — not Team Leaders or HR, who can still change
 // availability itself (VA_MUTATOR_ROLES).
 export const RECOMMENDATION_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'OPERATIONS_MANAGER']
+// Which KPI check-in milestones a department runs (e.g. EA's Day 1 call) is a
+// department process decision — Dept/Ops Managers for their own departments,
+// plus admins. Team Leaders and Staff record check-ins but don't set the cycle.
+export const KPI_SCHEDULE_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER', 'OPERATIONS_MANAGER']
 // AI Agent suggestions (VA matches, onboarding drafts, stalled-handoff flags):
 // deciding on one is a real staffing/onboarding call, owned by the same roles
 // that manage departments and staffing day-to-day. EXECUTIVE (e.g. the COO)

@@ -3,6 +3,7 @@ import type {
   PreparationStepStatus,
   PreparationClientStatus,
   PreparationVaType,
+  AssignmentStatus,
 } from '@/src/generated/prisma/enums'
 
 // Labels, field lists and the row shape for the DMF sheet's "VA Preparation"
@@ -56,6 +57,37 @@ export function resolveClientStatus(input: {
     clientStatus: 'ACTIVE',
     effectivityDate: input.effectivityDate ?? input.vaConnectDate ?? input.fallbackDate,
   }
+}
+
+// VA STATUS WITH CLIENT and the Assignment's own status describe the same
+// thing, so a change to either is mirrored onto the other (FB-0014) — see
+// lib/assignment-status.ts. ON_HOLD is unused in practice; it reads as Paused.
+export const CLIENT_TO_ASSIGNMENT_STATUS: Record<PreparationClientStatus, AssignmentStatus> = {
+  ACTIVE: 'ACTIVE',
+  PAUSED: 'PAUSED',
+  END_OF_WORK: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+}
+
+export const ASSIGNMENT_TO_CLIENT_STATUS: Record<AssignmentStatus, PreparationClientStatus> = {
+  ACTIVE: 'ACTIVE',
+  PAUSED: 'PAUSED',
+  ON_HOLD: 'PAUSED',
+  COMPLETED: 'END_OF_WORK',
+  CANCELLED: 'CANCELLED',
+}
+
+// A client request cancelled before the VA ever started is a cancelled
+// request, not an ended engagement: the sheet's DEPARTMENT STATUS reads
+// Cancelled for those. Reactivating one puts it back to Not Yet Started.
+// A VA who already started keeps their start status either way.
+export function startStatusAfter(
+  current: PreparationStartStatus,
+  clientStatus: PreparationClientStatus | null
+): PreparationStartStatus {
+  if (clientStatus === 'CANCELLED' && (current === 'NOT_YET_STARTED' || current === 'DELAYED')) return 'CANCELLED'
+  if (clientStatus !== 'CANCELLED' && current === 'CANCELLED') return 'NOT_YET_STARTED'
+  return current
 }
 
 // Everything but ACTIVE marks the VA as no longer working the account, so

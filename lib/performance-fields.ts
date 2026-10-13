@@ -54,6 +54,8 @@ export type KpiCell = {
 
 export type PerformanceRow = {
   assignmentId: string
+  // The Assignment's status — ACTIVE, PAUSED/ON_HOLD or COMPLETED here.
+  status: string
   vaProfileId: string
   vaName: string
   clientName: string

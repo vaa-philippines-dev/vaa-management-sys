@@ -81,6 +81,7 @@ export type DepartmentCountAggregateOutputType = {
   acronym: number
   level: number
   status: number
+  kpiMilestones: number
   parentId: number
   mergedIntoId: number
   splitFromId: number
@@ -150,6 +151,7 @@ export type DepartmentCountAggregateInputType = {
   acronym?: true
   level?: true
   status?: true
+  kpiMilestones?: true
   parentId?: true
   mergedIntoId?: true
   splitFromId?: true
@@ -256,6 +258,7 @@ export type DepartmentGroupByOutputType = {
   acronym: string | null
   level: $Enums.DepartmentLevel | null
   status: $Enums.DepartmentStatus
+  kpiMilestones: $Enums.KpiMilestone[]
   parentId: string | null
   mergedIntoId: string | null
   splitFromId: string | null
@@ -298,6 +301,7 @@ export type DepartmentWhereInput = {
   acronym?: Prisma.StringNullableFilter<"Department"> | string | null
   level?: Prisma.EnumDepartmentLevelNullableFilter<"Department"> | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFilter<"Department"> | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.EnumKpiMilestoneNullableListFilter<"Department">
   parentId?: Prisma.StringNullableFilter<"Department"> | string | null
   mergedIntoId?: Prisma.StringNullableFilter<"Department"> | string | null
   splitFromId?: Prisma.StringNullableFilter<"Department"> | string | null
@@ -338,6 +342,7 @@ export type DepartmentOrderByWithRelationInput = {
   acronym?: Prisma.SortOrderInput | Prisma.SortOrder
   level?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  kpiMilestones?: Prisma.SortOrder
   parentId?: Prisma.SortOrderInput | Prisma.SortOrder
   mergedIntoId?: Prisma.SortOrderInput | Prisma.SortOrder
   splitFromId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -383,6 +388,7 @@ export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
   acronym?: Prisma.StringNullableFilter<"Department"> | string | null
   level?: Prisma.EnumDepartmentLevelNullableFilter<"Department"> | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFilter<"Department"> | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.EnumKpiMilestoneNullableListFilter<"Department">
   parentId?: Prisma.StringNullableFilter<"Department"> | string | null
   mergedIntoId?: Prisma.StringNullableFilter<"Department"> | string | null
   splitFromId?: Prisma.StringNullableFilter<"Department"> | string | null
@@ -423,6 +429,7 @@ export type DepartmentOrderByWithAggregationInput = {
   acronym?: Prisma.SortOrderInput | Prisma.SortOrder
   level?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  kpiMilestones?: Prisma.SortOrder
   parentId?: Prisma.SortOrderInput | Prisma.SortOrder
   mergedIntoId?: Prisma.SortOrderInput | Prisma.SortOrder
   splitFromId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -450,6 +457,7 @@ export type DepartmentScalarWhereWithAggregatesInput = {
   acronym?: Prisma.StringNullableWithAggregatesFilter<"Department"> | string | null
   level?: Prisma.EnumDepartmentLevelNullableWithAggregatesFilter<"Department"> | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusWithAggregatesFilter<"Department"> | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.EnumKpiMilestoneNullableListFilter<"Department">
   parentId?: Prisma.StringNullableWithAggregatesFilter<"Department"> | string | null
   mergedIntoId?: Prisma.StringNullableWithAggregatesFilter<"Department"> | string | null
   splitFromId?: Prisma.StringNullableWithAggregatesFilter<"Department"> | string | null
@@ -469,6 +477,7 @@ export type DepartmentCreateInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: boolean
   description?: string | null
   baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -505,6 +514,7 @@ export type DepartmentUncheckedCreateInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   mergedIntoId?: string | null
   splitFromId?: string | null
@@ -541,6 +551,7 @@ export type DepartmentUpdateInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -577,6 +588,7 @@ export type DepartmentUncheckedUpdateInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -613,6 +625,7 @@ export type DepartmentCreateManyInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   mergedIntoId?: string | null
   splitFromId?: string | null
@@ -632,6 +645,7 @@ export type DepartmentUpdateManyMutationInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -647,6 +661,7 @@ export type DepartmentUncheckedUpdateManyInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -657,6 +672,14 @@ export type DepartmentUncheckedUpdateManyInput = {
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type EnumKpiMilestoneNullableListFilter<$PrismaModel = never> = {
+  equals?: $Enums.KpiMilestone[] | Prisma.ListEnumKpiMilestoneFieldRefInput<$PrismaModel> | null
+  has?: $Enums.KpiMilestone | Prisma.EnumKpiMilestoneFieldRefInput<$PrismaModel> | null
+  hasEvery?: $Enums.KpiMilestone[] | Prisma.ListEnumKpiMilestoneFieldRefInput<$PrismaModel>
+  hasSome?: $Enums.KpiMilestone[] | Prisma.ListEnumKpiMilestoneFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
 }
 
 export type DepartmentNullableScalarRelationFilter = {
@@ -691,6 +714,7 @@ export type DepartmentCountOrderByAggregateInput = {
   acronym?: Prisma.SortOrder
   level?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  kpiMilestones?: Prisma.SortOrder
   parentId?: Prisma.SortOrder
   mergedIntoId?: Prisma.SortOrder
   splitFromId?: Prisma.SortOrder
@@ -754,6 +778,10 @@ export type DepartmentSumOrderByAggregateInput = {
 export type DepartmentScalarRelationFilter = {
   is?: Prisma.DepartmentWhereInput
   isNot?: Prisma.DepartmentWhereInput
+}
+
+export type DepartmentCreatekpiMilestonesInput = {
+  set: $Enums.KpiMilestone[]
 }
 
 export type DepartmentCreateNestedOneWithoutChildrenInput = {
@@ -830,6 +858,11 @@ export type NullableEnumDepartmentLevelFieldUpdateOperationsInput = {
 
 export type EnumDepartmentStatusFieldUpdateOperationsInput = {
   set?: $Enums.DepartmentStatus
+}
+
+export type DepartmentUpdatekpiMilestonesInput = {
+  set?: $Enums.KpiMilestone[]
+  push?: $Enums.KpiMilestone | $Enums.KpiMilestone[]
 }
 
 export type BoolFieldUpdateOperationsInput = {
@@ -1233,6 +1266,7 @@ export type DepartmentCreateWithoutChildrenInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: boolean
   description?: string | null
   baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1268,6 +1302,7 @@ export type DepartmentUncheckedCreateWithoutChildrenInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   mergedIntoId?: string | null
   splitFromId?: string | null
@@ -1308,6 +1343,7 @@ export type DepartmentCreateWithoutParentInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: boolean
   description?: string | null
   baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1343,6 +1379,7 @@ export type DepartmentUncheckedCreateWithoutParentInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   mergedIntoId?: string | null
   splitFromId?: string | null
   isParent?: boolean
@@ -1388,6 +1425,7 @@ export type DepartmentCreateWithoutMergedFromInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: boolean
   description?: string | null
   baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1423,6 +1461,7 @@ export type DepartmentUncheckedCreateWithoutMergedFromInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   mergedIntoId?: string | null
   splitFromId?: string | null
@@ -1463,6 +1502,7 @@ export type DepartmentCreateWithoutMergedIntoInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: boolean
   description?: string | null
   baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1498,6 +1538,7 @@ export type DepartmentUncheckedCreateWithoutMergedIntoInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   splitFromId?: string | null
   isParent?: boolean
@@ -1543,6 +1584,7 @@ export type DepartmentCreateWithoutSplitIntoInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: boolean
   description?: string | null
   baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1578,6 +1620,7 @@ export type DepartmentUncheckedCreateWithoutSplitIntoInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   mergedIntoId?: string | null
   splitFromId?: string | null
@@ -1618,6 +1661,7 @@ export type DepartmentCreateWithoutSplitFromInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: boolean
   description?: string | null
   baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1653,6 +1697,7 @@ export type DepartmentUncheckedCreateWithoutSplitFromInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   mergedIntoId?: string | null
   isParent?: boolean
@@ -1709,6 +1754,7 @@ export type DepartmentUpdateWithoutChildrenInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1744,6 +1790,7 @@ export type DepartmentUncheckedUpdateWithoutChildrenInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1798,6 +1845,7 @@ export type DepartmentScalarWhereInput = {
   acronym?: Prisma.StringNullableFilter<"Department"> | string | null
   level?: Prisma.EnumDepartmentLevelNullableFilter<"Department"> | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFilter<"Department"> | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.EnumKpiMilestoneNullableListFilter<"Department">
   parentId?: Prisma.StringNullableFilter<"Department"> | string | null
   mergedIntoId?: Prisma.StringNullableFilter<"Department"> | string | null
   splitFromId?: Prisma.StringNullableFilter<"Department"> | string | null
@@ -1828,6 +1876,7 @@ export type DepartmentUpdateWithoutMergedFromInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1863,6 +1912,7 @@ export type DepartmentUncheckedUpdateWithoutMergedFromInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1925,6 +1975,7 @@ export type DepartmentUpdateWithoutSplitIntoInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1960,6 +2011,7 @@ export type DepartmentUncheckedUpdateWithoutSplitIntoInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2011,6 +2063,7 @@ export type DepartmentCreateWithoutPositionsInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: boolean
   description?: string | null
   baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2046,6 +2099,7 @@ export type DepartmentUncheckedCreateWithoutPositionsInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   mergedIntoId?: string | null
   splitFromId?: string | null
@@ -2097,6 +2151,7 @@ export type DepartmentUpdateWithoutPositionsInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2132,6 +2187,7 @@ export type DepartmentUncheckedUpdateWithoutPositionsInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2167,6 +2223,7 @@ export type DepartmentCreateWithoutMembershipsInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: boolean
   description?: string | null
   baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2202,6 +2259,7 @@ export type DepartmentUncheckedCreateWithoutMembershipsInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   mergedIntoId?: string | null
   splitFromId?: string | null
@@ -2253,6 +2311,7 @@ export type DepartmentUpdateWithoutMembershipsInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2288,6 +2347,7 @@ export type DepartmentUncheckedUpdateWithoutMembershipsInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2323,6 +2383,7 @@ export type DepartmentCreateWithoutHeadInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: boolean
   description?: string | null
   baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2358,6 +2419,7 @@ export type DepartmentUncheckedCreateWithoutHeadInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   mergedIntoId?: string | null
   splitFromId?: string | null
@@ -2419,6 +2481,7 @@ export type DepartmentCreateWithoutEmploymentRecordsInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: boolean
   description?: string | null
   baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2454,6 +2517,7 @@ export type DepartmentUncheckedCreateWithoutEmploymentRecordsInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   mergedIntoId?: string | null
   splitFromId?: string | null
@@ -2505,6 +2569,7 @@ export type DepartmentUpdateWithoutEmploymentRecordsInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2540,6 +2605,7 @@ export type DepartmentUncheckedUpdateWithoutEmploymentRecordsInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2575,6 +2641,7 @@ export type DepartmentCreateWithoutRoleAssignmentsInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: boolean
   description?: string | null
   baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2610,6 +2677,7 @@ export type DepartmentUncheckedCreateWithoutRoleAssignmentsInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   mergedIntoId?: string | null
   splitFromId?: string | null
@@ -2661,6 +2729,7 @@ export type DepartmentUpdateWithoutRoleAssignmentsInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2696,6 +2765,7 @@ export type DepartmentUncheckedUpdateWithoutRoleAssignmentsInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2731,6 +2801,7 @@ export type DepartmentCreateWithoutVasWithExpertiseGroupInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: boolean
   description?: string | null
   baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2766,6 +2837,7 @@ export type DepartmentUncheckedCreateWithoutVasWithExpertiseGroupInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   mergedIntoId?: string | null
   splitFromId?: string | null
@@ -2817,6 +2889,7 @@ export type DepartmentUpdateWithoutVasWithExpertiseGroupInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2852,6 +2925,7 @@ export type DepartmentUncheckedUpdateWithoutVasWithExpertiseGroupInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2887,6 +2961,7 @@ export type DepartmentCreateWithoutVaAvailabilitiesInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: boolean
   description?: string | null
   baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2922,6 +2997,7 @@ export type DepartmentUncheckedCreateWithoutVaAvailabilitiesInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   mergedIntoId?: string | null
   splitFromId?: string | null
@@ -2973,6 +3049,7 @@ export type DepartmentUpdateWithoutVaAvailabilitiesInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3008,6 +3085,7 @@ export type DepartmentUncheckedUpdateWithoutVaAvailabilitiesInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3043,6 +3121,7 @@ export type DepartmentCreateWithoutVaHistoryEventsInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: boolean
   description?: string | null
   baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3078,6 +3157,7 @@ export type DepartmentUncheckedCreateWithoutVaHistoryEventsInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   mergedIntoId?: string | null
   splitFromId?: string | null
@@ -3129,6 +3209,7 @@ export type DepartmentUpdateWithoutVaHistoryEventsInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3164,6 +3245,7 @@ export type DepartmentUncheckedUpdateWithoutVaHistoryEventsInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3199,6 +3281,7 @@ export type DepartmentCreateWithoutServicesInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: boolean
   description?: string | null
   baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3234,6 +3317,7 @@ export type DepartmentUncheckedCreateWithoutServicesInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   mergedIntoId?: string | null
   splitFromId?: string | null
@@ -3285,6 +3369,7 @@ export type DepartmentUpdateWithoutServicesInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3320,6 +3405,7 @@ export type DepartmentUncheckedUpdateWithoutServicesInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3355,6 +3441,7 @@ export type DepartmentCreateWithoutClientsInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: boolean
   description?: string | null
   baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3390,6 +3477,7 @@ export type DepartmentUncheckedCreateWithoutClientsInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   mergedIntoId?: string | null
   splitFromId?: string | null
@@ -3441,6 +3529,7 @@ export type DepartmentUpdateWithoutClientsInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3476,6 +3565,7 @@ export type DepartmentUncheckedUpdateWithoutClientsInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3511,6 +3601,7 @@ export type DepartmentCreateWithoutTicketsInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: boolean
   description?: string | null
   baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3546,6 +3637,7 @@ export type DepartmentUncheckedCreateWithoutTicketsInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   mergedIntoId?: string | null
   splitFromId?: string | null
@@ -3597,6 +3689,7 @@ export type DepartmentUpdateWithoutTicketsInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3632,6 +3725,7 @@ export type DepartmentUncheckedUpdateWithoutTicketsInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3667,6 +3761,7 @@ export type DepartmentCreateWithoutChannelInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: boolean
   description?: string | null
   baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3702,6 +3797,7 @@ export type DepartmentUncheckedCreateWithoutChannelInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   mergedIntoId?: string | null
   splitFromId?: string | null
@@ -3753,6 +3849,7 @@ export type DepartmentUpdateWithoutChannelInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3788,6 +3885,7 @@ export type DepartmentUncheckedUpdateWithoutChannelInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3823,6 +3921,7 @@ export type DepartmentCreateWithoutAuditLogsInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: boolean
   description?: string | null
   baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3858,6 +3957,7 @@ export type DepartmentUncheckedCreateWithoutAuditLogsInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   mergedIntoId?: string | null
   splitFromId?: string | null
@@ -3909,6 +4009,7 @@ export type DepartmentUpdateWithoutAuditLogsInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3944,6 +4045,7 @@ export type DepartmentUncheckedUpdateWithoutAuditLogsInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3979,6 +4081,7 @@ export type DepartmentCreateWithoutTeamsInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: boolean
   description?: string | null
   baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -4014,6 +4117,7 @@ export type DepartmentUncheckedCreateWithoutTeamsInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   mergedIntoId?: string | null
   splitFromId?: string | null
@@ -4065,6 +4169,7 @@ export type DepartmentUpdateWithoutTeamsInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -4100,6 +4205,7 @@ export type DepartmentUncheckedUpdateWithoutTeamsInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4135,6 +4241,7 @@ export type DepartmentCreateWithoutProjectsInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: boolean
   description?: string | null
   baseRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -4170,6 +4277,7 @@ export type DepartmentUncheckedCreateWithoutProjectsInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   mergedIntoId?: string | null
   splitFromId?: string | null
@@ -4221,6 +4329,7 @@ export type DepartmentUpdateWithoutProjectsInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -4256,6 +4365,7 @@ export type DepartmentUncheckedUpdateWithoutProjectsInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4291,6 +4401,7 @@ export type DepartmentCreateManyParentInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   mergedIntoId?: string | null
   splitFromId?: string | null
   isParent?: boolean
@@ -4309,6 +4420,7 @@ export type DepartmentCreateManyMergedIntoInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   splitFromId?: string | null
   isParent?: boolean
@@ -4327,6 +4439,7 @@ export type DepartmentCreateManySplitFromInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   mergedIntoId?: string | null
   isParent?: boolean
@@ -4345,6 +4458,7 @@ export type DepartmentUpdateWithoutParentInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -4380,6 +4494,7 @@ export type DepartmentUncheckedUpdateWithoutParentInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4415,6 +4530,7 @@ export type DepartmentUncheckedUpdateManyWithoutParentInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4433,6 +4549,7 @@ export type DepartmentUpdateWithoutMergedIntoInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -4468,6 +4585,7 @@ export type DepartmentUncheckedUpdateWithoutMergedIntoInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4503,6 +4621,7 @@ export type DepartmentUncheckedUpdateManyWithoutMergedIntoInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4521,6 +4640,7 @@ export type DepartmentUpdateWithoutSplitFromInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -4556,6 +4676,7 @@ export type DepartmentUncheckedUpdateWithoutSplitFromInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4591,6 +4712,7 @@ export type DepartmentUncheckedUpdateManyWithoutSplitFromInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4609,6 +4731,7 @@ export type DepartmentCreateManyHeadInput = {
   acronym?: string | null
   level?: $Enums.DepartmentLevel | null
   status?: $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentCreatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: string | null
   mergedIntoId?: string | null
   splitFromId?: string | null
@@ -4627,6 +4750,7 @@ export type DepartmentUpdateWithoutHeadInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   isParent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   baseRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -4662,6 +4786,7 @@ export type DepartmentUncheckedUpdateWithoutHeadInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4697,6 +4822,7 @@ export type DepartmentUncheckedUpdateManyWithoutHeadInput = {
   acronym?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   level?: Prisma.NullableEnumDepartmentLevelFieldUpdateOperationsInput | $Enums.DepartmentLevel | null
   status?: Prisma.EnumDepartmentStatusFieldUpdateOperationsInput | $Enums.DepartmentStatus
+  kpiMilestones?: Prisma.DepartmentUpdatekpiMilestonesInput | $Enums.KpiMilestone[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mergedIntoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   splitFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4881,6 +5007,7 @@ export type DepartmentSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   acronym?: boolean
   level?: boolean
   status?: boolean
+  kpiMilestones?: boolean
   parentId?: boolean
   mergedIntoId?: boolean
   splitFromId?: boolean
@@ -4922,6 +5049,7 @@ export type DepartmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   acronym?: boolean
   level?: boolean
   status?: boolean
+  kpiMilestones?: boolean
   parentId?: boolean
   mergedIntoId?: boolean
   splitFromId?: boolean
@@ -4945,6 +5073,7 @@ export type DepartmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   acronym?: boolean
   level?: boolean
   status?: boolean
+  kpiMilestones?: boolean
   parentId?: boolean
   mergedIntoId?: boolean
   splitFromId?: boolean
@@ -4968,6 +5097,7 @@ export type DepartmentSelectScalar = {
   acronym?: boolean
   level?: boolean
   status?: boolean
+  kpiMilestones?: boolean
   parentId?: boolean
   mergedIntoId?: boolean
   splitFromId?: boolean
@@ -4980,7 +5110,7 @@ export type DepartmentSelectScalar = {
   updatedAt?: boolean
 }
 
-export type DepartmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "shortName" | "acronym" | "level" | "status" | "parentId" | "mergedIntoId" | "splitFromId" | "isParent" | "description" | "baseRate" | "headId" | "sortOrder" | "createdAt" | "updatedAt", ExtArgs["result"]["department"]>
+export type DepartmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "shortName" | "acronym" | "level" | "status" | "kpiMilestones" | "parentId" | "mergedIntoId" | "splitFromId" | "isParent" | "description" | "baseRate" | "headId" | "sortOrder" | "createdAt" | "updatedAt", ExtArgs["result"]["department"]>
 export type DepartmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   parent?: boolean | Prisma.Department$parentArgs<ExtArgs>
   children?: boolean | Prisma.Department$childrenArgs<ExtArgs>
@@ -5050,6 +5180,7 @@ export type $DepartmentPayload<ExtArgs extends runtime.Types.Extensions.Internal
     acronym: string | null
     level: $Enums.DepartmentLevel | null
     status: $Enums.DepartmentStatus
+    kpiMilestones: $Enums.KpiMilestone[]
     parentId: string | null
     mergedIntoId: string | null
     splitFromId: string | null
@@ -5510,6 +5641,7 @@ export interface DepartmentFieldRefs {
   readonly acronym: Prisma.FieldRef<"Department", 'String'>
   readonly level: Prisma.FieldRef<"Department", 'DepartmentLevel'>
   readonly status: Prisma.FieldRef<"Department", 'DepartmentStatus'>
+  readonly kpiMilestones: Prisma.FieldRef<"Department", 'KpiMilestone[]'>
   readonly parentId: Prisma.FieldRef<"Department", 'String'>
   readonly mergedIntoId: Prisma.FieldRef<"Department", 'String'>
   readonly splitFromId: Prisma.FieldRef<"Department", 'String'>
