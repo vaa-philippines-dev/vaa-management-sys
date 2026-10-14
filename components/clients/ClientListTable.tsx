@@ -8,8 +8,9 @@ import { StatusIndicator } from '@/components/ui/status-indicator'
 import { UserRoundX } from 'lucide-react'
 import { CLIENT_PLATFORM_META, clientCompanyName, clientDisplayName } from '@/lib/clients/display'
 import { clientStatusLabel, clientStatusTone, type ClientCardData } from '@/components/clients/ClientCard'
+import { ClientRequestActions } from '@/components/clients/ClientRequestActions'
 
-export function ClientListTable({ clients }: { clients: ClientCardData[] }) {
+export function ClientListTable({ clients, canManage = false }: { clients: ClientCardData[]; canManage?: boolean }) {
   const router = useRouter()
   return (
     <div className="rounded-lg border bg-card overflow-hidden">
@@ -25,6 +26,7 @@ export function ClientListTable({ clients }: { clients: ClientCardData[] }) {
             <TableHead className="px-3 py-2 hidden lg:table-cell">Services</TableHead>
             <TableHead className="px-3 py-2 hidden sm:table-cell whitespace-nowrap">Date Added</TableHead>
             <TableHead className="px-3 py-2 text-right">Assignments</TableHead>
+            {canManage && <TableHead className="px-3 py-2 w-0" />}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -33,8 +35,10 @@ export function ClientListTable({ clients }: { clients: ClientCardData[] }) {
               key={c.id}
               className="cursor-pointer"
               onClick={(e) => {
-                // Let real links (and modifier-clicks on them) behave normally.
-                if ((e.target as HTMLElement).closest('a')) return
+                // Let real links (and modifier-clicks on them) behave normally,
+                // and keep the actions menu (and its dialogs) from opening the row.
+                if (!e.currentTarget.contains(e.target as Node)) return
+                if ((e.target as HTMLElement).closest('a, button, [data-row-actions]')) return
                 router.push(`/clients/${c.id}`)
               }}
             >
@@ -98,6 +102,13 @@ export function ClientListTable({ clients }: { clients: ClientCardData[] }) {
               <TableCell className="px-3 py-2 text-right text-muted-foreground tabular-nums">
                 {c.assignmentCount}
               </TableCell>
+              {canManage && (
+                <TableCell className="px-3 py-2" data-row-actions>
+                  <ClientRequestActions
+                    client={{ id: c.id, name: clientDisplayName(c), status: c.status, assignmentCount: c.assignmentCount, openAssignmentCount: c.openAssignmentCount }}
+                  />
+                </TableCell>
+              )}
             </TableRow>
           ))}
         </TableBody>

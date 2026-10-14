@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { getCurrentUser } from '@/lib/auth'
+import { getCurrentUser, CLIENT_MUTATOR_ROLES } from '@/lib/auth'
 import { getViewScope, clientScopeWhere } from '@/lib/scope'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { ArrowLeft, Briefcase } from 'lucide-react'
 import { format } from 'date-fns'
 import { ClientDetailPanel } from '@/components/clients/ClientDetailPanel'
+import { ClientRequestActions } from '@/components/clients/ClientRequestActions'
 import { CLIENT_PLATFORM_META, CLIENT_STATUS_DOT, CLIENT_STATUS_LABEL } from '@/lib/clients/display'
 
 const CLIENT_VIEW_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'EXECUTIVE', 'DEPT_MANAGER', 'TEAM_LEADER', 'OPERATIONS_MANAGER', 'STAFF', 'HR']
@@ -51,6 +52,16 @@ export default async function ClientDetailPage({
     (await prisma.client.count({ where: { id: client.id, ...clientScopeWhere(scope) } })) > 0
   if (!inScope) notFound()
 
+  const canManage = CLIENT_MUTATOR_ROLES.includes(currentUser.systemRole)
+  // Counted over every assignment, not just the team-scoped list above —
+  // whether the request can be cancelled/removed doesn't depend on the viewer.
+  const [assignmentCount, openAssignmentCount] = canManage
+    ? await Promise.all([
+        prisma.assignment.count({ where: { clientId: client.id } }),
+        prisma.assignment.count({ where: { clientId: client.id, status: { in: ['ACTIVE', 'PAUSED', 'ON_HOLD'] } } }),
+      ])
+    : [0, 0]
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
@@ -76,7 +87,21 @@ export default async function ClientDetailPage({
             {client.contactName && `${client.contactName} • `}
             {client.industry}
           </p>
+          {client.status === 'CANCELLED' && client.cancelledAt && (
+            <p className="text-sm text-destructive mt-1">
+              Cancelled on{' '}
+              {new Intl.DateTimeFormat('en-US', { month: 'short', day: '2-digit', year: 'numeric', timeZone: 'UTC' }).format(client.cancelledAt)}
+              {client.cancelReason && <span className="text-muted-foreground"> · {client.cancelReason}</span>}
+            </p>
+          )}
         </div>
+        {canManage && (
+          <ClientRequestActions
+            client={{ id: client.id, name: client.name, status: client.status, assignmentCount, openAssignmentCount }}
+            className="h-8 w-8 border"
+            afterRemoveHref="/clients"
+          />
+        )}
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6">

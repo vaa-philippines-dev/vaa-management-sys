@@ -5,6 +5,7 @@ import { StatusIndicator } from '@/components/ui/status-indicator'
 import { UserRoundX } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { CLIENT_PLATFORM_META, CLIENT_STATUS_LABEL, CLIENT_STATUS_TONE, clientCompanyName, clientDisplayName, type StatusTone } from '@/lib/clients/display'
+import { ClientRequestActions } from '@/components/clients/ClientRequestActions'
 
 export type ClientCardData = {
   id: string
@@ -20,6 +21,8 @@ export type ClientCardData = {
   requiredSkills: string[]
   // Every assignment on the request (any status) vs. the VAs working it now.
   assignmentCount: number
+  // Active / paused / on hold — these block cancelling the request.
+  openAssignmentCount: number
   activeVAs: { id: string; name: string }[]
   // When the request was added to the app, preformatted by the page (Manila time).
   dateAdded: string
@@ -83,57 +86,67 @@ export function ActiveVAStack({ vas, max = 3 }: { vas: ClientCardData['activeVAs
   )
 }
 
-export function ClientCard({ c }: { c: ClientCardData }) {
+export function ClientCard({ c, canManage = false }: { c: ClientCardData; canManage?: boolean }) {
   const tone = clientStatusTone(c)
   const subtitle = clientCompanyName(c) || [c.category, c.niche].filter(Boolean).join(' · ')
   return (
-    <Link href={`/clients/${c.id}`} className="block h-full">
-      <Card
-        className={cn(
-          'group h-full cursor-pointer border-l-4 py-3 transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-primary/30',
-          TONE_BORDER[tone]
-        )}
-      >
-        <CardContent className="flex h-full flex-col gap-2 px-3">
-          <div className="flex items-start justify-between gap-2">
-            <div className="min-w-0">
-              <p className="text-sm font-semibold truncate group-hover:text-primary transition-colors">{clientDisplayName(c)}</p>
-              <p className="text-xs text-muted-foreground truncate">{subtitle || '—'}</p>
-            </div>
-            <Badge
-              variant="outline"
-              className={`text-[10px] py-0 px-1.5 shrink-0 ${CLIENT_PLATFORM_META[c.platform]?.color ?? ''}`}
-            >
-              {CLIENT_PLATFORM_META[c.platform]?.label ?? c.platform}
-            </Badge>
-          </div>
-
-          <div className="flex items-center justify-between gap-2">
-            <StatusIndicator tone={tone}>{clientStatusLabel(c)}</StatusIndicator>
-            <span className="text-[10px] text-muted-foreground/70">Added {c.dateAdded}</span>
-          </div>
-
-          {c.requiredSkills.length > 0 && (
-            <div className="flex flex-wrap gap-1">
-              {c.requiredSkills.slice(0, 3).map((s) => (
-                <Badge key={s} variant="outline" className="text-[10px] py-0 px-1.5">{s}</Badge>
-              ))}
-              {c.requiredSkills.length > 3 && (
-                <span className="text-[10px] text-muted-foreground/70" title={c.requiredSkills.slice(3).join(', ')}>
-                  +{c.requiredSkills.length - 3}
-                </span>
-              )}
-            </div>
+    // The actions menu sits beside the link, not inside it — a button nested
+    // in an <a> is invalid and every click on it would navigate.
+    <div className="relative h-full">
+      <Link href={`/clients/${c.id}`} className="block h-full">
+        <Card
+          className={cn(
+            'group h-full cursor-pointer border-l-4 py-3 transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-primary/30',
+            TONE_BORDER[tone]
           )}
+        >
+          <CardContent className="flex h-full flex-col gap-2 px-3">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <p className="text-sm font-semibold truncate group-hover:text-primary transition-colors">{clientDisplayName(c)}</p>
+                <p className="text-xs text-muted-foreground truncate">{subtitle || '—'}</p>
+              </div>
+              <Badge
+                variant="outline"
+                className={`text-[10px] py-0 px-1.5 shrink-0 ${CLIENT_PLATFORM_META[c.platform]?.color ?? ''}`}
+              >
+                {CLIENT_PLATFORM_META[c.platform]?.label ?? c.platform}
+              </Badge>
+            </div>
 
-          <div className="mt-auto flex items-center justify-between gap-2 border-t pt-2">
-            <ActiveVAStack vas={c.activeVAs} />
-            <span className="text-[10px] text-muted-foreground/70">
-              {c.assignmentCount} assignment{c.assignmentCount === 1 ? '' : 's'}
-            </span>
-          </div>
-        </CardContent>
-      </Card>
-    </Link>
+            <div className="flex items-center justify-between gap-2">
+              <StatusIndicator tone={tone}>{clientStatusLabel(c)}</StatusIndicator>
+              <span className="text-[10px] text-muted-foreground/70">Added {c.dateAdded}</span>
+            </div>
+
+            {c.requiredSkills.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {c.requiredSkills.slice(0, 3).map((s) => (
+                  <Badge key={s} variant="outline" className="text-[10px] py-0 px-1.5">{s}</Badge>
+                ))}
+                {c.requiredSkills.length > 3 && (
+                  <span className="text-[10px] text-muted-foreground/70" title={c.requiredSkills.slice(3).join(', ')}>
+                    +{c.requiredSkills.length - 3}
+                  </span>
+                )}
+              </div>
+            )}
+
+            <div className="mt-auto flex items-center justify-between gap-2 border-t pt-2">
+              <ActiveVAStack vas={c.activeVAs} />
+              <span className={cn('text-[10px] text-muted-foreground/70', canManage && 'mr-6')}>
+                {c.assignmentCount} assignment{c.assignmentCount === 1 ? '' : 's'}
+              </span>
+            </div>
+          </CardContent>
+        </Card>
+      </Link>
+      {canManage && (
+        <ClientRequestActions
+          client={{ id: c.id, name: clientDisplayName(c), status: c.status, assignmentCount: c.assignmentCount, openAssignmentCount: c.openAssignmentCount }}
+          className="absolute bottom-2.5 right-2"
+        />
+      )}
+    </div>
   )
 }

@@ -62,7 +62,7 @@ function sortClients(clients: ClientBoardData[], mode: SortMode) {
 
 const sectionId = (key: string) => `clients-dept-${key}`
 
-export function ClientsBoard({ clients }: { clients: ClientBoardData[] }) {
+export function ClientsBoard({ clients, canManage = false }: { clients: ClientBoardData[]; canManage?: boolean }) {
   const [viewMode, setViewMode] = useState<ViewMode>('cards')
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set())
   const [sortMode, setSortMode] = useState<SortMode>('newest')
@@ -274,11 +274,11 @@ export function ClientsBoard({ clients }: { clients: ClientBoardData[] }) {
                 (viewMode === 'cards' ? (
                   <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 min-[1920px]:grid-cols-6 fade-in-stagger">
                     {group.clients.map((c) => (
-                      <ClientCard key={c.id} c={c} />
+                      <ClientCard key={c.id} c={c} canManage={canManage} />
                     ))}
                   </div>
                 ) : (
-                  <ClientListTable clients={group.clients} />
+                  <ClientListTable clients={group.clients} canManage={canManage} />
                 ))}
             </section>
           )

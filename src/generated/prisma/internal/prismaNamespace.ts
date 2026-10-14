@@ -5314,6 +5314,8 @@ export const ClientScalarFieldEnum = {
   requiredSkills: 'requiredSkills',
   intakeDetails: 'intakeDetails',
   formDetails: 'formDetails',
+  cancelledAt: 'cancelledAt',
+  cancelReason: 'cancelReason',
   accountId: 'accountId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

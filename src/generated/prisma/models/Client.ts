@@ -47,6 +47,8 @@ export type ClientMinAggregateOutputType = {
   secondaryContact: string | null
   meetingDate: Date | null
   targetStartDate: Date | null
+  cancelledAt: Date | null
+  cancelReason: string | null
   accountId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -75,6 +77,8 @@ export type ClientMaxAggregateOutputType = {
   secondaryContact: string | null
   meetingDate: Date | null
   targetStartDate: Date | null
+  cancelledAt: Date | null
+  cancelReason: string | null
   accountId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -106,6 +110,8 @@ export type ClientCountAggregateOutputType = {
   requiredSkills: number
   intakeDetails: number
   formDetails: number
+  cancelledAt: number
+  cancelReason: number
   accountId: number
   createdAt: number
   updatedAt: number
@@ -136,6 +142,8 @@ export type ClientMinAggregateInputType = {
   secondaryContact?: true
   meetingDate?: true
   targetStartDate?: true
+  cancelledAt?: true
+  cancelReason?: true
   accountId?: true
   createdAt?: true
   updatedAt?: true
@@ -164,6 +172,8 @@ export type ClientMaxAggregateInputType = {
   secondaryContact?: true
   meetingDate?: true
   targetStartDate?: true
+  cancelledAt?: true
+  cancelReason?: true
   accountId?: true
   createdAt?: true
   updatedAt?: true
@@ -195,6 +205,8 @@ export type ClientCountAggregateInputType = {
   requiredSkills?: true
   intakeDetails?: true
   formDetails?: true
+  cancelledAt?: true
+  cancelReason?: true
   accountId?: true
   createdAt?: true
   updatedAt?: true
@@ -299,6 +311,8 @@ export type ClientGroupByOutputType = {
   requiredSkills: string[]
   intakeDetails: runtime.JsonValue | null
   formDetails: runtime.JsonValue | null
+  cancelledAt: Date | null
+  cancelReason: string | null
   accountId: string | null
   createdAt: Date
   updatedAt: Date
@@ -351,6 +365,8 @@ export type ClientWhereInput = {
   requiredSkills?: Prisma.StringNullableListFilter<"Client">
   intakeDetails?: Prisma.JsonNullableFilter<"Client">
   formDetails?: Prisma.JsonNullableFilter<"Client">
+  cancelledAt?: Prisma.DateTimeNullableFilter<"Client"> | Date | string | null
+  cancelReason?: Prisma.StringNullableFilter<"Client"> | string | null
   accountId?: Prisma.StringNullableFilter<"Client"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Client"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Client"> | Date | string
@@ -389,6 +405,8 @@ export type ClientOrderByWithRelationInput = {
   requiredSkills?: Prisma.SortOrder
   intakeDetails?: Prisma.SortOrderInput | Prisma.SortOrder
   formDetails?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancelReason?: Prisma.SortOrderInput | Prisma.SortOrder
   accountId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -430,6 +448,8 @@ export type ClientWhereUniqueInput = Prisma.AtLeast<{
   requiredSkills?: Prisma.StringNullableListFilter<"Client">
   intakeDetails?: Prisma.JsonNullableFilter<"Client">
   formDetails?: Prisma.JsonNullableFilter<"Client">
+  cancelledAt?: Prisma.DateTimeNullableFilter<"Client"> | Date | string | null
+  cancelReason?: Prisma.StringNullableFilter<"Client"> | string | null
   accountId?: Prisma.StringNullableFilter<"Client"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Client"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Client"> | Date | string
@@ -468,6 +488,8 @@ export type ClientOrderByWithAggregationInput = {
   requiredSkills?: Prisma.SortOrder
   intakeDetails?: Prisma.SortOrderInput | Prisma.SortOrder
   formDetails?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancelReason?: Prisma.SortOrderInput | Prisma.SortOrder
   accountId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -505,6 +527,8 @@ export type ClientScalarWhereWithAggregatesInput = {
   requiredSkills?: Prisma.StringNullableListFilter<"Client">
   intakeDetails?: Prisma.JsonNullableWithAggregatesFilter<"Client">
   formDetails?: Prisma.JsonNullableWithAggregatesFilter<"Client">
+  cancelledAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Client"> | Date | string | null
+  cancelReason?: Prisma.StringNullableWithAggregatesFilter<"Client"> | string | null
   accountId?: Prisma.StringNullableWithAggregatesFilter<"Client"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Client"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Client"> | Date | string
@@ -534,6 +558,8 @@ export type ClientCreateInput = {
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   manager?: Prisma.UserCreateNestedOneWithoutManagedClientsInput
@@ -571,6 +597,8 @@ export type ClientUncheckedCreateInput = {
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
   accountId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -604,6 +632,8 @@ export type ClientUpdateInput = {
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   manager?: Prisma.UserUpdateOneWithoutManagedClientsNestedInput
@@ -641,6 +671,8 @@ export type ClientUncheckedUpdateInput = {
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -676,6 +708,8 @@ export type ClientCreateManyInput = {
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
   accountId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -705,6 +739,8 @@ export type ClientUpdateManyMutationInput = {
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -735,6 +771,8 @@ export type ClientUncheckedUpdateManyInput = {
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -776,6 +814,8 @@ export type ClientCountOrderByAggregateInput = {
   requiredSkills?: Prisma.SortOrder
   intakeDetails?: Prisma.SortOrder
   formDetails?: Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrder
+  cancelReason?: Prisma.SortOrder
   accountId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -804,6 +844,8 @@ export type ClientMaxOrderByAggregateInput = {
   secondaryContact?: Prisma.SortOrder
   meetingDate?: Prisma.SortOrder
   targetStartDate?: Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrder
+  cancelReason?: Prisma.SortOrder
   accountId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -832,6 +874,8 @@ export type ClientMinOrderByAggregateInput = {
   secondaryContact?: Prisma.SortOrder
   meetingDate?: Prisma.SortOrder
   targetStartDate?: Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrder
+  cancelReason?: Prisma.SortOrder
   accountId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -1070,6 +1114,8 @@ export type ClientCreateWithoutDepartmentInput = {
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   manager?: Prisma.UserCreateNestedOneWithoutManagedClientsInput
@@ -1105,6 +1151,8 @@ export type ClientUncheckedCreateWithoutDepartmentInput = {
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
   accountId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1169,6 +1217,8 @@ export type ClientScalarWhereInput = {
   requiredSkills?: Prisma.StringNullableListFilter<"Client">
   intakeDetails?: Prisma.JsonNullableFilter<"Client">
   formDetails?: Prisma.JsonNullableFilter<"Client">
+  cancelledAt?: Prisma.DateTimeNullableFilter<"Client"> | Date | string | null
+  cancelReason?: Prisma.StringNullableFilter<"Client"> | string | null
   accountId?: Prisma.StringNullableFilter<"Client"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Client"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Client"> | Date | string
@@ -1198,6 +1248,8 @@ export type ClientCreateWithoutManagerInput = {
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutClientsInput
@@ -1233,6 +1285,8 @@ export type ClientUncheckedCreateWithoutManagerInput = {
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
   accountId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1292,6 +1346,8 @@ export type ClientCreateWithoutAssignmentsInput = {
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   manager?: Prisma.UserCreateNestedOneWithoutManagedClientsInput
@@ -1328,6 +1384,8 @@ export type ClientUncheckedCreateWithoutAssignmentsInput = {
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
   accountId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1376,6 +1434,8 @@ export type ClientUpdateWithoutAssignmentsInput = {
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   manager?: Prisma.UserUpdateOneWithoutManagedClientsNestedInput
@@ -1412,6 +1472,8 @@ export type ClientUncheckedUpdateWithoutAssignmentsInput = {
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1444,6 +1506,8 @@ export type ClientCreateWithoutTicketsInput = {
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   manager?: Prisma.UserCreateNestedOneWithoutManagedClientsInput
@@ -1480,6 +1544,8 @@ export type ClientUncheckedCreateWithoutTicketsInput = {
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
   accountId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1528,6 +1594,8 @@ export type ClientUpdateWithoutTicketsInput = {
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   manager?: Prisma.UserUpdateOneWithoutManagedClientsNestedInput
@@ -1564,6 +1632,8 @@ export type ClientUncheckedUpdateWithoutTicketsInput = {
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1596,6 +1666,8 @@ export type ClientCreateWithoutAccountInput = {
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   manager?: Prisma.UserCreateNestedOneWithoutManagedClientsInput
@@ -1632,6 +1704,8 @@ export type ClientUncheckedCreateWithoutAccountInput = {
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClientInput
@@ -1690,6 +1764,8 @@ export type ClientCreateWithoutPipelineInput = {
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   manager?: Prisma.UserCreateNestedOneWithoutManagedClientsInput
@@ -1726,6 +1802,8 @@ export type ClientUncheckedCreateWithoutPipelineInput = {
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
   accountId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1774,6 +1852,8 @@ export type ClientUpdateWithoutPipelineInput = {
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   manager?: Prisma.UserUpdateOneWithoutManagedClientsNestedInput
@@ -1810,6 +1890,8 @@ export type ClientUncheckedUpdateWithoutPipelineInput = {
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1842,6 +1924,8 @@ export type ClientCreateWithoutAgentSuggestionsInput = {
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   manager?: Prisma.UserCreateNestedOneWithoutManagedClientsInput
@@ -1878,6 +1962,8 @@ export type ClientUncheckedCreateWithoutAgentSuggestionsInput = {
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
   accountId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1926,6 +2012,8 @@ export type ClientUpdateWithoutAgentSuggestionsInput = {
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   manager?: Prisma.UserUpdateOneWithoutManagedClientsNestedInput
@@ -1962,6 +2050,8 @@ export type ClientUncheckedUpdateWithoutAgentSuggestionsInput = {
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1995,6 +2085,8 @@ export type ClientCreateManyDepartmentInput = {
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
   accountId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2024,6 +2116,8 @@ export type ClientUpdateWithoutDepartmentInput = {
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   manager?: Prisma.UserUpdateOneWithoutManagedClientsNestedInput
@@ -2059,6 +2153,8 @@ export type ClientUncheckedUpdateWithoutDepartmentInput = {
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2093,6 +2189,8 @@ export type ClientUncheckedUpdateManyWithoutDepartmentInput = {
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2123,6 +2221,8 @@ export type ClientCreateManyManagerInput = {
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
   accountId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2152,6 +2252,8 @@ export type ClientUpdateWithoutManagerInput = {
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutClientsNestedInput
@@ -2187,6 +2289,8 @@ export type ClientUncheckedUpdateWithoutManagerInput = {
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2221,6 +2325,8 @@ export type ClientUncheckedUpdateManyWithoutManagerInput = {
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2252,6 +2358,8 @@ export type ClientCreateManyAccountInput = {
   requiredSkills?: Prisma.ClientCreaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Date | string | null
+  cancelReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -2280,6 +2388,8 @@ export type ClientUpdateWithoutAccountInput = {
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   manager?: Prisma.UserUpdateOneWithoutManagedClientsNestedInput
@@ -2316,6 +2426,8 @@ export type ClientUncheckedUpdateWithoutAccountInput = {
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClientNestedInput
@@ -2350,6 +2462,8 @@ export type ClientUncheckedUpdateManyWithoutAccountInput = {
   requiredSkills?: Prisma.ClientUpdaterequiredSkillsInput | string[]
   intakeDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   formDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2429,6 +2543,8 @@ export type ClientSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   requiredSkills?: boolean
   intakeDetails?: boolean
   formDetails?: boolean
+  cancelledAt?: boolean
+  cancelReason?: boolean
   accountId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -2468,6 +2584,8 @@ export type ClientSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   requiredSkills?: boolean
   intakeDetails?: boolean
   formDetails?: boolean
+  cancelledAt?: boolean
+  cancelReason?: boolean
   accountId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -2502,6 +2620,8 @@ export type ClientSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   requiredSkills?: boolean
   intakeDetails?: boolean
   formDetails?: boolean
+  cancelledAt?: boolean
+  cancelReason?: boolean
   accountId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -2536,12 +2656,14 @@ export type ClientSelectScalar = {
   requiredSkills?: boolean
   intakeDetails?: boolean
   formDetails?: boolean
+  cancelledAt?: boolean
+  cancelReason?: boolean
   accountId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ClientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "contactName" | "contactEmail" | "contactPhone" | "platform" | "industry" | "timezone" | "notes" | "status" | "onHold" | "isActive" | "managerId" | "departmentId" | "onboardingFolderUrl" | "website" | "requestType" | "businessModel" | "serviceType" | "secondaryContact" | "meetingDate" | "targetStartDate" | "requiredSkills" | "intakeDetails" | "formDetails" | "accountId" | "createdAt" | "updatedAt", ExtArgs["result"]["client"]>
+export type ClientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "contactName" | "contactEmail" | "contactPhone" | "platform" | "industry" | "timezone" | "notes" | "status" | "onHold" | "isActive" | "managerId" | "departmentId" | "onboardingFolderUrl" | "website" | "requestType" | "businessModel" | "serviceType" | "secondaryContact" | "meetingDate" | "targetStartDate" | "requiredSkills" | "intakeDetails" | "formDetails" | "cancelledAt" | "cancelReason" | "accountId" | "createdAt" | "updatedAt", ExtArgs["result"]["client"]>
 export type ClientInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   manager?: boolean | Prisma.Client$managerArgs<ExtArgs>
   department?: boolean | Prisma.Client$departmentArgs<ExtArgs>
@@ -2600,6 +2722,8 @@ export type $ClientPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     requiredSkills: string[]
     intakeDetails: runtime.JsonValue | null
     formDetails: runtime.JsonValue | null
+    cancelledAt: Date | null
+    cancelReason: string | null
     accountId: string | null
     createdAt: Date
     updatedAt: Date
@@ -3058,6 +3182,8 @@ export interface ClientFieldRefs {
   readonly requiredSkills: Prisma.FieldRef<"Client", 'String[]'>
   readonly intakeDetails: Prisma.FieldRef<"Client", 'Json'>
   readonly formDetails: Prisma.FieldRef<"Client", 'Json'>
+  readonly cancelledAt: Prisma.FieldRef<"Client", 'DateTime'>
+  readonly cancelReason: Prisma.FieldRef<"Client", 'String'>
   readonly accountId: Prisma.FieldRef<"Client", 'String'>
   readonly createdAt: Prisma.FieldRef<"Client", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Client", 'DateTime'>

@@ -181,6 +181,7 @@ export default async function ClientsPage({
     // new Date(): the cached() result comes back JSON-serialized, so this is a string.
     dateAdded: dateAddedFormat.format(new Date(c.createdAt)),
     assignmentCount: c.assignments.length,
+    openAssignmentCount: c.assignments.filter((a) => a.status === 'ACTIVE' || a.status === 'PAUSED' || a.status === 'ON_HOLD').length,
     // One entry per VA — the same VA can hold two active engagements on a request.
     activeVAs: Array.from(
       new Map(
@@ -272,7 +273,7 @@ export default async function ClientsPage({
           </CardContent>
         </Card>
       ) : (
-        <ClientsBoard clients={boardClients} />
+        <ClientsBoard clients={boardClients} canManage={canImport} />
       )}
     </div>
   )

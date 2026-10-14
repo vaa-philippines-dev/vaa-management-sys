@@ -10,6 +10,7 @@ import { logAudit } from '@/lib/audit'
 import { getMutateScope, assertDepartmentInScope, assertClientInScope, isDepartmentInScope, clientScopeWhere } from '@/lib/scope'
 import { getIntakeFieldsForDepartment, INTAKE_FIELD_CATALOG, type IntakeFieldKey } from '@/lib/clients/intake-fields'
 import { CLIENT_STATUS_LABEL } from '@/lib/clients/display'
+import { parseStatusEffectiveDate } from '@/lib/assignment-status-fields'
 
 // Everything here is a free-text field shared across most departments'
 // intake forms (Customer/Company/Other Information categories) that isn't
@@ -337,6 +338,123 @@ export async function deleteClient(id: string) {
   revalidatePath('/clients')
   revalidatePath('/admin/clients')
   revalidateTag(CACHE_TAGS.clients, 'default')
+}
+
+function revalidateClient(id: string) {
+  revalidatePath('/clients')
+  revalidatePath(`/clients/${id}`)
+  revalidatePath('/admin/clients')
+  revalidateTag(CACHE_TAGS.clients, 'default')
+}
+
+// Engagements that are still running — a request can't be cancelled or
+// removed out from under them.
+const OPEN_ASSIGNMENT_STATUSES = ['ACTIVE', 'PAUSED', 'ON_HOLD'] as const
+
+// "Cancel request" on /clients: the request is kept (status CANCELLED, under
+// the EOC / Cancelled tab) with the date it was cancelled and why. Refused
+// while a VA is still on it — end or cancel those assignments first, so the
+// VA's hours and the KPI cycle don't keep running on a cancelled request.
+export async function cancelClientRequest(id: string, input: { cancelledAt: string; reason?: string }) {
+  const actor = await requireRole(...CLIENT_MUTATOR_ROLES)
+  await assertCanMutateClient(actor, id)
+
+  const cancelledAt = parseStatusEffectiveDate(input.cancelledAt ?? '')
+  if (!cancelledAt) throw new Error('Pick the date the request was cancelled (not in the future)')
+  const cancelReason = input.reason?.trim() || null
+
+  const before = await prisma.client.findUnique({
+    where: { id },
+    select: {
+      status: true,
+      onHold: true,
+      _count: { select: { assignments: { where: { status: { in: [...OPEN_ASSIGNMENT_STATUSES] } } } } },
+    },
+  })
+  if (!before) throw new Error('Client request not found')
+  const open = before._count.assignments
+  if (open > 0) {
+    throw new Error(
+      `This request still has ${open} active or paused assignment${open === 1 ? '' : 's'} — cancel or end ${open === 1 ? 'it' : 'them'} first.`
+    )
+  }
+
+  await prisma.client.update({
+    where: { id },
+    data: { status: 'CANCELLED', onHold: false, cancelledAt, cancelReason },
+  })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'STATUS_CHANGE',
+    entityType: 'Client',
+    entityId: id,
+    before: { status: before.status, onHold: before.onHold },
+    after: { status: 'CANCELLED', onHold: false, cancelledAt, cancelReason },
+  })
+
+  revalidateClient(id)
+}
+
+// Undo for a cancellation: back to Pending (nothing can be staffed on a
+// cancelled request, so there's no Active engagement to return to).
+export async function reopenClientRequest(id: string) {
+  const actor = await requireRole(...CLIENT_MUTATOR_ROLES)
+  await assertCanMutateClient(actor, id)
+
+  const before = await prisma.client.findUnique({
+    where: { id },
+    select: { status: true, cancelledAt: true, cancelReason: true },
+  })
+  if (!before) throw new Error('Client request not found')
+  if (before.status !== 'CANCELLED') throw new Error('Only a cancelled request can be reopened')
+
+  await prisma.client.update({
+    where: { id },
+    data: { status: 'PENDING', cancelledAt: null, cancelReason: null },
+  })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'STATUS_CHANGE',
+    entityType: 'Client',
+    entityId: id,
+    before: { ...before },
+    after: { status: 'PENDING', cancelledAt: null, cancelReason: null },
+  })
+
+  revalidateClient(id)
+}
+
+// "Remove" for a request entered by mistake (duplicate, test, wrong
+// department). Only when nothing was ever staffed on it: deleting a client
+// cascades to its assignments, work logs, KPI checks and preparation, so a
+// request with any assignment history can only be cancelled. Admins keep the
+// unrestricted delete on /admin/clients.
+export async function removeClientRequest(id: string) {
+  const actor = await requireRole(...CLIENT_MUTATOR_ROLES)
+  await assertCanMutateClient(actor, id)
+
+  const before = await prisma.client.findUnique({
+    where: { id },
+    select: { name: true, status: true, departmentId: true, _count: { select: { assignments: true } } },
+  })
+  if (!before) throw new Error('Client request not found')
+  if (before._count.assignments > 0) {
+    throw new Error('This request has assignments, so it can only be cancelled, not removed.')
+  }
+
+  await prisma.client.delete({ where: { id } })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'DELETE',
+    entityType: 'Client',
+    entityId: id,
+    before: { name: before.name, status: before.status, departmentId: before.departmentId },
+  })
+
+  revalidateClient(id)
 }
 
 // A CSV import is always scoped to one department at a time (the admin
