@@ -287,7 +287,10 @@ const onGoingRoutes = [
 
 // Rendered in the "HR" section of the manager sidebar. Offboarding moved
 // here from the Department section — it's an HR-owned workflow, not
-// department-scoped structural navigation.
+// department-scoped structural navigation. HR and admins see the heading as
+// "HR"; everyone else (Dept/Ops Managers, Team Leaders, Staff) gets
+// HR_SECTION_LABEL, since to them it's their own leave/offboarding, not "HR".
+const HR_SECTION_LABEL = 'Leave & Offboarding'
 const hrRoutes = [
   { label: 'Offboarding', href: '/offboarding', icon: UserMinus },
   { label: 'Leave', href: '/leave', icon: CalendarClock },
@@ -361,6 +364,7 @@ export function Sidebar({
   initialFavorites = [],
   showDepartmentSection = false,
   canManageLeave = false,
+  isHR = false,
   isLedTeamLeader = false,
   canOpenTmf = false,
   isTeamScoped = false,
@@ -370,6 +374,7 @@ export function Sidebar({
   initialFavorites?: FavoriteRecord[]
   showDepartmentSection?: boolean
   canManageLeave?: boolean
+  isHR?: boolean
   isLedTeamLeader?: boolean
   canOpenTmf?: boolean
   isTeamScoped?: boolean
@@ -839,7 +844,9 @@ export function Sidebar({
 
           {role === 'MANAGER' && (
             <>
-              <p className="px-2 pt-3.5 pb-1 text-[10.5px] tracking-wide text-sidebar-foreground/60">HR</p>
+              <p className="px-2 pt-3.5 pb-1 text-[10.5px] tracking-wide text-sidebar-foreground/60">
+                {isAdmin || isHR ? 'HR' : HR_SECTION_LABEL}
+              </p>
               {hrRoutes.map((route) => (
                 <FavoritableRow
                   key={route.href}

@@ -72,6 +72,7 @@ export default async function DashboardLayout({
               initialFavorites={favorites}
               showDepartmentSection={showDepartmentSection}
               canManageLeave={canManageLeave}
+              isHR={isHR}
               isLedTeamLeader={isLedTeamLeader}
               canOpenTmf={canOpenTmf}
               isTeamScoped={teamScoped}
