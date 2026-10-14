@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import { SERVICE_DEPARTMENT_WHERE } from '@/lib/departments'
 import type { Prisma } from '@/src/generated/prisma/client'
 import { getCurrentUser, canMutate, VA_MUTATOR_ROLES, DEPARTMENT_SCOPED_ROLES, TEAM_MANAGE_ROLES } from '@/lib/auth'
 import {
@@ -202,13 +203,13 @@ export async function VASection({
 
   const [addVaDepartments, addVaSkills, addVaTeams] = canAddVA
     ? await Promise.all([
-        // quickAddVA() rejects out-of-scope departments server-side; this just
+        // VAs only join service departments, and a scoped viewer only their
+        // own — quickAddVA() rejects anything else server-side; this just
         // keeps the picker from offering them.
-        cached(`vas:add-va-departments:${viewerScope.type === 'department' ? [...viewerScope.scope.departmentIds].sort().join(',') : 'all'}`, [CACHE_TAGS.departments], 600, () =>
+        cached(`vas:add-va-service-departments:${viewerScope.type === 'department' ? [...viewerScope.scope.departmentIds].sort().join(',') : 'all'}`, [CACHE_TAGS.departments], 600, () =>
           prisma.department.findMany({
             where: {
-              status: 'ACTIVE',
-              parentId: { not: null },
+              ...SERVICE_DEPARTMENT_WHERE,
               ...(viewerScope.type === 'department' && { id: { in: viewerScope.scope.departmentIds } }),
             },
             orderBy: { sortOrder: 'asc' },

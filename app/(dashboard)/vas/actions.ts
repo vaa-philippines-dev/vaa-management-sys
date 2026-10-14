@@ -1,6 +1,7 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
+import { isServiceDepartment } from '@/lib/departments'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { CACHE_TAGS } from '@/lib/cache'
@@ -100,6 +101,10 @@ export async function quickAddVA(formData: FormData) {
   // A scoped actor must place the new VA in one of their own departments —
   // a department-less VA would also be invisible to them straight after.
   assertDepartmentInScope(await getMutateScope(actor), departmentId)
+  // VAs work in the service departments (Amazon, PPC, …), never Staff ones.
+  if (departmentId && !(await isServiceDepartment(departmentId))) {
+    throw new Error('VAs can only be added to a service department')
+  }
 
   // Optional team: same rule as teams/actions.ts — only team-composing roles,
   // and the team must belong to the department the VA is joining.

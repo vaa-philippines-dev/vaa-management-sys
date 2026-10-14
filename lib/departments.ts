@@ -119,6 +119,20 @@ export async function hasChildren(departmentId: string): Promise<boolean> {
   return count > 0
 }
 
+// The client-facing service departments VAs work in (Amazon, PPC,
+// Wholesale, Creatives, Social Media, Executive Assistant, Walmart) — the
+// SERVICE tier minus its "Service" level record. A new VA can only be placed
+// in one of these; Staff departments are everything else.
+export const SERVICE_DEPARTMENT_WHERE = {
+  level: 'SERVICE',
+  status: 'ACTIVE',
+  parentId: { not: null },
+} as const
+
+export async function isServiceDepartment(departmentId: string): Promise<boolean> {
+  return (await prisma.department.count({ where: { id: departmentId, ...SERVICE_DEPARTMENT_WHERE } })) > 0
+}
+
 export async function isServiceLevel(departmentId: string): Promise<boolean> {
   const dept = await prisma.department.findUnique({
     where: { id: departmentId },
