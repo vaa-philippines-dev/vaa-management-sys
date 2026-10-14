@@ -246,6 +246,7 @@ export default async function VADetailPage({
       baseRate: va.baseRate ? Number(va.baseRate) : null,
       vaaPosition: va.vaaPosition ?? null,
       level: va.level ?? null,
+      vaType: va.vaType,
       expertiseGroupId: va.expertiseGroupId ?? null,
       expertiseGroupName: va.expertiseGroup?.name ?? null,
       currentHireDate: toDateString(va.currentHireDate)?.slice(0, 10) ?? null,

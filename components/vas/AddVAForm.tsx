@@ -8,6 +8,7 @@ import { Loader2, Plus, X, UserPlus, Copy, Check } from 'lucide-react'
 import { quickAddVA, createVAOnboardingInvite } from '@/app/(dashboard)/vas/actions'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import { VA_TYPE_OPTIONS } from '@/lib/va-type-fields'
 
 function todayInputValue() {
   const d = new Date()
@@ -168,6 +169,14 @@ export function AddVAModal({
                   ))}
                 </select>
               </div>
+            </div>
+            <div>
+              <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Type of VA</Label>
+              <select name="vaType" defaultValue="REGULAR" className="w-full h-9 text-sm rounded-md border bg-background px-2">
+                {VA_TYPE_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value}>{o.label}</option>
+                ))}
+              </select>
             </div>
             {teams.length > 0 && (
               <div>

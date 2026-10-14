@@ -5074,6 +5074,7 @@ export const VAProfileScalarFieldEnum = {
   vaaPosition: 'vaaPosition',
   positionSkillId: 'positionSkillId',
   level: 'level',
+  vaType: 'vaType',
   expertiseGroupId: 'expertiseGroupId',
   availabilityStatus: 'availabilityStatus',
   recommendability: 'recommendability',
@@ -6263,6 +6264,20 @@ export type EnumTemporaryRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
  * Reference to a field of type 'TemporaryRole[]'
  */
 export type ListEnumTemporaryRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TemporaryRole[]'>
+    
+
+
+/**
+ * Reference to a field of type 'VAType'
+ */
+export type EnumVATypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VAType'>
+    
+
+
+/**
+ * Reference to a field of type 'VAType[]'
+ */
+export type ListEnumVATypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VAType[]'>
     
 
 

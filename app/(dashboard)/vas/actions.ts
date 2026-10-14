@@ -27,6 +27,7 @@ import { addWorkingDays } from '@/lib/working-days'
 import { nextTerminationTicketNumber } from '@/lib/tickets'
 import { createResignationCase } from '@/lib/resignation-case'
 import { AVAILABILITY_STATUSES } from '@/lib/va-availability-fields'
+import { parseVAType } from '@/lib/va-type-fields'
 import type { Prisma } from '@/src/generated/prisma/client'
 import type {
   Proficiency,
@@ -94,6 +95,7 @@ export async function quickAddVA(formData: FormData) {
   const departmentId = ((formData.get('departmentId') as string) ?? '').trim() || null
   const positionSkillId = ((formData.get('positionSkillId') as string) ?? '').trim() || null
   const teamId = ((formData.get('teamId') as string) ?? '').trim() || null
+  const vaType = parseVAType(formData.get('vaType')) ?? 'REGULAR'
 
   // A scoped actor must place the new VA in one of their own departments —
   // a department-less VA would also be invisible to them straight after.
@@ -127,7 +129,7 @@ export async function quickAddVA(formData: FormData) {
         systemRole: 'VA',
         userType: 'VIRTUAL_ASSISTANT',
         isActive: true,
-        vaProfile: { create: { hourlyRate: null, positionSkillId, currentHireDate: hireDate } },
+        vaProfile: { create: { hourlyRate: null, positionSkillId, vaType, currentHireDate: hireDate } },
         ...(departmentId ? { memberships: { create: { departmentId, isPrimary: true } } } : {}),
         ...(teamId ? { teamMemberships: { create: { teamId } } } : {}),
       },
@@ -139,7 +141,7 @@ export async function quickAddVA(formData: FormData) {
     action: 'CREATE',
     entityType: 'User',
     entityId: user.id,
-    after: { email, employeeId: user.employeeId, firstName, lastName, departmentId, positionSkillId, teamId, hireDate },
+    after: { email, employeeId: user.employeeId, firstName, lastName, departmentId, positionSkillId, vaType, teamId, hireDate },
     metadata: { viaForm: 'vas:quick-add' },
   })
 
@@ -935,7 +937,7 @@ export async function updateVAProfile(vaProfileId: string, formData: FormData) {
 
   const data: Record<string, any> = {}
   const allowedFields = [
-    'vaaPosition', 'level', 'baseRate', 'hourlyRate', 'notes',
+    'vaaPosition', 'level', 'vaType', 'baseRate', 'hourlyRate', 'notes',
     'preferredWorkHours', 'availableSchedule', 'hybrid', 'availabilityStatus',
     'availabilityRemarks', 'expertiseGroupId',
     'status', 'engagementStatus', 'currentHireDate', 'onHold',
@@ -952,6 +954,10 @@ export async function updateVAProfile(vaProfileId: string, formData: FormData) {
         data[field] = value ? Number(value) : null
       } else if (field === 'currentHireDate') {
         data[field] = value ? new Date(value as string) : null
+      } else if (field === 'vaType') {
+        const vaType = parseVAType(value)
+        if (!vaType) throw new Error('Invalid Type of VA')
+        data[field] = vaType
       } else {
         data[field] = value || null
       }
@@ -960,7 +966,7 @@ export async function updateVAProfile(vaProfileId: string, formData: FormData) {
 
   const before = await prisma.vAProfile.findUnique({
     where: { id: vaProfileId },
-    select: { userId: true, vaaPosition: true, level: true, baseRate: true, hourlyRate: true, preferredWorkHours: true, availabilityStatus: true, hybrid: true, status: true, engagementStatus: true },
+    select: { userId: true, vaaPosition: true, level: true, vaType: true, baseRate: true, hourlyRate: true, preferredWorkHours: true, availabilityStatus: true, hybrid: true, status: true, engagementStatus: true },
   })
 
   await prisma.vAProfile.update({ where: { id: vaProfileId }, data })

@@ -399,6 +399,13 @@ export type EnumTemporaryRoleWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumTemporaryRoleFilter<$PrismaModel>
 }
 
+export type EnumVATypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.VAType | Prisma.EnumVATypeFieldRefInput<$PrismaModel>
+  in?: $Enums.VAType[] | Prisma.ListEnumVATypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VAType[] | Prisma.ListEnumVATypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVATypeFilter<$PrismaModel> | $Enums.VAType
+}
+
 export type EnumAvailabilityFilter<$PrismaModel = never> = {
   equals?: $Enums.Availability | Prisma.EnumAvailabilityFieldRefInput<$PrismaModel>
   in?: $Enums.Availability[] | Prisma.ListEnumAvailabilityFieldRefInput<$PrismaModel>
@@ -411,6 +418,16 @@ export type EnumEmploymentStatusNullableFilter<$PrismaModel = never> = {
   in?: $Enums.EmploymentStatus[] | Prisma.ListEnumEmploymentStatusFieldRefInput<$PrismaModel> | null
   notIn?: $Enums.EmploymentStatus[] | Prisma.ListEnumEmploymentStatusFieldRefInput<$PrismaModel> | null
   not?: Prisma.NestedEnumEmploymentStatusNullableFilter<$PrismaModel> | $Enums.EmploymentStatus | null
+}
+
+export type EnumVATypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VAType | Prisma.EnumVATypeFieldRefInput<$PrismaModel>
+  in?: $Enums.VAType[] | Prisma.ListEnumVATypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VAType[] | Prisma.ListEnumVATypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVATypeWithAggregatesFilter<$PrismaModel> | $Enums.VAType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVATypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVATypeFilter<$PrismaModel>
 }
 
 export type EnumAvailabilityWithAggregatesFilter<$PrismaModel = never> = {
@@ -1755,6 +1772,13 @@ export type NestedEnumTemporaryRoleWithAggregatesFilter<$PrismaModel = never> = 
   _max?: Prisma.NestedEnumTemporaryRoleFilter<$PrismaModel>
 }
 
+export type NestedEnumVATypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.VAType | Prisma.EnumVATypeFieldRefInput<$PrismaModel>
+  in?: $Enums.VAType[] | Prisma.ListEnumVATypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VAType[] | Prisma.ListEnumVATypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVATypeFilter<$PrismaModel> | $Enums.VAType
+}
+
 export type NestedEnumAvailabilityFilter<$PrismaModel = never> = {
   equals?: $Enums.Availability | Prisma.EnumAvailabilityFieldRefInput<$PrismaModel>
   in?: $Enums.Availability[] | Prisma.ListEnumAvailabilityFieldRefInput<$PrismaModel>
@@ -1767,6 +1791,16 @@ export type NestedEnumEmploymentStatusNullableFilter<$PrismaModel = never> = {
   in?: $Enums.EmploymentStatus[] | Prisma.ListEnumEmploymentStatusFieldRefInput<$PrismaModel> | null
   notIn?: $Enums.EmploymentStatus[] | Prisma.ListEnumEmploymentStatusFieldRefInput<$PrismaModel> | null
   not?: Prisma.NestedEnumEmploymentStatusNullableFilter<$PrismaModel> | $Enums.EmploymentStatus | null
+}
+
+export type NestedEnumVATypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VAType | Prisma.EnumVATypeFieldRefInput<$PrismaModel>
+  in?: $Enums.VAType[] | Prisma.ListEnumVATypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VAType[] | Prisma.ListEnumVATypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVATypeWithAggregatesFilter<$PrismaModel> | $Enums.VAType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVATypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVATypeFilter<$PrismaModel>
 }
 
 export type NestedEnumAvailabilityWithAggregatesFilter<$PrismaModel = never> = {

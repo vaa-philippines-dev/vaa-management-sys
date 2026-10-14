@@ -683,6 +683,10 @@ model VAProfile {
   positionSkillId     String?           @map("position_skill_id")
   positionSkill       Skill?            @relation(fields: [positionSkillId], references: [id], onDelete: SetNull)
   level               String?
+  // TYPE OF VA: Regular (trained in-house) vs. hired already experienced from
+  // outside. Every VA defaulted to Regular when this was added (2026-10-14);
+  // HR flips the external hires by hand.
+  vaType              VAType            @default(REGULAR) @map("va_type")
   // The VA's functional specialization, e.g. "Sales" or "Bookkeeping" —
   // reuses the Department tree rather than a separate free-text list, since
   // departments already represent those functional groupings.
@@ -2071,6 +2075,13 @@ enum PreparationStartStatus {
   STARTED_ON_TIME
   DELAYED
   CANCELLED
+}
+
+// TYPE OF VA on the VA profile (not the engagement-level PreparationVaType below).
+enum VAType {
+  REGULAR
+  EXPERIENCED_EXTERNAL
+  SENIOR_EXTERNAL
 }
 
 // VA TYPE: whether this engagement is the account's first VA, an extra head

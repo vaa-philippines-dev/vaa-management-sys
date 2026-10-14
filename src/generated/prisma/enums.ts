@@ -561,6 +561,15 @@ export const PreparationStartStatus = {
 export type PreparationStartStatus = (typeof PreparationStartStatus)[keyof typeof PreparationStartStatus]
 
 
+export const VAType = {
+  REGULAR: 'REGULAR',
+  EXPERIENCED_EXTERNAL: 'EXPERIENCED_EXTERNAL',
+  SENIOR_EXTERNAL: 'SENIOR_EXTERNAL'
+} as const
+
+export type VAType = (typeof VAType)[keyof typeof VAType]
+
+
 export const PreparationVaType = {
   NEW: 'NEW',
   ADDITIONAL: 'ADDITIONAL',

@@ -28,12 +28,13 @@ import { format } from 'date-fns'
 import type { DriveFile } from '@/lib/google/drive'
 import { AddressFields } from '@/components/vas/AddressFields'
 import { OFFBOARDING_TYPE_OPTIONS as TERMINATION_TYPE_OPTIONS } from '@/lib/offboarding'
+import { VA_TYPE_OPTIONS, VA_TYPE_LABELS } from '@/lib/va-type-fields'
 
 export type VAData = {
   vaProfile: {
     id: string; status: string; engagementStatus: string | null; hybrid: boolean
     hourlyRate: number | null; baseRate: number | null
-    vaaPosition: string | null; level: string | null
+    vaaPosition: string | null; level: string | null; vaType: string
     expertiseGroupId: string | null; expertiseGroupName: string | null
     currentHireDate: string | null
     availabilityStatus: string; preferredWorkHours: number | null
@@ -156,6 +157,7 @@ export function VAProfileEditor({
           canEdit={canEditSensitive}
         >
           <TableRow label="Position" value={data.membership?.positionTitle || data.vaProfile.vaaPosition} />
+          <TableRow label="Type of VA" value={VA_TYPE_LABELS[data.vaProfile.vaType] ?? data.vaProfile.vaType} />
           <TableRow label="Expertise Group" value={data.vaProfile.expertiseGroupName} />
           <TableRow label="Status" value={data.employment?.employmentStatus?.replace(/_/g, ' ')} />
           <TableRow label="Base Rate" value={data.vaProfile.baseRate ? `₱${Number(data.vaProfile.baseRate).toLocaleString()}/hr` : null} />
@@ -586,6 +588,14 @@ function EmploymentFormContent({ data, expertiseGroups, onClose }: { data: VADat
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
           <FI name="vaaPosition" label="VAA Position" defaultValue={data.vaProfile.vaaPosition} />
           <FI name="level" label="Level" defaultValue={data.vaProfile.level} />
+          <div>
+            <Label htmlFor="fi-vaType" className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Type of VA</Label>
+            <select id="fi-vaType" name="vaType" defaultValue={data.vaProfile.vaType} className="w-full h-8 text-xs rounded-md border bg-background px-2">
+              {VA_TYPE_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+          </div>
           <FSel name="expertiseGroupId" label="Expertise Group" defaultValue={data.vaProfile.expertiseGroupId} options={expertiseGroups} />
           <FI name="baseRate" label="Base Rate (PHP)" defaultValue={data.vaProfile.baseRate?.toString()} type="number" />
           <FI name="hourlyRate" label="Hourly Rate (USD)" defaultValue={data.vaProfile.hourlyRate?.toString()} type="number" />

@@ -335,6 +335,7 @@ export const VAProfileScalarFieldEnum = {
   vaaPosition: 'vaaPosition',
   positionSkillId: 'positionSkillId',
   level: 'level',
+  vaType: 'vaType',
   expertiseGroupId: 'expertiseGroupId',
   availabilityStatus: 'availabilityStatus',
   recommendability: 'recommendability',
