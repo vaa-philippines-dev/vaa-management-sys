@@ -3,11 +3,11 @@
 import { prisma } from '@/lib/prisma'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { CACHE_TAGS } from '@/lib/cache'
-import { requireAuth, hasModuleAccess } from '@/lib/auth'
+import { requireAuth, canMutate } from '@/lib/auth'
 import { logAudit } from '@/lib/audit'
 import { notify } from '@/lib/notifications'
 import { sendEmail, leaveApprovalNeededEmail, leaveRequestDecidedEmail } from '@/lib/email'
-import { getActiveApprovalRule, resolveStepApprovers, totalLeaveDays } from '@/lib/leave'
+import { getActiveApprovalRule, resolveStepApprovers, totalLeaveDays, leaveApprovalVisibleWhere } from '@/lib/leave'
 import type { SystemRole } from '@/src/generated/prisma/enums'
 
 const LEAVE_TYPES = ['VACATION', 'SICK', 'EMERGENCY', 'MATERNITY', 'PATERNITY', 'UNPAID', 'BEREAVEMENT']
@@ -216,12 +216,34 @@ export async function decideLeaveApprovalAction(actionId: string, decision: 'APP
   })
   if (!action || action.status !== 'PENDING') return { error: 'This approval is no longer pending' }
 
-  // The actor must be the resolved approver on this row, OR hold an explicit
-  // LEAVE-module APPROVER grant — e.g. an admin standing in, or a delegate
-  // for an EXECUTIVE approver (who'd otherwise be view-only elsewhere).
+  // The actor must be the resolved approver on this row, OR a full admin, OR
+  // hold a LEAVE-module APPROVER grant — e.g. a delegate for an EXECUTIVE
+  // approver (who'd otherwise be view-only elsewhere). A grant tied to a
+  // department only covers requesters in that department.
   const isNamedApprover = action.approverId === actor.id
-  if (!isNamedApprover && !hasModuleAccess(actor, 'leave', 'approve')) {
-    return { error: 'You are not authorized to act on this approval' }
+  if (!isNamedApprover && !canMutate(actor)) {
+    const requesterDeptIds = (
+      await prisma.departmentMembership.findMany({
+        where: { userId: action.leaveRequest.userId, endedAt: null },
+        select: { departmentId: true },
+      })
+    ).map((m) => m.departmentId)
+    const hasGrant = (actor.roleAssignments ?? []).some(
+      (ra) =>
+        ra.module === 'leave' &&
+        ra.role === 'APPROVER' &&
+        (!ra.departmentId || requesterDeptIds.includes(ra.departmentId))
+    )
+    if (!hasGrant) return { error: 'You are not authorized to act on this approval' }
+  }
+  // Same department rule as the Leave Approvals queue (leaveApprovalVisibleWhere):
+  // a requester outside the approver's departments/teams can't be decided on
+  // by id, unless the hierarchy names this approver directly.
+  if (isNamedApprover) {
+    const visible = await prisma.leaveApprovalAction.count({
+      where: { id: actionId, ...(await leaveApprovalVisibleWhere(actor)) },
+    })
+    if (visible === 0) return { error: 'This leave request is outside your department' }
   }
 
   const trimmedNote = note.trim() || null

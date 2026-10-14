@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
+import { leaveApprovalVisibleWhere } from '@/lib/leave'
 import { redirect } from 'next/navigation'
 import { ApprovalQueue } from '@/components/leave/ApprovalQueue'
 
@@ -10,9 +11,11 @@ export default async function LeaveApprovalsPage() {
   // Actions are only ever created for a request's *current* step (see
   // openStep() in leave/actions.ts — the previous step's rows are cancelled
   // once it advances), so "pending and assigned to me" is already exactly
-  // "actionable by me right now," no extra step-matching needed.
+  // "actionable by me right now," no extra step-matching needed. Department
+  // scoped on top: only requesters in my departments/teams, unless the
+  // hierarchy names me directly (see leaveApprovalVisibleWhere).
   const actions = await prisma.leaveApprovalAction.findMany({
-    where: { approverId: user.id, status: 'PENDING' },
+    where: { approverId: user.id, status: 'PENDING', ...(await leaveApprovalVisibleWhere(user)) },
     include: {
       leaveRequest: { include: { user: { select: { firstName: true, lastName: true, systemRole: true } } } },
     },

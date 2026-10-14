@@ -43,6 +43,19 @@ export const AGENT_MUTATOR_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'DEPT_MANAGER
 // leave). Deciding the company's approval chain is an HR/admin policy call, not a
 // day-to-day manager one — same tier as TEAM_MANAGE_ROLES minus the Dept/Ops Managers.
 export const LEAVE_ADMIN_ROLES = ['SUPER_ADMIN', 'SYSTEM_ADMIN', 'HR']
+// Who gets the department view on /leave (other people's leave, not just their
+// own) — narrowed by lib/scope.ts: Dept/Ops Managers to their departments, a
+// Team Leader to their teams, HR/Executive/admins to everyone. Staff only see
+// their own.
+export const LEAVE_DEPARTMENT_VIEW_ROLES = [
+  'SUPER_ADMIN',
+  'SYSTEM_ADMIN',
+  'EXECUTIVE',
+  'HR',
+  'DEPT_MANAGER',
+  'OPERATIONS_MANAGER',
+  'TEAM_LEADER',
+]
 // Deleting an offboarding case is destructive and permanent (unlike the rest of
 // VA_MUTATOR_ROLES's day-to-day workflow actions on it), so it's scoped tighter:
 // full admins plus HR, who own the Offboarding module end-to-end.
