@@ -311,6 +311,7 @@ export default async function VADetailPage({
       signedContract: canViewSensitive ? (profile.signedContract ?? null) : null,
     } : null,
     membership: primaryMem ? {
+      departmentId: primaryMem.departmentId,
       departmentName: primaryMem.department.name,
       positionTitle: primaryMem.position?.title ?? null,
     } : null,

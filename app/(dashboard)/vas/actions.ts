@@ -1316,6 +1316,99 @@ export async function updateEmployment(vaProfileId: string, userId: string, form
   await updateUserProfile(userId, formData)
 }
 
+// The "Department & Type of VA" section on /vas/[id] (HR + full admins). The
+// department change is a *correction* of a wrong pick, not a transfer: the
+// primary membership is re-pointed in place (start date kept, no VAHistory
+// transfer/EOC event, no engagement change). A real move between departments
+// still goes through transferVA(). Team memberships in the wrongly-picked
+// department are ended — a team must belong to the VA's department (same rule
+// as quickAddVA) — and the department-specific position is cleared.
+export async function updateVADepartmentAndType(vaProfileId: string, formData: FormData) {
+  const actor = await requireRole(...VA_SENSITIVE_INFO_EDIT_ROLES)
+
+  const departmentId = ((formData.get('departmentId') as string) ?? '').trim() || null
+  const vaType = parseVAType(formData.get('vaType'))
+  if (!vaType) throw new Error('Invalid Type of VA')
+
+  const va = await prisma.vAProfile.findUnique({
+    where: { id: vaProfileId },
+    select: {
+      userId: true,
+      vaType: true,
+      user: {
+        select: {
+          memberships: {
+            where: { endedAt: null },
+            orderBy: { isPrimary: 'desc' },
+            select: { id: true, departmentId: true, isPrimary: true, position: { select: { departmentId: true } } },
+          },
+        },
+      },
+    },
+  })
+  if (!va) throw new Error('VA profile not found')
+
+  const current = va.user.memberships[0] ?? null
+  const departmentChanged = !!departmentId && departmentId !== current?.departmentId
+  let endedTeamIds: string[] = []
+
+  if (departmentChanged) {
+    const dept = await prisma.department.findUnique({ where: { id: departmentId }, select: { status: true } })
+    if (!dept || dept.status !== 'ACTIVE') throw new Error('Department not found')
+    if (va.user.memberships.some((m) => m.departmentId === departmentId)) {
+      throw new Error('The VA is already in that department — use Transfer to change which one is primary')
+    }
+  }
+
+  await prisma.$transaction(async (tx) => {
+    if (departmentChanged) {
+      if (current) {
+        await tx.departmentMembership.update({
+          where: { id: current.id },
+          data: {
+            departmentId: departmentId!,
+            ...(current.position && current.position.departmentId !== departmentId ? { positionId: null } : {}),
+          },
+        })
+        const wrongTeams = await tx.teamMembership.findMany({
+          where: { userId: va.userId, endedAt: null, team: { departmentId: current.departmentId } },
+          select: { id: true, teamId: true },
+        })
+        if (wrongTeams.length > 0) {
+          await tx.teamMembership.updateMany({
+            where: { id: { in: wrongTeams.map((t) => t.id) } },
+            data: { endedAt: new Date() },
+          })
+          endedTeamIds = wrongTeams.map((t) => t.teamId)
+        }
+      } else {
+        await tx.departmentMembership.create({ data: { userId: va.userId, departmentId: departmentId!, isPrimary: true } })
+      }
+    }
+    if (vaType !== va.vaType) {
+      await tx.vAProfile.update({ where: { id: vaProfileId }, data: { vaType } })
+    }
+  })
+
+  await logAudit({
+    actorId: actor.id,
+    action: 'UPDATE',
+    entityType: 'VAProfile',
+    entityId: vaProfileId,
+    before: { departmentId: current?.departmentId ?? null, vaType: va.vaType },
+    after: { departmentId: departmentChanged ? departmentId : (current?.departmentId ?? null), vaType },
+    metadata: departmentChanged ? { departmentCorrection: true, endedTeamIds } : undefined,
+  })
+
+  revalidatePath(`/vas/${vaProfileId}`)
+  revalidatePath('/masterlist')
+  revalidateTag(CACHE_TAGS.vas, 'default')
+  if (departmentChanged) {
+    revalidateTag(CACHE_TAGS.departments, 'default')
+    revalidateTag(CACHE_TAGS.teams, 'default')
+  }
+}
+
 
 // Replaces the raw Engagement Status dropdown for terminal outcomes — instead
 // of silently flipping a status field, this generates a system Ticket

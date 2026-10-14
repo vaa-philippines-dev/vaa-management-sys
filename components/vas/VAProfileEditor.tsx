@@ -22,7 +22,7 @@ import {
   Wallet,
   User,
 } from 'lucide-react'
-import { updateUserProfileAction, updateEmployment, updateUserProfileFiles, updateVAProfile, changeVAStatus, terminateVA, initiateResignation } from '@/app/(dashboard)/vas/actions'
+import { updateUserProfileAction, updateEmployment, updateVADepartmentAndType, updateUserProfileFiles, updateVAProfile, changeVAStatus, terminateVA, initiateResignation } from '@/app/(dashboard)/vas/actions'
 import { Modal } from '@/components/ui/modal'
 import { format } from 'date-fns'
 import type { DriveFile } from '@/lib/google/drive'
@@ -67,7 +67,7 @@ export type VAData = {
     philhealthNumber: string | null; philhealthPhoto: string | null
     signedContract: string | null
   } | null
-  membership: { departmentName: string; positionTitle: string | null } | null
+  membership: { departmentId: string; departmentName: string; positionTitle: string | null } | null
   employment: { contractType: string; employmentStatus: string; startDate: string; endDate: string | null } | null
 }
 
@@ -118,6 +118,16 @@ export function VAProfileEditor({
     <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
       <div className="space-y-4">
         <EditableSection
+          icon={Building2}
+          label="Department & Type of VA"
+          renderEdit={(onClose) => <DepartmentTypeFormContent data={data} departments={expertiseGroups} onClose={onClose} />}
+          canEdit={canEditSensitive}
+        >
+          <TableRow label="Department" value={data.membership?.departmentName} />
+          <TableRow label="Type of VA" value={VA_TYPE_LABELS[data.vaProfile.vaType] ?? data.vaProfile.vaType} />
+        </EditableSection>
+
+        <EditableSection
           icon={User}
           label="Personal Information"
           renderEdit={(onClose) => <PersonalFormContent data={data} onClose={onClose} />}
@@ -157,7 +167,6 @@ export function VAProfileEditor({
           canEdit={canEditSensitive}
         >
           <TableRow label="Position" value={data.membership?.positionTitle || data.vaProfile.vaaPosition} />
-          <TableRow label="Type of VA" value={VA_TYPE_LABELS[data.vaProfile.vaType] ?? data.vaProfile.vaType} />
           <TableRow label="Expertise Group" value={data.vaProfile.expertiseGroupName} />
           <TableRow label="Status" value={data.employment?.employmentStatus?.replace(/_/g, ' ')} />
           <TableRow label="Base Rate" value={data.vaProfile.baseRate ? `₱${Number(data.vaProfile.baseRate).toLocaleString()}/hr` : null} />
@@ -581,13 +590,22 @@ export function AddressFormContent({ data, onClose }: { data: PersonData; onClos
   )
 }
 
-function EmploymentFormContent({ data, expertiseGroups, onClose }: { data: VAData; expertiseGroups: { id: string; name: string }[]; onClose: () => void }) {
+// Department here is a correction of a wrong pick (re-points the primary
+// membership in place) — a real move is the Transfer button in the header.
+function DepartmentTypeFormContent({ data, departments, onClose }: { data: VAData; departments: { id: string; name: string }[]; onClose: () => void }) {
   return (
-    <SaveForm action={(fd) => updateEmployment(data.vaProfile.id, data.user.id, fd)} onClose={onClose} toastLabel="Employment & pay saved" className="flex flex-col gap-4">
+    <SaveForm action={(fd) => updateVADepartmentAndType(data.vaProfile.id, fd)} onClose={onClose} toastLabel="Department & Type of VA saved" className="flex flex-col gap-4">
       {(saving) => (<>
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
-          <FI name="vaaPosition" label="VAA Position" defaultValue={data.vaProfile.vaaPosition} />
-          <FI name="level" label="Level" defaultValue={data.vaProfile.level} />
+          <div>
+            <Label htmlFor="fi-departmentId" className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Department</Label>
+            <select id="fi-departmentId" name="departmentId" defaultValue={data.membership?.departmentId ?? ''} className="w-full h-8 text-xs rounded-md border bg-background px-2">
+              {!data.membership && <option value="">— None —</option>}
+              {departments.map((d) => (
+                <option key={d.id} value={d.id}>{d.name}</option>
+              ))}
+            </select>
+          </div>
           <div>
             <Label htmlFor="fi-vaType" className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">Type of VA</Label>
             <select id="fi-vaType" name="vaType" defaultValue={data.vaProfile.vaType} className="w-full h-8 text-xs rounded-md border bg-background px-2">
@@ -596,6 +614,31 @@ function EmploymentFormContent({ data, expertiseGroups, onClose }: { data: VADat
               ))}
             </select>
           </div>
+        </div>
+        <p className="text-[11px] text-muted-foreground">
+          Changing the department here fixes a wrong pick: no transfer is recorded, and the VA is taken off any team in
+          the old department. To actually move a VA, use Transfer.
+        </p>
+        <div className="flex justify-end gap-2 pt-2 border-t">
+          <button type="button" onClick={onClose} className="inline-flex items-center justify-center rounded-lg border bg-background hover:bg-muted text-xs font-medium h-8 px-3 transition-colors">
+            Cancel
+          </button>
+          <Button type="submit" size="sm" className="text-xs h-8" disabled={saving}>
+            {saving ? <><Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> Saving...</> : 'Save Changes'}
+          </Button>
+        </div>
+      </>)}
+    </SaveForm>
+  )
+}
+
+function EmploymentFormContent({ data, expertiseGroups, onClose }: { data: VAData; expertiseGroups: { id: string; name: string }[]; onClose: () => void }) {
+  return (
+    <SaveForm action={(fd) => updateEmployment(data.vaProfile.id, data.user.id, fd)} onClose={onClose} toastLabel="Employment & pay saved" className="flex flex-col gap-4">
+      {(saving) => (<>
+        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
+          <FI name="vaaPosition" label="VAA Position" defaultValue={data.vaProfile.vaaPosition} />
+          <FI name="level" label="Level" defaultValue={data.vaProfile.level} />
           <FSel name="expertiseGroupId" label="Expertise Group" defaultValue={data.vaProfile.expertiseGroupId} options={expertiseGroups} />
           <FI name="baseRate" label="Base Rate (PHP)" defaultValue={data.vaProfile.baseRate?.toString()} type="number" />
           <FI name="hourlyRate" label="Hourly Rate (USD)" defaultValue={data.vaProfile.hourlyRate?.toString()} type="number" />
