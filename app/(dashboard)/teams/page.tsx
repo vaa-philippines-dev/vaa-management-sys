@@ -3,10 +3,13 @@ import { getCurrentUser, isDepartmentUnrestricted, getManagedDepartmentIds } fro
 import { cached, CACHE_TAGS } from '@/lib/cache'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Plus, UsersRound } from 'lucide-react'
+import { Plus, UsersRound, Briefcase, Coffee, UserMinus, AlertTriangle, CircleOff } from 'lucide-react'
 import { TEAM_MANAGE_ROLES } from '@/lib/auth'
 import { TeamsBrowser } from '@/components/teams/TeamsBrowser'
 import { TeamDetailView } from '@/components/teams/TeamDetailView'
+import { TeamsOverview } from '@/components/teams/TeamsOverview'
+import { StatCard } from '@/components/ui/stat-card'
+import { getTeamsOverview } from '@/lib/teams-overview'
 import { isTeamScoped, getLedTeamScope } from '@/lib/scope'
 
 export default async function TeamsPage() {
@@ -60,24 +63,15 @@ export default async function TeamsPage() {
     )
   }
 
+  // Dept/Ops Managers see their own departments' teams; admins/HR every one.
   const managedIds = getManagedDepartmentIds(user)
-  const teams = await cached(
-    `teams:browser:${isAdmin ? 'all' : managedIds.join(',')}`,
-    [CACHE_TAGS.teams],
+  const { teams, totals } = await cached(
+    `teams:overview30d:${isAdmin ? 'all' : managedIds.join(',')}`,
+    [CACHE_TAGS.teams, CACHE_TAGS.assignments],
     60,
-    () =>
-      prisma.team.findMany({
-        // Archived teams (e.g. Amazon's old Team 03/07, folded into the
-        // others) stay reachable from Admin > Teams, not here.
-        where: isAdmin ? { status: 'ACTIVE' } : { departmentId: { in: managedIds }, status: 'ACTIVE' },
-        include: {
-          department: true,
-          leader: { select: { firstName: true, lastName: true } },
-          _count: { select: { memberships: { where: { endedAt: null } } } },
-        },
-        orderBy: { name: 'asc' },
-      })
+    () => getTeamsOverview(isAdmin ? null : managedIds)
   )
+  const departmentCount = new Set(teams.map((t) => t.departmentName)).size
 
   return (
     <div data-wide-page className="space-y-6">
@@ -88,7 +82,9 @@ export default async function TeamsPage() {
             Teams
           </h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Teams within your department{isAdmin ? 's' : ''}
+            {`${totals.teams} team${totals.teams === 1 ? '' : 's'}${
+              departmentCount > 1 ? ` across ${departmentCount} departments` : ''
+            } — who's working, who's free, and what needs a look`}
           </p>
         </div>
         {canCreate && (
@@ -101,7 +97,18 @@ export default async function TeamsPage() {
         )}
       </div>
 
-      <TeamsBrowser teams={teams} />
+      {totals.teams > 0 && (
+        <div className="grid gap-3 grid-cols-2 md:grid-cols-3 xl:grid-cols-6 fade-in-stagger">
+          <StatCard icon={UsersRound} label="VAs on teams" value={totals.members} />
+          <StatCard icon={Briefcase} label="Active with clients" value={totals.active} />
+          <StatCard icon={Coffee} label="Idle — ready to staff" value={totals.idle} href="/va-availability" />
+          <StatCard icon={CircleOff} label="Unavailable / on hold" value={totals.unavailable} />
+          <StatCard icon={UserMinus} label="Not on a team" value={totals.notOnTeam} href="/team-assignment" />
+          <StatCard icon={AlertTriangle} label="Check-ins missed (30 days)" value={totals.overdueCheckIns} href="/performance" />
+        </div>
+      )}
+
+      <TeamsOverview teams={teams} />
     </div>
   )
 }
