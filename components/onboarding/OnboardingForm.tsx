@@ -11,6 +11,7 @@ import { completeOnboarding } from '@/app/onboard/[token]/actions'
 const EXT_NAME_OPTIONS = ['Jr.', 'Sr.', 'II', 'III', 'IV']
 
 type Prefill = {
+  preferredWorkHours: number | null
   middleName: string | null
   extName: string | null
   whatsappNumber: string | null
@@ -50,11 +51,13 @@ export function OnboardingForm({
   token,
   firstName,
   lastName,
+  askPreferredHours,
   prefill,
 }: {
   token: string
   firstName: string
   lastName: string
+  askPreferredHours: boolean
   prefill: Prefill
 }) {
   const [submitting, setSubmitting] = useState(false)
@@ -125,6 +128,32 @@ export function OnboardingForm({
           <Field name="landmark" label="Landmark" defaultValue={prefill.landmark} />
         </div>
       </div>
+
+      {askPreferredHours && (
+        <div className="space-y-3">
+          <p className="text-sm font-semibold">Work Availability</p>
+          <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
+            <div>
+              <Label htmlFor="preferredWorkHours" className="text-xs font-medium mb-1 block">Preferred Work Hours per Day</Label>
+              <Input
+                id="preferredWorkHours"
+                name="preferredWorkHours"
+                type="number"
+                min={0}
+                max={24}
+                step={0.5}
+                required
+                defaultValue={prefill.preferredWorkHours ?? ''}
+                placeholder="8"
+                className="h-9 text-sm"
+              />
+              <p className="text-[11px] text-muted-foreground mt-1">
+                The most client hours you want to work in a day, e.g. 8 for full time or 4 for part time.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="space-y-3">
         <p className="text-sm font-semibold">Personal Details</p>

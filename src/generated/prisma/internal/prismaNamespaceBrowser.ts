@@ -74,6 +74,7 @@ export const ModelName = {
   VAOnboardingInvite: 'VAOnboardingInvite',
   Client: 'Client',
   Assignment: 'Assignment',
+  AssignmentStatusEvent: 'AssignmentStatusEvent',
   AssignmentKpiCheck: 'AssignmentKpiCheck',
   WorkLog: 'WorkLog',
   Ticket: 'Ticket',
@@ -603,6 +604,21 @@ export const AssignmentScalarFieldEnum = {
 } as const
 
 export type AssignmentScalarFieldEnum = (typeof AssignmentScalarFieldEnum)[keyof typeof AssignmentScalarFieldEnum]
+
+
+export const AssignmentStatusEventScalarFieldEnum = {
+  id: 'id',
+  assignmentId: 'assignmentId',
+  fromStatus: 'fromStatus',
+  toStatus: 'toStatus',
+  effectiveDate: 'effectiveDate',
+  reason: 'reason',
+  note: 'note',
+  actorId: 'actorId',
+  createdAt: 'createdAt'
+} as const
+
+export type AssignmentStatusEventScalarFieldEnum = (typeof AssignmentStatusEventScalarFieldEnum)[keyof typeof AssignmentStatusEventScalarFieldEnum]
 
 
 export const AssignmentKpiCheckScalarFieldEnum = {

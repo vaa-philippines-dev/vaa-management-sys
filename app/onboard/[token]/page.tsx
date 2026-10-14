@@ -86,7 +86,11 @@ export default async function OnboardingPage({ params }: { params: Promise<{ tok
             token={token}
             firstName={user.firstName}
             lastName={user.lastName}
+            // Only people with a VA profile have preferred hours (VA
+            // Availability reads them); staff links don't ask.
+            askPreferredHours={!!user.vaProfile}
             prefill={{
+              preferredWorkHours: user.vaProfile?.preferredWorkHours != null ? Number(user.vaProfile.preferredWorkHours) : null,
               middleName: user.middleName,
               extName: user.extName,
               whatsappNumber: user.profile?.whatsappNumber ?? null,

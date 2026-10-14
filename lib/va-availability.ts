@@ -4,6 +4,7 @@ import {
   computeAvailableHours,
   computeWorkPattern,
   computeAlert,
+  effectiveAvailability,
   type AvailabilityRow,
 } from '@/lib/va-availability-fields'
 import { ENDED_VA_STATUSES } from '@/lib/active-va'
@@ -110,7 +111,14 @@ export async function getAvailabilityRows(scope: AvailabilityScope): Promise<Ava
     const employment = m.user.employmentRecords[0]
     const dept = p.departmentAvailabilities.find((d) => d.departmentId === m.departmentId)
     if (dept?.hiddenAt && !scope.includeHidden) continue
-    const availabilityStatus = dept?.availabilityStatus ?? p.availabilityStatus
+    const setAvailabilityStatus = dept?.availabilityStatus ?? p.availabilityStatus
+    const availableHours = computeAvailableHours(preferredHours, totalHours, hybridHours)
+    const { status: availabilityStatus, auto: availabilityAuto } = effectiveAvailability(
+      setAvailabilityStatus,
+      preferredHours,
+      totalHours,
+      availableHours
+    )
     const tmfStatus = dept?.tmfAvailabilityStatus ?? null
 
     rows.push({
@@ -128,13 +136,15 @@ export async function getAvailabilityRows(scope: AvailabilityScope): Promise<Ava
       currentHours,
       otherDepartmentHours: totalHours - currentHours,
       hybridHours,
-      availableHours: computeAvailableHours(preferredHours, totalHours, hybridHours),
+      availableHours,
       // Distinct clients, not assignment count — a VA on two engagements
       // with the same client is one client to a manager reading this.
       clientCount: new Set(inDept.map((a) => a.clientId)).size,
 
-      workPattern: computeWorkPattern(isVA, preferredHours),
+      workPattern: computeWorkPattern(isVA, totalHours),
       availabilityStatus,
+      setAvailabilityStatus,
+      availabilityAuto,
       contractType: employment?.contractType ?? null,
       generalStatus: p.status,
       employmentStatus: employment?.employmentStatus ?? null,

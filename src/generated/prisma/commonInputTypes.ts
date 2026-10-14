@@ -732,6 +732,23 @@ export type EnumAssignmentSourceWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumAssignmentSourceFilter<$PrismaModel>
 }
 
+export type EnumAssignmentStatusReasonNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.AssignmentStatusReason | Prisma.EnumAssignmentStatusReasonFieldRefInput<$PrismaModel> | null
+  in?: $Enums.AssignmentStatusReason[] | Prisma.ListEnumAssignmentStatusReasonFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.AssignmentStatusReason[] | Prisma.ListEnumAssignmentStatusReasonFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumAssignmentStatusReasonNullableFilter<$PrismaModel> | $Enums.AssignmentStatusReason | null
+}
+
+export type EnumAssignmentStatusReasonNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AssignmentStatusReason | Prisma.EnumAssignmentStatusReasonFieldRefInput<$PrismaModel> | null
+  in?: $Enums.AssignmentStatusReason[] | Prisma.ListEnumAssignmentStatusReasonFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.AssignmentStatusReason[] | Prisma.ListEnumAssignmentStatusReasonFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumAssignmentStatusReasonNullableWithAggregatesFilter<$PrismaModel> | $Enums.AssignmentStatusReason | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAssignmentStatusReasonNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAssignmentStatusReasonNullableFilter<$PrismaModel>
+}
+
 export type EnumKpiMilestoneFilter<$PrismaModel = never> = {
   equals?: $Enums.KpiMilestone | Prisma.EnumKpiMilestoneFieldRefInput<$PrismaModel>
   in?: $Enums.KpiMilestone[] | Prisma.ListEnumKpiMilestoneFieldRefInput<$PrismaModel>
@@ -2042,6 +2059,23 @@ export type NestedEnumAssignmentSourceWithAggregatesFilter<$PrismaModel = never>
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumAssignmentSourceFilter<$PrismaModel>
   _max?: Prisma.NestedEnumAssignmentSourceFilter<$PrismaModel>
+}
+
+export type NestedEnumAssignmentStatusReasonNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.AssignmentStatusReason | Prisma.EnumAssignmentStatusReasonFieldRefInput<$PrismaModel> | null
+  in?: $Enums.AssignmentStatusReason[] | Prisma.ListEnumAssignmentStatusReasonFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.AssignmentStatusReason[] | Prisma.ListEnumAssignmentStatusReasonFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumAssignmentStatusReasonNullableFilter<$PrismaModel> | $Enums.AssignmentStatusReason | null
+}
+
+export type NestedEnumAssignmentStatusReasonNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AssignmentStatusReason | Prisma.EnumAssignmentStatusReasonFieldRefInput<$PrismaModel> | null
+  in?: $Enums.AssignmentStatusReason[] | Prisma.ListEnumAssignmentStatusReasonFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.AssignmentStatusReason[] | Prisma.ListEnumAssignmentStatusReasonFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumAssignmentStatusReasonNullableWithAggregatesFilter<$PrismaModel> | $Enums.AssignmentStatusReason | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAssignmentStatusReasonNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAssignmentStatusReasonNullableFilter<$PrismaModel>
 }
 
 export type NestedEnumKpiMilestoneFilter<$PrismaModel = never> = {

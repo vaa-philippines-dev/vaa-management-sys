@@ -190,6 +190,7 @@ export async function updatePreparation(preparationId: string, formData: FormDat
       status: CLIENT_TO_ASSIGNMENT_STATUS[clientStatus],
       syncPreparation: false,
       effectiveDate: effectivityDate,
+      note: data.statusReason,
     })
     revalidatePath('/assignments')
     revalidatePath(`/assignments/${before.assignmentId}`)

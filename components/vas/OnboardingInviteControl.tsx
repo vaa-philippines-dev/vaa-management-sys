@@ -77,7 +77,7 @@ export function OnboardingInviteControl({
       <Modal open={open} onOpenChange={handleClose} title="Onboarding Link Ready" size="sm">
         <div className="space-y-3">
           <p className="text-xs text-muted-foreground">
-            Send this link to the VA (WhatsApp, email, etc.) so they can fill in the rest of their profile —
+            Send this link to the VA (WhatsApp, email, etc.) so they can fill in the rest of their profile, including their preferred work hours —
             it expires in 7 days. Generating a new link invalidates any previous one and resets their progress
             if they hadn&rsquo;t finished yet.
           </p>

@@ -5,7 +5,7 @@ type VADetailPanelProps = {
   statusLabel: string
   statusDotClassName: string
   availabilityLabel: string | null
-  weeklyHours: number | null
+  preferredDailyHours: number | null
   managerName: string | null
   managerHref?: string
   departmentName: string | null
@@ -43,7 +43,7 @@ export function VADetailPanel({
   statusLabel,
   statusDotClassName,
   availabilityLabel,
-  weeklyHours,
+  preferredDailyHours,
   managerName,
   managerHref,
   departmentName,
@@ -61,7 +61,7 @@ export function VADetailPanel({
         </div>
         {availabilityLabel && (
           <DetailRow icon={Clock}>
-            {availabilityLabel}{weeklyHours != null ? ` · ${weeklyHours}h/wk` : ''}
+            {availabilityLabel}{preferredDailyHours != null ? ` · ${preferredDailyHours}h/day` : ''}
           </DetailRow>
         )}
         {managerName && (

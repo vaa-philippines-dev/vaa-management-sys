@@ -19,6 +19,8 @@ import {
   AVAILABILITY_REVIEW_DAYS,
   AVAILABILITY_STATUSES,
   AVAILABILITY_STATUS_LABELS,
+  FULL_TIME_DAILY_HOURS,
+  MIN_BOOKABLE_HOURS,
   WORK_PATTERN_LABELS,
   type AvailabilityRow,
 } from '@/lib/va-availability-fields'
@@ -213,8 +215,10 @@ export function AvailabilityBoard({
         <div className="flex items-start gap-2 rounded-lg border bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
           <Info className="h-3.5 w-3.5 mt-0.5 shrink-0" />
           <span>
-            Everything below is read-only — booked hours and client count come from active assignments, the
-            rest from HR records and each VA&apos;s Team Leader (their TMF). The only things you can change
+            Everything below is read-only — booked hours, client count and Pattern come from active assignments,
+            preferred hours from the VA&apos;s profile, the rest from HR records and each VA&apos;s Team Leader (their
+            TMF). A VA with less than {MIN_BOOKABLE_HOURS}h of their preferred hours free shows as Unavailable (or
+            Full) automatically. The only things you can change
             here are <span className="font-medium text-foreground">availability, remarks, and the date changed</span>,
             via <span className="font-medium text-foreground">Change availability</span>
             {canRecommend ? (
@@ -289,7 +293,11 @@ export function AvailabilityBoard({
               <TableRow>
                 <TableHead>VA</TableHead>
                 {showDepartment && <TableHead>Department</TableHead>}
-                <TableHead>Pattern</TableHead>
+                <TableHead
+                  title={`Follows booked hours: ${FULL_TIME_DAILY_HOURS}h+/day is full time, less is part time, none is idle. Staff accounts read Admin.`}
+                >
+                  Pattern
+                </TableHead>
                 <TableHead className="text-right">Preferred</TableHead>
                 <TableHead className="text-right">Booked</TableHead>
                 <TableHead className="text-right">Hybrid</TableHead>
@@ -339,6 +347,16 @@ export function AvailabilityBoard({
                     <Badge variant={r.availabilityStatus === 'AVAILABLE' ? 'secondary' : 'outline'}>
                       {STATUS_LABELS[r.availabilityStatus] ?? r.availabilityStatus}
                     </Badge>
+                    {r.availabilityAuto && (
+                      <div
+                        className="text-[11px] text-muted-foreground/70 mt-0.5"
+                        title={`Set as ${STATUS_LABELS[r.setAvailabilityStatus] ?? r.setAvailabilityStatus}, but less than ${MIN_BOOKABLE_HOURS}h of preferred hours are free`}
+                      >
+                        {r.availabilityStatus === 'FULLY_ASSIGNED'
+                          ? 'Auto · no hours free'
+                          : `Auto · under ${MIN_BOOKABLE_HOURS}h free`}
+                      </div>
+                    )}
                   </TableCell>
                   <TableCell className="max-w-[10rem]">
                     {recommendable ? (
@@ -463,7 +481,7 @@ export function AvailabilityBoard({
               <Select
                 id="availabilityStatus"
                 name="availabilityStatus"
-                defaultValue={editing.availabilityStatus}
+                defaultValue={editing.setAvailabilityStatus}
                 className="w-full"
               >
                 {AVAILABILITY_STATUSES.map((s) => (
@@ -472,6 +490,13 @@ export function AvailabilityBoard({
                   </option>
                 ))}
               </Select>
+              {editing.availabilityAuto && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  Showing as {STATUS_LABELS[editing.availabilityStatus]} because only {hours(editing.availableHours)} of{' '}
+                  {hours(editing.preferredHours)} preferred hours are free. Available / Partially Assigned only show once
+                  at least {MIN_BOOKABLE_HOURS}h are free.
+                </p>
+              )}
             </div>
 
             <div>

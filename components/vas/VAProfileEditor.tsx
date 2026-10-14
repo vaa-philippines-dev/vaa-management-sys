@@ -160,7 +160,7 @@ export function VAProfileEditor({
           <TableRow label="Status" value={data.employment?.employmentStatus?.replace(/_/g, ' ')} />
           <TableRow label="Base Rate" value={data.vaProfile.baseRate ? `₱${Number(data.vaProfile.baseRate).toLocaleString()}/hr` : null} />
           <TableRow label="Hourly Rate" value={data.vaProfile.hourlyRate ? `$${Number(data.vaProfile.hourlyRate).toFixed(2)}/hr` : null} />
-          <TableRow label="Preferred Work Hours" value={data.vaProfile.preferredWorkHours ? `${data.vaProfile.preferredWorkHours}h/wk` : null} />
+          <TableRow label="Preferred Work Hours" value={data.vaProfile.preferredWorkHours ? `${data.vaProfile.preferredWorkHours}h/day` : null} />
           <TableRow label="Available Schedule" value={data.vaProfile.availableSchedule} />
           <TableRow label="Birth Date" value={data.profile?.birthDate ? format(new Date(data.profile.birthDate), 'MMM dd, yyyy') + (data.profile.nonCelebrant ? ' (NC)' : '') : null} />
           <TableRow label="GCash" value={data.profile?.gcashNumber} />
@@ -245,7 +245,7 @@ export function VAProfileEditor({
             <StatBox label="Contract" value={data.employment?.contractType?.replace(/_/g, ' ')} icon={Briefcase} />
             <StatBox
               label="Preferred Hours"
-              value={data.vaProfile.preferredWorkHours ? `${data.vaProfile.preferredWorkHours}h/wk` : null}
+              value={data.vaProfile.preferredWorkHours ? `${data.vaProfile.preferredWorkHours}h/day` : null}
               icon={Wallet}
             />
             <StatBox
@@ -589,7 +589,7 @@ function EmploymentFormContent({ data, expertiseGroups, onClose }: { data: VADat
           <FSel name="expertiseGroupId" label="Expertise Group" defaultValue={data.vaProfile.expertiseGroupId} options={expertiseGroups} />
           <FI name="baseRate" label="Base Rate (PHP)" defaultValue={data.vaProfile.baseRate?.toString()} type="number" />
           <FI name="hourlyRate" label="Hourly Rate (USD)" defaultValue={data.vaProfile.hourlyRate?.toString()} type="number" />
-          <FI name="preferredWorkHours" label="Preferred Hours (Weekly)" defaultValue={data.vaProfile.preferredWorkHours?.toString()} type="number" />
+          <FI name="preferredWorkHours" label="Preferred Hours (per Day)" defaultValue={data.vaProfile.preferredWorkHours?.toString()} type="number" />
           <AvailableScheduleField defaultValue={data.vaProfile.availableSchedule} />
           <FI name="currentHireDate" label="Hire Date" defaultValue={data.vaProfile.currentHireDate} type="date" />
           <FI name="birthDate" label="Birth Date" defaultValue={data.profile?.birthDate} type="date" />

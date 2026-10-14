@@ -321,6 +321,7 @@ export type AssignmentWhereInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckListRelationFilter
   preparation?: Prisma.XOR<Prisma.AssignmentPreparationNullableScalarRelationFilter, Prisma.AssignmentPreparationWhereInput> | null
   clientFeedback?: Prisma.AssignmentClientFeedbackListRelationFilter
+  statusEvents?: Prisma.AssignmentStatusEventListRelationFilter
 }
 
 export type AssignmentOrderByWithRelationInput = {
@@ -350,6 +351,7 @@ export type AssignmentOrderByWithRelationInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckOrderByRelationAggregateInput
   preparation?: Prisma.AssignmentPreparationOrderByWithRelationInput
   clientFeedback?: Prisma.AssignmentClientFeedbackOrderByRelationAggregateInput
+  statusEvents?: Prisma.AssignmentStatusEventOrderByRelationAggregateInput
 }
 
 export type AssignmentWhereUniqueInput = Prisma.AtLeast<{
@@ -382,6 +384,7 @@ export type AssignmentWhereUniqueInput = Prisma.AtLeast<{
   kpiChecks?: Prisma.AssignmentKpiCheckListRelationFilter
   preparation?: Prisma.XOR<Prisma.AssignmentPreparationNullableScalarRelationFilter, Prisma.AssignmentPreparationWhereInput> | null
   clientFeedback?: Prisma.AssignmentClientFeedbackListRelationFilter
+  statusEvents?: Prisma.AssignmentStatusEventListRelationFilter
 }, "id" | "externalId">
 
 export type AssignmentOrderByWithAggregationInput = {
@@ -456,6 +459,7 @@ export type AssignmentCreateInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutAssignmentInput
   preparation?: Prisma.AssignmentPreparationCreateNestedOneWithoutAssignmentInput
   clientFeedback?: Prisma.AssignmentClientFeedbackCreateNestedManyWithoutAssignmentInput
+  statusEvents?: Prisma.AssignmentStatusEventCreateNestedManyWithoutAssignmentInput
 }
 
 export type AssignmentUncheckedCreateInput = {
@@ -482,6 +486,7 @@ export type AssignmentUncheckedCreateInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutAssignmentInput
   preparation?: Prisma.AssignmentPreparationUncheckedCreateNestedOneWithoutAssignmentInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUncheckedCreateNestedManyWithoutAssignmentInput
+  statusEvents?: Prisma.AssignmentStatusEventUncheckedCreateNestedManyWithoutAssignmentInput
 }
 
 export type AssignmentUpdateInput = {
@@ -508,6 +513,7 @@ export type AssignmentUpdateInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckUpdateManyWithoutAssignmentNestedInput
   preparation?: Prisma.AssignmentPreparationUpdateOneWithoutAssignmentNestedInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUpdateManyWithoutAssignmentNestedInput
+  statusEvents?: Prisma.AssignmentStatusEventUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AssignmentUncheckedUpdateInput = {
@@ -534,6 +540,7 @@ export type AssignmentUncheckedUpdateInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutAssignmentNestedInput
   preparation?: Prisma.AssignmentPreparationUncheckedUpdateOneWithoutAssignmentNestedInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUncheckedUpdateManyWithoutAssignmentNestedInput
+  statusEvents?: Prisma.AssignmentStatusEventUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AssignmentCreateManyInput = {
@@ -844,6 +851,20 @@ export type AssignmentUncheckedUpdateManyWithoutParentAssignmentNestedInput = {
   deleteMany?: Prisma.AssignmentScalarWhereInput | Prisma.AssignmentScalarWhereInput[]
 }
 
+export type AssignmentCreateNestedOneWithoutStatusEventsInput = {
+  create?: Prisma.XOR<Prisma.AssignmentCreateWithoutStatusEventsInput, Prisma.AssignmentUncheckedCreateWithoutStatusEventsInput>
+  connectOrCreate?: Prisma.AssignmentCreateOrConnectWithoutStatusEventsInput
+  connect?: Prisma.AssignmentWhereUniqueInput
+}
+
+export type AssignmentUpdateOneRequiredWithoutStatusEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.AssignmentCreateWithoutStatusEventsInput, Prisma.AssignmentUncheckedCreateWithoutStatusEventsInput>
+  connectOrCreate?: Prisma.AssignmentCreateOrConnectWithoutStatusEventsInput
+  upsert?: Prisma.AssignmentUpsertWithoutStatusEventsInput
+  connect?: Prisma.AssignmentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AssignmentUpdateToOneWithWhereWithoutStatusEventsInput, Prisma.AssignmentUpdateWithoutStatusEventsInput>, Prisma.AssignmentUncheckedUpdateWithoutStatusEventsInput>
+}
+
 export type AssignmentCreateNestedOneWithoutKpiChecksInput = {
   create?: Prisma.XOR<Prisma.AssignmentCreateWithoutKpiChecksInput, Prisma.AssignmentUncheckedCreateWithoutKpiChecksInput>
   connectOrCreate?: Prisma.AssignmentCreateOrConnectWithoutKpiChecksInput
@@ -939,6 +960,7 @@ export type AssignmentCreateWithoutVaProfileInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutAssignmentInput
   preparation?: Prisma.AssignmentPreparationCreateNestedOneWithoutAssignmentInput
   clientFeedback?: Prisma.AssignmentClientFeedbackCreateNestedManyWithoutAssignmentInput
+  statusEvents?: Prisma.AssignmentStatusEventCreateNestedManyWithoutAssignmentInput
 }
 
 export type AssignmentUncheckedCreateWithoutVaProfileInput = {
@@ -964,6 +986,7 @@ export type AssignmentUncheckedCreateWithoutVaProfileInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutAssignmentInput
   preparation?: Prisma.AssignmentPreparationUncheckedCreateNestedOneWithoutAssignmentInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUncheckedCreateNestedManyWithoutAssignmentInput
+  statusEvents?: Prisma.AssignmentStatusEventUncheckedCreateNestedManyWithoutAssignmentInput
 }
 
 export type AssignmentCreateOrConnectWithoutVaProfileInput = {
@@ -1038,6 +1061,7 @@ export type AssignmentCreateWithoutClientInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutAssignmentInput
   preparation?: Prisma.AssignmentPreparationCreateNestedOneWithoutAssignmentInput
   clientFeedback?: Prisma.AssignmentClientFeedbackCreateNestedManyWithoutAssignmentInput
+  statusEvents?: Prisma.AssignmentStatusEventCreateNestedManyWithoutAssignmentInput
 }
 
 export type AssignmentUncheckedCreateWithoutClientInput = {
@@ -1063,6 +1087,7 @@ export type AssignmentUncheckedCreateWithoutClientInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutAssignmentInput
   preparation?: Prisma.AssignmentPreparationUncheckedCreateNestedOneWithoutAssignmentInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUncheckedCreateNestedManyWithoutAssignmentInput
+  statusEvents?: Prisma.AssignmentStatusEventUncheckedCreateNestedManyWithoutAssignmentInput
 }
 
 export type AssignmentCreateOrConnectWithoutClientInput = {
@@ -1114,6 +1139,7 @@ export type AssignmentCreateWithoutAdditionalHoursInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutAssignmentInput
   preparation?: Prisma.AssignmentPreparationCreateNestedOneWithoutAssignmentInput
   clientFeedback?: Prisma.AssignmentClientFeedbackCreateNestedManyWithoutAssignmentInput
+  statusEvents?: Prisma.AssignmentStatusEventCreateNestedManyWithoutAssignmentInput
 }
 
 export type AssignmentUncheckedCreateWithoutAdditionalHoursInput = {
@@ -1139,6 +1165,7 @@ export type AssignmentUncheckedCreateWithoutAdditionalHoursInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutAssignmentInput
   preparation?: Prisma.AssignmentPreparationUncheckedCreateNestedOneWithoutAssignmentInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUncheckedCreateNestedManyWithoutAssignmentInput
+  statusEvents?: Prisma.AssignmentStatusEventUncheckedCreateNestedManyWithoutAssignmentInput
 }
 
 export type AssignmentCreateOrConnectWithoutAdditionalHoursInput = {
@@ -1169,6 +1196,7 @@ export type AssignmentCreateWithoutParentAssignmentInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutAssignmentInput
   preparation?: Prisma.AssignmentPreparationCreateNestedOneWithoutAssignmentInput
   clientFeedback?: Prisma.AssignmentClientFeedbackCreateNestedManyWithoutAssignmentInput
+  statusEvents?: Prisma.AssignmentStatusEventCreateNestedManyWithoutAssignmentInput
 }
 
 export type AssignmentUncheckedCreateWithoutParentAssignmentInput = {
@@ -1194,6 +1222,7 @@ export type AssignmentUncheckedCreateWithoutParentAssignmentInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutAssignmentInput
   preparation?: Prisma.AssignmentPreparationUncheckedCreateNestedOneWithoutAssignmentInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUncheckedCreateNestedManyWithoutAssignmentInput
+  statusEvents?: Prisma.AssignmentStatusEventUncheckedCreateNestedManyWithoutAssignmentInput
 }
 
 export type AssignmentCreateOrConnectWithoutParentAssignmentInput = {
@@ -1240,6 +1269,7 @@ export type AssignmentUpdateWithoutAdditionalHoursInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckUpdateManyWithoutAssignmentNestedInput
   preparation?: Prisma.AssignmentPreparationUpdateOneWithoutAssignmentNestedInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUpdateManyWithoutAssignmentNestedInput
+  statusEvents?: Prisma.AssignmentStatusEventUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AssignmentUncheckedUpdateWithoutAdditionalHoursInput = {
@@ -1265,6 +1295,7 @@ export type AssignmentUncheckedUpdateWithoutAdditionalHoursInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutAssignmentNestedInput
   preparation?: Prisma.AssignmentPreparationUncheckedUpdateOneWithoutAssignmentNestedInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUncheckedUpdateManyWithoutAssignmentNestedInput
+  statusEvents?: Prisma.AssignmentStatusEventUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AssignmentUpsertWithWhereUniqueWithoutParentAssignmentInput = {
@@ -1281,6 +1312,126 @@ export type AssignmentUpdateWithWhereUniqueWithoutParentAssignmentInput = {
 export type AssignmentUpdateManyWithWhereWithoutParentAssignmentInput = {
   where: Prisma.AssignmentScalarWhereInput
   data: Prisma.XOR<Prisma.AssignmentUpdateManyMutationInput, Prisma.AssignmentUncheckedUpdateManyWithoutParentAssignmentInput>
+}
+
+export type AssignmentCreateWithoutStatusEventsInput = {
+  id?: string
+  type: $Enums.AssignmentType
+  status?: $Enums.AssignmentStatus
+  agreedHours: runtime.Decimal | runtime.DecimalJsLike | number | string
+  monthlyHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  notes?: string | null
+  skillRequirements?: Prisma.AssignmentCreateskillRequirementsInput | string[]
+  source?: $Enums.AssignmentSource
+  externalId?: string | null
+  syncedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  vaProfile: Prisma.VAProfileCreateNestedOneWithoutAssignmentsInput
+  client: Prisma.ClientCreateNestedOneWithoutAssignmentsInput
+  parentAssignment?: Prisma.AssignmentCreateNestedOneWithoutAdditionalHoursInput
+  additionalHours?: Prisma.AssignmentCreateNestedManyWithoutParentAssignmentInput
+  workLogs?: Prisma.WorkLogCreateNestedManyWithoutAssignmentInput
+  terminations?: Prisma.TerminationCreateNestedManyWithoutAssignmentInput
+  kpiChecks?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutAssignmentInput
+  preparation?: Prisma.AssignmentPreparationCreateNestedOneWithoutAssignmentInput
+  clientFeedback?: Prisma.AssignmentClientFeedbackCreateNestedManyWithoutAssignmentInput
+}
+
+export type AssignmentUncheckedCreateWithoutStatusEventsInput = {
+  id?: string
+  type: $Enums.AssignmentType
+  status?: $Enums.AssignmentStatus
+  agreedHours: runtime.Decimal | runtime.DecimalJsLike | number | string
+  monthlyHours?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  notes?: string | null
+  skillRequirements?: Prisma.AssignmentCreateskillRequirementsInput | string[]
+  source?: $Enums.AssignmentSource
+  externalId?: string | null
+  syncedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  vaProfileId: string
+  clientId: string
+  parentAssignmentId?: string | null
+  additionalHours?: Prisma.AssignmentUncheckedCreateNestedManyWithoutParentAssignmentInput
+  workLogs?: Prisma.WorkLogUncheckedCreateNestedManyWithoutAssignmentInput
+  terminations?: Prisma.TerminationUncheckedCreateNestedManyWithoutAssignmentInput
+  kpiChecks?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutAssignmentInput
+  preparation?: Prisma.AssignmentPreparationUncheckedCreateNestedOneWithoutAssignmentInput
+  clientFeedback?: Prisma.AssignmentClientFeedbackUncheckedCreateNestedManyWithoutAssignmentInput
+}
+
+export type AssignmentCreateOrConnectWithoutStatusEventsInput = {
+  where: Prisma.AssignmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.AssignmentCreateWithoutStatusEventsInput, Prisma.AssignmentUncheckedCreateWithoutStatusEventsInput>
+}
+
+export type AssignmentUpsertWithoutStatusEventsInput = {
+  update: Prisma.XOR<Prisma.AssignmentUpdateWithoutStatusEventsInput, Prisma.AssignmentUncheckedUpdateWithoutStatusEventsInput>
+  create: Prisma.XOR<Prisma.AssignmentCreateWithoutStatusEventsInput, Prisma.AssignmentUncheckedCreateWithoutStatusEventsInput>
+  where?: Prisma.AssignmentWhereInput
+}
+
+export type AssignmentUpdateToOneWithWhereWithoutStatusEventsInput = {
+  where?: Prisma.AssignmentWhereInput
+  data: Prisma.XOR<Prisma.AssignmentUpdateWithoutStatusEventsInput, Prisma.AssignmentUncheckedUpdateWithoutStatusEventsInput>
+}
+
+export type AssignmentUpdateWithoutStatusEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumAssignmentTypeFieldUpdateOperationsInput | $Enums.AssignmentType
+  status?: Prisma.EnumAssignmentStatusFieldUpdateOperationsInput | $Enums.AssignmentStatus
+  agreedHours?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  monthlyHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skillRequirements?: Prisma.AssignmentUpdateskillRequirementsInput | string[]
+  source?: Prisma.EnumAssignmentSourceFieldUpdateOperationsInput | $Enums.AssignmentSource
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vaProfile?: Prisma.VAProfileUpdateOneRequiredWithoutAssignmentsNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutAssignmentsNestedInput
+  parentAssignment?: Prisma.AssignmentUpdateOneWithoutAdditionalHoursNestedInput
+  additionalHours?: Prisma.AssignmentUpdateManyWithoutParentAssignmentNestedInput
+  workLogs?: Prisma.WorkLogUpdateManyWithoutAssignmentNestedInput
+  terminations?: Prisma.TerminationUpdateManyWithoutAssignmentNestedInput
+  kpiChecks?: Prisma.AssignmentKpiCheckUpdateManyWithoutAssignmentNestedInput
+  preparation?: Prisma.AssignmentPreparationUpdateOneWithoutAssignmentNestedInput
+  clientFeedback?: Prisma.AssignmentClientFeedbackUpdateManyWithoutAssignmentNestedInput
+}
+
+export type AssignmentUncheckedUpdateWithoutStatusEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumAssignmentTypeFieldUpdateOperationsInput | $Enums.AssignmentType
+  status?: Prisma.EnumAssignmentStatusFieldUpdateOperationsInput | $Enums.AssignmentStatus
+  agreedHours?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  monthlyHours?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skillRequirements?: Prisma.AssignmentUpdateskillRequirementsInput | string[]
+  source?: Prisma.EnumAssignmentSourceFieldUpdateOperationsInput | $Enums.AssignmentSource
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  syncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vaProfileId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentAssignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalHours?: Prisma.AssignmentUncheckedUpdateManyWithoutParentAssignmentNestedInput
+  workLogs?: Prisma.WorkLogUncheckedUpdateManyWithoutAssignmentNestedInput
+  terminations?: Prisma.TerminationUncheckedUpdateManyWithoutAssignmentNestedInput
+  kpiChecks?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutAssignmentNestedInput
+  preparation?: Prisma.AssignmentPreparationUncheckedUpdateOneWithoutAssignmentNestedInput
+  clientFeedback?: Prisma.AssignmentClientFeedbackUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AssignmentCreateWithoutKpiChecksInput = {
@@ -1306,6 +1457,7 @@ export type AssignmentCreateWithoutKpiChecksInput = {
   terminations?: Prisma.TerminationCreateNestedManyWithoutAssignmentInput
   preparation?: Prisma.AssignmentPreparationCreateNestedOneWithoutAssignmentInput
   clientFeedback?: Prisma.AssignmentClientFeedbackCreateNestedManyWithoutAssignmentInput
+  statusEvents?: Prisma.AssignmentStatusEventCreateNestedManyWithoutAssignmentInput
 }
 
 export type AssignmentUncheckedCreateWithoutKpiChecksInput = {
@@ -1331,6 +1483,7 @@ export type AssignmentUncheckedCreateWithoutKpiChecksInput = {
   terminations?: Prisma.TerminationUncheckedCreateNestedManyWithoutAssignmentInput
   preparation?: Prisma.AssignmentPreparationUncheckedCreateNestedOneWithoutAssignmentInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUncheckedCreateNestedManyWithoutAssignmentInput
+  statusEvents?: Prisma.AssignmentStatusEventUncheckedCreateNestedManyWithoutAssignmentInput
 }
 
 export type AssignmentCreateOrConnectWithoutKpiChecksInput = {
@@ -1372,6 +1525,7 @@ export type AssignmentUpdateWithoutKpiChecksInput = {
   terminations?: Prisma.TerminationUpdateManyWithoutAssignmentNestedInput
   preparation?: Prisma.AssignmentPreparationUpdateOneWithoutAssignmentNestedInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUpdateManyWithoutAssignmentNestedInput
+  statusEvents?: Prisma.AssignmentStatusEventUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AssignmentUncheckedUpdateWithoutKpiChecksInput = {
@@ -1397,6 +1551,7 @@ export type AssignmentUncheckedUpdateWithoutKpiChecksInput = {
   terminations?: Prisma.TerminationUncheckedUpdateManyWithoutAssignmentNestedInput
   preparation?: Prisma.AssignmentPreparationUncheckedUpdateOneWithoutAssignmentNestedInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUncheckedUpdateManyWithoutAssignmentNestedInput
+  statusEvents?: Prisma.AssignmentStatusEventUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AssignmentCreateWithoutWorkLogsInput = {
@@ -1422,6 +1577,7 @@ export type AssignmentCreateWithoutWorkLogsInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutAssignmentInput
   preparation?: Prisma.AssignmentPreparationCreateNestedOneWithoutAssignmentInput
   clientFeedback?: Prisma.AssignmentClientFeedbackCreateNestedManyWithoutAssignmentInput
+  statusEvents?: Prisma.AssignmentStatusEventCreateNestedManyWithoutAssignmentInput
 }
 
 export type AssignmentUncheckedCreateWithoutWorkLogsInput = {
@@ -1447,6 +1603,7 @@ export type AssignmentUncheckedCreateWithoutWorkLogsInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutAssignmentInput
   preparation?: Prisma.AssignmentPreparationUncheckedCreateNestedOneWithoutAssignmentInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUncheckedCreateNestedManyWithoutAssignmentInput
+  statusEvents?: Prisma.AssignmentStatusEventUncheckedCreateNestedManyWithoutAssignmentInput
 }
 
 export type AssignmentCreateOrConnectWithoutWorkLogsInput = {
@@ -1488,6 +1645,7 @@ export type AssignmentUpdateWithoutWorkLogsInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckUpdateManyWithoutAssignmentNestedInput
   preparation?: Prisma.AssignmentPreparationUpdateOneWithoutAssignmentNestedInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUpdateManyWithoutAssignmentNestedInput
+  statusEvents?: Prisma.AssignmentStatusEventUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AssignmentUncheckedUpdateWithoutWorkLogsInput = {
@@ -1513,6 +1671,7 @@ export type AssignmentUncheckedUpdateWithoutWorkLogsInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutAssignmentNestedInput
   preparation?: Prisma.AssignmentPreparationUncheckedUpdateOneWithoutAssignmentNestedInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUncheckedUpdateManyWithoutAssignmentNestedInput
+  statusEvents?: Prisma.AssignmentStatusEventUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AssignmentCreateWithoutTerminationsInput = {
@@ -1538,6 +1697,7 @@ export type AssignmentCreateWithoutTerminationsInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutAssignmentInput
   preparation?: Prisma.AssignmentPreparationCreateNestedOneWithoutAssignmentInput
   clientFeedback?: Prisma.AssignmentClientFeedbackCreateNestedManyWithoutAssignmentInput
+  statusEvents?: Prisma.AssignmentStatusEventCreateNestedManyWithoutAssignmentInput
 }
 
 export type AssignmentUncheckedCreateWithoutTerminationsInput = {
@@ -1563,6 +1723,7 @@ export type AssignmentUncheckedCreateWithoutTerminationsInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutAssignmentInput
   preparation?: Prisma.AssignmentPreparationUncheckedCreateNestedOneWithoutAssignmentInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUncheckedCreateNestedManyWithoutAssignmentInput
+  statusEvents?: Prisma.AssignmentStatusEventUncheckedCreateNestedManyWithoutAssignmentInput
 }
 
 export type AssignmentCreateOrConnectWithoutTerminationsInput = {
@@ -1604,6 +1765,7 @@ export type AssignmentUpdateWithoutTerminationsInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckUpdateManyWithoutAssignmentNestedInput
   preparation?: Prisma.AssignmentPreparationUpdateOneWithoutAssignmentNestedInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUpdateManyWithoutAssignmentNestedInput
+  statusEvents?: Prisma.AssignmentStatusEventUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AssignmentUncheckedUpdateWithoutTerminationsInput = {
@@ -1629,6 +1791,7 @@ export type AssignmentUncheckedUpdateWithoutTerminationsInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutAssignmentNestedInput
   preparation?: Prisma.AssignmentPreparationUncheckedUpdateOneWithoutAssignmentNestedInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUncheckedUpdateManyWithoutAssignmentNestedInput
+  statusEvents?: Prisma.AssignmentStatusEventUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AssignmentCreateWithoutPreparationInput = {
@@ -1654,6 +1817,7 @@ export type AssignmentCreateWithoutPreparationInput = {
   terminations?: Prisma.TerminationCreateNestedManyWithoutAssignmentInput
   kpiChecks?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutAssignmentInput
   clientFeedback?: Prisma.AssignmentClientFeedbackCreateNestedManyWithoutAssignmentInput
+  statusEvents?: Prisma.AssignmentStatusEventCreateNestedManyWithoutAssignmentInput
 }
 
 export type AssignmentUncheckedCreateWithoutPreparationInput = {
@@ -1679,6 +1843,7 @@ export type AssignmentUncheckedCreateWithoutPreparationInput = {
   terminations?: Prisma.TerminationUncheckedCreateNestedManyWithoutAssignmentInput
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutAssignmentInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUncheckedCreateNestedManyWithoutAssignmentInput
+  statusEvents?: Prisma.AssignmentStatusEventUncheckedCreateNestedManyWithoutAssignmentInput
 }
 
 export type AssignmentCreateOrConnectWithoutPreparationInput = {
@@ -1720,6 +1885,7 @@ export type AssignmentUpdateWithoutPreparationInput = {
   terminations?: Prisma.TerminationUpdateManyWithoutAssignmentNestedInput
   kpiChecks?: Prisma.AssignmentKpiCheckUpdateManyWithoutAssignmentNestedInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUpdateManyWithoutAssignmentNestedInput
+  statusEvents?: Prisma.AssignmentStatusEventUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AssignmentUncheckedUpdateWithoutPreparationInput = {
@@ -1745,6 +1911,7 @@ export type AssignmentUncheckedUpdateWithoutPreparationInput = {
   terminations?: Prisma.TerminationUncheckedUpdateManyWithoutAssignmentNestedInput
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutAssignmentNestedInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUncheckedUpdateManyWithoutAssignmentNestedInput
+  statusEvents?: Prisma.AssignmentStatusEventUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AssignmentCreateWithoutClientFeedbackInput = {
@@ -1770,6 +1937,7 @@ export type AssignmentCreateWithoutClientFeedbackInput = {
   terminations?: Prisma.TerminationCreateNestedManyWithoutAssignmentInput
   kpiChecks?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutAssignmentInput
   preparation?: Prisma.AssignmentPreparationCreateNestedOneWithoutAssignmentInput
+  statusEvents?: Prisma.AssignmentStatusEventCreateNestedManyWithoutAssignmentInput
 }
 
 export type AssignmentUncheckedCreateWithoutClientFeedbackInput = {
@@ -1795,6 +1963,7 @@ export type AssignmentUncheckedCreateWithoutClientFeedbackInput = {
   terminations?: Prisma.TerminationUncheckedCreateNestedManyWithoutAssignmentInput
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutAssignmentInput
   preparation?: Prisma.AssignmentPreparationUncheckedCreateNestedOneWithoutAssignmentInput
+  statusEvents?: Prisma.AssignmentStatusEventUncheckedCreateNestedManyWithoutAssignmentInput
 }
 
 export type AssignmentCreateOrConnectWithoutClientFeedbackInput = {
@@ -1836,6 +2005,7 @@ export type AssignmentUpdateWithoutClientFeedbackInput = {
   terminations?: Prisma.TerminationUpdateManyWithoutAssignmentNestedInput
   kpiChecks?: Prisma.AssignmentKpiCheckUpdateManyWithoutAssignmentNestedInput
   preparation?: Prisma.AssignmentPreparationUpdateOneWithoutAssignmentNestedInput
+  statusEvents?: Prisma.AssignmentStatusEventUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AssignmentUncheckedUpdateWithoutClientFeedbackInput = {
@@ -1861,6 +2031,7 @@ export type AssignmentUncheckedUpdateWithoutClientFeedbackInput = {
   terminations?: Prisma.TerminationUncheckedUpdateManyWithoutAssignmentNestedInput
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutAssignmentNestedInput
   preparation?: Prisma.AssignmentPreparationUncheckedUpdateOneWithoutAssignmentNestedInput
+  statusEvents?: Prisma.AssignmentStatusEventUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AssignmentCreateManyVaProfileInput = {
@@ -1905,6 +2076,7 @@ export type AssignmentUpdateWithoutVaProfileInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckUpdateManyWithoutAssignmentNestedInput
   preparation?: Prisma.AssignmentPreparationUpdateOneWithoutAssignmentNestedInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUpdateManyWithoutAssignmentNestedInput
+  statusEvents?: Prisma.AssignmentStatusEventUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AssignmentUncheckedUpdateWithoutVaProfileInput = {
@@ -1930,6 +2102,7 @@ export type AssignmentUncheckedUpdateWithoutVaProfileInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutAssignmentNestedInput
   preparation?: Prisma.AssignmentPreparationUncheckedUpdateOneWithoutAssignmentNestedInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUncheckedUpdateManyWithoutAssignmentNestedInput
+  statusEvents?: Prisma.AssignmentStatusEventUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AssignmentUncheckedUpdateManyWithoutVaProfileInput = {
@@ -1993,6 +2166,7 @@ export type AssignmentUpdateWithoutClientInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckUpdateManyWithoutAssignmentNestedInput
   preparation?: Prisma.AssignmentPreparationUpdateOneWithoutAssignmentNestedInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUpdateManyWithoutAssignmentNestedInput
+  statusEvents?: Prisma.AssignmentStatusEventUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AssignmentUncheckedUpdateWithoutClientInput = {
@@ -2018,6 +2192,7 @@ export type AssignmentUncheckedUpdateWithoutClientInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutAssignmentNestedInput
   preparation?: Prisma.AssignmentPreparationUncheckedUpdateOneWithoutAssignmentNestedInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUncheckedUpdateManyWithoutAssignmentNestedInput
+  statusEvents?: Prisma.AssignmentStatusEventUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AssignmentUncheckedUpdateManyWithoutClientInput = {
@@ -2081,6 +2256,7 @@ export type AssignmentUpdateWithoutParentAssignmentInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckUpdateManyWithoutAssignmentNestedInput
   preparation?: Prisma.AssignmentPreparationUpdateOneWithoutAssignmentNestedInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUpdateManyWithoutAssignmentNestedInput
+  statusEvents?: Prisma.AssignmentStatusEventUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AssignmentUncheckedUpdateWithoutParentAssignmentInput = {
@@ -2106,6 +2282,7 @@ export type AssignmentUncheckedUpdateWithoutParentAssignmentInput = {
   kpiChecks?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutAssignmentNestedInput
   preparation?: Prisma.AssignmentPreparationUncheckedUpdateOneWithoutAssignmentNestedInput
   clientFeedback?: Prisma.AssignmentClientFeedbackUncheckedUpdateManyWithoutAssignmentNestedInput
+  statusEvents?: Prisma.AssignmentStatusEventUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AssignmentUncheckedUpdateManyWithoutParentAssignmentInput = {
@@ -2138,6 +2315,7 @@ export type AssignmentCountOutputType = {
   terminations: number
   kpiChecks: number
   clientFeedback: number
+  statusEvents: number
 }
 
 export type AssignmentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2146,6 +2324,7 @@ export type AssignmentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extens
   terminations?: boolean | AssignmentCountOutputTypeCountTerminationsArgs
   kpiChecks?: boolean | AssignmentCountOutputTypeCountKpiChecksArgs
   clientFeedback?: boolean | AssignmentCountOutputTypeCountClientFeedbackArgs
+  statusEvents?: boolean | AssignmentCountOutputTypeCountStatusEventsArgs
 }
 
 /**
@@ -2193,6 +2372,13 @@ export type AssignmentCountOutputTypeCountClientFeedbackArgs<ExtArgs extends run
   where?: Prisma.AssignmentClientFeedbackWhereInput
 }
 
+/**
+ * AssignmentCountOutputType without action
+ */
+export type AssignmentCountOutputTypeCountStatusEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AssignmentStatusEventWhereInput
+}
+
 
 export type AssignmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2221,6 +2407,7 @@ export type AssignmentSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   kpiChecks?: boolean | Prisma.Assignment$kpiChecksArgs<ExtArgs>
   preparation?: boolean | Prisma.Assignment$preparationArgs<ExtArgs>
   clientFeedback?: boolean | Prisma.Assignment$clientFeedbackArgs<ExtArgs>
+  statusEvents?: boolean | Prisma.Assignment$statusEventsArgs<ExtArgs>
   _count?: boolean | Prisma.AssignmentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["assignment"]>
 
@@ -2301,6 +2488,7 @@ export type AssignmentInclude<ExtArgs extends runtime.Types.Extensions.InternalA
   kpiChecks?: boolean | Prisma.Assignment$kpiChecksArgs<ExtArgs>
   preparation?: boolean | Prisma.Assignment$preparationArgs<ExtArgs>
   clientFeedback?: boolean | Prisma.Assignment$clientFeedbackArgs<ExtArgs>
+  statusEvents?: boolean | Prisma.Assignment$statusEventsArgs<ExtArgs>
   _count?: boolean | Prisma.AssignmentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AssignmentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2326,6 +2514,7 @@ export type $AssignmentPayload<ExtArgs extends runtime.Types.Extensions.Internal
     kpiChecks: Prisma.$AssignmentKpiCheckPayload<ExtArgs>[]
     preparation: Prisma.$AssignmentPreparationPayload<ExtArgs> | null
     clientFeedback: Prisma.$AssignmentClientFeedbackPayload<ExtArgs>[]
+    statusEvents: Prisma.$AssignmentStatusEventPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2748,6 +2937,7 @@ export interface Prisma__AssignmentClient<T, Null = never, ExtArgs extends runti
   kpiChecks<T extends Prisma.Assignment$kpiChecksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Assignment$kpiChecksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssignmentKpiCheckPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   preparation<T extends Prisma.Assignment$preparationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Assignment$preparationArgs<ExtArgs>>): Prisma.Prisma__AssignmentPreparationClient<runtime.Types.Result.GetResult<Prisma.$AssignmentPreparationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   clientFeedback<T extends Prisma.Assignment$clientFeedbackArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Assignment$clientFeedbackArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssignmentClientFeedbackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  statusEvents<T extends Prisma.Assignment$statusEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Assignment$statusEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssignmentStatusEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3350,6 +3540,30 @@ export type Assignment$clientFeedbackArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.AssignmentClientFeedbackScalarFieldEnum | Prisma.AssignmentClientFeedbackScalarFieldEnum[]
+}
+
+/**
+ * Assignment.statusEvents
+ */
+export type Assignment$statusEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AssignmentStatusEvent
+   */
+  select?: Prisma.AssignmentStatusEventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AssignmentStatusEvent
+   */
+  omit?: Prisma.AssignmentStatusEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AssignmentStatusEventInclude<ExtArgs> | null
+  where?: Prisma.AssignmentStatusEventWhereInput
+  orderBy?: Prisma.AssignmentStatusEventOrderByWithRelationInput | Prisma.AssignmentStatusEventOrderByWithRelationInput[]
+  cursor?: Prisma.AssignmentStatusEventWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AssignmentStatusEventScalarFieldEnum | Prisma.AssignmentStatusEventScalarFieldEnum[]
 }
 
 /**

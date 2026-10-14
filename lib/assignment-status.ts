@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { logAudit } from '@/lib/audit'
 import { ASSIGNMENT_TO_CLIENT_STATUS, startStatusAfter } from '@/lib/va-preparation-fields'
-import type { AssignmentStatus, PreparationClientStatus } from '@/src/generated/prisma/enums'
+import type { AssignmentStatus, AssignmentStatusReason, PreparationClientStatus } from '@/src/generated/prisma/enums'
 
 // One path for every Assignment status change (FB-0014), whether it starts
 // from the assignment page or from VA Preparation's VA STATUS WITH CLIENT:
@@ -12,7 +12,10 @@ import type { AssignmentStatus, PreparationClientStatus } from '@/src/generated/
 // - the preparation row is what the DMF views read, so it's mirrored back
 //   (with an effectivity date, which the dashboard's data-issues card
 //   requires for anything not Active);
-// - ending an engagement ends its additional-hours add-ons too.
+// - ending an engagement ends its additional-hours add-ons too;
+// - every change is recorded as an AssignmentStatusEvent with the date it
+//   took effect, which is the pause/reactivate history on the assignment page
+//   and where a cancellation's cancelled date lives.
 //
 // Callers do their own auth/scope checks first.
 
@@ -26,6 +29,8 @@ export async function applyAssignmentStatus({
   status,
   syncPreparation = true,
   effectiveDate,
+  reason = null,
+  note = null,
 }: {
   actorId: string
   assignmentId: string
@@ -34,11 +39,14 @@ export async function applyAssignmentStatus({
   syncPreparation?: boolean
   // When the change took effect; defaults to today.
   effectiveDate?: Date | null
+  reason?: AssignmentStatusReason | null
+  note?: string | null
 }) {
   const before = await prisma.assignment.findUnique({
     where: { id: assignmentId },
     select: {
       status: true,
+      endDate: true,
       preparation: {
         select: { id: true, clientStatus: true, effectivityDate: true, startStatus: true, vaConnectStatus: true },
       },
@@ -46,15 +54,39 @@ export async function applyAssignmentStatus({
   })
   if (!before) throw new Error('Assignment not found')
 
+  const effective = effectiveDate ?? todayUtc()
+
   if (before.status !== status) {
-    await prisma.assignment.update({ where: { id: assignmentId }, data: { status } })
+    // A cancellation's date is the engagement's end date. Reactivating clears
+    // it again, but only when it's the date the cancellation set — an end
+    // date planned before the cancel is left alone.
+    let endDate: Date | null | undefined
+    if (status === 'CANCELLED') endDate = effective
+    else if (status === 'ACTIVE' && before.status === 'CANCELLED' && before.endDate) {
+      const lastCancel = await prisma.assignmentStatusEvent.findFirst({
+        where: { assignmentId, toStatus: 'CANCELLED' },
+        orderBy: { createdAt: 'desc' },
+        select: { effectiveDate: true },
+      })
+      if (lastCancel?.effectiveDate.getTime() === before.endDate.getTime()) endDate = null
+    }
+
+    await prisma.$transaction([
+      prisma.assignment.update({
+        where: { id: assignmentId },
+        data: { status, ...(endDate !== undefined && { endDate }) },
+      }),
+      prisma.assignmentStatusEvent.create({
+        data: { assignmentId, fromStatus: before.status, toStatus: status, effectiveDate: effective, reason, note, actorId },
+      }),
+    ])
     await logAudit({
       actorId,
       action: 'STATUS_CHANGE',
       entityType: 'Assignment',
       entityId: assignmentId,
-      before: { status: before.status },
-      after: { status },
+      before: { status: before.status, ...(endDate !== undefined && { endDate: before.endDate }) },
+      after: { status, effectiveDate: effective, reason, ...(endDate !== undefined && { endDate }) },
     })
   }
 
@@ -69,7 +101,7 @@ export async function applyAssignmentStatus({
     if (clientStatus !== prep.clientStatus) {
       const data = {
         clientStatus,
-        effectivityDate: clientStatus === null ? prep.effectivityDate : (effectiveDate ?? todayUtc()),
+        effectivityDate: clientStatus === null ? prep.effectivityDate : effective,
         startStatus: startStatusAfter(prep.startStatus, clientStatus),
       }
       await prisma.assignmentPreparation.update({ where: { id: prep.id }, data })
@@ -92,7 +124,7 @@ export async function applyAssignmentStatus({
       select: { id: true },
     })
     for (const a of addOns) {
-      await applyAssignmentStatus({ actorId, assignmentId: a.id, status, effectiveDate })
+      await applyAssignmentStatus({ actorId, assignmentId: a.id, status, effectiveDate: effective, reason, note })
     }
   }
 }

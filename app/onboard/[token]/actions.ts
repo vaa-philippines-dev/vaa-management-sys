@@ -47,6 +47,21 @@ export async function completeOnboarding(token: string, formData: FormData) {
     else if (field === 'birthDate') data[field] = value ? new Date(value as string) : null
     else data[field] = value || null
   }
+  // Preferred hours (per day) live on the VA profile — what VA Availability
+  // measures free hours against. Absent from staff forms.
+  const va = await prisma.vAProfile.findUnique({
+    where: { userId: invite.userId },
+    select: { id: true, preferredWorkHours: true },
+  })
+  const hoursInput = formData.get('preferredWorkHours')
+  let preferredWorkHours: number | undefined
+  if (va && typeof hoursInput === 'string' && hoursInput.trim() !== '') {
+    preferredWorkHours = Number(hoursInput)
+    if (!Number.isFinite(preferredWorkHours) || preferredWorkHours < 0 || preferredWorkHours > 24) {
+      throw new Error('Preferred work hours must be between 0 and 24 per day.')
+    }
+  }
+
   if ('middleName' in data) { userData.middleName = data.middleName; delete data.middleName }
   if ('extName' in data) { userData.extName = data.extName; delete data.extName }
 
@@ -59,6 +74,9 @@ export async function completeOnboarding(token: string, formData: FormData) {
       create: { userId: invite.userId, ...data },
       update: data,
     })
+    if (va && preferredWorkHours !== undefined) {
+      await tx.vAProfile.update({ where: { id: va.id }, data: { preferredWorkHours } })
+    }
     await tx.vAOnboardingInvite.update({ where: { id: invite.id }, data: { completedAt: new Date() } })
   })
 
@@ -70,9 +88,20 @@ export async function completeOnboarding(token: string, formData: FormData) {
     after: { ...userData, ...data },
     metadata: { viaForm: 'onboarding-self-service' },
   })
+  if (va && preferredWorkHours !== undefined) {
+    await logAudit({
+      actorId: invite.userId,
+      action: 'UPDATE',
+      entityType: 'VAProfile',
+      entityId: va.id,
+      before: { preferredWorkHours: va.preferredWorkHours == null ? null : Number(va.preferredWorkHours) },
+      after: { preferredWorkHours },
+      metadata: { viaForm: 'onboarding-self-service' },
+    })
+  }
 
-  const va = await prisma.vAProfile.findUnique({ where: { userId: invite.userId }, select: { id: true } })
   if (va) revalidatePath(`/vas/${va.id}`)
+  revalidatePath('/va-availability')
   revalidatePath('/masterlist')
   revalidateTag(CACHE_TAGS.users, 'default')
   revalidateTag(CACHE_TAGS.vas, 'default')

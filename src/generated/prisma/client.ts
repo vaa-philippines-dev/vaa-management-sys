@@ -157,6 +157,11 @@ export type Client = Prisma.ClientModel
  */
 export type Assignment = Prisma.AssignmentModel
 /**
+ * Model AssignmentStatusEvent
+ * 
+ */
+export type AssignmentStatusEvent = Prisma.AssignmentStatusEventModel
+/**
  * Model AssignmentKpiCheck
  * 
  */

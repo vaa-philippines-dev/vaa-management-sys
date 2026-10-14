@@ -510,7 +510,7 @@ export default async function VADetailPage({
           statusLabel={va.onHold ? 'On Hold' : (STATUS_LABEL[va.status] ?? va.status)}
           statusDotClassName={va.onHold ? 'bg-warning' : (STATUS_DOT[va.status] ?? 'bg-muted-foreground')}
           availabilityLabel={AVAILABILITY_LABEL[va.availabilityStatus] ?? null}
-          weeklyHours={va.preferredWorkHours ? Number(va.preferredWorkHours) : null}
+          preferredDailyHours={va.preferredWorkHours ? Number(va.preferredWorkHours) : null}
           managerName={null}
           departmentName={primaryMem?.department.name ?? null}
           positionTitle={primaryMem?.position?.title ?? null}

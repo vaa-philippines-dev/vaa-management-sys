@@ -441,6 +441,16 @@ export const KpiMilestone = {
 export type KpiMilestone = (typeof KpiMilestone)[keyof typeof KpiMilestone]
 
 
+export const AssignmentStatusReason = {
+  CLIENT_PAYMENT_FAILURE: 'CLIENT_PAYMENT_FAILURE',
+  CLIENT_REQUEST: 'CLIENT_REQUEST',
+  VA_REQUEST: 'VA_REQUEST',
+  OTHER: 'OTHER'
+} as const
+
+export type AssignmentStatusReason = (typeof AssignmentStatusReason)[keyof typeof AssignmentStatusReason]
+
+
 export const ChannelKind = {
   DEPARTMENT: 'DEPARTMENT',
   DIRECT: 'DIRECT',

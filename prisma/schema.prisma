@@ -505,6 +505,7 @@ model User {
   onboardingInvitesCreated     VAOnboardingInvite[]   @relation("OnboardingInviteCreator")
   terminationsInitiated        Termination[]          @relation("TerminationInitiator")
   terminationDocumentsAdded    TerminationDocument[]  @relation("TerminationDocumentAddedBy")
+  assignmentStatusEvents       AssignmentStatusEvent[] @relation("AssignmentStatusEventActor")
   clearancesCleared            ExitClearance[]        @relation("ClearanceClearedBy")
   agentDecisions               AgentSuggestion[]      @relation("AgentSuggestionDecidedBy")
   assignmentKpiChecksCompleted AssignmentKpiCheck[]   @relation("AssignmentKpiCheckCompletedBy")
@@ -1081,6 +1082,7 @@ model Assignment {
   kpiChecks    AssignmentKpiCheck[]
   preparation  AssignmentPreparation?
   clientFeedback AssignmentClientFeedback[]
+  statusEvents AssignmentStatusEvent[]
 
   @@index([vaProfileId])
   @@index([clientId])
@@ -1107,6 +1109,37 @@ enum KpiMilestone {
   M2
   M3
   M6
+}
+
+// Why an assignment was paused/cancelled. Client payment failure is the
+// common case (a client stops paying, the VA is paused, then reactivated once
+// they settle), so it gets its own value for reporting.
+enum AssignmentStatusReason {
+  CLIENT_PAYMENT_FAILURE
+  CLIENT_REQUEST
+  VA_REQUEST
+  OTHER
+}
+
+// Every status change of an Assignment with the date it took effect —
+// the pause/reactivate history, and the cancelled date a cancellation
+// requires. Written only by applyAssignmentStatus() (lib/assignment-status.ts).
+// Changes made before this table existed are only in the AuditLog.
+model AssignmentStatusEvent {
+  id            String                  @id @default(cuid())
+  assignmentId  String                  @map("assignment_id")
+  assignment    Assignment              @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  fromStatus    AssignmentStatus        @map("from_status")
+  toStatus      AssignmentStatus        @map("to_status")
+  effectiveDate DateTime                @map("effective_date")
+  reason        AssignmentStatusReason?
+  note          String?
+  actorId       String?                 @map("actor_id")
+  actor         User?                   @relation("AssignmentStatusEventActor", fields: [actorId], references: [id], onDelete: SetNull)
+  createdAt     DateTime                @default(now()) @map("created_at")
+
+  @@index([assignmentId, effectiveDate])
+  @@map("assignment_status_events")
 }
 
 model AssignmentKpiCheck {

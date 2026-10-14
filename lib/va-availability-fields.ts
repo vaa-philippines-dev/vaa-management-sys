@@ -60,16 +60,30 @@ export const ALERT_LABELS: Record<AvailabilityAlert, string> = {
   REVIEW_OVERDUE: 'Review overdue',
 }
 
-// The sheet's CURRENT STATUS column, which describes what kind of week the
-// person works rather than whether they're free right now.
-export type WorkPattern = 'FULL_TIME_VA' | 'PART_TIME_VA' | 'FULL_TIME_ADMIN' | 'PART_TIME_ADMIN'
+// The sheet's CURRENT STATUS column (the board's "Pattern"): what kind of
+// week the person is booked for. Not editable — it follows the VA's active
+// assignments, the same way the sheet's formula follows CURRENT WORK HOURS.
+// Read off the live Amazon sheet: VAs booked 7h+/day are "Full time VA",
+// 1-6h "Part time VA", nothing booked "Idle VA"; staff with no client hours
+// are "Full time Admin", staff who also carry client hours "Part time Admin".
+export type WorkPattern = 'FULL_TIME_VA' | 'PART_TIME_VA' | 'IDLE_VA' | 'FULL_TIME_ADMIN' | 'PART_TIME_ADMIN'
 
 export const WORK_PATTERN_LABELS: Record<WorkPattern, string> = {
   FULL_TIME_VA: 'Full time VA',
   PART_TIME_VA: 'Part time VA',
+  IDLE_VA: 'Idle VA',
   FULL_TIME_ADMIN: 'Full time Admin',
   PART_TIME_ADMIN: 'Part time Admin',
 }
+
+// Daily hours, like every hours column on this board.
+export const FULL_TIME_DAILY_HOURS = 7
+
+// The shortest engagement a client books (3h/day is the most common one
+// after 8h). A VA with less than this free can't take another client, so
+// they read Unavailable rather than Available — e.g. preferred 8, booked 6,
+// 2h free. Exactly 3h free still reads Available.
+export const MIN_BOOKABLE_HOURS = 3
 
 // One row is one VA *in one department* — a VA in both PPC and Amazon is two
 // rows, each with its own DMF/TMF block (VADepartmentAvailability), so
@@ -98,9 +112,14 @@ export type AvailabilityRow = {
   clientCount: number
 
   workPattern: WorkPattern
-  // This department's DMF CHANGE AVAILABILITY, falling back to the VA's
-  // profile-wide status when the department has never set one.
+  // What the board shows: this department's DMF CHANGE AVAILABILITY (falling
+  // back to the VA's profile-wide status when the department has never set
+  // one), unless the hours rule overrides it — see effectiveAvailability().
   availabilityStatus: string
+  // The status as set, before the hours rule; what the edit dialog starts from.
+  setAvailabilityStatus: string
+  // True when the hours rule replaced the status that was set.
+  availabilityAuto: boolean
   contractType: string | null
   generalStatus: string
   employmentStatus: string | null
@@ -142,10 +161,28 @@ export function computeAvailableHours(
   return Math.max(0, preferred - current - (hybrid ?? 0))
 }
 
-export function computeWorkPattern(isVA: boolean, preferred: number | null): WorkPattern {
-  const fullTime = (preferred ?? FULL_TIME_HOURS) >= FULL_TIME_HOURS
-  if (isVA) return fullTime ? 'FULL_TIME_VA' : 'PART_TIME_VA'
-  return fullTime ? 'FULL_TIME_ADMIN' : 'PART_TIME_ADMIN'
+export function computeWorkPattern(isVA: boolean, bookedHours: number): WorkPattern {
+  if (!isVA) return bookedHours > 0 ? 'PART_TIME_ADMIN' : 'FULL_TIME_ADMIN'
+  if (bookedHours >= FULL_TIME_DAILY_HOURS) return 'FULL_TIME_VA'
+  return bookedHours > 0 ? 'PART_TIME_VA' : 'IDLE_VA'
+}
+
+// "Available" / "Partially Assigned" are only true while the VA has room for
+// another client. Once fewer than MIN_BOOKABLE_HOURS of their preferred hours
+// are free, they read Full (booked to their preferred hours) or Unavailable
+// (a sliver left, or no preferred hours on offer at all). Statuses a person
+// chose on purpose — on hold, unavailable, recommended, full — are kept. VAs
+// with no preferred hours on file are left alone: there's nothing to measure.
+export function effectiveAvailability(
+  setStatus: string,
+  preferred: number | null,
+  bookedHours: number,
+  availableHours: number
+): { status: string; auto: boolean } {
+  if (setStatus !== 'AVAILABLE' && setStatus !== 'PARTIALLY_ASSIGNED') return { status: setStatus, auto: false }
+  if (preferred == null || availableHours >= MIN_BOOKABLE_HOURS) return { status: setStatus, auto: false }
+  const status = availableHours <= 0 && bookedHours > 0 ? 'FULLY_ASSIGNED' : 'UNAVAILABLE'
+  return { status, auto: true }
 }
 
 // Only VAs who are actually offering hours can go stale — a fully-assigned

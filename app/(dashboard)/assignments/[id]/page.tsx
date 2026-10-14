@@ -8,10 +8,19 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
 import { format } from 'date-fns'
-import { AssignmentStatusButtons } from '@/components/assignments/AssignmentStatusButtons'
+import { AssignmentStatusButtons, AssignmentStatusActionButton } from '@/components/assignments/AssignmentStatusButtons'
 import { AssignmentEditButton } from '@/components/assignments/AssignmentEditButton'
 import { AdditionalHoursButton } from '@/components/assignments/AdditionalHoursButton'
-import { updateAssignmentStatus } from '@/app/(dashboard)/assignments/actions'
+import {
+  ASSIGNMENT_STATUS_LABELS,
+  ASSIGNMENT_STATUS_REASON_LABELS,
+} from '@/lib/assignment-status-fields'
+
+// Status dates are stored as UTC midnight — format in UTC so they don't
+// shift a day on a server in another timezone.
+function formatUtcDate(d: Date) {
+  return new Intl.DateTimeFormat('en-US', { month: 'short', day: '2-digit', year: 'numeric', timeZone: 'UTC' }).format(d)
+}
 
 export default async function AssignmentDetailPage({
   params,
@@ -28,6 +37,10 @@ export default async function AssignmentDetailPage({
       client: true,
       vaProfile: { include: { user: true, vaSkills: { include: { skill: true } } } },
       workLogs: { orderBy: { workDate: 'desc' } },
+      statusEvents: {
+        orderBy: [{ effectiveDate: 'desc' }, { createdAt: 'desc' }],
+        include: { actor: { select: { firstName: true, lastName: true } } },
+      },
       parentAssignment: {
         select: {
           id: true,
@@ -169,7 +182,7 @@ export default async function AssignmentDetailPage({
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              {assignment.endDate ? 'End Date' : 'Ongoing'}
+              {assignment.endDate ? (assignment.status === 'CANCELLED' ? 'Cancelled On' : 'End Date') : 'Ongoing'}
             </CardTitle>
           </CardHeader>
           <CardContent className="text-sm font-medium">
@@ -199,12 +212,46 @@ export default async function AssignmentDetailPage({
                     {a.notes && <p className="text-xs text-muted-foreground mt-1 whitespace-pre-wrap">{a.notes}</p>}
                   </div>
                   {canMutate && (a.status === 'ACTIVE' || a.status === 'PAUSED') && (
-                    <form action={updateAssignmentStatus.bind(null, a.id, 'CANCELLED')}>
-                      <Button type="submit" size="sm" variant="ghost" className="text-muted-foreground">
-                        Cancel request
-                      </Button>
-                    </form>
+                    <AssignmentStatusActionButton
+                      assignmentId={a.id}
+                      target="CANCELLED"
+                      label="Cancel request"
+                      title="Cancel additional hours"
+                      className="text-muted-foreground"
+                    />
                   )}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {assignment.statusEvents.length > 0 && (
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">Status History</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {assignment.statusEvents.map((e) => (
+                <div key={e.id} className="flex items-start justify-between gap-3 p-3 rounded-lg border">
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium">
+                      {ASSIGNMENT_STATUS_LABELS[e.fromStatus]} &rarr; {ASSIGNMENT_STATUS_LABELS[e.toStatus]}
+                      {e.reason && (
+                        <span className="font-normal text-muted-foreground"> · {ASSIGNMENT_STATUS_REASON_LABELS[e.reason]}</span>
+                      )}
+                    </p>
+                    {e.note && <p className="text-xs text-muted-foreground mt-1 whitespace-pre-wrap">{e.note}</p>}
+                    <p className="text-[11px] text-muted-foreground/70 mt-1">
+                      {e.actor ? `${e.actor.firstName} ${e.actor.lastName}`.trim() : 'System'} · recorded{' '}
+                      {format(e.createdAt, 'MMM dd, yyyy')}
+                    </p>
+                  </div>
+                  <Badge variant="outline" className="shrink-0">
+                    {formatUtcDate(e.effectiveDate)}
+                  </Badge>
                 </div>
               ))}
             </div>

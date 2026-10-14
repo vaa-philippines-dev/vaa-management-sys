@@ -10,7 +10,8 @@ import { notify } from '@/lib/notifications'
 import { computeKpiCheckpoints, getDepartmentKpiMilestones, KPI_MILESTONES } from '@/lib/kpi-checks'
 import { getMutateScope, assertClientInScope, assertAssignmentInScope, assertVAProfileInScope } from '@/lib/scope'
 import { ACTIVE_VA_PROFILE_WHERE } from '@/lib/active-va'
-import type { AssignmentStatus } from '@/src/generated/prisma/enums'
+import type { AssignmentStatus, AssignmentStatusReason } from '@/src/generated/prisma/enums'
+import { ASSIGNMENT_STATUS_REASONS, parseStatusEffectiveDate } from '@/lib/assignment-status-fields'
 import { applyAssignmentStatus } from '@/lib/assignment-status'
 
 export async function createAssignment(formData: FormData) {
@@ -338,10 +339,24 @@ export async function completeKpiCheck(checkId: string) {
 
 const ASSIGNMENT_STATUSES: AssignmentStatus[] = ['ACTIVE', 'PAUSED', 'ON_HOLD', 'COMPLETED', 'CANCELLED']
 
-export async function updateAssignmentStatus(id: string, status: string) {
+// `effectiveDate` is the YYYY-MM-DD the change took effect (today when
+// omitted) — required when cancelling, and never in the future. `reason` is
+// one of ASSIGNMENT_STATUS_REASONS, recorded on pause/cancel.
+export async function updateAssignmentStatus(
+  id: string,
+  status: string,
+  input: { effectiveDate?: string; reason?: string; note?: string } = {}
+) {
   const actor = await requireRole(...ASSIGNMENT_MUTATOR_ROLES)
   await assertAssignmentInScope(await getMutateScope(actor), id)
   if (!ASSIGNMENT_STATUSES.includes(status as AssignmentStatus)) throw new Error('Invalid status')
+
+  if (status === 'CANCELLED' && !input.effectiveDate) throw new Error('Pick the date the assignment was cancelled')
+  const effectiveDate = input.effectiveDate ? parseStatusEffectiveDate(input.effectiveDate) : null
+  if (input.effectiveDate && !effectiveDate) throw new Error('Pick a valid date that is not in the future')
+  const reason = input.reason || null
+  if (reason && !(ASSIGNMENT_STATUS_REASONS as readonly string[]).includes(reason)) throw new Error('Invalid reason')
+  const note = input.note?.trim() || null
 
   const before = await prisma.assignment.findUnique({
     where: { id },
@@ -356,7 +371,14 @@ export async function updateAssignmentStatus(id: string, status: string) {
 
   // Mirrors onto VA Preparation's VA STATUS WITH CLIENT and ends add-ons
   // with their engagement — see lib/assignment-status.ts.
-  await applyAssignmentStatus({ actorId: actor.id, assignmentId: id, status: status as AssignmentStatus })
+  await applyAssignmentStatus({
+    actorId: actor.id,
+    assignmentId: id,
+    status: status as AssignmentStatus,
+    effectiveDate,
+    reason: reason as AssignmentStatusReason | null,
+    note,
+  })
 
   revalidatePath('/assignments')
   revalidatePath(`/assignments/${id}`)
