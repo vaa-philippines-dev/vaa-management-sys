@@ -29,12 +29,14 @@ import type { DriveFile } from '@/lib/google/drive'
 import { AddressFields } from '@/components/vas/AddressFields'
 import { OFFBOARDING_TYPE_OPTIONS as TERMINATION_TYPE_OPTIONS } from '@/lib/offboarding'
 import { VA_TYPE_OPTIONS, VA_TYPE_LABELS } from '@/lib/va-type-fields'
+import { KEEP_POSITION_TEXT, matchPositionSkillId, positionLabel, type PositionSkillOption } from '@/lib/va-position-fields'
 
 export type VAData = {
   vaProfile: {
     id: string; status: string; engagementStatus: string | null; hybrid: boolean
     hourlyRate: number | null; baseRate: number | null
     vaaPosition: string | null; level: string | null; vaType: string
+    positionSkillId: string | null; positionSkillLabel: string | null
     expertiseGroupId: string | null; expertiseGroupName: string | null
     currentHireDate: string | null
     availabilityStatus: string; preferredWorkHours: number | null
@@ -86,6 +88,7 @@ export function VAProfileEditor({
   canEditSensitive = false,
   canInitiateTypeAB = false,
   expertiseGroups,
+  positionSkills = [],
   activeClientCount,
 }: {
   data: VAData
@@ -103,6 +106,7 @@ export function VAProfileEditor({
   // (CLIENT_INITIATED) case for this specific VA — see TerminationCard below.
   canInitiateTypeAB?: boolean
   expertiseGroups: { id: string; name: string }[]
+  positionSkills?: PositionSkillOption[]
   activeClientCount: number
 }) {
   const vaName = `${data.user.firstName} ${data.user.lastName}`.trim()
@@ -163,10 +167,10 @@ export function VAProfileEditor({
         <EditableSection
           icon={Briefcase}
           label="Employment & Payment"
-          renderEdit={(onClose) => <EmploymentFormContent data={data} expertiseGroups={expertiseGroups} onClose={onClose} />}
+          renderEdit={(onClose) => <EmploymentFormContent data={data} expertiseGroups={expertiseGroups} positionSkills={positionSkills} onClose={onClose} />}
           canEdit={canEditSensitive}
         >
-          <TableRow label="Position" value={data.membership?.positionTitle || data.vaProfile.vaaPosition} />
+          <TableRow label="Position" value={data.membership?.positionTitle || data.vaProfile.positionSkillLabel || data.vaProfile.vaaPosition} />
           <TableRow label="Expertise Group" value={data.vaProfile.expertiseGroupName} />
           <TableRow label="Status" value={data.employment?.employmentStatus?.replace(/_/g, ' ')} />
           <TableRow label="Base Rate" value={data.vaProfile.baseRate ? `₱${Number(data.vaProfile.baseRate).toLocaleString()}/hr` : null} />
@@ -632,12 +636,38 @@ function DepartmentTypeFormContent({ data, departments, onClose }: { data: VADat
   )
 }
 
-function EmploymentFormContent({ data, expertiseGroups, onClose }: { data: VAData; expertiseGroups: { id: string; name: string }[]; onClose: () => void }) {
+// VAA Position is a Service, so the Masterlist (which reads the linked
+// Service) follows the edit. A legacy position text that names no Service
+// stays selectable as-is, so saving other fields doesn't wipe it.
+function PositionSelect({ data, positionSkills }: { data: VAData; positionSkills: PositionSkillOption[] }) {
+  const { positionSkillId, vaaPosition } = data.vaProfile
+  const selected = positionSkillId ?? matchPositionSkillId(vaaPosition, positionSkills)
+  const keepText = !selected && !!vaaPosition?.trim()
+  return (
+    <div>
+      <Label htmlFor="fi-positionSkillId" className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1 block">VAA Position</Label>
+      <select
+        id="fi-positionSkillId"
+        name="positionSkillId"
+        defaultValue={selected ?? (keepText ? KEEP_POSITION_TEXT : '')}
+        className="w-full h-8 text-xs rounded-md border bg-background px-2"
+      >
+        <option value="">— None —</option>
+        {keepText && <option value={KEEP_POSITION_TEXT}>{vaaPosition} (not a Service)</option>}
+        {positionSkills.map((s) => (
+          <option key={s.id} value={s.id}>{positionLabel(s)}</option>
+        ))}
+      </select>
+    </div>
+  )
+}
+
+function EmploymentFormContent({ data, expertiseGroups, positionSkills, onClose }: { data: VAData; expertiseGroups: { id: string; name: string }[]; positionSkills: PositionSkillOption[]; onClose: () => void }) {
   return (
     <SaveForm action={(fd) => updateEmployment(data.vaProfile.id, data.user.id, fd)} onClose={onClose} toastLabel="Employment & pay saved" className="flex flex-col gap-4">
       {(saving) => (<>
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
-          <FI name="vaaPosition" label="VAA Position" defaultValue={data.vaProfile.vaaPosition} />
+          <PositionSelect data={data} positionSkills={positionSkills} />
           <FI name="level" label="Level" defaultValue={data.vaProfile.level} />
           <FSel name="expertiseGroupId" label="Expertise Group" defaultValue={data.vaProfile.expertiseGroupId} options={expertiseGroups} />
           <FI name="baseRate" label="Base Rate (PHP)" defaultValue={data.vaProfile.baseRate?.toString()} type="number" />

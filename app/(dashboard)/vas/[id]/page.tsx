@@ -4,6 +4,7 @@ import { getCurrentUser, VA_MUTATOR_ROLES, VA_SENSITIVE_INFO_EDIT_ROLES, TEAM_MA
 import { getViewScope, isVAProfileInScope, isDepartmentInScope, isUserInScope, type Scope } from '@/lib/scope'
 import { canInitiateEocOrClientInitiatedTermination } from '@/lib/offboarding-permissions'
 import { cached, CACHE_TAGS } from '@/lib/cache'
+import { positionLabel } from '@/lib/va-position-fields'
 import { listVADriveFiles } from '@/lib/google/drive'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
@@ -130,6 +131,7 @@ export default async function VADetailPage({
         },
         documents: { orderBy: { createdAt: 'desc' } },
         expertiseGroup: { select: { id: true, name: true } },
+        positionSkill: { select: { id: true, name: true, shortName: true } },
       },
     })
   )
@@ -169,6 +171,15 @@ export default async function VADetailPage({
     prisma.skill.findMany({ where: { isActive: true }, orderBy: { name: 'asc' }, select: { id: true, name: true } })
   )
   const skillOptions = availableSkills.filter((s) => !assignedSkillIds.has(s.id))
+  // The Employment form's VAA Position picker: active Services by short name
+  // (as the Masterlist reads), plus the VA's own if it was since deactivated.
+  const activePositionSkills = await cached('skills:catalog:active-positions', [CACHE_TAGS.skills], 300, () =>
+    prisma.skill.findMany({ where: { isActive: true }, select: { id: true, name: true, shortName: true } })
+  )
+  const positionSkills = [
+    ...activePositionSkills,
+    ...(va.positionSkill && !activePositionSkills.some((s) => s.id === va.positionSkill!.id) ? [va.positionSkill] : []),
+  ].sort((a, b) => positionLabel(a).localeCompare(positionLabel(b)))
 
   const allDepartments = await cached('departments:catalog:assignable', [CACHE_TAGS.departments], 300, () =>
     prisma.department.findMany({
@@ -245,6 +256,8 @@ export default async function VADetailPage({
       hourlyRate: va.hourlyRate ? Number(va.hourlyRate) : null,
       baseRate: va.baseRate ? Number(va.baseRate) : null,
       vaaPosition: va.vaaPosition ?? null,
+      positionSkillId: va.positionSkillId ?? null,
+      positionSkillLabel: va.positionSkill ? positionLabel(va.positionSkill) : null,
       level: va.level ?? null,
       vaType: va.vaType,
       expertiseGroupId: va.expertiseGroupId ?? null,
@@ -417,6 +430,7 @@ export default async function VADetailPage({
             canEditSensitive={canEditSensitive}
             canInitiateTypeAB={canInitiateTypeAB}
             expertiseGroups={allDepartments.map((d) => ({ id: d.id, name: d.name }))}
+            positionSkills={positionSkills}
             activeClientCount={activeClientCount}
           />
 

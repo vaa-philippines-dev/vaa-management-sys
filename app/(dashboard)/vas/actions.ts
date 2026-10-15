@@ -29,6 +29,7 @@ import { nextTerminationTicketNumber } from '@/lib/tickets'
 import { createResignationCase } from '@/lib/resignation-case'
 import { AVAILABILITY_STATUSES } from '@/lib/va-availability-fields'
 import { parseVAType } from '@/lib/va-type-fields'
+import { KEEP_POSITION_TEXT, positionLabel } from '@/lib/va-position-fields'
 import type { Prisma } from '@/src/generated/prisma/client'
 import type {
   Proficiency,
@@ -950,7 +951,7 @@ export async function updateVAProfile(vaProfileId: string, formData: FormData) {
 
   const data: Record<string, any> = {}
   const allowedFields = [
-    'vaaPosition', 'level', 'vaType', 'baseRate', 'hourlyRate', 'notes',
+    'level', 'vaType', 'baseRate', 'hourlyRate', 'notes',
     'preferredWorkHours', 'availableSchedule', 'hybrid', 'availabilityStatus',
     'availabilityRemarks', 'expertiseGroupId',
     'status', 'engagementStatus', 'currentHireDate', 'onHold',
@@ -977,9 +978,25 @@ export async function updateVAProfile(vaProfileId: string, formData: FormData) {
     }
   }
 
+  // VAA Position is a Service: link it and keep vaaPosition as its short name
+  // (as quickAddVA does), so the Masterlist — which reads the link — follows.
+  // KEEP_POSITION_TEXT leaves a legacy text that names no Service untouched.
+  const positionSkillId = formData.get('positionSkillId')
+  if (positionSkillId !== null && positionSkillId !== KEEP_POSITION_TEXT) {
+    if (positionSkillId === '') {
+      data.positionSkillId = null
+      data.vaaPosition = null
+    } else {
+      const skill = await prisma.skill.findUnique({ where: { id: positionSkillId as string }, select: { id: true, name: true, shortName: true } })
+      if (!skill) throw new Error('Unknown position')
+      data.positionSkillId = skill.id
+      data.vaaPosition = positionLabel(skill)
+    }
+  }
+
   const before = await prisma.vAProfile.findUnique({
     where: { id: vaProfileId },
-    select: { userId: true, vaaPosition: true, level: true, vaType: true, baseRate: true, hourlyRate: true, preferredWorkHours: true, availabilityStatus: true, hybrid: true, status: true, engagementStatus: true },
+    select: { userId: true, vaaPosition: true, positionSkillId: true, level: true, vaType: true, baseRate: true, hourlyRate: true, preferredWorkHours: true, availabilityStatus: true, hybrid: true, status: true, engagementStatus: true },
   })
 
   await prisma.vAProfile.update({ where: { id: vaProfileId }, data })
