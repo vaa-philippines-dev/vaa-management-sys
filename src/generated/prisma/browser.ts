@@ -312,3 +312,8 @@ export type AssignmentPreparationBuffer = Prisma.AssignmentPreparationBufferMode
  * 
  */
 export type AssignmentClientFeedback = Prisma.AssignmentClientFeedbackModel
+/**
+ * Model VAConcern
+ * 
+ */
+export type VAConcern = Prisma.VAConcernModel

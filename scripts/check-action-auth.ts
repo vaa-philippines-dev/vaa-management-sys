@@ -38,6 +38,9 @@ const PUBLIC_TOKEN_ACTIONS: Record<string, string[]> = {
   'app/onboard/[token]/actions.ts': ['completeOnboarding'],
   'app/exit-survey/[token]/actions.ts': ['submitExitSurvey'],
   'app/exit-clearance/[token]/actions.ts': ['actOnClearanceApprovalPublic'],
+  // The login page's help forms: the person has no working login, so these
+  // only open a ticket for the admins (rate-limited per email).
+  'app/(auth)/login/actions.ts': ['submitAccountRequest', 'submitLoginSupportRequest'],
 }
 
 function findActionFiles(dir: string, results: string[] = []): string[] {

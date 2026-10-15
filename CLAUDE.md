@@ -71,7 +71,9 @@ Tab → app mapping as it stands:
 | Projects/Proposals | `/projects` (`Project` model) |
 | VA Preparation | `/va-preparation` (`AssignmentPreparation`, 1:1 with `Assignment`). Backs the third rule of `DepartmentDataIssuesCard`. VA STATUS WITH CLIENT is **blank until VA Connect is Done**, then auto-fills Active effective the VA Connect date (`resolveClientStatus()` in `lib/va-preparation-fields.ts`, shared by the save action and the importer). VA buffers are `AssignmentPreparationBuffer` rows; the old `vaBuffers` text only holds names that matched no VA. |
 | (TMF — Team Monitoring File) | `/tmf` (`lib/tmf.ts`). The Team Leader's file for one team: TMF availability (editable only by that team's leaders + admins/HR), client check-ins due, engagements, leave. Access is granted by *leading a team* (most leaders are VA accounts), not by SystemRole; Dept/Ops Managers get their departments' teams read-only. |
-| IDLE VAs, VA-Client Summary, VA Concerns, Pending Dept Requests, Trainings, Discrepancies | not ported |
+| VA-Client Summary | `/va-client-summary` (`lib/va-client-summary.ts`). Read-only: both lists (each VA's clients, each client's VAs, hours per day) are derived from active assignments, never stored. |
+| VA Concerns | `/va-concerns` (`VAConcern`, `lib/va-concerns.ts`). Same audience as the TMF: a Team Leader raises concerns about their own team's VAs and writes the TEAM LEADER action; Dept/Ops Managers, HR and admins own the whole row (manager action, escalation to HR / Client Experience / Business Process / Accounting). Concern types are suggestions from the EA sheet's "VA Concerns Guide", not an enum — the sheets use two different lists. The CE/BPM/Accounting teams have no access of their own yet; managers record what they did. |
+| IDLE VAs, Pending Dept Requests, Trainings, Activities, Discrepancies | not ported |
 
 ## Updating the VA Masterlist from HR's CSV
 
@@ -79,7 +81,7 @@ Tab → app mapping as it stands:
 
 ## Populating the DMF data (VA Preparation, Performance Monitoring, VA Availability, Projects)
 
-`npm run import:dmf -- --department <Name>` (add `--apply` to write; without it, it's a dry run that only prints a report). Source: `lib/sync/dmf-import.ts`, matching in `lib/sync/dmf-match.ts`, date/bool/number parsing in `lib/sync/dmf-parse.ts`, the sheet reader in `lib/google/dmf-sheet.ts`. One-time backfill per department, not a recurring sync — once run, the app is the source of truth and the sheet becomes historical.
+`npm run import:dmf -- --department <Name>` (add `--apply` to write; without it, it's a dry run that only prints a report). Source: `lib/sync/dmf-import.ts`, matching in `lib/sync/dmf-match.ts`, date/bool/number parsing in `lib/sync/dmf-parse.ts`, the sheet reader in `lib/google/dmf-sheet.ts`. One-time backfill per department, not a recurring sync — once run, the app is the source of truth and the sheet becomes historical. It also imports the "VA Concerns" tab (upserted on `VAConcern.importKey`, so a re-run updates rather than duplicates; a blank sheet STATUS imports as Pending).
 
 **Matching**: the sheet has no ID that maps onto anything in this app (VA ID like `20-0002` matches no field; only 9/2,026 VAs even have an `employeeId`, in a different format). VA NAME is the only usable join key — checked against live data before building this: 271/292 unique Amazon VA names matched exactly (93%). VA Preparation and Performance Monitoring share the same RECORD NO for the same engagement; once one tab resolves a row to an `Assignment`, the mapping is cached in `ExternalSyncMapping` (`source: "dmf_sheet"`, `entityType: ASSIGNMENT`) so the other tab and future re-runs reuse it. Unmatched or ambiguous names are reported, never guessed.
 

@@ -367,7 +367,9 @@ export const NotificationType = {
   RESIGNATION_INTAKE: 'RESIGNATION_INTAKE',
   LEAVE_APPROVAL_NEEDED: 'LEAVE_APPROVAL_NEEDED',
   LEAVE_REQUEST_DECIDED: 'LEAVE_REQUEST_DECIDED',
-  AVAILABILITY_REVIEW_DUE: 'AVAILABILITY_REVIEW_DUE'
+  AVAILABILITY_REVIEW_DUE: 'AVAILABILITY_REVIEW_DUE',
+  SUPPORT_REQUEST: 'SUPPORT_REQUEST',
+  VA_CONCERN: 'VA_CONCERN'
 } as const
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
@@ -616,3 +618,24 @@ export const ClientResponseStatus = {
 } as const
 
 export type ClientResponseStatus = (typeof ClientResponseStatus)[keyof typeof ClientResponseStatus]
+
+
+export const VAConcernStatus = {
+  PENDING: 'PENDING',
+  UNDER_REVIEW: 'UNDER_REVIEW',
+  ESCALATED: 'ESCALATED',
+  RESOLVED: 'RESOLVED'
+} as const
+
+export type VAConcernStatus = (typeof VAConcernStatus)[keyof typeof VAConcernStatus]
+
+
+export const VAConcernEscalation = {
+  MANAGER: 'MANAGER',
+  HR: 'HR',
+  CLIENT_EXPERIENCE: 'CLIENT_EXPERIENCE',
+  BUSINESS_PROCESS: 'BUSINESS_PROCESS',
+  ACCOUNTING: 'ACCOUNTING'
+} as const
+
+export type VAConcernEscalation = (typeof VAConcernEscalation)[keyof typeof VAConcernEscalation]

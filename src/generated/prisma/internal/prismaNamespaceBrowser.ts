@@ -109,7 +109,8 @@ export const ModelName = {
   Project: 'Project',
   AssignmentPreparation: 'AssignmentPreparation',
   AssignmentPreparationBuffer: 'AssignmentPreparationBuffer',
-  AssignmentClientFeedback: 'AssignmentClientFeedback'
+  AssignmentClientFeedback: 'AssignmentClientFeedback',
+  VAConcern: 'VAConcern'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1255,6 +1256,41 @@ export const AssignmentClientFeedbackScalarFieldEnum = {
 } as const
 
 export type AssignmentClientFeedbackScalarFieldEnum = (typeof AssignmentClientFeedbackScalarFieldEnum)[keyof typeof AssignmentClientFeedbackScalarFieldEnum]
+
+
+export const VAConcernScalarFieldEnum = {
+  id: 'id',
+  number: 'number',
+  departmentId: 'departmentId',
+  vaProfileId: 'vaProfileId',
+  clientId: 'clientId',
+  clientName: 'clientName',
+  concernDate: 'concernDate',
+  category: 'category',
+  concern: 'concern',
+  description: 'description',
+  suggestedMitigation: 'suggestedMitigation',
+  status: 'status',
+  escalatedTo: 'escalatedTo',
+  escalationStatus: 'escalationStatus',
+  teamLeaderAction: 'teamLeaderAction',
+  managerAction: 'managerAction',
+  hrAction: 'hrAction',
+  clientExperienceAction: 'clientExperienceAction',
+  businessProcessAction: 'businessProcessAction',
+  accountingAction: 'accountingAction',
+  referenceUrl: 'referenceUrl',
+  recordingUrl: 'recordingUrl',
+  escalationReference: 'escalationReference',
+  sheetConcernId: 'sheetConcernId',
+  importKey: 'importKey',
+  reportedById: 'reportedById',
+  resolvedAt: 'resolvedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VAConcernScalarFieldEnum = (typeof VAConcernScalarFieldEnum)[keyof typeof VAConcernScalarFieldEnum]
 
 
 export const SortOrder = {

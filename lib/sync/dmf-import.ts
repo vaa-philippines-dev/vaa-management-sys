@@ -16,7 +16,10 @@ import type {
   ProjectStatus,
   ProjectPriority,
   AssignmentStatus,
+  VAConcernStatus,
+  VAConcernEscalation,
 } from '@/src/generated/prisma/enums'
+import type { Prisma } from '@/src/generated/prisma/client'
 
 // Well-known actor for audit-log entries this import writes, same pattern as
 // lib/sync/va-connections.ts's SYSTEM_ACTOR_EMAIL. isActive: false keeps it
@@ -921,6 +924,209 @@ export async function importProjects(sheetId: string, departmentId: string, appl
   return summary
 }
 
+// ── VA Concerns ─────────────────────────────────────────────────────
+
+// Every STATUS value seen across the seven sheets. Wholesale's "Escalate to
+// …" values carry who it went to; Executive Assistant uses its own words
+// ("On going", "Completed", "EOC" — the VA's contract ended, so the concern
+// is closed). Blank stays Pending: the sheet doesn't say, and a manager
+// closing it in the app is better than the import guessing it was handled.
+const CONCERN_STATUS_MAP: Record<string, { status: VAConcernStatus; escalatedTo?: VAConcernEscalation }> = {
+  pending: { status: 'PENDING' },
+  'under review': { status: 'UNDER_REVIEW' },
+  'on going': { status: 'UNDER_REVIEW' },
+  ongoing: { status: 'UNDER_REVIEW' },
+  'in progress': { status: 'UNDER_REVIEW' },
+  resolved: { status: 'RESOLVED' },
+  completed: { status: 'RESOLVED' },
+  done: { status: 'RESOLVED' },
+  closed: { status: 'RESOLVED' },
+  eoc: { status: 'RESOLVED' },
+  'escalate to om': { status: 'ESCALATED', escalatedTo: 'MANAGER' },
+  'escalate to adm': { status: 'ESCALATED', escalatedTo: 'MANAGER' },
+  'escalate to dm': { status: 'ESCALATED', escalatedTo: 'MANAGER' },
+  'escalate to hr': { status: 'ESCALATED', escalatedTo: 'HR' },
+  'escalate to cs': { status: 'ESCALATED', escalatedTo: 'CLIENT_EXPERIENCE' },
+  'escalate to ce': { status: 'ESCALATED', escalatedTo: 'CLIENT_EXPERIENCE' },
+  'escalate to bpm': { status: 'ESCALATED', escalatedTo: 'BUSINESS_PROCESS' },
+  'escalate to actg': { status: 'ESCALATED', escalatedTo: 'ACCOUNTING' },
+}
+
+const ESCALATION_STATUS_MAP: Record<string, VAConcernStatus> = {
+  pending: 'PENDING',
+  'under review': 'UNDER_REVIEW',
+  resolved: 'RESOLVED',
+}
+
+// The six MITIGATION (ACTION TAKEN) columns share one header, so they're
+// told apart by the group label in the row above each one.
+const ACTION_COLUMN_BY_GROUP: Record<string, keyof ConcernActionFields> = {
+  'team leader': 'teamLeaderAction',
+  adm: 'managerAction',
+  om: 'managerAction',
+  'human resources': 'hrAction',
+  'client experience': 'clientExperienceAction',
+  'business process': 'businessProcessAction',
+  accounting: 'accountingAction',
+}
+
+type ConcernActionFields = {
+  teamLeaderAction: string | null
+  managerAction: string | null
+  hrAction: string | null
+  clientExperienceAction: string | null
+  businessProcessAction: string | null
+  accountingAction: string | null
+}
+
+// Spreadsheet error values some sheets show in CONCERN ID (a broken formula).
+const SHEET_ERROR = /^#(REF|VALUE|N\/A|NAME|DIV\/0)!?$/i
+
+function linkOrNull(raw: string | undefined): string | null {
+  const v = (raw ?? '').trim()
+  return /^https?:\/\//i.test(v) ? v : null
+}
+
+export async function importVaConcerns(
+  sheetId: string,
+  departmentId: string,
+  indexes: DmfIndexes,
+  apply: boolean
+): Promise<ImportSummary> {
+  const summary = emptySummary('VA Concerns')
+
+  let grid: string[][]
+  try {
+    const { rows } = await fetchDmfTabValues(sheetId, 'VA Concerns', 0)
+    grid = rows
+  } catch (e) {
+    summary.warnings.push({ label: 'VA Concerns', reason: `Tab not readable: ${(e as Error).message}` })
+    return summary
+  }
+
+  // The header sits on row 3 or 4 depending on the sheet (some have a title
+  // row above), so find it rather than hardcoding it.
+  const headerIndex = grid.findIndex((r) => r.some((c) => c.trim() === 'CONCERN ID') && r.some((c) => c.trim() === 'NAME OF VA'))
+  if (headerIndex < 1) {
+    summary.warnings.push({ label: 'VA Concerns', reason: 'No CONCERN ID / NAME OF VA header row found' })
+    return summary
+  }
+  const header = grid[headerIndex].map((c) => c.trim().toUpperCase())
+  const groups = grid[headerIndex - 1].map((c) => c.trim().toLowerCase())
+
+  const col = (name: string) => header.indexOf(name)
+  const refCols = header.flatMap((h, i) => (h.startsWith('REFERENCES') ? [i] : []))
+  const escalationStatusCol = col('ESCALATION STATUS')
+  const columns = {
+    id: col('CONCERN ID'),
+    date: col('DATE'),
+    va: col('NAME OF VA'),
+    client: col('NAME OF CLIENT (OPTIONAL)'),
+    concern: col('CONCERN'),
+    type: col('TYPE OF CONCERN'),
+    description: col('DESCRIPTION'),
+    suggested: col('SUGGESTED MITIGATION'),
+    status: col('STATUS'),
+    escalationStatus: escalationStatusCol,
+    recording: header.findIndex((h) => h.startsWith('RECORDING')),
+    // The first REFERENCES belongs to the TL/ADM block, the one after
+    // ESCALATION STATUS to the escalation block.
+    reference: refCols.find((i) => escalationStatusCol < 0 || i < escalationStatusCol) ?? -1,
+    escalationReference: refCols.find((i) => escalationStatusCol >= 0 && i > escalationStatusCol) ?? -1,
+  }
+  const actionColumns: [number, keyof ConcernActionFields][] = header.flatMap((h, i) => {
+    const field = h.startsWith('MITIGATION') ? ACTION_COLUMN_BY_GROUP[groups[i]] : undefined
+    return field ? [[i, field] as [number, keyof ConcernActionFields]] : []
+  })
+
+  const cell = (row: string[], i: number) => (i >= 0 ? (row[i] ?? '').trim() : '')
+  const dataRows = grid.slice(headerIndex + 1).filter((r) => cell(r, columns.va) || cell(r, columns.description))
+  summary.totalRows = dataRows.length
+
+  for (const row of dataRows) {
+    const vaName = cell(row, columns.va)
+    const rawId = cell(row, columns.id)
+    const sheetConcernId = rawId && !SHEET_ERROR.test(rawId) ? rawId : null
+    const label = sheetConcernId || `${cell(row, columns.date) || 'undated'} · ${vaName || '(no VA)'}`
+
+    const va = matchName(indexes.vaByName, vaName)
+    if (va.ambiguous) {
+      summary.ambiguous.push({ label, reason: `VA name "${vaName}" matches more than one VA in this department` })
+      continue
+    }
+    if (!va.id) {
+      summary.unmatched.push({ label, reason: vaName ? `No VA in this department named "${vaName}"` : 'No VA name' })
+      continue
+    }
+    const concernDate = parseDmfDate(cell(row, columns.date))
+    if (!concernDate) {
+      summary.warnings.push({ label, reason: `Unreadable DATE "${cell(row, columns.date)}" — row skipped` })
+      continue
+    }
+    summary.matched++
+
+    const typeText = cell(row, columns.type)
+    const concernText = cell(row, columns.concern)
+    const statusText = cell(row, columns.status).toLowerCase().replace(/\s+/g, ' ')
+    const mapped = statusText ? CONCERN_STATUS_MAP[statusText] : { status: 'PENDING' as VAConcernStatus }
+    if (!mapped) summary.warnings.push({ label, reason: `Unrecognized STATUS "${cell(row, columns.status)}" — set to Pending` })
+    const status = mapped?.status ?? 'PENDING'
+    const escalationText = cell(row, columns.escalationStatus).toLowerCase()
+
+    const clientText = cell(row, columns.client)
+    const client = matchName(indexes.clientByName, clientText)
+
+    const actions: ConcernActionFields = {
+      teamLeaderAction: null,
+      managerAction: null,
+      hrAction: null,
+      clientExperienceAction: null,
+      businessProcessAction: null,
+      accountingAction: null,
+    }
+    for (const [i, field] of actionColumns) actions[field] = cell(row, i) || null
+
+    const description = cell(row, columns.description)
+    const importKey = sheetConcernId
+      ? `dmf:${departmentId}:${sheetConcernId}`
+      : `dmf:${departmentId}:${concernDate.toISOString().slice(0, 10)}:${va.id}:${normalizeName(description || concernText).slice(0, 60)}`
+
+    const data = {
+      departmentId,
+      vaProfileId: va.id,
+      clientId: client.id,
+      clientName: client.id ? null : clientText || null,
+      concernDate,
+      // A row with no TYPE OF CONCERN keeps its CONCERN text as the type
+      // rather than inventing a category for it.
+      category: typeText || concernText || 'Other',
+      concern: typeText ? concernText || null : null,
+      description: description || null,
+      suggestedMitigation: cell(row, columns.suggested) || null,
+      status,
+      escalatedTo: mapped?.escalatedTo ?? null,
+      escalationStatus: ESCALATION_STATUS_MAP[escalationText] ?? (status === 'ESCALATED' ? 'PENDING' : null),
+      ...actions,
+      // The sheet's link cells are often a document title rather than a URL
+      // (the Sheets API doesn't expose rich-text links); keep only real links.
+      referenceUrl: linkOrNull(cell(row, columns.reference)),
+      recordingUrl: linkOrNull(cell(row, columns.recording)),
+      escalationReference: linkOrNull(cell(row, columns.escalationReference)),
+      sheetConcernId,
+      resolvedAt: status === 'RESOLVED' ? concernDate : null,
+    } satisfies Prisma.VAConcernUncheckedCreateInput
+
+    summary.changed++
+    if (apply) {
+      await prisma.vAConcern
+        .upsert({ where: { importKey }, create: { ...data, importKey }, update: data })
+        .catch((e) => summary.warnings.push({ label, reason: `Write failed: ${e.message}` }))
+    }
+  }
+
+  return summary
+}
+
 // ── Runner ─────────────────────────────────────────────────────────
 
 export type DmfImportOptions = {
@@ -941,6 +1147,7 @@ export async function runDmfImport(sheetId: string, departmentId: string, apply:
 
   const availability = await importVaAvailability(sheetId, departmentId, indexes, apply, options.availabilityTab)
   const projects = await importProjects(sheetId, departmentId, apply)
+  const concerns = await importVaConcerns(sheetId, departmentId, indexes, apply)
 
-  return [preparation, performance, availability, projects]
+  return [preparation, performance, availability, projects, concerns]
 }

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Bell, Briefcase, Clock, MessageSquare, Reply, MoreHorizontal, Circle, CircleDot, UserMinus, CalendarCheck, CalendarX, CalendarClock } from 'lucide-react'
+import { Bell, Briefcase, Clock, MessageSquare, Reply, MoreHorizontal, Circle, CircleDot, UserMinus, CalendarCheck, CalendarX, CalendarClock, LifeBuoy, MessageSquareWarning } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
   DropdownMenu,
@@ -29,6 +29,8 @@ type Notification = {
     | 'LEAVE_APPROVAL_NEEDED'
     | 'LEAVE_REQUEST_DECIDED'
     | 'AVAILABILITY_REVIEW_DUE'
+    | 'SUPPORT_REQUEST'
+    | 'VA_CONCERN'
   title: string
   message: string
   read: boolean
@@ -50,6 +52,8 @@ const TYPE_ICON: Record<Notification['type'], React.ComponentType<{ className?: 
   LEAVE_APPROVAL_NEEDED: CalendarCheck,
   LEAVE_REQUEST_DECIDED: CalendarX,
   AVAILABILITY_REVIEW_DUE: CalendarClock,
+  SUPPORT_REQUEST: LifeBuoy,
+  VA_CONCERN: MessageSquareWarning,
 }
 
 export function NotificationBell() {
@@ -122,6 +126,10 @@ export function NotificationBell() {
         router.push('/leave')
       } else if (n.type === 'AVAILABILITY_REVIEW_DUE') {
         router.push('/va-availability?review=due')
+      } else if (n.type === 'SUPPORT_REQUEST' && n.entityId) {
+        router.push(`/tickets/${n.entityId}`)
+      } else if (n.type === 'VA_CONCERN' && n.entityId) {
+        router.push(`/va-concerns?concern=${n.entityId}`)
       }
     },
     [router]

@@ -442,7 +442,8 @@ export const ModelName = {
   Project: 'Project',
   AssignmentPreparation: 'AssignmentPreparation',
   AssignmentPreparationBuffer: 'AssignmentPreparationBuffer',
-  AssignmentClientFeedback: 'AssignmentClientFeedback'
+  AssignmentClientFeedback: 'AssignmentClientFeedback',
+  VAConcern: 'VAConcern'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -458,7 +459,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "position" | "departmentMembership" | "user" | "staffRecord" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vADepartmentAvailability" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveApprovalRule" | "leaveApprovalStep" | "leaveRequest" | "leaveApprovalAction" | "employeeIdCounter" | "vAOnboardingInvite" | "client" | "assignment" | "assignmentStatusEvent" | "assignmentKpiCheck" | "workLog" | "ticket" | "ticketConversation" | "terminationDocument" | "termination" | "resignationDiscussion" | "replacementRequest" | "exitClearanceApproval" | "complianceReview" | "finalPayout" | "exitSurveyInvite" | "exitSurveyResponse" | "exitClearance" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "customer" | "account" | "notification" | "sidebarFavorite" | "team" | "teamMembership" | "clientPipeline" | "agentSuggestion" | "agentRun" | "project" | "assignmentPreparation" | "assignmentPreparationBuffer" | "assignmentClientFeedback"
+    modelProps: "department" | "position" | "departmentMembership" | "user" | "staffRecord" | "userProfile" | "employmentRecord" | "roleAssignment" | "vAProfile" | "vADepartmentAvailability" | "vAHistory" | "skill" | "departmentSkill" | "vASkill" | "vADocument" | "leaveApprovalRule" | "leaveApprovalStep" | "leaveRequest" | "leaveApprovalAction" | "employeeIdCounter" | "vAOnboardingInvite" | "client" | "assignment" | "assignmentStatusEvent" | "assignmentKpiCheck" | "workLog" | "ticket" | "ticketConversation" | "terminationDocument" | "termination" | "resignationDiscussion" | "replacementRequest" | "exitClearanceApproval" | "complianceReview" | "finalPayout" | "exitSurveyInvite" | "exitSurveyResponse" | "exitClearance" | "channel" | "channelParticipant" | "message" | "messageMention" | "channelRead" | "auditLog" | "externalSyncMapping" | "vAConnectionRecord" | "customer" | "account" | "notification" | "sidebarFavorite" | "team" | "teamMembership" | "clientPipeline" | "agentSuggestion" | "agentRun" | "project" | "assignmentPreparation" | "assignmentPreparationBuffer" | "assignmentClientFeedback" | "vAConcern"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -4828,6 +4829,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    VAConcern: {
+      payload: Prisma.$VAConcernPayload<ExtArgs>
+      fields: Prisma.VAConcernFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VAConcernFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAConcernPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VAConcernFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAConcernPayload>
+        }
+        findFirst: {
+          args: Prisma.VAConcernFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAConcernPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VAConcernFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAConcernPayload>
+        }
+        findMany: {
+          args: Prisma.VAConcernFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAConcernPayload>[]
+        }
+        create: {
+          args: Prisma.VAConcernCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAConcernPayload>
+        }
+        createMany: {
+          args: Prisma.VAConcernCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VAConcernCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAConcernPayload>[]
+        }
+        delete: {
+          args: Prisma.VAConcernDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAConcernPayload>
+        }
+        update: {
+          args: Prisma.VAConcernUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAConcernPayload>
+        }
+        deleteMany: {
+          args: Prisma.VAConcernDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VAConcernUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VAConcernUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAConcernPayload>[]
+        }
+        upsert: {
+          args: Prisma.VAConcernUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VAConcernPayload>
+        }
+        aggregate: {
+          args: Prisma.VAConcernAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVAConcern>
+        }
+        groupBy: {
+          args: Prisma.VAConcernGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VAConcernGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VAConcernCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VAConcernCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -5996,6 +6071,41 @@ export const AssignmentClientFeedbackScalarFieldEnum = {
 export type AssignmentClientFeedbackScalarFieldEnum = (typeof AssignmentClientFeedbackScalarFieldEnum)[keyof typeof AssignmentClientFeedbackScalarFieldEnum]
 
 
+export const VAConcernScalarFieldEnum = {
+  id: 'id',
+  number: 'number',
+  departmentId: 'departmentId',
+  vaProfileId: 'vaProfileId',
+  clientId: 'clientId',
+  clientName: 'clientName',
+  concernDate: 'concernDate',
+  category: 'category',
+  concern: 'concern',
+  description: 'description',
+  suggestedMitigation: 'suggestedMitigation',
+  status: 'status',
+  escalatedTo: 'escalatedTo',
+  escalationStatus: 'escalationStatus',
+  teamLeaderAction: 'teamLeaderAction',
+  managerAction: 'managerAction',
+  hrAction: 'hrAction',
+  clientExperienceAction: 'clientExperienceAction',
+  businessProcessAction: 'businessProcessAction',
+  accountingAction: 'accountingAction',
+  referenceUrl: 'referenceUrl',
+  recordingUrl: 'recordingUrl',
+  escalationReference: 'escalationReference',
+  sheetConcernId: 'sheetConcernId',
+  importKey: 'importKey',
+  reportedById: 'reportedById',
+  resolvedAt: 'resolvedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VAConcernScalarFieldEnum = (typeof VAConcernScalarFieldEnum)[keyof typeof VAConcernScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -6912,6 +7022,34 @@ export type ListEnumClientResponseStatusFieldRefInput<$PrismaModel> = FieldRefIn
 
 
 /**
+ * Reference to a field of type 'VAConcernStatus'
+ */
+export type EnumVAConcernStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VAConcernStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'VAConcernStatus[]'
+ */
+export type ListEnumVAConcernStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VAConcernStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'VAConcernEscalation'
+ */
+export type EnumVAConcernEscalationFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VAConcernEscalation'>
+    
+
+
+/**
+ * Reference to a field of type 'VAConcernEscalation[]'
+ */
+export type ListEnumVAConcernEscalationFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VAConcernEscalation[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -7093,6 +7231,7 @@ export type GlobalOmitConfig = {
   assignmentPreparation?: Prisma.AssignmentPreparationOmit
   assignmentPreparationBuffer?: Prisma.AssignmentPreparationBufferOmit
   assignmentClientFeedback?: Prisma.AssignmentClientFeedbackOmit
+  vAConcern?: Prisma.VAConcernOmit
 }
 
 /* Types for Logging */

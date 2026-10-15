@@ -297,6 +297,8 @@ enum NotificationType {
   LEAVE_APPROVAL_NEEDED
   LEAVE_REQUEST_DECIDED
   AVAILABILITY_REVIEW_DUE
+  SUPPORT_REQUEST
+  VA_CONCERN
 }
 
 enum AuditAction {
@@ -394,6 +396,7 @@ model Department {
   projects          Project[]              @relation("DepartmentProjects")
   vaAvailabilities  VADepartmentAvailability[]
   vasWithExpertiseGroup VAProfile[]        @relation("VAExpertiseGroup")
+  vaConcerns        VAConcern[]            @relation("DepartmentVAConcerns")
 
   @@unique([name, parentId])
   @@unique([acronym, parentId])
@@ -501,6 +504,7 @@ model User {
   tempLedTeams2                Team[]                 @relation("TeamTempLeader2")
   teamMemberships              TeamMembership[]       @relation("TeamMember")
   tmfAvailabilityUpdates       VADepartmentAvailability[] @relation("TmfAvailabilityUpdatedBy")
+  vaConcernsReported           VAConcern[]                @relation("VAConcernReporter")
   onboardingInvite             VAOnboardingInvite?
   onboardingInvitesCreated     VAOnboardingInvite[]   @relation("OnboardingInviteCreator")
   terminationsInitiated        Termination[]          @relation("TerminationInitiator")
@@ -750,6 +754,8 @@ model VAProfile {
   preparationsReplacing  AssignmentPreparation[] @relation("PreparationReplacementFor")
   preparationsReplacedBy AssignmentPreparation[] @relation("PreparationReplacedBy")
   preparationBuffers     AssignmentPreparationBuffer[] @relation("PreparationBuffer")
+
+  concerns VAConcern[]
 
   @@index([availabilityStatus])
   @@index([positionSkillId])
@@ -1047,6 +1053,7 @@ model Client {
 
   pipeline         ClientPipeline?
   agentSuggestions AgentSuggestion[]
+  vaConcerns       VAConcern[]
 
   @@index([departmentId])
   @@index([accountId])
@@ -2251,4 +2258,90 @@ model AssignmentClientFeedback {
   @@unique([assignmentId, window])
   @@index([responseStatus])
   @@map("assignment_client_feedback")
+}
+
+// ──────────────────────────────────────────────────────────────────
+// VA Concerns — the DMF sheet's "VA Concerns" tab
+// ──────────────────────────────────────────────────────────────────
+// A concern about one VA, raised (usually by their Team Leader) and worked
+// through the hand-offs the sheet has columns for: the Team Leader's action,
+// the ADM/OM's, then an escalation to HR, Client Experience, Business
+// Process or Accounting, each with its own action column. Department-owned
+// like every DMF record; lib/va-concerns.ts decides who sees and edits what.
+
+enum VAConcernStatus {
+  PENDING
+  UNDER_REVIEW
+  ESCALATED
+  RESOLVED
+}
+
+// Who a concern was escalated to — the sheet's "Escalate to …" statuses.
+// MANAGER is "Escalate to OM/ADM": up from the Team Leader to the
+// department's Dept/Ops Manager.
+enum VAConcernEscalation {
+  MANAGER
+  HR
+  CLIENT_EXPERIENCE
+  BUSINESS_PROCESS
+  ACCOUNTING
+}
+
+model VAConcern {
+  id     String @id @default(cuid())
+  // Shown as VC-0001. The sheet's own CONCERN ID (only Wholesale kept one)
+  // is preserved in sheetConcernId.
+  number Int    @unique @default(autoincrement())
+
+  departmentId String     @map("department_id")
+  department   Department @relation("DepartmentVAConcerns", fields: [departmentId], references: [id], onDelete: Cascade)
+  vaProfileId  String     @map("va_profile_id")
+  vaProfile    VAProfile  @relation(fields: [vaProfileId], references: [id], onDelete: Cascade)
+  // NAME OF CLIENT (OPTIONAL). clientName holds sheet text that matched no
+  // client in the department, rather than guessing one.
+  clientId     String?    @map("client_id")
+  client       Client?    @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  clientName   String?    @map("client_name")
+
+  concernDate         DateTime @map("concern_date")
+  // TYPE OF CONCERN (e.g. "Performance & Productivity") and CONCERN (e.g.
+  // "Missed deadlines"). Free text, not enums: the seven sheets use two
+  // different lists, and imported rows keep whatever they said.
+  category            String
+  concern             String?
+  description         String?
+  suggestedMitigation String?  @map("suggested_mitigation")
+
+  status           VAConcernStatus      @default(PENDING)
+  escalatedTo      VAConcernEscalation? @map("escalated_to")
+  // ESCALATION STATUS: how far the team it was escalated to has got.
+  escalationStatus VAConcernStatus?     @map("escalation_status")
+
+  // MITIGATION (ACTION TAKEN), one per hand-off.
+  teamLeaderAction       String? @map("team_leader_action")
+  managerAction          String? @map("manager_action")
+  hrAction               String? @map("hr_action")
+  clientExperienceAction String? @map("client_experience_action")
+  businessProcessAction  String? @map("business_process_action")
+  accountingAction       String? @map("accounting_action")
+
+  referenceUrl        String? @map("reference_url")
+  recordingUrl        String? @map("recording_url")
+  escalationReference String? @map("escalation_reference")
+
+  sheetConcernId String? @map("sheet_concern_id")
+  // Set only on rows created by the DMF import, so re-running it updates
+  // instead of duplicating.
+  importKey      String? @unique @map("import_key")
+
+  reportedById String? @map("reported_by_id")
+  reportedBy   User?   @relation("VAConcernReporter", fields: [reportedById], references: [id], onDelete: SetNull)
+
+  resolvedAt DateTime? @map("resolved_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+
+  @@index([departmentId, status])
+  @@index([vaProfileId])
+  @@map("va_concerns")
 }

@@ -1,5 +1,7 @@
 import { ThemeToggle } from '@/components/layout/ThemeToggle'
 import { LoginForm } from '@/components/auth/LoginForm'
+import { prisma } from '@/lib/prisma'
+import { LEVEL_RECORD_NAMES } from '@/lib/departments'
 
 export default async function LoginPage({
   searchParams,
@@ -7,6 +9,15 @@ export default async function LoginPage({
   searchParams: Promise<{ next?: string }>
 }) {
   const { next } = await searchParams
+  // For the "Request an account" form. Names only — nothing sensitive — and
+  // the same exclusion of the three Level records every department picker uses.
+  const departments = await prisma.department
+    .findMany({
+      where: { status: 'ACTIVE', parentId: { not: null }, name: { notIn: LEVEL_RECORD_NAMES } },
+      select: { name: true },
+      orderBy: { name: 'asc' },
+    })
+    .catch(() => [])
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 py-12">
       <div className="absolute right-4 top-4 z-20 sm:right-6 sm:top-6">
@@ -33,7 +44,11 @@ export default async function LoginPage({
         />
       </div>
 
-      <LoginForm className="animate-in fade-in-0 zoom-in-95 duration-300" next={next} />
+      <LoginForm
+        className="animate-in fade-in-0 zoom-in-95 duration-300"
+        next={next}
+        departments={departments.map((d) => d.name)}
+      />
     </div>
   )
 }

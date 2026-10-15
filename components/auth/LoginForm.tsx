@@ -15,7 +15,15 @@ const errorMessages: Record<string, string> = {
   account_disabled: "Your account has been disabled. Please contact your administrator.",
 }
 
-export function LoginForm({ className, next }: { className?: string; next?: string }) {
+export function LoginForm({
+  className,
+  next,
+  departments = [],
+}: {
+  className?: string
+  next?: string
+  departments?: string[]
+}) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [supportOpen, setSupportOpen] = useState(false)
@@ -167,7 +175,7 @@ export function LoginForm({ className, next }: { className?: string; next?: stri
       </div>
 
       <SupportRequestModal open={supportOpen} onOpenChange={setSupportOpen} />
-      <RequestAccountModal open={requestOpen} onOpenChange={setRequestOpen} />
+      <RequestAccountModal open={requestOpen} onOpenChange={setRequestOpen} departments={departments} />
     </div>
   )
 }

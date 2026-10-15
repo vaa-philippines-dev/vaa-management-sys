@@ -309,6 +309,7 @@ export type UserWhereInput = {
   tempLedTeams2?: Prisma.TeamListRelationFilter
   teamMemberships?: Prisma.TeamMembershipListRelationFilter
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityListRelationFilter
+  vaConcernsReported?: Prisma.VAConcernListRelationFilter
   onboardingInvite?: Prisma.XOR<Prisma.VAOnboardingInviteNullableScalarRelationFilter, Prisma.VAOnboardingInviteWhereInput> | null
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteListRelationFilter
   terminationsInitiated?: Prisma.TerminationListRelationFilter
@@ -380,6 +381,7 @@ export type UserOrderByWithRelationInput = {
   tempLedTeams2?: Prisma.TeamOrderByRelationAggregateInput
   teamMemberships?: Prisma.TeamMembershipOrderByRelationAggregateInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityOrderByRelationAggregateInput
+  vaConcernsReported?: Prisma.VAConcernOrderByRelationAggregateInput
   onboardingInvite?: Prisma.VAOnboardingInviteOrderByWithRelationInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteOrderByRelationAggregateInput
   terminationsInitiated?: Prisma.TerminationOrderByRelationAggregateInput
@@ -454,6 +456,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   tempLedTeams2?: Prisma.TeamListRelationFilter
   teamMemberships?: Prisma.TeamMembershipListRelationFilter
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityListRelationFilter
+  vaConcernsReported?: Prisma.VAConcernListRelationFilter
   onboardingInvite?: Prisma.XOR<Prisma.VAOnboardingInviteNullableScalarRelationFilter, Prisma.VAOnboardingInviteWhereInput> | null
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteListRelationFilter
   terminationsInitiated?: Prisma.TerminationListRelationFilter
@@ -571,6 +574,7 @@ export type UserCreateInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -642,6 +646,7 @@ export type UserUncheckedCreateInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -713,6 +718,7 @@ export type UserUpdateInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -784,6 +790,7 @@ export type UserUncheckedUpdateInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -1716,6 +1723,22 @@ export type UserUpdateOneWithoutPreparationsShadowTrainedNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPreparationsShadowTrainedInput, Prisma.UserUpdateWithoutPreparationsShadowTrainedInput>, Prisma.UserUncheckedUpdateWithoutPreparationsShadowTrainedInput>
 }
 
+export type UserCreateNestedOneWithoutVaConcernsReportedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVaConcernsReportedInput, Prisma.UserUncheckedCreateWithoutVaConcernsReportedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVaConcernsReportedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutVaConcernsReportedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVaConcernsReportedInput, Prisma.UserUncheckedCreateWithoutVaConcernsReportedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVaConcernsReportedInput
+  upsert?: Prisma.UserUpsertWithoutVaConcernsReportedInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVaConcernsReportedInput, Prisma.UserUpdateWithoutVaConcernsReportedInput>, Prisma.UserUncheckedUpdateWithoutVaConcernsReportedInput>
+}
+
 export type UserCreateWithoutDepartmentHeadInput = {
   id?: string
   email: string
@@ -1764,6 +1787,7 @@ export type UserCreateWithoutDepartmentHeadInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -1834,6 +1858,7 @@ export type UserUncheckedCreateWithoutDepartmentHeadInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -1920,6 +1945,7 @@ export type UserUpdateWithoutDepartmentHeadInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -1990,6 +2016,7 @@ export type UserUncheckedUpdateWithoutDepartmentHeadInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -2060,6 +2087,7 @@ export type UserCreateWithoutMembershipsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -2130,6 +2158,7 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -2216,6 +2245,7 @@ export type UserUpdateWithoutMembershipsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -2286,6 +2316,7 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -2357,6 +2388,7 @@ export type UserCreateWithoutStaffRecordsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -2427,6 +2459,7 @@ export type UserUncheckedCreateWithoutStaffRecordsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -2513,6 +2546,7 @@ export type UserUpdateWithoutStaffRecordsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -2583,6 +2617,7 @@ export type UserUncheckedUpdateWithoutStaffRecordsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -2652,6 +2687,7 @@ export type UserCreateWithoutProfileInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -2722,6 +2758,7 @@ export type UserUncheckedCreateWithoutProfileInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -2808,6 +2845,7 @@ export type UserUpdateWithoutProfileInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -2878,6 +2916,7 @@ export type UserUncheckedUpdateWithoutProfileInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -2948,6 +2987,7 @@ export type UserCreateWithoutEmploymentRecordsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -3018,6 +3058,7 @@ export type UserUncheckedCreateWithoutEmploymentRecordsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -3093,6 +3134,7 @@ export type UserCreateWithoutEmploymentRecordsInitiatedInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -3163,6 +3205,7 @@ export type UserUncheckedCreateWithoutEmploymentRecordsInitiatedInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -3249,6 +3292,7 @@ export type UserUpdateWithoutEmploymentRecordsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -3319,6 +3363,7 @@ export type UserUncheckedUpdateWithoutEmploymentRecordsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -3400,6 +3445,7 @@ export type UserUpdateWithoutEmploymentRecordsInitiatedInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -3470,6 +3516,7 @@ export type UserUncheckedUpdateWithoutEmploymentRecordsInitiatedInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -3540,6 +3587,7 @@ export type UserCreateWithoutRoleAssignmentsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -3610,6 +3658,7 @@ export type UserUncheckedCreateWithoutRoleAssignmentsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -3685,6 +3734,7 @@ export type UserCreateWithoutGrantedRoleAssignmentsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -3755,6 +3805,7 @@ export type UserUncheckedCreateWithoutGrantedRoleAssignmentsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -3841,6 +3892,7 @@ export type UserUpdateWithoutRoleAssignmentsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -3911,6 +3963,7 @@ export type UserUncheckedUpdateWithoutRoleAssignmentsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -3992,6 +4045,7 @@ export type UserUpdateWithoutGrantedRoleAssignmentsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -4062,6 +4116,7 @@ export type UserUncheckedUpdateWithoutGrantedRoleAssignmentsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -4132,6 +4187,7 @@ export type UserCreateWithoutVaProfileInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -4202,6 +4258,7 @@ export type UserUncheckedCreateWithoutVaProfileInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -4288,6 +4345,7 @@ export type UserUpdateWithoutVaProfileInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -4358,6 +4416,7 @@ export type UserUncheckedUpdateWithoutVaProfileInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -4428,6 +4487,7 @@ export type UserCreateWithoutTmfAvailabilityUpdatesInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -4498,6 +4558,7 @@ export type UserUncheckedCreateWithoutTmfAvailabilityUpdatesInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -4584,6 +4645,7 @@ export type UserUpdateWithoutTmfAvailabilityUpdatesInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -4654,6 +4716,7 @@ export type UserUncheckedUpdateWithoutTmfAvailabilityUpdatesInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -4724,6 +4787,7 @@ export type UserCreateWithoutVaHistoryEventsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -4794,6 +4858,7 @@ export type UserUncheckedCreateWithoutVaHistoryEventsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -4869,6 +4934,7 @@ export type UserCreateWithoutVaHistoryChangesInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -4939,6 +5005,7 @@ export type UserUncheckedCreateWithoutVaHistoryChangesInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -5025,6 +5092,7 @@ export type UserUpdateWithoutVaHistoryEventsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -5095,6 +5163,7 @@ export type UserUncheckedUpdateWithoutVaHistoryEventsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -5176,6 +5245,7 @@ export type UserUpdateWithoutVaHistoryChangesInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -5246,6 +5316,7 @@ export type UserUncheckedUpdateWithoutVaHistoryChangesInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -5316,6 +5387,7 @@ export type UserCreateWithoutUploadedDocumentsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -5386,6 +5458,7 @@ export type UserUncheckedCreateWithoutUploadedDocumentsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -5472,6 +5545,7 @@ export type UserUpdateWithoutUploadedDocumentsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -5542,6 +5616,7 @@ export type UserUncheckedUpdateWithoutUploadedDocumentsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -5612,6 +5687,7 @@ export type UserCreateWithoutLeaveApprovalStepAssignmentsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -5682,6 +5758,7 @@ export type UserUncheckedCreateWithoutLeaveApprovalStepAssignmentsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -5768,6 +5845,7 @@ export type UserUpdateWithoutLeaveApprovalStepAssignmentsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -5838,6 +5916,7 @@ export type UserUncheckedUpdateWithoutLeaveApprovalStepAssignmentsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -5908,6 +5987,7 @@ export type UserCreateWithoutLeaveRequestsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -5978,6 +6058,7 @@ export type UserUncheckedCreateWithoutLeaveRequestsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -6064,6 +6145,7 @@ export type UserUpdateWithoutLeaveRequestsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -6134,6 +6216,7 @@ export type UserUncheckedUpdateWithoutLeaveRequestsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -6204,6 +6287,7 @@ export type UserCreateWithoutLeaveApprovalActionsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -6274,6 +6358,7 @@ export type UserUncheckedCreateWithoutLeaveApprovalActionsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -6360,6 +6445,7 @@ export type UserUpdateWithoutLeaveApprovalActionsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -6430,6 +6516,7 @@ export type UserUncheckedUpdateWithoutLeaveApprovalActionsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -6501,6 +6588,7 @@ export type UserCreateWithoutOnboardingInviteInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
   terminationDocumentsAdded?: Prisma.TerminationDocumentCreateNestedManyWithoutAddedByInput
@@ -6571,6 +6659,7 @@ export type UserUncheckedCreateWithoutOnboardingInviteInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
   terminationDocumentsAdded?: Prisma.TerminationDocumentUncheckedCreateNestedManyWithoutAddedByInput
@@ -6646,6 +6735,7 @@ export type UserCreateWithoutOnboardingInvitesCreatedInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
   terminationDocumentsAdded?: Prisma.TerminationDocumentCreateNestedManyWithoutAddedByInput
@@ -6716,6 +6806,7 @@ export type UserUncheckedCreateWithoutOnboardingInvitesCreatedInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
   terminationDocumentsAdded?: Prisma.TerminationDocumentUncheckedCreateNestedManyWithoutAddedByInput
@@ -6802,6 +6893,7 @@ export type UserUpdateWithoutOnboardingInviteInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
   terminationDocumentsAdded?: Prisma.TerminationDocumentUpdateManyWithoutAddedByNestedInput
@@ -6872,6 +6964,7 @@ export type UserUncheckedUpdateWithoutOnboardingInviteInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
   terminationDocumentsAdded?: Prisma.TerminationDocumentUncheckedUpdateManyWithoutAddedByNestedInput
@@ -6953,6 +7046,7 @@ export type UserUpdateWithoutOnboardingInvitesCreatedInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
   terminationDocumentsAdded?: Prisma.TerminationDocumentUpdateManyWithoutAddedByNestedInput
@@ -7023,6 +7117,7 @@ export type UserUncheckedUpdateWithoutOnboardingInvitesCreatedInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
   terminationDocumentsAdded?: Prisma.TerminationDocumentUncheckedUpdateManyWithoutAddedByNestedInput
@@ -7092,6 +7187,7 @@ export type UserCreateWithoutManagedClientsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -7162,6 +7258,7 @@ export type UserUncheckedCreateWithoutManagedClientsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -7248,6 +7345,7 @@ export type UserUpdateWithoutManagedClientsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -7318,6 +7416,7 @@ export type UserUncheckedUpdateWithoutManagedClientsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -7389,6 +7488,7 @@ export type UserCreateWithoutAssignmentStatusEventsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -7459,6 +7559,7 @@ export type UserUncheckedCreateWithoutAssignmentStatusEventsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -7545,6 +7646,7 @@ export type UserUpdateWithoutAssignmentStatusEventsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -7615,6 +7717,7 @@ export type UserUncheckedUpdateWithoutAssignmentStatusEventsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -7685,6 +7788,7 @@ export type UserCreateWithoutAssignmentKpiChecksCompletedInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -7755,6 +7859,7 @@ export type UserUncheckedCreateWithoutAssignmentKpiChecksCompletedInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -7841,6 +7946,7 @@ export type UserUpdateWithoutAssignmentKpiChecksCompletedInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -7911,6 +8017,7 @@ export type UserUncheckedUpdateWithoutAssignmentKpiChecksCompletedInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -7980,6 +8087,7 @@ export type UserCreateWithoutCreatedTicketsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -8050,6 +8158,7 @@ export type UserUncheckedCreateWithoutCreatedTicketsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -8125,6 +8234,7 @@ export type UserCreateWithoutAssignedTicketsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -8195,6 +8305,7 @@ export type UserUncheckedCreateWithoutAssignedTicketsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -8281,6 +8392,7 @@ export type UserUpdateWithoutCreatedTicketsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -8351,6 +8463,7 @@ export type UserUncheckedUpdateWithoutCreatedTicketsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -8432,6 +8545,7 @@ export type UserUpdateWithoutAssignedTicketsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -8502,6 +8616,7 @@ export type UserUncheckedUpdateWithoutAssignedTicketsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -8572,6 +8687,7 @@ export type UserCreateWithoutTicketConversationsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -8642,6 +8758,7 @@ export type UserUncheckedCreateWithoutTicketConversationsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -8728,6 +8845,7 @@ export type UserUpdateWithoutTicketConversationsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -8798,6 +8916,7 @@ export type UserUncheckedUpdateWithoutTicketConversationsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -8869,6 +8988,7 @@ export type UserCreateWithoutTerminationDocumentsAddedInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -8939,6 +9059,7 @@ export type UserUncheckedCreateWithoutTerminationDocumentsAddedInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -9025,6 +9146,7 @@ export type UserUpdateWithoutTerminationDocumentsAddedInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -9095,6 +9217,7 @@ export type UserUncheckedUpdateWithoutTerminationDocumentsAddedInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -9165,6 +9288,7 @@ export type UserCreateWithoutTerminationsInitiatedInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationDocumentsAdded?: Prisma.TerminationDocumentCreateNestedManyWithoutAddedByInput
@@ -9235,6 +9359,7 @@ export type UserUncheckedCreateWithoutTerminationsInitiatedInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationDocumentsAdded?: Prisma.TerminationDocumentUncheckedCreateNestedManyWithoutAddedByInput
@@ -9310,6 +9435,7 @@ export type UserCreateWithoutResignationTrainingNotesInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -9380,6 +9506,7 @@ export type UserUncheckedCreateWithoutResignationTrainingNotesInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -9466,6 +9593,7 @@ export type UserUpdateWithoutTerminationsInitiatedInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationDocumentsAdded?: Prisma.TerminationDocumentUpdateManyWithoutAddedByNestedInput
@@ -9536,6 +9664,7 @@ export type UserUncheckedUpdateWithoutTerminationsInitiatedInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationDocumentsAdded?: Prisma.TerminationDocumentUncheckedUpdateManyWithoutAddedByNestedInput
@@ -9617,6 +9746,7 @@ export type UserUpdateWithoutResignationTrainingNotesInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -9687,6 +9817,7 @@ export type UserUncheckedUpdateWithoutResignationTrainingNotesInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -9757,6 +9888,7 @@ export type UserCreateWithoutResignationLwdOverridesInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -9827,6 +9959,7 @@ export type UserUncheckedCreateWithoutResignationLwdOverridesInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -9913,6 +10046,7 @@ export type UserUpdateWithoutResignationLwdOverridesInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -9983,6 +10117,7 @@ export type UserUncheckedUpdateWithoutResignationLwdOverridesInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -10053,6 +10188,7 @@ export type UserCreateWithoutReplacementCandidaciesInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -10123,6 +10259,7 @@ export type UserUncheckedCreateWithoutReplacementCandidaciesInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -10198,6 +10335,7 @@ export type UserCreateWithoutReplacementApprovalsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -10268,6 +10406,7 @@ export type UserUncheckedCreateWithoutReplacementApprovalsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -10354,6 +10493,7 @@ export type UserUpdateWithoutReplacementCandidaciesInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -10424,6 +10564,7 @@ export type UserUncheckedUpdateWithoutReplacementCandidaciesInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -10505,6 +10646,7 @@ export type UserUpdateWithoutReplacementApprovalsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -10575,6 +10717,7 @@ export type UserUncheckedUpdateWithoutReplacementApprovalsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -10645,6 +10788,7 @@ export type UserCreateWithoutExitClearanceApprovalsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -10715,6 +10859,7 @@ export type UserUncheckedCreateWithoutExitClearanceApprovalsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -10801,6 +10946,7 @@ export type UserUpdateWithoutExitClearanceApprovalsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -10871,6 +11017,7 @@ export type UserUncheckedUpdateWithoutExitClearanceApprovalsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -10941,6 +11088,7 @@ export type UserCreateWithoutComplianceReviewsPerformedInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -11011,6 +11159,7 @@ export type UserUncheckedCreateWithoutComplianceReviewsPerformedInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -11097,6 +11246,7 @@ export type UserUpdateWithoutComplianceReviewsPerformedInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -11167,6 +11317,7 @@ export type UserUncheckedUpdateWithoutComplianceReviewsPerformedInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -11237,6 +11388,7 @@ export type UserCreateWithoutFinalPayoutsEndorsedInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -11307,6 +11459,7 @@ export type UserUncheckedCreateWithoutFinalPayoutsEndorsedInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -11393,6 +11546,7 @@ export type UserUpdateWithoutFinalPayoutsEndorsedInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -11463,6 +11617,7 @@ export type UserUncheckedUpdateWithoutFinalPayoutsEndorsedInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -11533,6 +11688,7 @@ export type UserCreateWithoutClearancesClearedInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -11603,6 +11759,7 @@ export type UserUncheckedCreateWithoutClearancesClearedInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -11689,6 +11846,7 @@ export type UserUpdateWithoutClearancesClearedInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -11759,6 +11917,7 @@ export type UserUncheckedUpdateWithoutClearancesClearedInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -11828,6 +11987,7 @@ export type UserCreateWithoutChannelParticipantsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -11898,6 +12058,7 @@ export type UserUncheckedCreateWithoutChannelParticipantsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -11984,6 +12145,7 @@ export type UserUpdateWithoutChannelParticipantsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -12054,6 +12216,7 @@ export type UserUncheckedUpdateWithoutChannelParticipantsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -12124,6 +12287,7 @@ export type UserCreateWithoutMessagesInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -12194,6 +12358,7 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -12269,6 +12434,7 @@ export type UserCreateWithoutPinnedMessagesInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -12339,6 +12505,7 @@ export type UserUncheckedCreateWithoutPinnedMessagesInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -12425,6 +12592,7 @@ export type UserUpdateWithoutMessagesInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -12495,6 +12663,7 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -12576,6 +12745,7 @@ export type UserUpdateWithoutPinnedMessagesInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -12646,6 +12816,7 @@ export type UserUncheckedUpdateWithoutPinnedMessagesInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -12716,6 +12887,7 @@ export type UserCreateWithoutMessageMentionsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -12786,6 +12958,7 @@ export type UserUncheckedCreateWithoutMessageMentionsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -12872,6 +13045,7 @@ export type UserUpdateWithoutMessageMentionsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -12942,6 +13116,7 @@ export type UserUncheckedUpdateWithoutMessageMentionsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -13012,6 +13187,7 @@ export type UserCreateWithoutChannelReadsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -13082,6 +13258,7 @@ export type UserUncheckedCreateWithoutChannelReadsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -13168,6 +13345,7 @@ export type UserUpdateWithoutChannelReadsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -13238,6 +13416,7 @@ export type UserUncheckedUpdateWithoutChannelReadsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -13308,6 +13487,7 @@ export type UserCreateWithoutAuditLogsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -13378,6 +13558,7 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -13464,6 +13645,7 @@ export type UserUpdateWithoutAuditLogsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -13534,6 +13716,7 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -13604,6 +13787,7 @@ export type UserCreateWithoutNotificationsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -13674,6 +13858,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -13760,6 +13945,7 @@ export type UserUpdateWithoutNotificationsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -13830,6 +14016,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -13900,6 +14087,7 @@ export type UserCreateWithoutSidebarFavoritesInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -13970,6 +14158,7 @@ export type UserUncheckedCreateWithoutSidebarFavoritesInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -14056,6 +14245,7 @@ export type UserUpdateWithoutSidebarFavoritesInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -14126,6 +14316,7 @@ export type UserUncheckedUpdateWithoutSidebarFavoritesInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -14196,6 +14387,7 @@ export type UserCreateWithoutLedTeamsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -14266,6 +14458,7 @@ export type UserUncheckedCreateWithoutLedTeamsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -14341,6 +14534,7 @@ export type UserCreateWithoutTempLedTeams1Input = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -14411,6 +14605,7 @@ export type UserUncheckedCreateWithoutTempLedTeams1Input = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -14486,6 +14681,7 @@ export type UserCreateWithoutTempLedTeams2Input = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -14556,6 +14752,7 @@ export type UserUncheckedCreateWithoutTempLedTeams2Input = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -14642,6 +14839,7 @@ export type UserUpdateWithoutLedTeamsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -14712,6 +14910,7 @@ export type UserUncheckedUpdateWithoutLedTeamsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -14793,6 +14992,7 @@ export type UserUpdateWithoutTempLedTeams1Input = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -14863,6 +15063,7 @@ export type UserUncheckedUpdateWithoutTempLedTeams1Input = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -14944,6 +15145,7 @@ export type UserUpdateWithoutTempLedTeams2Input = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -15014,6 +15216,7 @@ export type UserUncheckedUpdateWithoutTempLedTeams2Input = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -15084,6 +15287,7 @@ export type UserCreateWithoutTeamMembershipsInput = {
   tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -15154,6 +15358,7 @@ export type UserUncheckedCreateWithoutTeamMembershipsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -15240,6 +15445,7 @@ export type UserUpdateWithoutTeamMembershipsInput = {
   tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -15310,6 +15516,7 @@ export type UserUncheckedUpdateWithoutTeamMembershipsInput = {
   tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -15381,6 +15588,7 @@ export type UserCreateWithoutAgentDecisionsInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -15451,6 +15659,7 @@ export type UserUncheckedCreateWithoutAgentDecisionsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -15537,6 +15746,7 @@ export type UserUpdateWithoutAgentDecisionsInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -15607,6 +15817,7 @@ export type UserUncheckedUpdateWithoutAgentDecisionsInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -15677,6 +15888,7 @@ export type UserCreateWithoutProjectsOwnedInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -15747,6 +15959,7 @@ export type UserUncheckedCreateWithoutProjectsOwnedInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -15822,6 +16035,7 @@ export type UserCreateWithoutProjectsCreatedInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -15892,6 +16106,7 @@ export type UserUncheckedCreateWithoutProjectsCreatedInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -15978,6 +16193,7 @@ export type UserUpdateWithoutProjectsOwnedInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -16048,6 +16264,7 @@ export type UserUncheckedUpdateWithoutProjectsOwnedInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -16129,6 +16346,7 @@ export type UserUpdateWithoutProjectsCreatedInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -16199,6 +16417,7 @@ export type UserUncheckedUpdateWithoutProjectsCreatedInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -16269,6 +16488,7 @@ export type UserCreateWithoutPreparationsInChargeInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -16339,6 +16559,7 @@ export type UserUncheckedCreateWithoutPreparationsInChargeInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -16414,6 +16635,7 @@ export type UserCreateWithoutPreparationsShadowTrainedInput = {
   tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
@@ -16484,6 +16706,7 @@ export type UserUncheckedCreateWithoutPreparationsShadowTrainedInput = {
   tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
   teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedCreateNestedManyWithoutReportedByInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
   terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
@@ -16570,6 +16793,7 @@ export type UserUpdateWithoutPreparationsInChargeInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -16640,6 +16864,7 @@ export type UserUncheckedUpdateWithoutPreparationsInChargeInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -16721,6 +16946,7 @@ export type UserUpdateWithoutPreparationsShadowTrainedInput = {
   tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
@@ -16791,6 +17017,7 @@ export type UserUncheckedUpdateWithoutPreparationsShadowTrainedInput = {
   tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
   teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
   tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  vaConcernsReported?: Prisma.VAConcernUncheckedUpdateManyWithoutReportedByNestedInput
   onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
   onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
   terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
@@ -16802,6 +17029,306 @@ export type UserUncheckedUpdateWithoutPreparationsShadowTrainedInput = {
   projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
   projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
   preparationsInCharge?: Prisma.AssignmentPreparationUncheckedUpdateManyWithoutPersonInChargeNestedInput
+  resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
+  resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
+  replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
+  replacementApprovals?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedUpdateManyWithoutReviewedByNestedInput
+  finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutVaConcernsReportedInput = {
+  id?: string
+  email: string
+  employeeId?: string | null
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  extName?: string | null
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  messageColor?: $Enums.MessageColor
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  isBot?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  managedClients?: Prisma.ClientCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  vaHistoryEvents?: Prisma.VAHistoryCreateNestedManyWithoutUserInput
+  vaHistoryChanges?: Prisma.VAHistoryCreateNestedManyWithoutChangedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadCreateNestedManyWithoutUserInput
+  pinnedMessages?: Prisma.MessageCreateNestedManyWithoutPinnedByUserInput
+  channelParticipants?: Prisma.ChannelParticipantCreateNestedManyWithoutUserInput
+  ledTeams?: Prisma.TeamCreateNestedManyWithoutLeaderInput
+  tempLedTeams1?: Prisma.TeamCreateNestedManyWithoutTempLeader1Input
+  tempLedTeams2?: Prisma.TeamCreateNestedManyWithoutTempLeader2Input
+  teamMemberships?: Prisma.TeamMembershipCreateNestedManyWithoutUserInput
+  tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityCreateNestedManyWithoutTmfUpdatedByInput
+  onboardingInvite?: Prisma.VAOnboardingInviteCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteCreateNestedManyWithoutCreatorInput
+  terminationsInitiated?: Prisma.TerminationCreateNestedManyWithoutInitiatedByInput
+  terminationDocumentsAdded?: Prisma.TerminationDocumentCreateNestedManyWithoutAddedByInput
+  assignmentStatusEvents?: Prisma.AssignmentStatusEventCreateNestedManyWithoutActorInput
+  clearancesCleared?: Prisma.ExitClearanceCreateNestedManyWithoutClearedByInput
+  agentDecisions?: Prisma.AgentSuggestionCreateNestedManyWithoutDecidedByInput
+  assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectCreateNestedManyWithoutCreatedByInput
+  preparationsInCharge?: Prisma.AssignmentPreparationCreateNestedManyWithoutPersonInChargeInput
+  preparationsShadowTrained?: Prisma.AssignmentPreparationCreateNestedManyWithoutShadowTrainerInput
+  resignationLwdOverrides?: Prisma.ResignationDiscussionCreateNestedManyWithoutLwdOverrideByInput
+  resignationTrainingNotes?: Prisma.TerminationCreateNestedManyWithoutTrainingNotedByInput
+  replacementCandidacies?: Prisma.ReplacementRequestCreateNestedManyWithoutCandidateUserInput
+  replacementApprovals?: Prisma.ReplacementRequestCreateNestedManyWithoutApprovedByInput
+  exitClearanceApprovals?: Prisma.ExitClearanceApprovalCreateNestedManyWithoutApproverInput
+  complianceReviewsPerformed?: Prisma.ComplianceReviewCreateNestedManyWithoutReviewedByInput
+  finalPayoutsEndorsed?: Prisma.FinalPayoutCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutVaConcernsReportedInput = {
+  id?: string
+  email: string
+  employeeId?: string | null
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  extName?: string | null
+  systemRole: $Enums.SystemRole
+  userType: $Enums.UserType
+  avatarUrl?: string | null
+  messageColor?: $Enums.MessageColor
+  status?: $Enums.GeneralStatus
+  onHold?: boolean
+  isActive?: boolean
+  isBot?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profile?: Prisma.UserProfileUncheckedCreateNestedOneWithoutUserInput
+  vaProfile?: Prisma.VAProfileUncheckedCreateNestedOneWithoutUserInput
+  departmentHead?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  memberships?: Prisma.DepartmentMembershipUncheckedCreateNestedManyWithoutUserInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutUserInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedCreateNestedManyWithoutInitiatorInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutGrantorInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedCreateNestedManyWithoutApproverInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  managedClients?: Prisma.ClientUncheckedCreateNestedManyWithoutManagerInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedCreateNestedManyWithoutUploaderInput
+  createdTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCreatorInput
+  assignedTickets?: Prisma.TicketUncheckedCreateNestedManyWithoutAssigneeInput
+  ticketConversations?: Prisma.TicketConversationUncheckedCreateNestedManyWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutUserInput
+  vaHistoryChanges?: Prisma.VAHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  messageMentions?: Prisma.MessageMentionUncheckedCreateNestedManyWithoutMentionedUserInput
+  channelReads?: Prisma.ChannelReadUncheckedCreateNestedManyWithoutUserInput
+  pinnedMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutPinnedByUserInput
+  channelParticipants?: Prisma.ChannelParticipantUncheckedCreateNestedManyWithoutUserInput
+  ledTeams?: Prisma.TeamUncheckedCreateNestedManyWithoutLeaderInput
+  tempLedTeams1?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader1Input
+  tempLedTeams2?: Prisma.TeamUncheckedCreateNestedManyWithoutTempLeader2Input
+  teamMemberships?: Prisma.TeamMembershipUncheckedCreateNestedManyWithoutUserInput
+  tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedCreateNestedManyWithoutTmfUpdatedByInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedCreateNestedOneWithoutUserInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedCreateNestedManyWithoutCreatorInput
+  terminationsInitiated?: Prisma.TerminationUncheckedCreateNestedManyWithoutInitiatedByInput
+  terminationDocumentsAdded?: Prisma.TerminationDocumentUncheckedCreateNestedManyWithoutAddedByInput
+  assignmentStatusEvents?: Prisma.AssignmentStatusEventUncheckedCreateNestedManyWithoutActorInput
+  clearancesCleared?: Prisma.ExitClearanceUncheckedCreateNestedManyWithoutClearedByInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedCreateNestedManyWithoutDecidedByInput
+  assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedCreateNestedManyWithoutCompletedByInput
+  projectsOwned?: Prisma.ProjectUncheckedCreateNestedManyWithoutOwnerInput
+  projectsCreated?: Prisma.ProjectUncheckedCreateNestedManyWithoutCreatedByInput
+  preparationsInCharge?: Prisma.AssignmentPreparationUncheckedCreateNestedManyWithoutPersonInChargeInput
+  preparationsShadowTrained?: Prisma.AssignmentPreparationUncheckedCreateNestedManyWithoutShadowTrainerInput
+  resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedCreateNestedManyWithoutLwdOverrideByInput
+  resignationTrainingNotes?: Prisma.TerminationUncheckedCreateNestedManyWithoutTrainingNotedByInput
+  replacementCandidacies?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutCandidateUserInput
+  replacementApprovals?: Prisma.ReplacementRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  exitClearanceApprovals?: Prisma.ExitClearanceApprovalUncheckedCreateNestedManyWithoutApproverInput
+  complianceReviewsPerformed?: Prisma.ComplianceReviewUncheckedCreateNestedManyWithoutReviewedByInput
+  finalPayoutsEndorsed?: Prisma.FinalPayoutUncheckedCreateNestedManyWithoutEndorsedByInput
+  staffRecords?: Prisma.StaffRecordUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutVaConcernsReportedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutVaConcernsReportedInput, Prisma.UserUncheckedCreateWithoutVaConcernsReportedInput>
+}
+
+export type UserUpsertWithoutVaConcernsReportedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutVaConcernsReportedInput, Prisma.UserUncheckedUpdateWithoutVaConcernsReportedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutVaConcernsReportedInput, Prisma.UserUncheckedCreateWithoutVaConcernsReportedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutVaConcernsReportedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutVaConcernsReportedInput, Prisma.UserUncheckedUpdateWithoutVaConcernsReportedInput>
+}
+
+export type UserUpdateWithoutVaConcernsReportedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  extName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumMessageColorFieldUpdateOperationsInput | $Enums.MessageColor
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUpdateOneWithoutUserNestedInput
+  vaProfile?: Prisma.VAProfileUpdateOneWithoutUserNestedInput
+  departmentHead?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUpdateManyWithoutUserNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUpdateManyWithoutUserNestedInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUpdateManyWithoutInitiatorNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUpdateManyWithoutGrantorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  managedClients?: Prisma.ClientUpdateManyWithoutManagerNestedInput
+  uploadedDocuments?: Prisma.VADocumentUpdateManyWithoutUploaderNestedInput
+  createdTickets?: Prisma.TicketUpdateManyWithoutCreatorNestedInput
+  assignedTickets?: Prisma.TicketUpdateManyWithoutAssigneeNestedInput
+  ticketConversations?: Prisma.TicketConversationUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  vaHistoryEvents?: Prisma.VAHistoryUpdateManyWithoutUserNestedInput
+  vaHistoryChanges?: Prisma.VAHistoryUpdateManyWithoutChangedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUpdateManyWithoutUserNestedInput
+  pinnedMessages?: Prisma.MessageUpdateManyWithoutPinnedByUserNestedInput
+  channelParticipants?: Prisma.ChannelParticipantUpdateManyWithoutUserNestedInput
+  ledTeams?: Prisma.TeamUpdateManyWithoutLeaderNestedInput
+  tempLedTeams1?: Prisma.TeamUpdateManyWithoutTempLeader1NestedInput
+  tempLedTeams2?: Prisma.TeamUpdateManyWithoutTempLeader2NestedInput
+  teamMemberships?: Prisma.TeamMembershipUpdateManyWithoutUserNestedInput
+  tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUpdateManyWithoutTmfUpdatedByNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUpdateManyWithoutCreatorNestedInput
+  terminationsInitiated?: Prisma.TerminationUpdateManyWithoutInitiatedByNestedInput
+  terminationDocumentsAdded?: Prisma.TerminationDocumentUpdateManyWithoutAddedByNestedInput
+  assignmentStatusEvents?: Prisma.AssignmentStatusEventUpdateManyWithoutActorNestedInput
+  clearancesCleared?: Prisma.ExitClearanceUpdateManyWithoutClearedByNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUpdateManyWithoutDecidedByNestedInput
+  assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUpdateManyWithoutCreatedByNestedInput
+  preparationsInCharge?: Prisma.AssignmentPreparationUpdateManyWithoutPersonInChargeNestedInput
+  preparationsShadowTrained?: Prisma.AssignmentPreparationUpdateManyWithoutShadowTrainerNestedInput
+  resignationLwdOverrides?: Prisma.ResignationDiscussionUpdateManyWithoutLwdOverrideByNestedInput
+  resignationTrainingNotes?: Prisma.TerminationUpdateManyWithoutTrainingNotedByNestedInput
+  replacementCandidacies?: Prisma.ReplacementRequestUpdateManyWithoutCandidateUserNestedInput
+  replacementApprovals?: Prisma.ReplacementRequestUpdateManyWithoutApprovedByNestedInput
+  exitClearanceApprovals?: Prisma.ExitClearanceApprovalUpdateManyWithoutApproverNestedInput
+  complianceReviewsPerformed?: Prisma.ComplianceReviewUpdateManyWithoutReviewedByNestedInput
+  finalPayoutsEndorsed?: Prisma.FinalPayoutUpdateManyWithoutEndorsedByNestedInput
+  staffRecords?: Prisma.StaffRecordUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutVaConcernsReportedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  extName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRole?: Prisma.EnumSystemRoleFieldUpdateOperationsInput | $Enums.SystemRole
+  userType?: Prisma.EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messageColor?: Prisma.EnumMessageColorFieldUpdateOperationsInput | $Enums.MessageColor
+  status?: Prisma.EnumGeneralStatusFieldUpdateOperationsInput | $Enums.GeneralStatus
+  onHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profile?: Prisma.UserProfileUncheckedUpdateOneWithoutUserNestedInput
+  vaProfile?: Prisma.VAProfileUncheckedUpdateOneWithoutUserNestedInput
+  departmentHead?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  memberships?: Prisma.DepartmentMembershipUncheckedUpdateManyWithoutUserNestedInput
+  employmentRecords?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutUserNestedInput
+  employmentRecordsInitiated?: Prisma.EmploymentRecordUncheckedUpdateManyWithoutInitiatorNestedInput
+  roleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  grantedRoleAssignments?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutGrantorNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
+  leaveApprovalActions?: Prisma.LeaveApprovalActionUncheckedUpdateManyWithoutApproverNestedInput
+  leaveApprovalStepAssignments?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  managedClients?: Prisma.ClientUncheckedUpdateManyWithoutManagerNestedInput
+  uploadedDocuments?: Prisma.VADocumentUncheckedUpdateManyWithoutUploaderNestedInput
+  createdTickets?: Prisma.TicketUncheckedUpdateManyWithoutCreatorNestedInput
+  assignedTickets?: Prisma.TicketUncheckedUpdateManyWithoutAssigneeNestedInput
+  ticketConversations?: Prisma.TicketConversationUncheckedUpdateManyWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  vaHistoryEvents?: Prisma.VAHistoryUncheckedUpdateManyWithoutUserNestedInput
+  vaHistoryChanges?: Prisma.VAHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  sidebarFavorites?: Prisma.SidebarFavoriteUncheckedUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  messageMentions?: Prisma.MessageMentionUncheckedUpdateManyWithoutMentionedUserNestedInput
+  channelReads?: Prisma.ChannelReadUncheckedUpdateManyWithoutUserNestedInput
+  pinnedMessages?: Prisma.MessageUncheckedUpdateManyWithoutPinnedByUserNestedInput
+  channelParticipants?: Prisma.ChannelParticipantUncheckedUpdateManyWithoutUserNestedInput
+  ledTeams?: Prisma.TeamUncheckedUpdateManyWithoutLeaderNestedInput
+  tempLedTeams1?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader1NestedInput
+  tempLedTeams2?: Prisma.TeamUncheckedUpdateManyWithoutTempLeader2NestedInput
+  teamMemberships?: Prisma.TeamMembershipUncheckedUpdateManyWithoutUserNestedInput
+  tmfAvailabilityUpdates?: Prisma.VADepartmentAvailabilityUncheckedUpdateManyWithoutTmfUpdatedByNestedInput
+  onboardingInvite?: Prisma.VAOnboardingInviteUncheckedUpdateOneWithoutUserNestedInput
+  onboardingInvitesCreated?: Prisma.VAOnboardingInviteUncheckedUpdateManyWithoutCreatorNestedInput
+  terminationsInitiated?: Prisma.TerminationUncheckedUpdateManyWithoutInitiatedByNestedInput
+  terminationDocumentsAdded?: Prisma.TerminationDocumentUncheckedUpdateManyWithoutAddedByNestedInput
+  assignmentStatusEvents?: Prisma.AssignmentStatusEventUncheckedUpdateManyWithoutActorNestedInput
+  clearancesCleared?: Prisma.ExitClearanceUncheckedUpdateManyWithoutClearedByNestedInput
+  agentDecisions?: Prisma.AgentSuggestionUncheckedUpdateManyWithoutDecidedByNestedInput
+  assignmentKpiChecksCompleted?: Prisma.AssignmentKpiCheckUncheckedUpdateManyWithoutCompletedByNestedInput
+  projectsOwned?: Prisma.ProjectUncheckedUpdateManyWithoutOwnerNestedInput
+  projectsCreated?: Prisma.ProjectUncheckedUpdateManyWithoutCreatedByNestedInput
+  preparationsInCharge?: Prisma.AssignmentPreparationUncheckedUpdateManyWithoutPersonInChargeNestedInput
+  preparationsShadowTrained?: Prisma.AssignmentPreparationUncheckedUpdateManyWithoutShadowTrainerNestedInput
   resignationLwdOverrides?: Prisma.ResignationDiscussionUncheckedUpdateManyWithoutLwdOverrideByNestedInput
   resignationTrainingNotes?: Prisma.TerminationUncheckedUpdateManyWithoutTrainingNotedByNestedInput
   replacementCandidacies?: Prisma.ReplacementRequestUncheckedUpdateManyWithoutCandidateUserNestedInput
@@ -16847,6 +17374,7 @@ export type UserCountOutputType = {
   tempLedTeams2: number
   teamMemberships: number
   tmfAvailabilityUpdates: number
+  vaConcernsReported: number
   onboardingInvitesCreated: number
   terminationsInitiated: number
   terminationDocumentsAdded: number
@@ -16898,6 +17426,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   tempLedTeams2?: boolean | UserCountOutputTypeCountTempLedTeams2Args
   teamMemberships?: boolean | UserCountOutputTypeCountTeamMembershipsArgs
   tmfAvailabilityUpdates?: boolean | UserCountOutputTypeCountTmfAvailabilityUpdatesArgs
+  vaConcernsReported?: boolean | UserCountOutputTypeCountVaConcernsReportedArgs
   onboardingInvitesCreated?: boolean | UserCountOutputTypeCountOnboardingInvitesCreatedArgs
   terminationsInitiated?: boolean | UserCountOutputTypeCountTerminationsInitiatedArgs
   terminationDocumentsAdded?: boolean | UserCountOutputTypeCountTerminationDocumentsAddedArgs
@@ -17135,6 +17664,13 @@ export type UserCountOutputTypeCountTmfAvailabilityUpdatesArgs<ExtArgs extends r
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountVaConcernsReportedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VAConcernWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountOnboardingInvitesCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.VAOnboardingInviteWhereInput
 }
@@ -17315,6 +17851,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   tempLedTeams2?: boolean | Prisma.User$tempLedTeams2Args<ExtArgs>
   teamMemberships?: boolean | Prisma.User$teamMembershipsArgs<ExtArgs>
   tmfAvailabilityUpdates?: boolean | Prisma.User$tmfAvailabilityUpdatesArgs<ExtArgs>
+  vaConcernsReported?: boolean | Prisma.User$vaConcernsReportedArgs<ExtArgs>
   onboardingInvite?: boolean | Prisma.User$onboardingInviteArgs<ExtArgs>
   onboardingInvitesCreated?: boolean | Prisma.User$onboardingInvitesCreatedArgs<ExtArgs>
   terminationsInitiated?: boolean | Prisma.User$terminationsInitiatedArgs<ExtArgs>
@@ -17431,6 +17968,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   tempLedTeams2?: boolean | Prisma.User$tempLedTeams2Args<ExtArgs>
   teamMemberships?: boolean | Prisma.User$teamMembershipsArgs<ExtArgs>
   tmfAvailabilityUpdates?: boolean | Prisma.User$tmfAvailabilityUpdatesArgs<ExtArgs>
+  vaConcernsReported?: boolean | Prisma.User$vaConcernsReportedArgs<ExtArgs>
   onboardingInvite?: boolean | Prisma.User$onboardingInviteArgs<ExtArgs>
   onboardingInvitesCreated?: boolean | Prisma.User$onboardingInvitesCreatedArgs<ExtArgs>
   terminationsInitiated?: boolean | Prisma.User$terminationsInitiatedArgs<ExtArgs>
@@ -17490,6 +18028,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     tempLedTeams2: Prisma.$TeamPayload<ExtArgs>[]
     teamMemberships: Prisma.$TeamMembershipPayload<ExtArgs>[]
     tmfAvailabilityUpdates: Prisma.$VADepartmentAvailabilityPayload<ExtArgs>[]
+    vaConcernsReported: Prisma.$VAConcernPayload<ExtArgs>[]
     onboardingInvite: Prisma.$VAOnboardingInvitePayload<ExtArgs> | null
     onboardingInvitesCreated: Prisma.$VAOnboardingInvitePayload<ExtArgs>[]
     terminationsInitiated: Prisma.$TerminationPayload<ExtArgs>[]
@@ -17954,6 +18493,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   tempLedTeams2<T extends Prisma.User$tempLedTeams2Args<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tempLedTeams2Args<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   teamMemberships<T extends Prisma.User$teamMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$teamMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TeamMembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tmfAvailabilityUpdates<T extends Prisma.User$tmfAvailabilityUpdatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tmfAvailabilityUpdatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VADepartmentAvailabilityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vaConcernsReported<T extends Prisma.User$vaConcernsReportedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vaConcernsReportedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VAConcernPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   onboardingInvite<T extends Prisma.User$onboardingInviteArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$onboardingInviteArgs<ExtArgs>>): Prisma.Prisma__VAOnboardingInviteClient<runtime.Types.Result.GetResult<Prisma.$VAOnboardingInvitePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   onboardingInvitesCreated<T extends Prisma.User$onboardingInvitesCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$onboardingInvitesCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VAOnboardingInvitePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   terminationsInitiated<T extends Prisma.User$terminationsInitiatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$terminationsInitiatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TerminationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -19144,6 +19684,30 @@ export type User$tmfAvailabilityUpdatesArgs<ExtArgs extends runtime.Types.Extens
   take?: number
   skip?: number
   distinct?: Prisma.VADepartmentAvailabilityScalarFieldEnum | Prisma.VADepartmentAvailabilityScalarFieldEnum[]
+}
+
+/**
+ * User.vaConcernsReported
+ */
+export type User$vaConcernsReportedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VAConcern
+   */
+  select?: Prisma.VAConcernSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VAConcern
+   */
+  omit?: Prisma.VAConcernOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VAConcernInclude<ExtArgs> | null
+  where?: Prisma.VAConcernWhereInput
+  orderBy?: Prisma.VAConcernOrderByWithRelationInput | Prisma.VAConcernOrderByWithRelationInput[]
+  cursor?: Prisma.VAConcernWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VAConcernScalarFieldEnum | Prisma.VAConcernScalarFieldEnum[]
 }
 
 /**

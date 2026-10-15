@@ -1374,6 +1374,57 @@ export type EnumClientResponseStatusWithAggregatesFilter<$PrismaModel = never> =
   _max?: Prisma.NestedEnumClientResponseStatusFilter<$PrismaModel>
 }
 
+export type EnumVAConcernStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.VAConcernStatus | Prisma.EnumVAConcernStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.VAConcernStatus[] | Prisma.ListEnumVAConcernStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VAConcernStatus[] | Prisma.ListEnumVAConcernStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVAConcernStatusFilter<$PrismaModel> | $Enums.VAConcernStatus
+}
+
+export type EnumVAConcernEscalationNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.VAConcernEscalation | Prisma.EnumVAConcernEscalationFieldRefInput<$PrismaModel> | null
+  in?: $Enums.VAConcernEscalation[] | Prisma.ListEnumVAConcernEscalationFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.VAConcernEscalation[] | Prisma.ListEnumVAConcernEscalationFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumVAConcernEscalationNullableFilter<$PrismaModel> | $Enums.VAConcernEscalation | null
+}
+
+export type EnumVAConcernStatusNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.VAConcernStatus | Prisma.EnumVAConcernStatusFieldRefInput<$PrismaModel> | null
+  in?: $Enums.VAConcernStatus[] | Prisma.ListEnumVAConcernStatusFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.VAConcernStatus[] | Prisma.ListEnumVAConcernStatusFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumVAConcernStatusNullableFilter<$PrismaModel> | $Enums.VAConcernStatus | null
+}
+
+export type EnumVAConcernStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VAConcernStatus | Prisma.EnumVAConcernStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.VAConcernStatus[] | Prisma.ListEnumVAConcernStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VAConcernStatus[] | Prisma.ListEnumVAConcernStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVAConcernStatusWithAggregatesFilter<$PrismaModel> | $Enums.VAConcernStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVAConcernStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVAConcernStatusFilter<$PrismaModel>
+}
+
+export type EnumVAConcernEscalationNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VAConcernEscalation | Prisma.EnumVAConcernEscalationFieldRefInput<$PrismaModel> | null
+  in?: $Enums.VAConcernEscalation[] | Prisma.ListEnumVAConcernEscalationFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.VAConcernEscalation[] | Prisma.ListEnumVAConcernEscalationFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumVAConcernEscalationNullableWithAggregatesFilter<$PrismaModel> | $Enums.VAConcernEscalation | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVAConcernEscalationNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVAConcernEscalationNullableFilter<$PrismaModel>
+}
+
+export type EnumVAConcernStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VAConcernStatus | Prisma.EnumVAConcernStatusFieldRefInput<$PrismaModel> | null
+  in?: $Enums.VAConcernStatus[] | Prisma.ListEnumVAConcernStatusFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.VAConcernStatus[] | Prisma.ListEnumVAConcernStatusFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumVAConcernStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.VAConcernStatus | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVAConcernStatusNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVAConcernStatusNullableFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -2691,6 +2742,57 @@ export type NestedEnumClientResponseStatusWithAggregatesFilter<$PrismaModel = ne
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumClientResponseStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumClientResponseStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumVAConcernStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.VAConcernStatus | Prisma.EnumVAConcernStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.VAConcernStatus[] | Prisma.ListEnumVAConcernStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VAConcernStatus[] | Prisma.ListEnumVAConcernStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVAConcernStatusFilter<$PrismaModel> | $Enums.VAConcernStatus
+}
+
+export type NestedEnumVAConcernEscalationNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.VAConcernEscalation | Prisma.EnumVAConcernEscalationFieldRefInput<$PrismaModel> | null
+  in?: $Enums.VAConcernEscalation[] | Prisma.ListEnumVAConcernEscalationFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.VAConcernEscalation[] | Prisma.ListEnumVAConcernEscalationFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumVAConcernEscalationNullableFilter<$PrismaModel> | $Enums.VAConcernEscalation | null
+}
+
+export type NestedEnumVAConcernStatusNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.VAConcernStatus | Prisma.EnumVAConcernStatusFieldRefInput<$PrismaModel> | null
+  in?: $Enums.VAConcernStatus[] | Prisma.ListEnumVAConcernStatusFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.VAConcernStatus[] | Prisma.ListEnumVAConcernStatusFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumVAConcernStatusNullableFilter<$PrismaModel> | $Enums.VAConcernStatus | null
+}
+
+export type NestedEnumVAConcernStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VAConcernStatus | Prisma.EnumVAConcernStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.VAConcernStatus[] | Prisma.ListEnumVAConcernStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VAConcernStatus[] | Prisma.ListEnumVAConcernStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVAConcernStatusWithAggregatesFilter<$PrismaModel> | $Enums.VAConcernStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVAConcernStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVAConcernStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumVAConcernEscalationNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VAConcernEscalation | Prisma.EnumVAConcernEscalationFieldRefInput<$PrismaModel> | null
+  in?: $Enums.VAConcernEscalation[] | Prisma.ListEnumVAConcernEscalationFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.VAConcernEscalation[] | Prisma.ListEnumVAConcernEscalationFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumVAConcernEscalationNullableWithAggregatesFilter<$PrismaModel> | $Enums.VAConcernEscalation | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVAConcernEscalationNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVAConcernEscalationNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumVAConcernStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VAConcernStatus | Prisma.EnumVAConcernStatusFieldRefInput<$PrismaModel> | null
+  in?: $Enums.VAConcernStatus[] | Prisma.ListEnumVAConcernStatusFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.VAConcernStatus[] | Prisma.ListEnumVAConcernStatusFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumVAConcernStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.VAConcernStatus | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVAConcernStatusNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVAConcernStatusNullableFilter<$PrismaModel>
 }
 
 

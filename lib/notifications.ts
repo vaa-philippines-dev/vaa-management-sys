@@ -9,6 +9,8 @@ type NotifyEntry = {
     | 'LEAVE_APPROVAL_NEEDED'
     | 'LEAVE_REQUEST_DECIDED'
     | 'AVAILABILITY_REVIEW_DUE'
+    | 'SUPPORT_REQUEST'
+    | 'VA_CONCERN'
   title: string
   message: string
   entityType?: string

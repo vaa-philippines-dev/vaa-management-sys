@@ -17,6 +17,7 @@ import {
   BarChart3,
   ListTodo,
   ClipboardList,
+  MessageSquareWarning,
   UserPlus,
   Network,
   History,
@@ -308,6 +309,7 @@ const departmentRoutes = [
   { label: 'Team Assignment', href: '/team-assignment', icon: ListChecks },
   { label: 'VA Preparation', href: '/va-preparation', icon: ClipboardCheck },
   { label: 'VA Availability', href: '/va-availability', icon: CalendarRange },
+  { label: 'VA-Client Summary', href: '/va-client-summary', icon: Network },
   { label: 'Performance Monitoring', href: '/performance', icon: LineChart },
   { label: 'Projects', href: '/projects', icon: FolderKanban },
   { label: 'Celebrants', href: '/celebrants', icon: Calendar },
@@ -317,11 +319,20 @@ const departmentRoutes = [
 // isn't "anyone who sees the Department section" — it's whoever leads a team
 // (usually a VA account) plus Dept/Ops Managers and admins; see lib/tmf.ts.
 const tmfRoute = { label: 'Team Monitoring', href: '/tmf', icon: ClipboardList }
+// Same audience as the TMF: Team Leaders raise concerns about their own
+// team's VAs; managers, HR and admins work them. See lib/va-concerns.ts.
+const vaConcernsRoute = { label: 'VA Concerns', href: '/va-concerns', icon: MessageSquareWarning }
 
 // DMF board pages that redirect VA accounts away (they're manager views). A VA
 // team leader sees the Department section for Teams/Team Assignment, but these
 // would just bounce them to the dashboard, so they're hidden for VA accounts.
-const MANAGER_ONLY_DEPARTMENT_HREFS = new Set(['/va-preparation', '/va-availability', '/performance', '/projects'])
+const MANAGER_ONLY_DEPARTMENT_HREFS = new Set([
+  '/va-preparation',
+  '/va-availability',
+  '/va-client-summary',
+  '/performance',
+  '/projects',
+])
 
 // Department-wide pages hidden from a team-scoped Team Leader (TEAM_LEADER
 // SystemRole on a staff account — lib/scope.ts isTeamScoped): they only see
@@ -434,7 +445,7 @@ export function Sidebar({
     ...(showDepartmentSection
       ? departmentRoutes.filter((r) => (role === 'MANAGER' || !MANAGER_ONLY_DEPARTMENT_HREFS.has(r.href)) && showDeptRow(r.href))
       : []),
-    ...(canOpenTmf ? [tmfRoute] : []),
+    ...(canOpenTmf ? [tmfRoute, vaConcernsRoute] : []),
     ...(isAdmin ? adminRoutes : []),
     ...(role === 'MANAGER' ? hrRoutes : []),
     ...(role === 'MANAGER' && isAdmin ? onGoingRoutes : []),
@@ -599,6 +610,18 @@ export function Sidebar({
                   onChanged={setFavorites}
                 />
               )}
+              {canOpenTmf && (
+                <FavoritableRow
+                  href={vaConcernsRoute.href}
+                  label={vaConcernsRoute.label}
+                  icon={vaConcernsRoute.icon}
+                  isActive={isMainRowActive(vaConcernsRoute.href, isRouteActive(vaConcernsRoute.href))}
+                  canFavorite={canFavorite}
+                  favorite={favorites.find((f) => f.href === vaConcernsRoute.href)}
+                  atMax={atMax}
+                  onChanged={setFavorites}
+                />
+              )}
               {role === 'MANAGER' && (
                 <>
               <FavoritableRow
@@ -618,6 +641,16 @@ export function Sidebar({
                 isActive={isMainRowActive('/va-availability', isRouteActive('/va-availability'))}
                 canFavorite={canFavorite}
                 favorite={favorites.find((f) => f.href === '/va-availability')}
+                atMax={atMax}
+                onChanged={setFavorites}
+              />
+              <FavoritableRow
+                href="/va-client-summary"
+                label="VA-Client Summary"
+                icon={Network}
+                isActive={isMainRowActive('/va-client-summary', isRouteActive('/va-client-summary'))}
+                canFavorite={canFavorite}
+                favorite={favorites.find((f) => f.href === '/va-client-summary')}
                 atMax={atMax}
                 onChanged={setFavorites}
               />
