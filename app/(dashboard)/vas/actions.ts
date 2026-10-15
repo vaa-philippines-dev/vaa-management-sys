@@ -116,6 +116,14 @@ export async function quickAddVA(formData: FormData) {
     }
   }
 
+  // Keep vaaPosition in step with the picked position: VA Availability and
+  // the imports read the text, the Masterlist reads the link.
+  const positionSkill = positionSkillId
+    ? await prisma.skill.findUnique({ where: { id: positionSkillId }, select: { name: true, shortName: true } })
+    : null
+  if (positionSkillId && !positionSkill) throw new Error('Unknown position')
+  const vaaPosition = positionSkill ? positionSkill.shortName ?? positionSkill.name : null
+
   const existing = await prisma.user.findUnique({ where: { email } })
   if (existing) throw new Error('A user with this email already exists')
 
@@ -134,7 +142,7 @@ export async function quickAddVA(formData: FormData) {
         systemRole: 'VA',
         userType: 'VIRTUAL_ASSISTANT',
         isActive: true,
-        vaProfile: { create: { hourlyRate: null, positionSkillId, vaType, currentHireDate: hireDate } },
+        vaProfile: { create: { hourlyRate: null, positionSkillId, vaaPosition, vaType, currentHireDate: hireDate } },
         ...(departmentId ? { memberships: { create: { departmentId, isPrimary: true } } } : {}),
         ...(teamId ? { teamMemberships: { create: { teamId } } } : {}),
       },

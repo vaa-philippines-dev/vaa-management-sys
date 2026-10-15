@@ -216,7 +216,15 @@ export async function VASection({
             select: { id: true, name: true },
           })
         ),
-        prisma.skill.findMany({ where: { isActive: true }, orderBy: { name: 'asc' }, select: { id: true, name: true } }),
+        // Positions read as the Masterlist does ("Amazon PPC VA"), not the
+        // Service's full name ("Amazon PPC Virtual Assistant").
+        prisma.skill
+          .findMany({ where: { isActive: true }, select: { id: true, name: true, shortName: true } })
+          .then((skills) =>
+            skills
+              .map((s) => ({ id: s.id, name: s.shortName ?? s.name }))
+              .sort((a, b) => a.name.localeCompare(b.name))
+          ),
         // The Add VA form's Team picker — only for roles that may compose
         // teams (quickAddVA() checks the same, plus that the team is in the
         // chosen department).
@@ -296,7 +304,8 @@ export async function VASection({
 
 // The Department/Team dropdowns follow the same scope as the rows — a PPC
 // manager picking "Amazon" would only ever get an empty list, and the option
-// list itself shouldn't enumerate other departments' teams.
+// list itself shouldn't enumerate other departments' teams. Both are limited
+// to the service departments: VAs never belong to Staff ones.
 async function FilterWrapper({ scope }: { scope: ViewerScope }) {
   // A team-scoped Team Leader gets both: their led teams, and only the
   // departments those teams belong to.
@@ -308,21 +317,21 @@ async function FilterWrapper({ scope }: { scope: ViewerScope }) {
     : null
   const key = [deptIds ? `d:${[...deptIds].sort().join(',')}` : '', teamIds ? `t:${[...teamIds].sort().join(',')}` : ''].filter(Boolean).join('|') || 'all'
   const [departments, teams] = await Promise.all([
-    cached(`vas:departments:${key}`, [CACHE_TAGS.departments], 600, () =>
+    cached(`vas:service-departments:${key}`, [CACHE_TAGS.departments], 600, () =>
       prisma.department.findMany({
         where: {
-          status: 'ACTIVE',
-          parentId: { not: null },
+          ...SERVICE_DEPARTMENT_WHERE,
           ...(deptIds && { id: { in: deptIds } }),
           ...(teamIds && { teams: { some: { id: { in: teamIds } } } }),
         },
         orderBy: { sortOrder: 'asc' },
       })
     ),
-    cached(`vas:teams:${key}`, [CACHE_TAGS.teams], 600, () =>
+    cached(`vas:service-teams:${key}`, [CACHE_TAGS.teams, CACHE_TAGS.departments], 600, () =>
       prisma.team.findMany({
         where: {
           status: 'ACTIVE',
+          department: SERVICE_DEPARTMENT_WHERE,
           ...(deptIds && { departmentId: { in: deptIds } }),
           ...(teamIds && { id: { in: teamIds } }),
         },
